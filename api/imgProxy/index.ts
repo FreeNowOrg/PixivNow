@@ -7,6 +7,10 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   axios
     .get(`https://i.pximg.net${path}`, {
       responseType: 'arraybuffer',
+      headers: {
+        'user-agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+      },
     })
     .then(
       ({ data, headers }) => {
