@@ -1,6 +1,6 @@
 {
   "name": "pixiv-now",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "main": "index.js",
   "repository": "https://github.com/Wjghj-Project/pixiv-now.git",
@@ -17,5 +17,8 @@
     "pixiv-web-api": "^0.1.5",
     "typescript": "^4.3.2",
     "vercel": "^23.0.0"
+  },
+  "devDependencies": {
+    "@dragon-fish/bump": "^0.0.15"
   }
 }
