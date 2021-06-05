@@ -33,7 +33,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       pixiv.illustPages(id),
     ])
 
-    return res.send({ ...replaceUrl(details), urls: replaceUrl(pages) })
+    return res.send({ ...replaceUrl(details), pages: replaceUrl(pages) })
   } catch (error) {
     return res.status(500).send(error)
   }
