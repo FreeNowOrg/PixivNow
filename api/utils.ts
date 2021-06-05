@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 import { Pixiv } from '@ibaraki-douji/pixivts'
 const pixiv = new Pixiv()
 
@@ -9,7 +11,7 @@ function replaceUrl(obj) {
     ) {
       obj[key] = obj[key].replace(
         'https://i.pximg.net/',
-        `https://pixiv-now.vercel.app/proxy/`
+        `https://pixiv-now.vercel.app/image/`
       )
     } else if (typeof obj[key] === 'object') {
       obj[key] = replaceUrl(obj[key])
@@ -18,4 +20,16 @@ function replaceUrl(obj) {
   return obj
 }
 
-export { pixiv, replaceUrl }
+async function request(path) {
+  const url = `https://www.pixiv.net/ajax/${path}`
+
+  return axios.get(url, {
+    headers: {
+      Referer: 'https://www.pixiv.net/',
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+    },
+  })
+}
+
+export { request, pixiv, replaceUrl }
