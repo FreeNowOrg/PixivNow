@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/illust/(.+)",
-      "destination": "/api/illust/$1"
-    },
-    {
       "source": "/imgProxy/(.+)",
       "destination": "/api/imgProxy?path=$1"
     }
