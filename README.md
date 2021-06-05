@@ -1,1 +1,37 @@
-# pixiv-now
+# Pixiv Now
+
+https://pixiv-now.vercel.app/
+
+Pixiv Service Proxy.
+
+## API
+
+### `/api/illust/:id`
+
+Get illust details by ID
+
+### `/api/user/:id`
+
+Get user detauls by UID
+
+### `/ajax/*`
+
+AJAX
+
+## Image Proxy
+
+`/image/*`
+
+---
+
+_For communication and learning only._
+
+**All data & pictures from query:** &copy;Pixiv & Illusts' authors
+
+> Copyright 2021 Wjghj-Project/机智的小鱼君
+>
+> Licensed under the Apache License, Version 2.0 (the "License");<br>
+> you may not use this file except in compliance with the License.<br>
+> You may obtain a copy of the License at
+>
+> http://www.apache.org/licenses/LICENSE-2.0
