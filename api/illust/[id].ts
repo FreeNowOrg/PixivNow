@@ -4,7 +4,13 @@ const pixiv = new Pixiv()
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   function replaceUrl(str: string): string {
-    const origin = req.url ? new URL(req.url).origin : ''
+    let origin
+    try {
+      const url = new URL(req.url)
+      origin = url.origin
+    } catch (e) {
+      origin = ''
+    }
     return str.replace('https://i.pximg.net/', `${origin}/imgProxy/`)
   }
 
@@ -26,7 +32,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       }
       return item
     })
-    return res.send(detail)
+    return res.send({ url: req.url, ...detail })
   } catch (error) {
     return res.status(500).send(error)
   }
