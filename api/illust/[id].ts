@@ -1,8 +1,12 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import PixivAppApi from 'pixiv-app-api'
-const pixiv = new PixivAppApi(null, null, {
-  camelcaseKeys: true,
-})
+const pixiv = new PixivAppApi(
+  process.env.PIXIV_USERNAME,
+  process.env.PIXIV_PASSWORD,
+  {
+    camelcaseKeys: true,
+  }
+)
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const id = parseInt(req.query?.id as string)
