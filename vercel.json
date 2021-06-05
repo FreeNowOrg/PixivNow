@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/illust/:id",
-      "destination": "/api/illust"
+      "source": "/illust/(.+)",
+      "destination": "/api/illust/$1"
     },
     {
       "source": "/imgProxy/(.+)",
