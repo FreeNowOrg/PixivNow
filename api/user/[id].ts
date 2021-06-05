@@ -10,7 +10,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
 
   try {
-    const details = await request(`user/${id}`, { full: 1 })
+    const details = await request(`user/${id}`, { full: '1' })
     return res.send(replaceUrl(details))
   } catch (error) {
     return res.status(500).send(error)
