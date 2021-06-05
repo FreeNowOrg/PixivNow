@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Production Build
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches:
+      - master
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    # 使用最新版ubantu虚拟机运行
+    runs-on: ubuntu-latest
+
+    steps:
+      # from: https://github.com/actions/checkout
+      - name: 本工作流
+        uses: actions/checkout@master
+
+      # 安装最新版 Node.js
+      # from: https://github.com/actions/setup-node
+      - name: 安装 Node.js 14
+        uses: actions/setup-node@master
+        with:
+          node-version: 14
+
+      - name: 安装 yarn
+        run: |
+          npm i -g yarn
+
+      - name: 处理依赖
+        run: |
+          yarn install
+
+      - name: 初始化并部署 Vercel 项目
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          yarn vercel deploy --name pixiv-now --token $VERCEL_TOKEN --confirm --prod
