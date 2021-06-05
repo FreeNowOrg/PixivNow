@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/img-original/img/(.+)",
+      "destination": "/api/imgProxy?path=/img-original/img/$1"
+    },
+    {
+      "source": "/c/(.+)",
+      "destination": "/api/imgProxy?path=/c/$1"
+    }
+  ]
+}
