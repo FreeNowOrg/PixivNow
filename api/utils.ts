@@ -20,7 +20,7 @@ function replaceUrl(obj) {
   return obj
 }
 
-async function request(path, params) {
+async function request(path, params = {}) {
   const url = `https://www.pixiv.net/ajax/${path}`
 
   return axios.get(url, {
