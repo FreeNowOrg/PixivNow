@@ -1,12 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/img-original/img/(.+)",
-      "destination": "/api/imgProxy?path=/img-original/img/$1"
+      "source": "/illust/:id",
+      "destination": "/api/illust"
     },
     {
-      "source": "/c/(.+)",
-      "destination": "/api/imgProxy?path=/c/$1"
+      "source": "/imgProxy/(.+)",
+      "destination": "/api/imgProxy?path=$1"
     }
   ]
 }

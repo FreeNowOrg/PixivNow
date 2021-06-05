@@ -8,7 +8,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   const { path } = req.query
 
   pixiv
-    .download(new URL(`https://i.pximg.net${path}`))
+    .download(new URL(`https://i.pximg.net/${path}`))
     // .get(`https://i.pximg.net${path}`, {
     //   responseType: 'arraybuffer',
     //   headers: {
