@@ -10,9 +10,10 @@
     "start": "vercel dev"
   },
   "dependencies": {
+    "@ibaraki-douji/pixivts": "^2.0.2",
     "@vercel/node": "^1.11.0",
     "axios": "^0.21.1",
-    "pixiv-app-api": "^1.2.1",
+    "file-type": "^16.5.0",
     "typescript": "^4.3.2",
     "vercel": "^23.0.0"
   }
