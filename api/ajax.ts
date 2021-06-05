@@ -3,8 +3,9 @@ import { replaceUrl, request } from './utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { path } = req.query
+  delete req.query.path
 
-  request(path).then(
+  request(path, req.query).then(
     ({ data, headers }) => {
       res.setHeader('content-type', headers?.['content-type'])
       res.status(200).send(replaceUrl(data))
