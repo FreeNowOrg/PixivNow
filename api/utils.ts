@@ -21,16 +21,22 @@ function replaceUrl(obj) {
 }
 
 async function request(path, params = {}) {
-  const url = `https://www.pixiv.net/ajax/${path}`
+  const url = `https://www.pixiv.net/ajax${path}`
 
-  return axios.get(url, {
-    params,
-    headers: {
-      Referer: 'https://www.pixiv.net/',
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
-    },
-  })
+  try {
+    const res = await axios.get(url, {
+      params,
+      headers: {
+        Referer: 'https://www.pixiv.net/',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+      },
+    })
+    res.data = replaceUrl(res.data)
+    return res
+  } catch (err) {
+    throw err
+  }
 }
 
 export { request, pixiv, replaceUrl }

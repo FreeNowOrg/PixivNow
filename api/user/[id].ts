@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import { request, replaceUrl } from '../utils'
+import { request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const id = req.query.id as string
@@ -10,8 +10,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
 
   try {
-    const details = await request(`user/${id}`, { full: '1' })
-    return res.send(replaceUrl(details))
+    const { data } = await request(`/user/${id}?full=1`)
+    return res.send(data)
   } catch (error) {
     return res.status(500).send(error)
   }
