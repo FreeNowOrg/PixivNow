@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import { pixiv, replaceUrl } from '../utils'
+import { request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const id = req.query.id as string
@@ -10,9 +10,12 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
 
   try {
-    const details = await pixiv.getIllustByID(id)
-    return res.send(replaceUrl(details))
-  } catch (error) {
-    return res.status(500).send(error)
+    const [details, pages] = await Promise.all([
+      request(`/illust/${id}`),
+      request(`/illust/${id}/pages`),
+    ])
+    return res.send({ ...details.data, urls: pages.data })
+  } catch (err) {
+    return res.status(503).send(err)
   }
 }

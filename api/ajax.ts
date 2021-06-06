@@ -6,8 +6,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   delete req.query.path
 
   request(`/${path}`, req.query).then(
-    ({ data, headers }) => {
-      res.setHeader('content-type', headers?.['content-type'])
+    ({ data }) => {
       res.status(200).send(data)
     },
     (err) => {

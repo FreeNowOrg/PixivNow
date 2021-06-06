@@ -10,7 +10,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
 
   try {
-    const { data } = await request(`/user/${id}?full=1`)
+    const { data } = await request(`/user/${id}`, { full: 1, ...req.query })
     return res.send(data)
   } catch (error) {
     return res.status(500).send(error)

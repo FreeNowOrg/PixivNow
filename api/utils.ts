@@ -1,8 +1,5 @@
 import axios from 'axios'
 
-import { Pixiv } from '@ibaraki-douji/pixivts'
-const pixiv = new Pixiv()
-
 function replaceUrl(obj) {
   for (let key in obj) {
     if (
@@ -20,7 +17,7 @@ function replaceUrl(obj) {
   return obj
 }
 
-async function request(path, params = {}) {
+async function request(path: string, params = {}) {
   const url = `https://www.pixiv.net/ajax${path}`
 
   try {
@@ -39,4 +36,4 @@ async function request(path, params = {}) {
   }
 }
 
-export { request, pixiv, replaceUrl }
+export { request, replaceUrl }
