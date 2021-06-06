@@ -1,6 +1,6 @@
 # Pixiv Now
 
-https://pixiv-now.vercel.app/
+https://pixiv.wjghj.cn/
 
 Pixiv Service Proxy.
 
@@ -12,7 +12,11 @@ Get illust details by ID
 
 ### `/api/user/:id`
 
-Get user detauls by UID
+Get user details by UID
+
+### `/api/search/:word`
+
+Search illusts by keyword
 
 ### `/ajax/*`
 
