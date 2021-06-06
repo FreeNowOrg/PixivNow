@@ -8,7 +8,7 @@ function replaceUrl(obj) {
     ) {
       obj[key] = obj[key].replace(
         'https://i.pximg.net/',
-        `https://pixiv-now.vercel.app/image/`
+        '/image/'
       )
     } else if (typeof obj[key] === 'object') {
       obj[key] = replaceUrl(obj[key])
