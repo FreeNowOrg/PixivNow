@@ -14,6 +14,10 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       request(`/illust/${id}`),
       request(`/illust/${id}/pages`),
     ])
+    try {
+      delete details.data.noLoginData
+      delete details.data.zoneConfig
+    } catch (e) {}
     return res.send({ ...details.data, pages: pages.data })
   } catch (err) {
     return res.status(503).send(err)
