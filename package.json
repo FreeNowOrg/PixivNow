@@ -1,6 +1,6 @@
 {
   "name": "pixiv-now",
-  "version": "1.1.4",
+  "version": "2.0.0-alpha.0",
   "private": true,
   "main": "index.js",
   "repository": "https://github.com/Wjghj-Project/pixiv-now.git",
@@ -8,16 +8,23 @@
   "license": "MIT",
   "scripts": {
     "start": "vercel dev",
+    "build": "vuedx-typecheck ./src && vite build",
     "preview": "vercel deploy",
     "bump": "bump --nopublish"
   },
   "dependencies": {
-    "@vercel/node": "^1.11.0",
     "axios": "^0.21.1",
-    "typescript": "^4.3.2",
-    "vercel": "^23.0.0"
+    "vue": "^3.0.4",
+    "vue-router": "^4.0.8"
   },
   "devDependencies": {
-    "@dragon-fish/bump": "^0.0.15"
+    "@dragon-fish/bump": "^0.0.15",
+    "@vercel/node": "^1.11.0",
+    "@vue/compiler-sfc": "^3.0.4",
+    "@vuedx/typecheck": "^0.3.1-insiders-1606311019.0",
+    "@vuedx/typescript-plugin-vue": "^0.3.1-insiders-1606311019.0",
+    "typescript": "^4.3.2",
+    "vercel": "^23.0.0",
+    "vite": "^1.0.0-rc.13"
   }
 }

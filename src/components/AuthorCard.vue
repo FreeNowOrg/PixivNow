@@ -1,0 +1,43 @@
+<template>
+  <div class="authorCard">
+    <div class="left">
+      <img :src="API + user.imageBig" alt="" />
+    </div>
+    <div class="right">
+      <h4>
+        <strong>{{ user.name }}</strong>
+      </h4>
+      <p class="description">{{ user.comment }}</p>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  props: ['user'],
+  data() {
+    return {
+      API: 'https://pixiv.wjghj.cn',
+    }
+  },
+})
+</script>
+
+<style scoped>
+.authorCard {
+  box-shadow: 0 0 4px #888;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+}
+.left {
+  margin-right: 1rem;
+}
+.left img {
+  border-radius: 50%;
+  width: 80px;
+}
+</style>
