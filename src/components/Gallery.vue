@@ -62,7 +62,9 @@ export default defineComponent({
   text-align: center;
 }
 .picBig {
-  width: 50vw;
+  max-width: 50vw;
+  max-height: 75vh;
+  width: auto;
   height: auto;
   transition: box-shadow 0.4s;
 }
