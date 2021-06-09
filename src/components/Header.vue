@@ -26,6 +26,7 @@ export default defineComponent({
   font-size: 2rem;
   color: #fff;
   display: flex;
+  overflow-y: auto;
 }
 .logo,
 .link {
