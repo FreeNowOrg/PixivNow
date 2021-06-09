@@ -1,6 +1,6 @@
 <template>
-  <section style="text-align: center">
-    <h1>Home</h1>
+  <section class="home">
+    <div class="title">PixivNow</div>
     <p>Pixiv Service Proxy.</p>
     <p>
       →
@@ -23,4 +23,14 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.home {
+  margin: 10rem auto;
+  height: 100%;
+  text-align: center;
+}
+.title {
+  font-size: 6rem;
+  font-weight: bold;
+}
+</style>

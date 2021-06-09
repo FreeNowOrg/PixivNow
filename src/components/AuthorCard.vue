@@ -29,9 +29,9 @@ export default defineComponent({
 .authorCard {
   box-shadow: 0 0 4px #888;
   border-radius: 4px;
+  padding: 1rem;
   display: flex;
   align-items: center;
-  padding: 1rem;
 }
 .left {
   margin-right: 1rem;

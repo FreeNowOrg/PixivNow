@@ -1,3 +1,7 @@
+:root {
+  font-size: 16px;
+}
+
 html,
 body {
   margin: 0;
@@ -10,4 +14,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
   color: #2c3e50;
+}
+
+h1 {
+  font-size: 2rem;
+  text-shadow: 2px 2px 0px #fff;
+  box-shadow: 0 -0.5em 0 rgb(93, 233, 243) inset;
+}
+h2 {
+  display: inline-block;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  /* margin: 0.4rem auto; */
+  padding: 0 0.4rem;
+  font-size: 1.4rem;
+  text-shadow: 2px 2px 0px #fff;
+  box-shadow: 0 -0.5em 0 rgb(93, 188, 243) inset;
 }

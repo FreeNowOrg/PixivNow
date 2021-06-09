@@ -1,15 +1,12 @@
 import axios from 'axios'
 
-function replaceUrl(obj) {
+function replaceUrl(obj: any) {
   for (let key in obj) {
     if (
       typeof obj[key] === 'string' &&
       obj[key].startsWith('https://i.pximg.net/')
     ) {
-      obj[key] = obj[key].replace(
-        'https://i.pximg.net/',
-        '/image/'
-      )
+      obj[key] = obj[key].replace('https://i.pximg.net/', '/image/')
     } else if (typeof obj[key] === 'object') {
       obj[key] = replaceUrl(obj[key])
     }

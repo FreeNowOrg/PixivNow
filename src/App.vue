@@ -18,8 +18,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
-main {
-  /* min-height: 70vh; */
+main article {
+  /* min-height: 100vh; */
   padding: 1rem;
 }
 </style>

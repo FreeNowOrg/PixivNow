@@ -11,7 +11,7 @@
     </div>
     <div class="description" v-if="illust.description">
       <h2>简介</h2>
-      <p v-html="illust.description"></p>
+      <p class="card" v-html="illust.description"></p>
     </div>
   </section>
   <section class="error" v-if="error">
@@ -24,8 +24,8 @@
 
 <script lang="ts">
 import axios from 'axios'
-import Gallery from '../components/Gallery.vue'
-import AuthorCard from '../components/AuthorCard.vue'
+import Gallery from '../../components/Gallery.vue'
+import AuthorCard from '../../components/AuthorCard.vue'
 
 export default {
   data() {
@@ -75,4 +75,14 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+h1,
+h2 {
+  text-align: center;
+}
+.card {
+  box-shadow: 0 0 4px #888;
+  border-radius: 4px;
+  padding: 1rem;
+}
+</style>

@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { router } from '../router'
+import { router } from '../../router'
 export default {
   data() {
     return {
