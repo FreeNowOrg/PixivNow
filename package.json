@@ -1,6 +1,6 @@
 {
   "name": "pixiv-now",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "private": true,
   "main": "index.js",
   "repository": "https://github.com/Wjghj-Project/pixiv-now.git",
@@ -20,6 +20,7 @@
   "devDependencies": {
     "@dragon-fish/bump": "^0.0.15",
     "@vercel/node": "^1.11.0",
+    "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.4",
     "@vuedx/typecheck": "^0.3.1-insiders-1606311019.0",
     "@vuedx/typescript-plugin-vue": "^0.3.1-insiders-1606311019.0",

@@ -2,12 +2,14 @@
   <h1>
     {{ loading ? 'Loading artwork #' + $route.params.id : illust.illustTitle }}
   </h1>
-  <section class="loading" v-if="loading">Loading...</section>
+  <section class="loading" v-if="loading">
+    <img src="https://blog.wjghj.cn/_statics/images/placeholder.svg" alt="" />
+  </section>
   <section class="illust-container" v-if="!error && !loading">
-    <Gallery :pages="illust.pages" />
+    <gallery :pages="illust.pages" />
     <div class="">
       <h2>作者</h2>
-      <AuthorCard :user="user" />
+      <author-card :user="user" />
     </div>
     <div class="description" v-if="illust.description">
       <h2>简介</h2>
@@ -15,10 +17,7 @@
     </div>
   </section>
   <section class="error" v-if="error">
-    <strong>啊这，出了点问题呢……</strong>
-    <p>
-      {{ error }}
-    </p>
+    <error-page title="出大问题" :desc="'图片加载失败：' + error" />
   </section>
 </template>
 
@@ -26,6 +25,7 @@
 import axios from 'axios'
 import Gallery from '../../components/Gallery.vue'
 import AuthorCard from '../../components/AuthorCard.vue'
+import ErrorPage from '../../components/ErrorPage.vue'
 
 export default {
   data() {
@@ -39,6 +39,7 @@ export default {
   components: {
     AuthorCard,
     Gallery,
+    ErrorPage,
   },
   methods: {
     async init() {
@@ -54,6 +55,7 @@ export default {
         this.error = err.message
         return
       }
+      document.title = `${data.illustTitle} | Artwork | PixivNow`
       this.loading = false
       this.illust = data
       this.getUser(data.userId)
@@ -70,12 +72,16 @@ export default {
     },
   },
   mounted() {
+    document.title = 'Loading... | Artwork | PixivNow'
     this.init()
   },
 }
 </script>
 
 <style scoped>
+.loading {
+  text-align: center;
+}
 h1,
 h2 {
   text-align: center;

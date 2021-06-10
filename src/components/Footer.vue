@@ -1,6 +1,11 @@
 <template>
   <footer class="globalFooter">
-    <p>&copy; Copyright {{ yearStr }} Wjghj-Project/pixiv-now</p>
+    <p>
+      &copy; Copyright {{ yearStr }}
+      <a href="https://github.com/Wjghj-Project/pixiv-now" target="_blank"
+        >Wjghj-Project/pixiv-now</a
+      >
+    </p>
   </footer>
 </template>
 
@@ -22,6 +27,9 @@ export default defineComponent({
   background-color: rgb(54, 151, 231);
   padding: 0.4rem;
   font-size: 1rem;
+  color: #fff;
+}
+.globalFooter a {
   color: #fff;
 }
 </style>

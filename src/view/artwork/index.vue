@@ -1,6 +1,6 @@
 <template>
   <h1>View artwork!</h1>
-  <section>
+  <section class="searchBox">
     <input v-model="artId" type="number" />
     <button @click="gotoArt">查看</button>
   </section>
@@ -24,7 +24,35 @@ export default {
       if (val < 1) this.artId = 1
     },
   },
+  mounted() {
+    document.title = 'Artwork | PixivNow'
+  },
 }
 </script>
 
-<style></style>
+<style scoped>
+.searchBox {
+  margin: 8rem auto;
+}
+.searchBox input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1.4rem;
+  border: 1px solid #888;
+  border-radius: 4px;
+  outline: none;
+  padding: 0.2rem 0.5rem;
+  color: #444;
+}
+.searchBox button {
+  padding: 0.4rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: rgb(54, 151, 231);
+  color: #fff;
+  display: block;
+  margin: 1rem auto;
+}
+</style>

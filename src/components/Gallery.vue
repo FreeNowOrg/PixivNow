@@ -3,8 +3,8 @@
     <img class="picBig" :src="imgSrc" alt="" />
     <div class="pagenator">
       <button @click="prevImg">←</button>
-      <!-- <input v-model="imgCountInput" type="number" /> -->
-      <span class="pageNow">{{ imgCountInput }} / {{ pages.length }}</span>
+      <input v-model="imgCountInput" type="number" />
+      <span class="pageNow"> / {{ pages.length }}</span>
       <button @click="nextImg">→</button>
     </div>
   </div>
@@ -25,9 +25,9 @@ export default defineComponent({
   methods: {
     setImg(count) {
       count = this.pages[count] ? count : 0
-      const url = 'https://pixiv.wjghj.cn' + this.pages[count].urls.original
-      const img = new Image()
       this.imgSrc = 'https://blog.wjghj.cn/_statics/images/placeholder.svg'
+      const url = `https://pixiv.wjghj.cn${this.pages[count].urls.original}`
+      const img = new Image()
       img.src = url
       img.onload = () => {
         this.imgSrc = url
@@ -42,8 +42,9 @@ export default defineComponent({
   },
   watch: {
     imgCount(val) {
-      if (val < 0) this.imgCount = 0
-      if (val + 1 > this.pages.length) this.imgCount = this.pages.length - 1
+      this.imgCount = Math.max(0, this.imgCount)
+      this.imgCount = Math.min(this.pages.length - 1, this.imgCount)
+      // if (val < 0 || val + 1 > this.pages.length) this.imgCount = 0
       this.imgCountInput = val + 1
       this.setImg(this.imgCount)
     },
@@ -79,5 +80,8 @@ export default defineComponent({
   text-align: center;
   width: 3rem;
   margin: 0 0.4rem;
+}
+.pagenator input {
+  margin-right: 0;
 }
 </style>

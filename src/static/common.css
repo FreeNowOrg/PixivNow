@@ -32,3 +32,23 @@ h2 {
   text-shadow: 2px 2px 0px #fff;
   box-shadow: 0 -0.5em 0 rgb(93, 188, 243) inset;
 }
+
+main a {
+  color: #2884d4;
+  text-decoration: none;
+  position: relative;
+}
+
+main a::before {
+  content: '';
+  position: absolute;
+  height: 0.2em;
+  width: 100%;
+  background-color: #2884d4;
+  left: 50%;
+  transform: scaleX(0);
+}
+
+main a:hover::after {
+  width: 100%;
+}
