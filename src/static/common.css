@@ -19,7 +19,7 @@ body {
 h1 {
   font-size: 2rem;
   text-shadow: 2px 2px 0px #fff;
-  box-shadow: 0 -0.5em 0 rgb(93, 233, 243) inset;
+  box-shadow: 0 -0.5em 0 rgb(54, 151, 231) inset;
 }
 h2 {
   display: inline-block;
@@ -34,21 +34,25 @@ h2 {
 }
 
 main a {
-  color: #2884d4;
+  color: #3f51b5;
   text-decoration: none;
   position: relative;
 }
 
-main a::before {
+main a::after {
   content: '';
   position: absolute;
-  height: 0.2em;
   width: 100%;
-  background-color: #2884d4;
-  left: 50%;
+  height: 0.1em;
+  bottom: -0.1em;
+  left: 0;
+  background-color: #3f51b5;
+  visibility: hidden;
   transform: scaleX(0);
+  transition: 0.4s ease-in-out;
 }
 
 main a:hover::after {
-  width: 100%;
+  visibility: visible;
+  transform: scaleX(1);
 }

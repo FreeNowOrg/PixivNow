@@ -1,7 +1,11 @@
 <template>
   <header>
     <div class="globalNavbar">
-      <div class="logo">PixivNow</div>
+      <div class="logo">
+        <span class="ph"
+          ><span class="left">Pixiv</span><span class="right">Now</span></span
+        >
+      </div>
       |
       <router-link class="link" to="/">Home</router-link>
       ·
@@ -29,7 +33,7 @@ export default defineComponent({
   align-items: center;
 }
 .logo {
-  font-size: 2rem;
+  font-size: 1.2rem;
 }
 .logo,
 .link {
@@ -39,5 +43,26 @@ export default defineComponent({
 }
 .link {
   font-variant: small-caps;
+}
+.ph {
+  display: inline-block;
+  background-color: #252525;
+  border-radius: 4px;
+  padding: 0.2rem;
+  user-select: none;
+}
+.ph .left,
+.ph .right {
+  display: inline-block;
+  padding: 0.1rem;
+  margin: 0.1rem;
+}
+.ph .left {
+  color: #fff;
+}
+.ph .right {
+  color: #000;
+  background-color: rgb(54, 151, 231);
+  border-radius: 2px;
 }
 </style>

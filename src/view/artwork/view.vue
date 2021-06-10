@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <router-link to="/artworks">← Back</router-link>
+  </div>
   <h1>
     {{ loading ? 'Loading artwork #' + $route.params.id : illust.illustTitle }}
   </h1>
@@ -15,10 +18,24 @@
       <h2>简介</h2>
       <p class="card" v-html="illust.description"></p>
     </div>
+    <div class="more">
+      <h2>原图</h2>
+      <p class="card">
+        <a
+          :href="'https://www.pixiv.net/artworks/' + $route.params.id"
+          target="_blank"
+          rel="noopener noreferrer"
+          >在 Pixiv 上查看</a
+        >
+      </p>
+    </div>
   </section>
   <section class="error" v-if="error">
     <error-page title="出大问题" :desc="'图片加载失败：' + error" />
   </section>
+  <div class="navbar">
+    <router-link to="/artworks">← Back</router-link>
+  </div>
 </template>
 
 <script lang="ts">

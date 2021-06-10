@@ -67,10 +67,10 @@ export default defineComponent({
   max-height: 75vh;
   width: auto;
   height: auto;
-  transition: box-shadow 0.4s;
+  transition: box-shadow 0.4s ease-in-out;
 }
 .picBig:hover {
-  box-shadow: 0 0 4px #888;
+  box-shadow: 0 0 8px #888;
 }
 .pagenator {
   margin-top: 1rem;

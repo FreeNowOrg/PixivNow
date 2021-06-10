@@ -1,13 +1,11 @@
 <template>
   <section class="home">
     <div class="title">
-      <span class=""
-        ><span class="left">Pixiv</span><span class="right">Now</span></span
-      >
+      <span class="">PixivNow</span>
     </div>
-    <p>Pixiv Service Proxy.</p>
+    <p class="description">Pixiv Service Proxy</p>
     <p>
-      前端<ruby>在做了<rt>咕咕咕</rt></ruby>
+      <ruby>前端在做了<rt>咕咕咕</rt></ruby>
     </p>
     <p>
       <router-link to="/artworks">Artworks</router-link>
@@ -36,29 +34,17 @@ export default {
   height: 100%;
   text-align: center;
 }
+.description {
+  font-size: 1.2rem;
+}
 .title {
   font-size: 6rem;
   font-weight: bold;
-}
-.ph {
-  display: inline-block;
-  background-color: #252525;
-  border-radius: 8px;
-  padding: 0.4rem;
   user-select: none;
 }
-.ph .left,
-.ph .right {
-  display: inline-block;
-  padding: 0.4rem;
-  margin: 0.4rem;
-}
-.ph .left {
-  color: #fff;
-}
-.ph .right {
-  color: #000;
-  background-color: rgb(54, 151, 231);
-  border-radius: 8px;
+.title > span {
+  box-shadow: 0 -0.5em 0 rgb(54, 151, 231) inset;
+  text-shadow: 2px 2px #fff;
+  padding: 0 0.4em;
 }
 </style>

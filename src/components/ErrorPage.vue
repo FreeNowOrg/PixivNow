@@ -1,6 +1,8 @@
 <template>
   <section class="error-page">
-    <div class="title">{{ title }}</div>
+    <div class="title">
+      <span>{{ title }}</span>
+    </div>
     <div class="description">{{ desc }}</div>
     <div class="random" @click="randomMsg">{{ msg }}</div>
   </section>
@@ -56,8 +58,14 @@ export default defineComponent({
   width: 100%;
 }
 .title {
-  font-size: 4rem;
+  font-size: 5rem;
   font-weight: bold;
+  margin-bottom: 0.4em;
+}
+.title > span {
+  box-shadow: 0 -0.5em 0 rgb(54, 151, 231) inset;
+  text-shadow: 2px 2px #fff;
+  padding: 0 0.4em;
 }
 .description {
   font-size: 1.5rem;

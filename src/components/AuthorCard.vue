@@ -1,11 +1,17 @@
 <template>
   <div class="authorCard">
     <div class="left">
-      <img :src="API + user.imageBig" alt="" />
+      <router-link :to="'/users/' + user.userId"
+        ><img :src="API + user.imageBig" alt=""
+      /></router-link>
     </div>
     <div class="right">
       <h4>
-        <strong>{{ user.name }}</strong>
+        <strong
+          ><router-link :to="'/users/' + user.userId">{{
+            user.name
+          }}</router-link></strong
+        >
       </h4>
       <p class="description">{{ user.comment }}</p>
     </div>
