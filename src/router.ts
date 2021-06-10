@@ -4,12 +4,6 @@ import {
   createWebHistory,
 } from 'vue-router'
 
-import index from './view/index.vue'
-import indexArtwork from './view/artwork/index.vue'
-import viewArtwork from './view/artwork/view.vue'
-import users from './view/users.vue'
-import error404 from './view/404.vue'
-
 const router = createRouter({
   history: createWebHistory(),
   routes: [],
@@ -17,29 +11,29 @@ const router = createRouter({
 
 router.addRoute({
   path: '/',
-  component: index,
+  component: () => import('./view/index.vue'),
 })
 router.addRoute({
   path: '/artworks',
   alias: ['/illust'],
   name: '',
-  component: indexArtwork,
+  component: () => import('./view/artwork/index.vue'),
 })
 router.addRoute({
   path: '/artworks/:id',
   alias: ['/illust/:id'],
   name: 'Artworks',
-  component: viewArtwork,
+  component: () => import('./view/artwork/view.vue'),
 })
 router.addRoute({
   path: '/users/:id',
   name: 'Users',
-  component: users,
+  component: () => import('./view/users.vue'),
 })
 router.addRoute({
   path: '/:pathMatch(.*)*',
   name: 'NotFound',
-  component: error404,
+  component: () => import('./view/404.vue'),
 })
 
 export { router }
