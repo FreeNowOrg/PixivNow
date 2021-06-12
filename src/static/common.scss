@@ -1,5 +1,11 @@
 $text-shadow-color: #fff;
 
+@mixin header-shared($font-size, $shadow-color) {
+  font-size: $font-size;
+  text-shadow: 2px 2px 0px $text-shadow-color;
+  box-shadow: 0 -0.5em 0 $shadow-color inset;
+}
+
 :root {
   font-size: 16px;
 }
@@ -19,20 +25,17 @@ body {
 }
 
 h1 {
-  font-size: 2rem;
-  text-shadow: 2px 2px 0px $text-shadow-color;
-  box-shadow: 0 -0.5em 0 rgb(54, 151, 231) inset;
+  @include header-shared(2rem, rgb(54, 151, 231));
 }
+
 h2 {
+  @include header-shared(1.4rem, rgb(93, 188, 243));
   display: inline-block;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
   /* margin: 0.4rem auto; */
   padding: 0 0.4rem;
-  font-size: 1.4rem;
-  text-shadow: 2px 2px 0px $text-shadow-color;
-  box-shadow: 0 -0.5em 0 rgb(93, 188, 243) inset;
 }
 
 main {
