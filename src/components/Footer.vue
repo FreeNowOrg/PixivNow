@@ -22,7 +22,7 @@ export default defineComponent({
 </script>
 <style scoped lang="sass">
 .globalFooter
-  background-color: rgb(54, 151, 231)
+  background-color: var(--theme-accent-color)
   padding: 0.4rem
   font-size: 1rem
   color: #fff

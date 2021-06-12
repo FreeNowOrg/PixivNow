@@ -22,11 +22,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="sass">
-$base-color: #fff
 %logo-link-shared
   margin: 0 0.4rem
   text-decoration: none
-  color: $base-color
+  color: var(--theme-background-color)
 
 %ph-left-right-shared
   display: inline-block
@@ -34,9 +33,9 @@ $base-color: #fff
   margin: 0.1rem
 
 .globalNavbar
-  background-color: rgb(54, 151, 231)
+  background-color: var(--theme-accent-color)
   padding: 0.4rem
-  color: $base-color
+  color: var(--theme-background-color)
   display: flex
   overflow-y: auto
   align-items: center
@@ -58,7 +57,7 @@ $base-color: #fff
 
   .left
     @extend %ph-left-right-shared
-    color: $base-color
+    color: var(--theme-background-color)
 
   .right
     @extend %ph-left-right-shared
