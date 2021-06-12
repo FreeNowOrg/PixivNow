@@ -45,7 +45,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .error-page {
   margin: 10rem auto;
   height: 100%;
@@ -53,19 +53,21 @@ export default defineComponent({
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-}
-.error-page > div {
-  width: 100%;
+
+  > div {
+    width: 100%;
+  }
 }
 .title {
   font-size: 5rem;
   font-weight: bold;
   margin-bottom: 0.4em;
-}
-.title > span {
-  box-shadow: 0 -0.5em 0 rgb(54, 151, 231) inset;
-  text-shadow: 2px 2px #fff;
-  padding: 0 0.4em;
+
+  > span {
+    box-shadow: 0 -0.5em 0 rgb(54, 151, 231) inset;
+    text-shadow: 2px 2px #fff;
+    padding: 0 0.4em;
+  }
 }
 .description {
   font-size: 1.5rem;

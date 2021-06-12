@@ -31,7 +31,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .authorCard {
   box-shadow: 0 0 4px #888;
   border-radius: 4px;
@@ -41,9 +41,10 @@ export default defineComponent({
 }
 .left {
   margin-right: 1rem;
-}
-.left img {
-  border-radius: 50%;
-  width: 80px;
+
+  img {
+    border-radius: 50%;
+    width: 80px;
+  }
 }
 </style>

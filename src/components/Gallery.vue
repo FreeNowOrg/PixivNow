@@ -58,7 +58,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .gallery {
   text-align: center;
 }
@@ -68,20 +68,22 @@ export default defineComponent({
   width: auto;
   height: auto;
   transition: box-shadow 0.4s ease-in-out;
-}
-.picBig:hover {
-  box-shadow: 0 0 8px #888;
+
+  &:hover {
+    box-shadow: 0 0 8px #888;
+  }
 }
 .pagenator {
   margin-top: 1rem;
-}
-.pagenator input,
-.pagenator .pageNow {
-  text-align: center;
-  width: 3rem;
-  margin: 0 0.4rem;
-}
-.pagenator input {
-  margin-right: 0;
+
+  input, .pageNow {
+    text-align: center;
+    width: 3rem;
+    margin: 0 0.4rem;
+  }
+
+  input {
+    margin-right: 0;
+  }
 }
 </style>

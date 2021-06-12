@@ -17,9 +17,11 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-main article {
+<style scoped lang="scss">
+main {
+  article {
   /* min-height: 100vh; */
-  padding: 1rem;
+    padding: 1rem;
+  }
 }
 </style>

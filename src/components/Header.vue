@@ -23,25 +23,32 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+$base-color: #fff;
+%logo-link-shared {
+  margin: 0 0.4rem;
+  text-decoration: none;
+  color: $base-color;
+}
+%ph-left-right-shared {
+  display: inline-block;
+  padding: 0.1rem;
+  margin: 0.1rem;
+}
 .globalNavbar {
   background-color: rgb(54, 151, 231);
   padding: 0.4rem;
-  color: #fff;
+  color: $base-color;
   display: flex;
   overflow-y: auto;
   align-items: center;
 }
 .logo {
+  @extend %logo-link-shared;
   font-size: 1.2rem;
 }
-.logo,
 .link {
-  margin: 0 0.4rem;
-  text-decoration: none;
-  color: #fff;
-}
-.link {
+  @extend %logo-link-shared;
   font-variant: small-caps;
 }
 .ph {
@@ -50,19 +57,16 @@ export default defineComponent({
   border-radius: 4px;
   padding: 0.2rem;
   user-select: none;
-}
-.ph .left,
-.ph .right {
-  display: inline-block;
-  padding: 0.1rem;
-  margin: 0.1rem;
-}
-.ph .left {
-  color: #fff;
-}
-.ph .right {
-  color: #000;
-  background-color: rgb(54, 151, 231);
-  border-radius: 2px;
+
+  .left {
+    @extend %ph-left-right-shared;
+    color: $base-color;
+  }
+
+  .right {
+    @extend %ph-left-right-shared;
+    background-color: rgb(54, 151, 231);
+    border-radius: 2px;
+  }
 }
 </style>

@@ -22,14 +22,15 @@ export default defineComponent({
   },
 })
 </script>
-<style scoped>
+<style scoped lang="scss">
 .globalFooter {
   background-color: rgb(54, 151, 231);
   padding: 0.4rem;
   font-size: 1rem;
   color: #fff;
-}
-.globalFooter a {
-  color: #fff;
+
+  > a {
+    color: #fff;
+  }
 }
 </style>
