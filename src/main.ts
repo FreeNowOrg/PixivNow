@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import { router } from './router'
 
 import App from './App.vue'
-import './static/common.scss'
+import './static/common.sass'
 
 const app = createApp(App)
 

@@ -25,6 +25,7 @@
     "@vue/compiler-sfc": "^3.0.4",
     "@vuedx/typecheck": "^0.3.1-insiders-1606311019.0",
     "@vuedx/typescript-plugin-vue": "^0.3.1-insiders-1606311019.0",
+    "pug": "^3.0.2",
     "sass": "^1.34.1",
     "typescript": "^4.3.2",
     "vercel": "^23.0.0",

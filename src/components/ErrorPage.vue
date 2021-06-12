@@ -1,11 +1,8 @@
-<template>
-  <section class="error-page">
-    <div class="title">
-      <span>{{ title }}</span>
-    </div>
-    <div class="description">{{ desc }}</div>
-    <div class="random" @click="randomMsg">{{ msg }}</div>
-  </section>
+<template lang="pug">
+section.error-page
+  .title: span {{ title }}
+  .description {{ description }}
+  .random(@click="randomMsg") {{ msg }}
 </template>
 
 <script lang="ts">
@@ -45,36 +42,33 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
-.error-page {
-  margin: 10rem auto;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+<style scoped lang="sass">
+.error-page
+  margin: 10rem auto
+  height: 100%
+  text-align: center
+  display: flex
+  align-items: center
+  flex-wrap: wrap
 
-  > div {
-    width: 100%;
-  }
-}
-.title {
-  font-size: 5rem;
-  font-weight: bold;
-  margin-bottom: 0.4em;
+  > div
+    width: 100%
 
-  > span {
-    box-shadow: 0 -0.5em 0 rgb(54, 151, 231) inset;
-    text-shadow: 2px 2px #fff;
-    padding: 0 0.4em;
-  }
-}
-.description {
-  font-size: 1.5rem;
-}
-.random {
-  color: #aaa;
-  user-select: none;
-  margin-top: 1rem;
-}
+.title
+  font-size: 5rem
+  font-weight: bold
+  margin-bottom: 0.4em
+
+  > span
+    box-shadow: 0 -0.5em 0 rgb(54, 151, 231) inset
+    text-shadow: 2px 2px #fff
+    padding: 0 0.4em
+
+.description
+  font-size: 1.5rem
+
+.random
+  color: #aaa
+  user-select: none
+  margin-top: 1rem
 </style>
