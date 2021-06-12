@@ -1,22 +1,27 @@
 <template lang="pug">
-header
-  .globalNavbar
+header.globalNavbar
+  .logoArea
     .logo: span.ph
       .left Pixiv
       .right Now
+  .mainLinksArea
+    router-link(to="/") Home
     .
-      |
-    router-link.link(to="/") Home
-    .
-      .
-    router-link.link(to="/artworks") Artworks
+      ·
+    router-link(to="/artworks") Artworks
+  .searchArea
+    search-box
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import SearchBox from './SearchBox.vue'
 
 export default defineComponent({
   name: 'com-header',
+  components: {
+    SearchBox,
+  },
   setup() {},
 })
 </script>
@@ -41,13 +46,23 @@ $base-color: #fff
   overflow-y: auto
   align-items: center
 
+.logoArea
+  // word-break:
+
 .logo
   @extend %logo-link-shared
   font-size: 1.2rem
 
-.link
-  @extend %logo-link-shared
-  font-variant: small-caps
+.mainLinksArea
+  flex: 1
+
+  a
+    @extend %logo-link-shared
+    font-variant: small-caps
+    font-size: 1.2rem
+
+.searchArea
+  // flex: 1
 
 .ph
   display: inline-block

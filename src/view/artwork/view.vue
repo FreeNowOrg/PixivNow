@@ -31,7 +31,7 @@
     </div>
   </section>
   <section class="error" v-if="error">
-    <error-page title="出大问题" :desc="'图片加载失败：' + error" />
+    <error-page title="出大问题" :description="'图片加载失败：' + error" />
   </section>
   <div class="navbar">
     <router-link to="/artworks">← Back</router-link>

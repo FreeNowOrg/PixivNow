@@ -1,5 +1,5 @@
 <template>
-  <error-page title="404" desc="啊咧？啊咧咧——？！页面跑丢了！！！" />
+  <error-page title="404" description="啊咧？啊咧咧——？！页面跑丢了！！！" />
 </template>
 
 <script lang="ts">

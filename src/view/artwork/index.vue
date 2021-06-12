@@ -1,9 +1,8 @@
-<template>
-  <h1>View artwork!</h1>
-  <section class="searchBox">
-    <input v-model="artId" type="number" />
-    <button @click="gotoArt">查看</button>
-  </section>
+<template lang="pug">
+h1 View artwork!
+.searchBox
+  input(v-model="artId", type="number")
+  button(@click="gotoArt") 查看
 </template>
 
 <script lang="ts">

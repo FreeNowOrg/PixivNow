@@ -1,6 +1,7 @@
 <template lang="pug">
 section.error-page
-  .title: span {{ title }}
+  .title
+    span {{ title }}
   .description {{ description }}
   .random(@click="randomMsg") {{ msg }}
 </template>
@@ -24,7 +25,7 @@ const msgList = [
 ]
 
 export default defineComponent({
-  props: ['title', 'desc'],
+  props: ['title', 'description'],
   data() {
     return {
       msg: '',
