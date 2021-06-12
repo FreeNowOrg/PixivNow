@@ -1,12 +1,15 @@
-@use 'variables'
-
 @mixin header-shared($font-size, $shadow-color)
   font-size: $font-size
-  text-shadow: 2px 2px 0px variables.$text-shadow-color
+  text-shadow: 2px 2px 0 var(--theme-text-shadow-color)
   box-shadow: 0 -0.5em 0 $shadow-color inset
 
 :root
   font-size: 16px
+  --theme-accent-color: #3697e7
+  --theme-accent-link-color: #3f51b5
+  --theme-background-color: #fff
+  --theme-text-shadow-color: #fff
+  --theme-box-shadow-color: #888
 
 html,
 body
@@ -34,7 +37,7 @@ h2
 
 main
   a
-    color: #3f51b5
+    color: var(--theme-accent-link-color)
     text-decoration: none
     position: relative
 
@@ -45,7 +48,7 @@ main
       height: 0.1em
       bottom: -0.1em
       left: 0
-      background-color: #3f51b5
+      background-color: var(--theme-accent-link-color)
       visibility: hidden
       transform: scaleX(0)
       transition: 0.4s ease-in-out

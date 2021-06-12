@@ -68,7 +68,7 @@ export default defineComponent({
   transition: box-shadow 0.4s ease-in-out
 
   &:hover
-    box-shadow: 0 0 8px #888
+    box-shadow: 0 0 8px var(--theme-box-shadow-color)
 
 .pagenator
   margin-top: 1rem
