@@ -89,7 +89,7 @@ export default {
     },
   },
   mounted() {
-    document.title = 'Loading... | Artwork | PixivNow'
+    document.title = 'Artwork | PixivNow'
     this.init()
   },
 }
