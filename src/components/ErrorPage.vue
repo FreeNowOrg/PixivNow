@@ -1,7 +1,7 @@
 <template lang="pug">
 section.error-page
   .title: span {{ title }}
-  .description {{ description }}
+  .description {{ desc }}
   .random(@click="randomMsg") {{ msg }}
 </template>
 
