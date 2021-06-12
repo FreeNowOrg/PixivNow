@@ -1,13 +1,11 @@
-<template>
-  <div class="gallery">
-    <img class="picBig" :src="imgSrc" alt="" />
-    <div class="pagenator">
-      <button @click="prevImg">←</button>
-      <input v-model="imgCountInput" type="number" />
-      <span class="pageNow"> / {{ pages.length }}</span>
-      <button @click="nextImg">→</button>
-    </div>
-  </div>
+<template lang="pug">
+.gallery
+  img.picBig(:src="imgSrc" alt="")
+  .pagenator
+    button(@click="prevImg") ←
+    input(v-model="imgCountInput" type="number")
+    span.pageNow / {{ pages.length }}
+    button(@click="nextImg") →
 </template>
 
 <script>
@@ -58,32 +56,31 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
-.gallery {
-  text-align: center;
-}
-.picBig {
-  max-width: 50vw;
-  max-height: 75vh;
-  width: auto;
-  height: auto;
-  transition: box-shadow 0.4s ease-in-out;
+<style scoped lang="sass">
+.gallery
+  text-align: center
 
-  &:hover {
-    box-shadow: 0 0 8px #888;
-  }
-}
-.pagenator {
-  margin-top: 1rem;
+.picBig
+  max-width: 50vw
+  max-height: 75vh
+  width: auto
+  height: auto
+  transition: box-shadow 0.4s ease-in-out
 
-  input, .pageNow {
-    text-align: center;
-    width: 3rem;
-    margin: 0 0.4rem;
-  }
+  &:hover
+    box-shadow: 0 0 8px #888
 
-  input {
-    margin-right: 0;
-  }
-}
+.pagenator
+  margin-top: 1rem
+
+  button
+    cursor: pointer
+
+  input, .pageNow
+    text-align: center
+    width: 3rem
+    margin: 0 0.4rem
+
+  input
+    margin-right: 0
 </style>

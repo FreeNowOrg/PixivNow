@@ -1,7 +1,7 @@
-<template></template>
+<template lang="pug"></template>
 
 <script lang="ts">
 export default {}
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="sass"></style>
