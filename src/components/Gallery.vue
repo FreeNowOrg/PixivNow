@@ -1,6 +1,11 @@
 <template lang="pug">
 .gallery
-  img.picBig(:src="imgSrc" alt="")
+  placeholder.picBig(v-if="loading" :width="width" :height="height")
+  .imageArea
+    a(:href="originalSrc" target="_blank" title="点击下载原图")
+      img.picBig(:src="imgSrc" alt="" v-if="!loading")
+    .tips (这是预览图，点击下载原图)
+  .error(v-if="error") {{ error }}
   .pagenator
     button(@click="prevImg") ←
     input(v-model="imgCountInput" type="number")
@@ -10,25 +15,46 @@
 
 <script>
 import { defineComponent } from 'vue'
+import placeholder from './Placeholder.vue'
 
 export default defineComponent({
+  components: { placeholder },
   props: ['pages'],
   data() {
     return {
       imgCount: 0,
       imgCountInput: 1,
       imgSrc: '',
+      originalSrc: '',
+      loading: false,
+      error: '',
+      width: 0,
+      height: 0,
     }
   },
   methods: {
     setImg(count) {
       count = this.pages[count] ? count : 0
-      this.imgSrc = 'https://blog.wjghj.cn/_statics/images/placeholder.svg'
-      const url = `https://pixiv.wjghj.cn${this.pages[count].urls.original}`
+      const item = this.pages[count]
+
+      this.error = ''
+      this.loading = true
+      this.width = item.width
+      this.height = item.height
+
+      this.originalSrc = item.urls.original
+      const url = `https://pixiv.js.org${item.urls.regular}`
+
       const img = new Image()
       img.src = url
       img.onload = () => {
         this.imgSrc = url
+        this.loading = false
+      }
+      img.onerror = (err) => {
+        console.warn('Image load error', err)
+        this.error = '坏耶，图片加载失败！'
+        this.loading = false
       }
     },
     prevImg() {
@@ -59,6 +85,10 @@ export default defineComponent({
 <style scoped lang="sass">
 .gallery
   text-align: center
+
+.tips
+  font-size: small
+  font-style: italic
 
 .picBig
   max-width: 50vw

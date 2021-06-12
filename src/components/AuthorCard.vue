@@ -5,8 +5,8 @@
       img(:src="API + user.imageBig" alt="")
   .right
     h4: strong
-      router-link(:to="'/users/' + user.userId") {{ user.userId }}
-    p.description {{ user.userId }}
+      router-link(:to="'/users/' + user.name") {{ user.name }}
+    p.description {{ user.comment }}
 </template>
 
 <script lang="ts">
@@ -16,7 +16,7 @@ export default defineComponent({
   props: ['user'],
   data() {
     return {
-      API: 'https://pixiv.wjghj.cn',
+      API: 'https://pixiv.js.org',
     }
   },
 })
@@ -36,4 +36,5 @@ export default defineComponent({
   img
     border-radius: 50%
     width: 80px
+    height: 80px
 </style>

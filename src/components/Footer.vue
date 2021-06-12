@@ -3,8 +3,8 @@ footer.globalFooter
   p
     | &copy; Copyright {{ yearStr }}
     |
-    a(href="https://github.com/Wjghj-Project/pixiv-now" target="_blank").
-      Wjghj-Project/pixiv-now
+    a(href="https://github.com/PixivNow/PixivNow" target="_blank").
+      PixivNow
 </template>
 
 <script lang="ts">
@@ -27,6 +27,7 @@ export default defineComponent({
   font-size: 1rem
   color: #fff
 
-  > a
+  a
     color: #fff
+    text-decoration: underline
 </style>

@@ -1,6 +1,6 @@
 # Pixiv Now
 
-https://pixiv.wjghj.cn/
+https://pixiv.js.org
 
 Pixiv Service Proxy.
 

@@ -1,8 +1,9 @@
 <template lang="pug">
-h1 View artwork!
+h1 输入作品 ID 查看！
 .searchBox
   input(v-model="artId", type="number")
   button(@click="gotoArt") 查看
+p (我不知道怎么让内容撑满屏幕，太丑了……)
 </template>
 
 <script lang="ts">

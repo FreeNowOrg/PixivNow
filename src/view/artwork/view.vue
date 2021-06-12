@@ -1,48 +1,54 @@
-<template>
-  <div class="navbar">
-    <router-link to="/artworks">← Back</router-link>
-  </div>
-  <h1>
-    {{ loading ? 'Loading artwork #' + $route.params.id : illust.illustTitle }}
-  </h1>
-  <section class="loading" v-if="loading">
-    <img src="https://blog.wjghj.cn/_statics/images/placeholder.svg" alt="" />
-  </section>
-  <section class="illust-container" v-if="!error && !loading">
-    <gallery :pages="illust.pages" />
-    <div class="">
-      <h2>作者</h2>
-      <author-card :user="user" />
-    </div>
-    <div class="description" v-if="illust.description">
-      <h2>简介</h2>
-      <p class="card" v-html="illust.description"></p>
-    </div>
-    <div class="more">
-      <h2>原图</h2>
-      <p class="card">
-        <a
-          :href="'https://www.pixiv.net/artworks/' + $route.params.id"
-          target="_blank"
-          rel="noopener noreferrer"
-          >在 Pixiv 上查看</a
-        >
-      </p>
-    </div>
-  </section>
-  <section class="error" v-if="error">
-    <error-page title="出大问题" :description="'图片加载失败：' + error" />
-  </section>
-  <div class="navbar">
-    <router-link to="/artworks">← Back</router-link>
-  </div>
+<template lang="pug">
+.navbar
+  router-link(to="/artworks") ← Back
+
+h1 {{ loading ? '正在加载 #' + $route.params.id : illust.illustTitle }}
+
+//- Loading
+section.loading(v-if="loading")
+  placeholder
+
+//- Done
+section.illust-container(v-if="!error && !loading")
+  gallery(:pages="illust.pages" )
+  .tags
+    art-tag(:key="_" v-for="(item, _) in illust.tags.tags" :tag="item.tag")
+  
+  .author
+    h2 作者
+    author-card(:user="user" )
+  
+  card.description(title="简介" class="" v-if="illust.description")
+    p(v-html="illust.description")
+  
+  card.more(title="关于")
+    p
+      strong 发布于：
+      | {{ illust.createDate }}
+    p
+      a(
+        :href="'https://www.pixiv.net/artworks/' + $route.params.id"
+        target="_blank"
+        rel="noopener noreferrer"
+      ) 在 Pixiv 上查看
+
+//- Error
+section.error(v-if="error")
+  error-page(title="出大问题" :description="'图片加载失败：' + error")
+
+.navbar
+  router-link(to="/artworks") ← Back
 </template>
 
 <script lang="ts">
 import axios from 'axios'
-import Gallery from '../../components/Gallery.vue'
+
 import AuthorCard from '../../components/AuthorCard.vue'
+import ArtTag from '../../components/ArtTag.vue'
+import Card from '../../components/Card.vue'
 import ErrorPage from '../../components/ErrorPage.vue'
+import Gallery from '../../components/Gallery.vue'
+import Placeholder from '../../components/Placeholder.vue'
 
 export default {
   data() {
@@ -55,8 +61,11 @@ export default {
   },
   components: {
     AuthorCard,
-    Gallery,
+    ArtTag,
+    Card,
     ErrorPage,
+    Gallery,
+    Placeholder,
   },
   methods: {
     async init() {
@@ -64,9 +73,10 @@ export default {
       try {
         data = (
           await axios.get(
-            `https://pixiv.wjghj.cn/api/illust/${this.$route.params.id}`
+            `https://pixiv.js.org/api/illust/${this.$route.params.id}`
           )
         ).data
+        console.log('illust', this.$route.params.id, data)
       } catch (err) {
         this.loading = false
         this.error = err.message
@@ -80,7 +90,7 @@ export default {
     async getUser(userId: number) {
       let data
       try {
-        data = (await axios.get(`https://pixiv.wjghj.cn/api/user/${userId}`))
+        data = (await axios.get(`https://pixiv.js.org/api/user/${userId}`))
           .data
       } catch (err) {
         return
@@ -95,17 +105,14 @@ export default {
 }
 </script>
 
-<style scoped>
-.loading {
-  text-align: center;
-}
+<style scoped lang="sass">
+.loading
+  text-align: center
+
 h1,
-h2 {
-  text-align: center;
-}
-.card {
-  box-shadow: 0 0 4px #888;
-  border-radius: 4px;
-  padding: 1rem;
-}
+h2
+  text-align: center
+
+.tags
+  margin: 1rem 0
 </style>

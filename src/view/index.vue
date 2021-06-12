@@ -1,29 +1,25 @@
-<template>
-  <section class="home">
-    <div class="title">
-      <span class="">PixivNow</span>
-    </div>
-    <p class="description">Pixiv Service Proxy</p>
-    <p>
-      <ruby>前端在做了<rt>咕咕咕</rt></ruby>
-    </p>
-    <p>
-      <router-link to="/artworks">Artworks</router-link>
-      ·
-      <a href="https://github.com/Wjghj-Project/pixiv-now" target="_blank"
-        >Documentation</a
-      >
-    </p>
-  </section>
+<template lang="pug">
+.home
+  .title
+    span PixivNow
+  p.description Pixiv Service Proxy
+  search-box(class="mainpage")
+  p
+    ruby 前端在做了
+      rt 咕咕咕
+  p
+    a(href="https://github.com/Wjghj-Project/pixiv-now", target="_blank") API Documentation
 </template>
 
 <script lang="ts">
+import SearchBox from '../components/SearchBox.vue'
+
 export default {
-  setup() {
+  components: {
+    SearchBox,
+  },
+  mounted() {
     document.title = 'PixivNow'
-    return {
-      name: 'view-index',
-    }
   },
 }
 </script>

@@ -31,6 +31,13 @@ router.addRoute({
   component: () => import('./view/users.vue'),
 })
 router.addRoute({
+  path: '/search/:keyword',
+  name: 'search',
+  component: () => import('./view/search.vue'),
+})
+
+// 404
+router.addRoute({
   path: '/:pathMatch(.*)*',
   name: 'NotFound',
   component: () => import('./view/404.vue'),

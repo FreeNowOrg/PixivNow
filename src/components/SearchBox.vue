@@ -1,7 +1,6 @@
 <template lang="pug">
 .searchBox
-  input(v-model="keyword", type="text", placeholder="搜索插画")
-  button(@click="gotoArt") 搜索
+  input(v-model="keyword", @keyup.enter="makeSearch", placeholder="搜索插画")
 </template>
 
 <script lang="ts">
@@ -15,7 +14,7 @@ export default defineComponent({
     }
   },
   methods: {
-    gotoArt() {
+    makeSearch() {
       if (!this.keyword) {
         return alert('作品 ID 是正整数~')
       }
@@ -38,12 +37,12 @@ export default defineComponent({
     border: 1px solid #888
     border-radius: 4px
     outline: none
-    padding: 0.12rem 0.2rem
+    padding: 0.2rem 0.6em
     color: #444
     height: 2rem
-    background-color: rgb(239, 239, 239)
+    background-color: rgb(245, 245, 245)
     width: 10rem
-    transition: width 0.12s ease-in-out
+    transition: all 0.12s ease-in-out
 
     &:focus
       background-color: rgb(255, 255, 255)
@@ -58,4 +57,10 @@ export default defineComponent({
     color: #fff
     display: block
     margin-left: 1rem
+
+  &.mainpage
+    input
+      width: 100%
+      height: 3rem
+      font-size: 1.4rem
 </style>

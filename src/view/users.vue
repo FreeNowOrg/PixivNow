@@ -1,6 +1,6 @@
-<template>
-  <h1>Users</h1>
-  <div>{{ msg }}</div>
+<template lang="pug">
+h1 User \#{{ $route.params.id }}
+p 这是 {{ $route.params.id }} 的用户页。(<s>敷衍</s>)
 </template>
 
 <script lang="ts">
