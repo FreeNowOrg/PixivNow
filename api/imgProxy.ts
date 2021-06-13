@@ -22,7 +22,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       (err) => {
         return res
           .status(err?.response?.status || 503)
-          .send(err?.response || err)
+          .send(err?.response?.data || err)
       }
     )
 }
