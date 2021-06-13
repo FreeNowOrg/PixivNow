@@ -26,7 +26,11 @@ h2
   text-align: center
 
 .inner
-  box-shadow: 0 0 4px var(--theme-box-shadow-color)
+  box-shadow: var(--theme-box-shadow)
   border-radius: 4px
   padding: 1rem
+  transition: box-shadow .24s ease-in-out
+
+  &:hover
+    box-shadow: var(--theme-box-shadow-hover)
 </style>

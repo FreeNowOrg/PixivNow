@@ -1,18 +1,21 @@
 <template lang="pug">
-.authorCard
-  .left
-    router-link(:to="'/users/' + user.userId")
-      img(:src="API + user.imageBig" alt="")
-  .right
-    h4: strong
-      router-link(:to="'/users/' + user.userId") {{ user.name }}
-    p.description {{ user.comment }}
+card
+  .authorCard
+    .left
+      router-link(:to="'/users/' + user.userId")
+        img(:src="API + user.imageBig" alt="")
+    .right
+      h4: strong
+        router-link(:to="'/users/' + user.userId") {{ user.name }}
+      p.description {{ user.comment }}
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Card from './Card.vue'
 
 export default defineComponent({
+  components: { Card },
   props: ['user'],
   data() {
     return {
@@ -24,9 +27,6 @@ export default defineComponent({
 
 <style scoped lang="sass">
 .authorCard
-  box-shadow: 0 0 4px var(--theme-box-shadow-color)
-  border-radius: 4px
-  padding: 1rem
   display: flex
   align-items: center
 

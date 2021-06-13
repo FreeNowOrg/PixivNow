@@ -32,12 +32,16 @@ h3
 
 .illustCard
   display: inline-block
-  background-color: var(--theme-background-color)
   box-shadow: 0 0 4px #ccc
   margin: 1rem
   padding: .4rem
   width: 200px
-  // max-height: 60vh
+  background-color: var(--theme-box-shadow)
+  border-radius: 4px
+  transition: all .24s ease-in-out
+
+  &:hover
+    box-shadow: var(--theme-box-shadow-hover)
 
 .top
   img

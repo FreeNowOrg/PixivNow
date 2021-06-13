@@ -95,10 +95,12 @@ export default defineComponent({
   max-height: 75vh
   width: auto
   height: auto
-  transition: box-shadow 0.4s ease-in-out
+  border-radius: 4px
+  box-shadow: var(--theme-box-shadow)
+  transition: box-shadow 0.24s ease-in-out
 
   &:hover
-    box-shadow: 0 0 8px var(--theme-box-shadow-color)
+    box-shadow: var(--theme-box-shadow-hover)
 
 .pagenator
   margin-top: 1rem
