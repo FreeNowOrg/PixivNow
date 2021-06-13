@@ -50,12 +50,12 @@ export default defineComponent({
     color: #444
     height: 2rem
     background-color: rgb(245, 245, 245)
-    width: 10rem
+    width: 25vw
     transition: all 0.12s ease-in-out
 
     &:focus
       background-color: var(--theme-background-color)
-      width: 20rem
+      width: calc(25vw + 10em)
 
   button
     padding: 0.2rem 0.4rem

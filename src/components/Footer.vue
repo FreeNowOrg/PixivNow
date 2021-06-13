@@ -33,6 +33,6 @@ export default defineComponent({
   z-index: 10
 
   a
-    color: var(--theme-accent-link-color)
-    text-decoration: underline
+    --color: var(--theme-accent-link-color)
+    font-weight: 600
 </style>

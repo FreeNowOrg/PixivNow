@@ -1,5 +1,5 @@
 <template lang="pug">
-header.globalNavbar
+header.globalNavbar(:class="{ notAtTop, isHide }")
   .logoArea
     .logo: span.ph
       .left Pixiv
@@ -23,7 +23,32 @@ export default defineComponent({
   components: {
     SearchBox,
   },
-  setup() {},
+  data() {
+    return {
+      notAtTop: false,
+      isHide: false,
+    }
+  },
+  mounted() {
+    let scrollTop = document.documentElement.scrollTop
+    window.addEventListener('scroll', () => {
+      const newTop = document.documentElement.scrollTop
+
+      if (scrollTop > 400) {
+        this.isHide = newTop - scrollTop > 0
+      } else {
+        this.isHide = false
+      }
+
+      scrollTop = newTop
+
+      if (newTop > 0) {
+        this.notAtTop = true
+      } else {
+        this.notAtTop = false
+      }
+    })
+  },
 })
 </script>
 
@@ -31,7 +56,7 @@ export default defineComponent({
 %logo-link-shared
   margin: 0 0.4rem
   text-decoration: none
-  color: var(--theme-background-color)
+  --color: var(--theme-accent-link-color)
 
 %ph-left-right-shared
   display: inline-block
@@ -45,11 +70,18 @@ export default defineComponent({
   display: flex
   overflow-y: auto
   align-items: center
-  position: absolute
+  position: fixed
   width: 100%
   box-sizing: border-box
   top: 0
   z-index: 10
+  transition: all .8s ease
+
+  &.notAtTop
+    box-shadow: 0 2px 4px var(--theme-box-shadow-color)
+
+  &.isHide
+    top: -80px
 
 .logoArea
   // word-break:
