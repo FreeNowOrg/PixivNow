@@ -34,7 +34,7 @@ export default defineComponent({
     window.addEventListener('scroll', () => {
       const newTop = document.documentElement.scrollTop
 
-      if (scrollTop > 400) {
+      if (scrollTop > 600) {
         this.isHide = newTop - scrollTop > 0
       } else {
         this.isHide = false
@@ -73,6 +73,7 @@ export default defineComponent({
   position: fixed
   width: 100%
   box-sizing: border-box
+  white-space: nowrap
   top: 0
   z-index: 10
   transition: all .8s ease

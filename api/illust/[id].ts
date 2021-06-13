@@ -1,11 +1,12 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import { request } from '../utils'
+import { makeArtList, request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const id = req.query.id as string
   if (!/^\d+$/g.test(id)) {
     return res.status(400).send({
-      error: 'Invalid id',
+      error: true,
+      message: 'Invalid Artwork ID',
     })
   }
 
@@ -18,6 +19,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     try {
       if (!req.query.full) delete details.data.noLoginData
       delete details.data.zoneConfig
+
+      details.data.userIllusts = makeArtList(details.data.userIllusts)
     } catch (e) {}
 
     return res.send({ ...details.data, pages: pages.data })

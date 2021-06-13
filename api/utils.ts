@@ -1,5 +1,14 @@
 import axios, { Method } from 'axios'
 
+function makeArtList(obj: any) {
+  const list = []
+  for (let item in obj) {
+    list.push(obj[item])
+  }
+  list.sort((a, b) => b.id - a.d)
+  return list
+}
+
 function replaceUrl(obj: any) {
   for (let key in obj) {
     if (
@@ -40,4 +49,4 @@ async function request(
   }
 }
 
-export { request, replaceUrl }
+export { makeArtList, request, replaceUrl }

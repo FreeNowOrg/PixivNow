@@ -2,7 +2,7 @@
 .gallery
   placeholder.picBig(v-if="loading" :width="width" :height="height")
   .imageArea
-    a(:href="originalSrc" target="_blank" title="点击下载原图")
+    a(:href="API_BASE + originalSrc" target="_blank" title="点击下载原图")
       img.picBig(:src="imgSrc" alt="" v-if="!loading")
     .tips (这是预览图，点击下载原图)
   .error(v-if="error") {{ error }}
@@ -15,6 +15,8 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { API_BASE } from '../config'
+
 import placeholder from './Placeholder.vue'
 
 export default defineComponent({
@@ -22,6 +24,7 @@ export default defineComponent({
   props: ['pages'],
   data() {
     return {
+      API_BASE,
       imgCount: 0,
       imgCountInput: 1,
       imgSrc: '',
@@ -43,7 +46,7 @@ export default defineComponent({
       this.height = item.height
 
       this.originalSrc = item.urls.original
-      const url = `https://pixiv.js.org${item.urls.regular}`
+      const url = `${API_BASE}${item.urls.regular}`
 
       const img = new Image()
       img.src = url
@@ -101,6 +104,10 @@ export default defineComponent({
 
   &:hover
     box-shadow: var(--theme-box-shadow-hover)
+
+@media screen and(max-width: 800px)
+  .picBig
+    max-width: 100%
 
 .pagenator
   margin-top: 1rem

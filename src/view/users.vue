@@ -13,11 +13,11 @@ section.error(v-if="error")
 section.user(v-if="!loading && !error")
   .userInfo
     .bgArea
-      .bgContainer(:style="{backgroundImage: 'url(' + API + user?.background?.url + ')'}")
+      .bgContainer(:style="{backgroundImage: 'url(' + API_BASE + user?.background?.url + ')'}")
         span(v-if="!user.background") 用户未设置封面~
     .avatarArea
-      a(:href="API + user.imageBig")
-        img(:src="API + user.imageBig")
+      a(:href="API_BASE + user.imageBig" title="查看头像")
+        img(:src="API_BASE + user.imageBig")
     .infoArea
       .username {{ user.name }}
       .following
@@ -28,23 +28,26 @@ section.user(v-if="!loading && !error")
       .birthday {{ user.birthDay.name }}
       .region {{ user.region.name }}
       .webpage(v-if="user.webpage")
-        a(:href="user.webpage" target="_blank") {{ user.webpage }}
+        a(
+          :href="user.webpage"
+          target="_blank"
+          rel="noopener noreferrer"
+          ) {{ user.webpage }}
       .comment {{ user.comment }}
       .more
-        a(@click="userMore") 查看更多
+        a(@click="userMore" href="javascript:;") 查看更多
   
   .userArtworks
-    h2 插画
-    artworks-list(:list="user.illusts")
-    h2 漫画
-    artworks-list(:list="user.manga")
+    h2(v-if="user.illusts.length") 插画
+    artworks-list.inline(:list="user.illusts")
+    h2(v-if="user.manga.length") 漫画
+    artworks-list.inline(:list="user.manga")
 
 </template>
 
 <script lang="ts">
 import axios from 'axios'
-import { useRoute } from 'vue-router'
-const API = 'https://pixiv.js.org'
+import { API_BASE } from '../config'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
@@ -58,7 +61,7 @@ export default {
   },
   data() {
     return {
-      API,
+      API_BASE,
       loading: true,
       listLoading: true,
       error: '',
@@ -69,7 +72,7 @@ export default {
     init() {
       this.loading = true
       axios
-        .get(`${API}/api/user/${this.$route.params.id}`, {
+        .get(`${API_BASE}/api/user/${this.$route.params.id}`, {
           params: { lang: 'zh' },
         })
         .then(
@@ -79,7 +82,7 @@ export default {
           },
           (err) => {
             console.warn('user', err.response)
-            this.error = err.message
+            this.error = err?.response?.data?.message || err.message
           }
         )
         .finally(() => {
@@ -110,11 +113,16 @@ export default {
     .bgContainer
       position: relative
       width: 100%
-      height: 260px
+      height: 45vh
       background-color: #efefef
-      background-position: center
+      background-position: center top
       background-repeat: no-repeat
       background-size: 100%
+      background-attachment: fixed
+
+      @media screen and(max-width: 800px)
+        &
+          background-size: auto 55vh
 
       > span
         user-select: none
@@ -126,8 +134,9 @@ export default {
         transform: translateX(-50%) translateY(-50%)
 
   .infoArea
-    padding-left: calc(2rem + 80px + 2rem)
+    padding-left: calc(2rem + 100px + 2rem)
     padding-top: 1rem
+    padding-right: 1rem
 
     > div
       margin: 0.4rem auto
@@ -138,14 +147,16 @@ export default {
 
   .avatarArea
     position: absolute
-    top: 220px
+    top: calc(45vh - 50px)
     left: 2rem
     // left: 50%
     // transform: translateX(-50%)
 
     img
-      width: 80px
-      height: auto
+      box-sizing: border-box
+      width: 100px
+      height: 100px
       border-radius: 50%
-      box-shadow: 0 0 0 5px #fff
+      border: 4px solid #fff
+      box-shadow: 0 4px 8px #efefef
 </style>

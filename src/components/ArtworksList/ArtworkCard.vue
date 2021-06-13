@@ -4,16 +4,16 @@
     router-link(:to="'/artworks/' + illust.id")
       img(:src="'https://pixiv.js.org' + illust.url" :alt="illust.alt")
   .bottom
-    h3.title
+    h3.title(:title="illust.title")
       router-link(:to="'/artworks/' + illust.id") {{ illust.title }}
-    .author 
+    .author(:title="illust.userName")
       router-link(:to="'/users/'+ illust.userId") @{{ illust.userName }}
     .tags
       router-link.tag(v-for="tagName in illust.tags", :to="'/search/' + tagName") \#{{ tagName }}
 
 .illustCard(v-if="illust.isAdContainer")
   .top
-    div(:style="{width: '200px', height: '200px', backgroundColor: '#efefef'}")
+    div(:style="{width: '100%', height: '240px', backgroundColor: '#efefef'}")
   .bottom
     h3.title 广告
     .author @Pixiv
@@ -32,10 +32,13 @@ h3
 
 .illustCard
   display: inline-block
+  box-sizing: border-box
   box-shadow: 0 0 4px #ccc
   margin: 1rem
   padding: .4rem
-  width: 200px
+  min-width: 250px
+  max-width: 350px
+  width: 12.5vw
   background-color: var(--theme-box-shadow)
   border-radius: 4px
   transition: all .24s ease-in-out
@@ -48,14 +51,28 @@ h3
     width: 100%
 
 .bottom
-  overflow-x: auto
+  // display: flex
+  // max-height: 300px
+  // flex-wrap: wrap
+
+.title,
+.author
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+  width: 100%
+  padding-bottom: 2px
+
+  a
+    display: inline
 
 .author
   margin: .4rem 0
   font-style: italic
 
 .tags
-  // word-break: break-word
+  overflow: auto
+  max-height: 140px
 
   .tag
     display: inline-block

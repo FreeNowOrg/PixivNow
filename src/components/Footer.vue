@@ -3,12 +3,13 @@ footer.globalFooter
   p
     | &copy; Copyright {{ yearStr }}
     |
-    a(href="https://github.com/PixivNow/PixivNow" target="_blank").
+    a(:href="GITHUB_REPO" target="_blank").
       PixivNow
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { GITHUB_REPO } from '../config'
 
 export default defineComponent({
   name: 'comp-footer',
@@ -16,6 +17,7 @@ export default defineComponent({
     const year = new Date().getFullYear()
     return {
       yearStr: 2021 === year ? year : `(2021 - ${year})`,
+      GITHUB_REPO,
     }
   },
 })

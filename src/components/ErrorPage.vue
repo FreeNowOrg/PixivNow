@@ -11,17 +11,26 @@ section.error-page
 import { defineComponent } from 'vue'
 import SearchBox from './SearchBox.vue'
 
-function pick(list: any[]) {
-  return list[Math.floor(Math.random() * list.length)]
-}
 const msgList = [
+  // 正经向提示
+  '频繁遇到此问题？请通过关于里的联系方式联系我们！',
+  '您可以尝试刷新页面。',
   // 日常玩梗
   '这像装在游戏机盒子里的作业本一样没有人喜欢！',
   '↓↑↓↑↓↑↓↑↓↑↓↑↓↑↓↑↓↑↓↑↓↑↓↑↓↑↓↑',
+  '▁▂▃▄▅▆▇█▇▆▅▄▃▂▁▁▂▃▄▅▆▇█▇▆▅▄▃▂▁',
   '卧槽 ²³³³³³³ 6666666 厉害了23333 ²³³³³³³³³³³ 2333 6666 ²³³ 666 太流弊了！！',
-  '阿伟你又在点炒饭哦，休息一下吧，念个书好不好？',
+  '生命、宇宙以及任何事情的终极答案——42',
   '单击此处添加副标题',
-  // FF14骚话
+  // 杰哥不要梗
+  '阿伟你又在点炒饭哦，休息一下吧，念个书好不好？',
+  '死了啦，都你害的啦！',
+  // 音乐梗
+  '変わったああああああああああああああ', // 你比蔷薇更美丽
+  'だめだね、だめよだめなのよ——', // 像笨蛋一样
+  '壊れた 僕なんてさ、息を止めて', // unravel
+  'Groupons nous et demain. L’Internationale. Sera le genre humain.', // 国际歌
+  // FF14 骚话
   '这像闪耀登场释放天辉的白魔法师一样没有人喜欢！',
   '这像冰4火4一个慢动作的黑魔法师一样没有人喜欢！',
   '这像耗尽了了以太超流的学者一样没有人喜欢！',
@@ -34,6 +43,13 @@ const msgList = [
   '锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷',
   '烫烫烫烫烫烫烫烫烫烫烫烫烫烫烫',
   '程序员 酒吧 炒饭 炸了',
+  '谁点的炒饭？请取餐。',
+  // Destiny2 梗
+  '噶迪恩荡。',
+  '你的光能消散了。',
+  '神谕正在准备吟唱他们的叠句。',
+  // Cyberpunk2077 梗
+  '梆梆哔铛~梆梆哔铛梆！',
   // 音游梗
   '您有一个小姐。',
   '这像劲爆纵连一样没有人喜欢！',
@@ -49,7 +65,12 @@ export default defineComponent({
   },
   methods: {
     randomMsg() {
-      this.msg = pick(msgList)
+      const msg = msgList[Math.floor(Math.random() * msgList.length)]
+      if (msg === this.msg) {
+        this.randomMsg()
+      } else {
+        this.msg = msg
+      }
     },
   },
   created() {

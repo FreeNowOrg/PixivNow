@@ -1,6 +1,6 @@
 <template lang="pug">
 mixin repoLink
-  a(href="https://github.com/PixivNow/PixivNow" target="_blank") PixivNow/PixivNow
+  a(:href="GITHUB_REPO" target="_blank") PixivNow/PixivNow
 
 h1 关于我们
 section.intro
@@ -40,9 +40,15 @@ section.intro
 
 <script lang="ts">
 import Card from '../components/Card.vue'
+import { GITHUB_REPO } from '../config'
 
 export default {
   components: { Card },
+  data() {
+    return {
+      GITHUB_REPO,
+    }
+  },
   mounted() {
     document.title = 'About | PixivNow'
   },

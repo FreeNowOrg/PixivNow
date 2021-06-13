@@ -11,23 +11,24 @@ h1 搜索“{{ keyword }}”相关的作品 (第{{ p }}页)
 
 search-box(class="big" :style="{marginBottom: '1.2rem'}")
 
-//- Loading
-section(v-if="loading")
-  div(style={'text-align': 'center'})
-    placeholder
   
 //- Error
 section(v-if="error && !loading")
   error-page(title="出大问题", :description="error")
 
 //- Result
-section(v-if="!error && !loading")
+section(v-if="!error")
   +pagenator()
 
-  .resultArea
+  //- Loading
+  .loadingArea(v-if="loading")
+    div(style={'text-align': 'center'})
+      placeholder
+
+  .resultArea(v-if="!loading")
     artworks-list(:list="resultList")
 
-  .noMore(v-if="resultList.length < 60") 没有了，一滴都没有了……
+  .noMore(v-if="!loading && resultList.length < 60") 没有了，一滴都没有了……
 
   +pagenator()
 </template>
@@ -35,6 +36,7 @@ section(v-if="!error && !loading")
 <script lang="ts">
 import axios from 'axios'
 import { router } from '../router'
+import { API_BASE } from '../config'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
@@ -60,18 +62,19 @@ export default {
       document.title = `${this.keyword} (第${this.p}页) | Search | PixivNow`
 
       axios
-        .get(
-          `https://pixiv.js.org/api/search/${encodeURIComponent(
-            this.keyword
-          )}?p=${this.p}`
-        )
+        .get(`${API_BASE}/api/search/${encodeURIComponent(this.keyword)}`, {
+          params: {
+            p: this.p || 1,
+            mode: this.$route.query.mode || 'safe',
+          },
+        })
         .then(
           ({ data }) => {
             this.resultList = data?.illustManga?.data || []
             console.info(data?.illustManga?.data)
           },
           (err) => {
-            this.error = err.message
+            this.error = err?.response?.data?.message || err.message
           }
         )
         .finally(() => {
@@ -98,7 +101,11 @@ export default {
     p(val) {
       val = parseInt(val)
       if (isNaN(val) || val < 1) this.p = 1
-      router.push(`/search/${this.keyword}/${this.p}`)
+      router.push(
+        `/search/${this.keyword}/${this.p}${
+          this.$route.query.mode ? '?mode=' + this.$route.query.mode : ''
+        }`
+      )
     },
   },
   created() {
