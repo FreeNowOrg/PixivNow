@@ -42,19 +42,22 @@ export default {
 </script>
 
 <style scoped lang="sass">
-.searchBox
-  margin: 8rem auto
-
+.inputArea
   input
-    display: block
-    width: 100%
     box-sizing: border-box
     font-size: 1.4rem
     border: 1px solid var(--theme-border-color)
     border-radius: 4px
     outline: none
-    padding: 0.2rem 0.5rem
+    padding: 0.2em 0.6em
     color: #444
+    height: 3rem
+    background-color: whitesmoke
+    width: 100%
+    transition: all 0.12s ease-in-out
+
+    &:focus
+      background-color: var(--theme-background-color)
 
   button
     cursor: pointer
