@@ -13,7 +13,7 @@ section.error(v-if="error")
 section.user(v-if="!loading && !error")
   .userInfo
     .bgArea
-      .bgContainer(:style="{ background: 'url('+user.background+')', backgroundColor: '#efefef' }")
+      .bgContainer(:style="{backgroundImage: 'url(' + API + user.background.url + ')'}")
         span(v-if="!user.background") 用户未设置封面~
     .avatarArea
       a(:href="API + user.imageBig")
@@ -34,10 +34,10 @@ section.user(v-if="!loading && !error")
         a(@click="userMore") 查看更多
   
   .userArtworks
-    h2 插画 · 漫画
-    //- .loading
-    //-   placeholder(v-if="listLoading")
+    h2 插画
     artworks-list(:list="user.illusts")
+    h2 漫画
+    artworks-list(:list="user.manga")
 
 </template>
 
@@ -103,25 +103,31 @@ export default {
 
 .userInfo
   position: relative
+  margin: -1rem -1rem 1rem -1rem
+  // box-shadow: 0 4px 16px var(--theme-box-shadow-color)
 
-  .bgContainer
-    position: relative
-    width: 100%
-    height: 200px
-    background-position: center
-    background-repeat: no-repeat
+  .bgArea
+    .bgContainer
+      position: relative
+      width: 100%
+      height: 260px
+      background-color: #efefef
+      background-position: center
+      background-repeat: no-repeat
+      background-size: 100%
 
-    > span
-      user-select: none
-      color: #ccc
-      display: inline-block
-      position: absolute
-      left: 50%
-      top: 50%
-      transform: translateX(-50%) translateY(-50%)
+      > span
+        user-select: none
+        color: #ccc
+        display: inline-block
+        position: absolute
+        left: 50%
+        top: 50%
+        transform: translateX(-50%) translateY(-50%)
 
   .infoArea
     padding-left: calc(2rem + 80px + 2rem)
+    padding-top: 1rem
 
     > div
       margin: 0.4rem auto
@@ -132,7 +138,7 @@ export default {
 
   .avatarArea
     position: absolute
-    top: 160px
+    top: 220px
     left: 2rem
     // left: 50%
     // transform: translateX(-50%)
@@ -141,5 +147,5 @@ export default {
       width: 80px
       height: auto
       border-radius: 50%
-      box-shadow: 0 0 0 4px #fff
+      box-shadow: 0 0 0 6px #fff
 </style>
