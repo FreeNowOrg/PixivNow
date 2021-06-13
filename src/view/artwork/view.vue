@@ -1,7 +1,4 @@
 <template lang="pug">
-.navbar
-  router-link(to="/artworks") ← Back
-
 h1 {{ loading ? '正在加载 #' + $route.params.id : illust.illustTitle }}
 
 //- Loading
@@ -36,8 +33,8 @@ section.illust-container(v-if="!error && !loading")
 section.error(v-if="error")
   error-page(title="出大问题" :description="error.message")
 
-.navbar
-  router-link(to="/artworks") ← Back
+.breadCrumb
+  router-link(to="/artworks") ← 返回
 </template>
 
 <script lang="ts">
@@ -75,9 +72,9 @@ export default {
       try {
         data = (await axios.get(`${API}/api/illust/${this.$route.params.id}`))
           .data
-        console.log('illust', this.$route.params.id, data)
+        console.log('illust', `#${this.$route.params.id}`, data)
       } catch (err) {
-        console.warn('illust error', err.response)
+        console.warn('illust', `#${this.$route.params.id}`, err.response)
         this.loading = false
         this.error = err
         return
@@ -108,10 +105,16 @@ export default {
 .loading
   text-align: center
 
-h1,
-h2
-  text-align: center
-
 .tags
   margin: 1rem 0
+
+.breadCrumb
+  margin-top: 1rem
+
+  a
+    padding: 0.2rem
+    transition: background-color .4s ease-in-out
+
+    &:hover
+      background-color: var(--theme-tag-color)
 </style>

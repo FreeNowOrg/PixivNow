@@ -6,9 +6,11 @@ mixin pagenator()
     span.page {{ p }}
     button.next(@click="nextPage") 下一页
 
-search-box(class="mainpage")
 
 h1 搜索“{{ keyword }}”相关的作品 (第{{ p }}页)
+
+search-box(class="mainpage" :style="{marginBottom: '1.2rem'}")
+
 //- Loading
 section(v-if="loading")
   div(style={'text-align': 'center'})

@@ -20,6 +20,6 @@ export default defineComponent({
   display: inline-block
   margin: 2px
   padding: 2px 4px
-  background-color: #d6e4ff
+  background-color: var(--theme-tag-color)
   border-radius: 4px
 </style>

@@ -5,7 +5,7 @@
       img(:src="API + user.imageBig" alt="")
   .right
     h4: strong
-      router-link(:to="'/users/' + user.name") {{ user.name }}
+      router-link(:to="'/users/' + user.userId") {{ user.name }}
     p.description {{ user.comment }}
 </template>
 

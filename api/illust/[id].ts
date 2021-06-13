@@ -19,7 +19,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       delete details.data.zoneConfig
     } catch (e) {}
     return res.send({ ...details.data, pages: pages.data })
-  } catch ({ response }) {
-    return res.status(response.status || 503).send(response)
+  } catch (err) {
+    return res.status(err?.response?.status || 503).send(err?.response || err)
   }
 }

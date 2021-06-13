@@ -10,8 +10,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     ({ data }) => {
       res.status(200).send(data)
     },
-    ({ response }) => {
-      return res.status(response.status || 503).send(response)
+    (err) => {
+      return res.status(err?.response?.status || 503).send(err?.response || err)
     }
   )
 }
