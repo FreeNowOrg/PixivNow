@@ -23,9 +23,14 @@ export default defineComponent({
 <style scoped lang="sass">
 .globalFooter
   background-color: var(--theme-accent-color)
-  padding: 0.4rem
+  padding: 0.4rem 1rem
   font-size: 1rem
   color: #fff
+  position: absolute
+  width: 100%
+  box-sizing: border-box
+  bottom: 0
+  z-index: 10
 
   a
     color: #fff

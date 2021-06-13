@@ -6,11 +6,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  props: ['title'],
-  setup() {},
+  props: {
+    title: {
+      type: String,
+    },
+  },
+  data() {
+    return {}
+  },
+  // setup() {},
 })
 </script>
 

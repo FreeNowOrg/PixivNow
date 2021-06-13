@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { Method } from 'axios'
 
 function replaceUrl(obj: any) {
   for (let key in obj) {
@@ -14,16 +14,20 @@ function replaceUrl(obj: any) {
   return obj
 }
 
-async function request(path: string, params = {}) {
+async function request(
+  method: Method,
+  path: string,
+  params = {},
+  headers?: any
+) {
   const url = `https://www.pixiv.net/ajax${path}`
 
   try {
     const res = await axios.get(url, {
       params,
       headers: {
-        Referer: 'https://www.pixiv.net/',
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+        ...headers,
+        referer: 'https://www.pixiv.net/',
       },
     })
     res.data = replaceUrl(res.data?.body || res.data)

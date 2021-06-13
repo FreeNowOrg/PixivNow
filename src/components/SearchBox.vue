@@ -1,6 +1,6 @@
 <template lang="pug">
 .searchBox
-  input(v-model="keyword", @keyup.enter="makeSearch", placeholder="搜索插画")
+  input(v-model="keyword" @keyup.enter="makeSearch", placeholder="搜索插画")
 </template>
 
 <script lang="ts">
@@ -10,7 +10,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   data() {
     return {
-      keyword: '',
+      keyword: (this.$route.params.keyword as string) || '',
     }
   },
   methods: {
@@ -18,8 +18,17 @@ export default defineComponent({
       if (!this.keyword) {
         return alert('作品 ID 是正整数~')
       }
-      router.push(`/search/${encodeURIComponent(this.keyword)}`)
+      router.push(`/search/${encodeURIComponent(this.keyword)}/1`)
     },
+  },
+  created() {
+    this.$watch(
+      () => this.$route.params,
+      () =>
+        this.$route.params.keyword
+          ? (this.keyword = this.$route.params.keyword as string)
+          : null
+    )
   },
 })
 </script>

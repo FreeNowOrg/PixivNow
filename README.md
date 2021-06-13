@@ -32,7 +32,7 @@ _For communication and learning only._
 
 **All data & pictures from query:** &copy;Pixiv & Illusts' authors
 
-> Copyright 2021 Wjghj-Project/机智的小鱼君
+> Copyright 2021 PixivNow
 >
 > Licensed under the Apache License, Version 2.0 (the "License");<br>
 > you may not use this file except in compliance with the License.<br>

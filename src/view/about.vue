@@ -1,0 +1,52 @@
+<template lang="pug">
+mixin repoLink
+  a(href="https://github.com/PixivNow/PixivNow" target="_blank") PixivNow/PixivNow
+
+h1 关于我们
+section.intro
+  card(title="简介")
+    p
+      strong PixivNow
+      |  是一个 Pixiv 代理服务，旨在为某些无法直接访问 Pixiv 地区的 ACGN 爱好者提供一个欣赏 P 站插画的途径。
+
+  card(title="使用方法")
+    h3 访客
+    p 正常用，有手就行（
+    h3 开发者
+    p API 文档暂时懒得写……反正设置了 <code>access-control-allow-origin: *</code>，其他的自己慢慢试吧（
+
+  card(title="开销")
+    p
+      | 我们的技术栈全都是白嫖来的，目前没有任何经济开销，因此您在使用的时候完全不用有心理负担（
+
+  card(title="鸣谢")
+    p: em 以下排名不分先后
+    h3 组织
+    ul
+      li <strong>GitHub</strong> 提供了源码托管和版本管控服务
+      li <strong>Vercel</strong> 提供了页面托管和 serverless 计算服务
+      li <strong>JS.ORG</strong> 提供了域名服务
+    h3 个人
+    p 
+      | 感谢为 
+      +repoLink()
+      |  贡献内容的全部编辑者！
+
+  card(title="加入我们")
+    p
+      | 我们是开源项目，欢迎给我们点星星或者提交 PR 以及 issue：
+      +repoLink
+</template>
+
+<script lang="ts">
+import Card from '../components/Card.vue'
+
+export default {
+  components: { Card },
+  mounted() {
+    document.title = 'About | PixivNow'
+  },
+}
+</script>
+
+<style scoped></style>

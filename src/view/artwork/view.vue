@@ -50,6 +50,8 @@ import ErrorPage from '../../components/ErrorPage.vue'
 import Gallery from '../../components/Gallery.vue'
 import Placeholder from '../../components/Placeholder.vue'
 
+const API = 'https://pixiv.js.org'
+
 export default {
   data() {
     return {
@@ -71,15 +73,13 @@ export default {
     async init() {
       let data
       try {
-        data = (
-          await axios.get(
-            `https://pixiv.js.org/api/illust/${this.$route.params.id}`
-          )
-        ).data
+        data = (await axios.get(`${API}/api/illust/${this.$route.params.id}`))
+          .data
         console.log('illust', this.$route.params.id, data)
       } catch (err) {
+        console.warn('illust error', err.response)
         this.loading = false
-        this.error = err.message
+        this.error = err
         return
       }
       document.title = `${data.illustTitle} | Artwork | PixivNow`
@@ -90,8 +90,7 @@ export default {
     async getUser(userId: number) {
       let data
       try {
-        data = (await axios.get(`https://pixiv.js.org/api/user/${userId}`))
-          .data
+        data = (await axios.get(`${API}/api/user/${userId}`)).data
       } catch (err) {
         return
       }

@@ -15,6 +15,7 @@ html,
 body
   margin: 0
   padding: 0
+  position: relative
 
 #app
   font-family: Avenir, Helvetica, Arial, sans-serif
@@ -56,3 +57,28 @@ main
     &:hover::after
       visibility: visible
       transform: scaleX(1)
+
+  button 
+    display: inline-block
+    padding: 0.4rem 0.8rem
+    font-size: 1rem
+    border: none
+    border-radius: 4px
+    background-color: rgb(54, 151, 231)
+    color: #fff
+    cursor: pointer
+
+    &:hover
+      background-color: rgb(69, 162, 238)
+
+    &:focus
+      background-color: rgb(32, 125, 201)
+      box-shadow: 0 0 0 2px #fff inset, 0 0 0 2px rgb(32, 125, 201)
+
+    &:disabled
+      background-color: #ccc
+      cursor: not-allowed
+
+      &:focus
+        box-shadow: 0 0 0 2px #fff inset, 0 0 0 2px #ccc
+  

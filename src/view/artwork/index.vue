@@ -1,14 +1,25 @@
 <template lang="pug">
-h1 输入作品 ID 查看！
-.searchBox
-  input(v-model="artId", type="number")
-  button(@click="gotoArt") 查看
-p (我不知道怎么让内容撑满屏幕，太丑了……)
+h1 浏览作品
+
+section
+  h2 通过关键词查找
+  search-box(class="mainpage")
+
+section
+  h2 通过作品 ID 查看
+  .inputArea
+    input(v-model="artId" type="number" @keyup.enter="gotoArt")
+    //- button(@click="gotoArt") 查看
+
 </template>
 
 <script lang="ts">
 import { router } from '../../router'
+
+import SearchBox from '../../components/SearchBox.vue'
+
 export default {
+  components: { SearchBox },
   data() {
     return {
       artId: 89719747,
@@ -31,9 +42,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.searchBox {
-  margin: 8rem auto;
-
+.inputArea {
   input {
     display: block;
     width: 100%;

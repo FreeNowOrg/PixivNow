@@ -6,9 +6,10 @@ header.globalNavbar
       .right Now
   .mainLinksArea
     router-link(to="/") Home
-    .
-      ·
+    | ·
     router-link(to="/artworks") Artworks
+    | ·
+    router-link(to="/about") About
   .searchArea
     search-box
 </template>
@@ -44,6 +45,11 @@ export default defineComponent({
   display: flex
   overflow-y: auto
   align-items: center
+  position: absolute
+  width: 100%
+  box-sizing: border-box
+  top: 0
+  z-index: 10
 
 .logoArea
   // word-break:
@@ -69,6 +75,7 @@ export default defineComponent({
   border-radius: 4px
   padding: 0.2rem
   user-select: none
+  white-space: nowrap
 
   .left
     @extend %ph-left-right-shared

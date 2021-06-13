@@ -11,15 +11,15 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   try {
     const [details, pages] = await Promise.all([
-      request(`/illust/${id}`),
-      request(`/illust/${id}/pages`),
+      request('get', `/illust/${id}`, {}, req.headers),
+      request('get', `/illust/${id}/pages`, {}, req.headers),
     ])
     try {
       delete details.data.noLoginData
       delete details.data.zoneConfig
     } catch (e) {}
     return res.send({ ...details.data, pages: pages.data })
-  } catch (err) {
-    return res.status(503).send(err)
+  } catch ({ response }) {
+    return res.status(response.status || 503).send(response)
   }
 }
