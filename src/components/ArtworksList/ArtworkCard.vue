@@ -1,5 +1,5 @@
 <template lang="pug">
-.illustCard
+.illustCard(v-if="illust.id")
   .top
     router-link(:to="'/artworks/' + illust.id")
       img(:src="'https://pixiv.js.org' + illust.url" :alt="illust.alt")
@@ -10,6 +10,14 @@
       router-link(:to="'/users/'+ illust.userId") @{{ illust.userName }}
     .tags
       router-link.tag(v-for="tagName in illust.tags", :to="'/search/' + tagName") \#{{ tagName }}
+
+.illustCard(v-if="illust.isAdContainer")
+  .top
+    div(:style="{width: '200px', height: '200px', backgroundColor: '#efefef'}")
+  .bottom
+    h3.title 广告
+    .author @Pixiv
+    div 这里是 Pixiv 源站上的广告位，我们才不帮他们显示广告呢（笑
 </template>
 
 <script lang="ts">

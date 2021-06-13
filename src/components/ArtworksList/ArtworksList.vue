@@ -1,6 +1,6 @@
 <template lang="pug">
 ul.artworksList
-  artwork-card(v-for="item in list", :illust="item")
+  artwork-card(v-for="item in list" :illust="item")
 </template>
 
 <script lang="ts">
