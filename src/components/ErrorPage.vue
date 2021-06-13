@@ -62,7 +62,7 @@ export default defineComponent({
 
   > span
     box-shadow: 0 -0.5em 0 rgb(54, 151, 231) inset
-    text-shadow: 2px 2px #fff
+    text-shadow: 2px 2px var(--theme-text-shadow-color)
     padding: 0 0.4em
 
 .description

@@ -72,10 +72,10 @@ export default defineComponent({
 
   .left
     @extend %ph-left-right-shared
-    color: var(--theme-background-color)
+    color: var(--theme-accent-link-color)
 
   .right
     @extend %ph-left-right-shared
-    background-color: rgb(54, 151, 231)
+    background-color: var(--theme-accent-color)
     border-radius: 2px
 </style>

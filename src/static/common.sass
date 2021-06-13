@@ -6,10 +6,14 @@
 :root
   font-size: 16px
   --theme-accent-color: #3697e7
-  --theme-accent-link-color: #3f51b5
+  --theme-accent-color--rgb: rgb(54, 151, 231)
+  --theme-accent-link-color: #fff
+  --theme-link-color: #3f51b5
+  --theme-link-color--rgb: rgb(63, 81, 181)
   --theme-background-color: #fff
   --theme-text-shadow-color: #fff
   --theme-box-shadow-color: #888
+  --theme-border-color: #888
 
 html,
 body
@@ -37,7 +41,7 @@ h2
 
 main
   a
-    color: var(--theme-accent-link-color)
+    color: var(--theme-link-color)
     text-decoration: none
     position: relative
 
@@ -48,7 +52,7 @@ main
       height: 0.1em
       bottom: -0.1em
       left: 0
-      background-color: var(--theme-accent-link-color)
+      background-color: var(--theme-background-color)
       visibility: hidden
       transform: scaleX(0)
       transition: 0.4s ease-in-out

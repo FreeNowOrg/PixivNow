@@ -25,9 +25,9 @@ export default defineComponent({
   background-color: var(--theme-accent-color)
   padding: 0.4rem
   font-size: 1rem
-  color: #fff
+  color: var(--theme-accent-link-color)
 
   a
-    color: #fff
+    color: var(--theme-accent-link-color)
     text-decoration: underline
 </style>

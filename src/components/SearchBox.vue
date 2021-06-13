@@ -34,7 +34,7 @@ export default defineComponent({
     // width: 100%;
     box-sizing: border-box
     font-size: 0.8rem
-    border: 1px solid #888
+    border: 1px solid var(--theme-border-color)
     border-radius: 4px
     outline: none
     padding: 0.2rem 0.6em
@@ -45,7 +45,7 @@ export default defineComponent({
     transition: all 0.12s ease-in-out
 
     &:focus
-      background-color: rgb(255, 255, 255)
+      background-color: var(--theme-background-color)
       width: 20rem
 
   button
