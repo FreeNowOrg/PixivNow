@@ -24,7 +24,7 @@ export default defineComponent({
 
 <style scoped lang="sass">
 .authorCard
-  box-shadow: 0 0 4px #888
+  box-shadow: 0 0 4px var(--theme-box-shadow-color)
   border-radius: 4px
   padding: 1rem
   display: flex

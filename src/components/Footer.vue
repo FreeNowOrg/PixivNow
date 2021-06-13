@@ -25,7 +25,7 @@ export default defineComponent({
   background-color: var(--theme-accent-color)
   padding: 0.4rem 1rem
   font-size: 1rem
-  color: #fff
+  color: var(--theme-accent-link-color)
   position: absolute
   width: 100%
   box-sizing: border-box
@@ -33,6 +33,6 @@ export default defineComponent({
   z-index: 10
 
   a
-    color: #fff
+    color: var(--theme-accent-link-color)
     text-decoration: underline
 </style>

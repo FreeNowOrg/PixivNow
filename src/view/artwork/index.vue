@@ -41,29 +41,29 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.inputArea {
-  input {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 1.4rem;
-    border: 1px solid #888;
-    border-radius: 4px;
-    outline: none;
-    padding: 0.2rem 0.5rem;
-    color: #444;
-  }
+<style scoped lang="sass">
+.searchBox
+  margin: 8rem auto
 
-  button {
-    padding: 0.4rem 1.2rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 4px;
-    background-color: rgb(54, 151, 231);
-    color: #fff;
-    display: block;
-    margin: 1rem auto;
-  }
-}
+  input
+    display: block
+    width: 100%
+    box-sizing: border-box
+    font-size: 1.4rem
+    border: 1px solid var(--theme-border-color)
+    border-radius: 4px
+    outline: none
+    padding: 0.2rem 0.5rem
+    color: #444
+
+  button
+    cursor: pointer
+    padding: 0.4rem 1.2rem
+    font-size: 1rem
+    border: none
+    border-radius: 4px
+    background-color: var(--theme-accent-color)
+    color: var(--theme-accent-link-color)
+    display: block
+    margin: 1rem auto
 </style>

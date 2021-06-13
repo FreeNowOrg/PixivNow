@@ -24,7 +24,7 @@ h3
 
 .illustCard
   display: inline-block
-  background-color: #fff
+  background-color: var(--theme-background-color)
   box-shadow: 0 0 4px #ccc
   margin: 1rem
   padding: .4rem
