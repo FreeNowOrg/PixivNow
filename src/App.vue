@@ -40,7 +40,7 @@ main
   article
     z-index: 1
     min-height: 100vh
-    padding: 50px 1rem 100px 1rem
+    padding: 60px 1rem 100px 1rem
     box-sizing: border-box
     position: relative
 </style>
