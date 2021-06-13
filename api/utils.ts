@@ -23,7 +23,9 @@ async function request(
   const url = `https://www.pixiv.net/ajax${path}`
 
   try {
-    const res = await axios.get(url, {
+    const res = await axios({
+      url,
+      method,
       params,
       headers: {
         referer: 'https://www.pixiv.net/',

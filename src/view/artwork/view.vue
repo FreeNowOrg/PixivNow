@@ -34,7 +34,7 @@ section.illust-container(v-if="!error && !loading")
 
 //- Error
 section.error(v-if="error")
-  error-page(title="出大问题" :description="'图片加载失败：' + error")
+  error-page(title="出大问题" :description="error.message")
 
 .navbar
   router-link(to="/artworks") ← Back
