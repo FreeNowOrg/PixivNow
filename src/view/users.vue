@@ -2,8 +2,8 @@
 
 //- Loading
 section.loading(v-if="loading")
-  h1 {{ loading ? '正在读取用户 #' + $route.params.id : '“' + user.name + '”的空间' }}
   placeholder
+  p {{ loading ? '正在读取用户 #' + $route.params.id : '“' + user.name + '”的空间' }}
 
 //- Error
 section.error(v-if="error")
@@ -13,7 +13,7 @@ section.error(v-if="error")
 section.user(v-if="!loading && !error")
   .userInfo
     .bgArea
-      .bgContainer(:style="{backgroundImage: 'url(' + API + user.background.url + ')'}")
+      .bgContainer(:style="{backgroundImage: 'url(' + API + user?.background?.url + ')'}")
         span(v-if="!user.background") 用户未设置封面~
     .avatarArea
       a(:href="API + user.imageBig")
@@ -147,5 +147,5 @@ export default {
       width: 80px
       height: auto
       border-radius: 50%
-      box-shadow: 0 0 0 6px #fff
+      box-shadow: 0 0 0 5px #fff
 </style>
