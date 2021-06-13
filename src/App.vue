@@ -1,19 +1,24 @@
 <template lang="pug">
 Header(ref="globalHeader")
+
 main(:style="{ minHeight: mainHeight + 'px' }")
   article
     router-view
+
 Footer(ref="globalFooter")
+
+NProgress
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
+import NProgress from './components/NProgress.vue'
 
 export default defineComponent({
   name: 'App',
-  components: { Header, Footer },
+  components: { Header, Footer, NProgress },
   data() {
     return {
       mainHeight: 0,

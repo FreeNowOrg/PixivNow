@@ -1,6 +1,6 @@
 {
   "name": "pixiv-now",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "main": "index.js",
   "repository": "https://github.com/Wjghj-Project/pixiv-now.git",
@@ -15,11 +15,13 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "nprogress": "^0.2.0",
     "vue": "^3.0.4",
     "vue-router": "^4.0.8"
   },
   "devDependencies": {
     "@dragon-fish/bump": "^0.0.15",
+    "@types/nprogress": "^0.2.0",
     "@vercel/node": "^1.11.0",
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.4",
