@@ -3,7 +3,7 @@
   .title
     span PixivNow
   p.description Pixiv Service Proxy
-  search-box(class="mainpage")
+  search-box(class="big")
   p
     ruby 前端在做了
       rt 咕咕咕

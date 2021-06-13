@@ -1,5 +1,5 @@
 <template lang="pug">
-h1 {{ loading ? '正在加载 #' + $route.params.id : illust.illustTitle }}
+h1 {{ loading ? '正在加载作品 #' + $route.params.id : illust.illustTitle }}
 
 //- Loading
 section.loading(v-if="loading")

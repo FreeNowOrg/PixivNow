@@ -67,7 +67,7 @@ export default defineComponent({
     display: block
     margin-left: 1rem
 
-  &.mainpage
+  &.big
     input
       width: 100%
       height: 3rem

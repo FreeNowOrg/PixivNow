@@ -4,10 +4,13 @@ section.error-page
     span {{ title }}
   .description {{ description }}
   .random(@click="randomMsg") {{ msg }}
+  //- SearchBox(class="big" :style="{margin: '3rem'}")
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import SearchBox from './SearchBox.vue'
+
 function pick(list: any[]) {
   return list[Math.floor(Math.random() * list.length)]
 }
@@ -37,6 +40,7 @@ const msgList = [
 ]
 
 export default defineComponent({
+  components: { SearchBox },
   props: ['title', 'description'],
   data() {
     return {
@@ -57,7 +61,7 @@ export default defineComponent({
 
 <style scoped lang="sass">
 .error-page
-  margin: 10rem auto
+  margin: 20vh auto
   height: 100%
   text-align: center
   display: flex

@@ -9,17 +9,38 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     })
   }
 
-  try {
-    const { data } = await request(
-      'get',
-      `/user/${id}`,
-      { full: 1, ...req.query },
-      req.headers
-    )
-    return res.send(data)
-  } catch (err) {
-    return res
-      .status(err?.response?.status || 503)
-      .send(err?.response?.data || err)
-  }
+  Promise.all([
+    request('get', `/user/${id}`, { full: 1, ...req.query }, req.headers),
+    request('get', `/user/${id}/profile/top`, { ...req.query }, req.headers),
+  ]).then(
+    ([{ data: basic }, { data: more }]) => {
+      const { illusts, manga, novels } = more
+      const illList = [],
+        mangaList = []
+
+      for (let item in illusts) {
+        illList.push(illusts[item])
+      }
+      for (let item in manga) {
+        mangaList.push(manga[item])
+      }
+
+      const desc = (a, b) => b.id - a.d
+      illList.sort(desc)
+      mangaList.sort(desc)
+
+      const data = {
+        ...basic,
+        illusts: illList,
+        manga: mangaList,
+        novels,
+      }
+      res.send(data)
+    },
+    (err) => {
+      return res
+        .status(err?.response?.status || 503)
+        .send(err?.response?.data || err)
+    }
+  )
 }

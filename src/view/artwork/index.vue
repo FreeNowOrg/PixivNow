@@ -3,7 +3,7 @@ h1 浏览作品
 
 section
   h2 通过关键词查找
-  search-box(class="mainpage")
+  search-box(class="big")
 
 section
   h2 通过作品 ID 查看

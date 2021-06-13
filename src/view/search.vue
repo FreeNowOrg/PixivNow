@@ -9,7 +9,7 @@ mixin pagenator()
 
 h1 搜索“{{ keyword }}”相关的作品 (第{{ p }}页)
 
-search-box(class="mainpage" :style="{marginBottom: '1.2rem'}")
+search-box(class="big" :style="{marginBottom: '1.2rem'}")
 
 //- Loading
 section(v-if="loading")
@@ -57,7 +57,7 @@ export default {
 
       if (!this.keyword) return
 
-      document.title = `搜索“${this.keyword}” (第${this.p}页) | PixivNow`
+      document.title = `${this.keyword} (第${this.p}页) | Search | PixivNow`
 
       axios
         .get(
