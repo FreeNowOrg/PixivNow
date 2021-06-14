@@ -2,18 +2,24 @@
 .illustCard(v-if="illust.id")
   .top
     router-link(:to="'/artworks/' + illust.id")
-      img(:src="'https://pixiv.js.org' + illust.url" :alt="illust.alt")
+      .thumb
+        img(:src="'https://pixiv.js.org' + illust.url" alt="")
+      .pageCount 
+        fa(icon="images")
+        | {{ illust.pageCount }}
   .bottom
     h3.title(:title="illust.title")
       router-link(:to="'/artworks/' + illust.id") {{ illust.title }}
     .author(:title="illust.userName")
-      router-link(:to="'/users/'+ illust.userId") @{{ illust.userName }}
+      router-link(:to="'/users/'+ illust.userId")
+        img.avatar(:src="API_BASE + illust.profileImageUrl")
+        | {{ illust.userName }}
     .tags
       router-link.tag(v-for="tagName in illust.tags", :to="'/search/' + tagName") \#{{ tagName }}
 
 .illustCard(v-if="illust.isAdContainer")
   .top
-    div(:style="{width: '100%', height: '240px', backgroundColor: '#efefef'}")
+    div(:style="{width: '100%', paddingTop: '100%', backgroundColor: '#efefef'}")
   .bottom
     h3.title 广告
     .author @Pixiv
@@ -21,12 +27,20 @@
 </template>
 
 <script lang="ts">
+import { API_BASE } from '../../config'
+
 export default {
+  components: {},
+  data() {
+    return {
+      API_BASE,
+    }
+  },
   props: ['illust'],
 }
 </script>
 
-<style scoped lang="sass">
+<style lang="sass">
 h3
   margin-bottom: .4rem
 
@@ -47,8 +61,36 @@ h3
     box-shadow: var(--theme-box-shadow-hover)
 
 .top
-  img
+  position: relative
+
+  a
+    display: block
+
+  .thumb
+    position: relative
     width: 100%
+    height: 0
+    padding-top: 100%
+    animation: imgProgress 0.6s ease infinite alternate
+
+    img
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+
+  .pageCount
+    position: absolute
+    top: .4rem
+    right: .4rem
+    color: #fff
+    background-color: rgba(0, 0, 0, 0.6)
+    padding: .2rem .6rem
+    border-radius: 4px
+
+    [data-icon]
+      margin-right: .2rem
 
 .bottom
   // display: flex
@@ -64,7 +106,18 @@ h3
   padding-bottom: 2px
 
   a
-    display: inline
+    display: inline-flex
+    align-items: center
+
+    .avatar
+      display: inline-block
+      width: 2rem
+      height: 2rem
+      box-sizing: border-box
+      border: 2px solid #fff
+      border-radius: 50%
+      box-shadow: 0 0 4px #ccc
+      margin-right: .4rem
 
 .author
   margin: .4rem 0
@@ -80,4 +133,10 @@ h3
     padding: 2px 4px
     background-color: #d6e4ff
     border-radius: 4px
+
+@keyframes imgProgress
+  from
+    background-color: #f2f2f2
+  to
+    background-color: #e8e8e8
 </style>

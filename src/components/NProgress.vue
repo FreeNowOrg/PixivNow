@@ -27,9 +27,9 @@ export default defineComponent({
     })
 
     axios.interceptors.response.use(
-      (config) => {
+      (res) => {
         nprogress.done()
-        return config
+        return res
       },
       (err) => {
         nprogress.done()
