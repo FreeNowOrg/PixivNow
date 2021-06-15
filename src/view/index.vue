@@ -3,7 +3,7 @@
   .title
     span PixivNow
   p.description Pixiv Service Proxy
-  search-box(class="big")
+  search-box.big.search
   p
     ruby 前端在做了
       rt 咕咕咕
@@ -42,4 +42,7 @@ export default {
     box-shadow: 0 -0.5em 0 var(--theme-accent-color) inset
     text-shadow: 2px 2px var(--theme-text-shadow-color)
     padding: 0 0.4em
+
+.search
+  margin: 4rem 0
 </style>

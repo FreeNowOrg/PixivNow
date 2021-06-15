@@ -5,17 +5,21 @@ footer.globalFooter
     |
     a(:href="GITHUB_REPO" target="_blank").
       PixivNow
+    | 
+    em v{{ version }}
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { GITHUB_REPO } from '../config'
+import { version } from '../../package.json'
 
 export default defineComponent({
   name: 'comp-footer',
   setup() {
     const year = new Date().getFullYear()
     return {
+      version,
       yearStr: 2021 === year ? year : `(2021 - ${year})`,
       GITHUB_REPO,
     }
