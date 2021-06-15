@@ -1,5 +1,5 @@
 <template lang="pug">
-h1 {{ loading ? '正在加载作品 #' + $route.params.id : illust.illustTitle }}
+h1 {{ loading ? '正在读取作品 #' + $route.params.id : illust.illustTitle }}
 
 //- Loading
 section.loading(v-if="loading")
@@ -103,35 +103,35 @@ export default {
 
       this.loading = true
 
-      let data
-      try {
-        data = (
-          await axios.get(`${API_BASE}/api/illust/${this.$route.params.id}`, {
-            params: {
-              full: 1,
-            },
-          })
-        ).data
-        console.log('illust', `#${this.$route.params.id}`, data)
-      } catch (err) {
-        console.warn('illust', `#${this.$route.params.id}`, err.response)
-        this.loading = false
-        this.error = err?.response?.data?.message || err.message
-        return
-      }
-      document.title = `${data.illustTitle} | Artwork | PixivNow`
-      this.loading = false
-      this.illust = data
-      this.getUser(data.userId)
+      axios
+        .get(`${API_BASE}/api/illust/${this.$route.params.id}`, {
+          params: {
+            full: 1,
+          },
+        })
+        .then(
+          ({ data }) => {
+            document.title = `${data.illustTitle} | Artwork | PixivNow`
+            this.loading = false
+            this.illust = data
+            this.getUser(data.userId)
+          },
+          (err) => {
+            console.warn('illust fetch error', `#${this.$route.params.id}`, err)
+            this.loading = false
+            this.error = err?.response?.data?.message || err.message || 'HTTP 请求超时'
+          }
+        )
     },
     async getUser(userId: number) {
-      let data
-      try {
-        data = (await axios.get(`${API_BASE}/api/user/${userId}`)).data
-      } catch (err) {
-        return
-      }
-      this.user = data
+      axios.get(`${API_BASE}/api/user/${userId}`).then(
+        ({ data }) => {
+          this.user = data
+        },
+        (err) => {
+          console.warn('User fetch error', err)
+        }
+      )
     },
   },
   created() {

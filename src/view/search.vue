@@ -74,7 +74,7 @@ export default {
             console.info(data?.illustManga?.data)
           },
           (err) => {
-            this.error = err?.response?.data?.message || err.message
+            this.error = err?.response?.data?.message || err.message || 'HTTP 请求超时'
           }
         )
         .finally(() => {

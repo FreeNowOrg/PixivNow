@@ -97,6 +97,11 @@ h3
   // max-height: 300px
   // flex-wrap: wrap
 
+.title a
+  display: inline
+.author a
+  display: inline-flex
+
 .title,
 .author
   white-space: nowrap
@@ -106,8 +111,16 @@ h3
   padding-bottom: 2px
 
   a
-    display: inline-flex
     align-items: center
+
+    &.router-link-active
+      color: var(--theme-text-color)
+      font-weight: 600
+      font-style: normal
+      cursor: default
+
+      &::after
+        visibility: hidden
 
     .avatar
       display: inline-block
@@ -133,10 +146,4 @@ h3
     padding: 2px 4px
     background-color: #d6e4ff
     border-radius: 4px
-
-@keyframes imgProgress
-  from
-    background-color: #f2f2f2
-  to
-    background-color: #e8e8e8
 </style>

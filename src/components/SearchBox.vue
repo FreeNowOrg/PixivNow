@@ -16,7 +16,7 @@ export default defineComponent({
   methods: {
     makeSearch() {
       if (!this.keyword) {
-        return alert('作品 ID 是正整数~')
+        return
       }
       router.push(`/search/${encodeURIComponent(this.keyword)}/1`)
     },

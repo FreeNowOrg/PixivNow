@@ -10,6 +10,7 @@
   --theme-accent-link-color: #fff
   --theme-secondary-color: #e02080
   --theme-secondary-color--rgb: 224, 32, 128
+  --theme-text-color: #2c3e50
   --theme-link-color: #3f51b5
   --theme-link-color--rgb: 63, 81, 181
   --theme-background-color: #fff
@@ -31,8 +32,7 @@ body
   font-family: Avenir, Helvetica, Arial, sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
-  /* text-align: center */
-  color: #2c3e50
+  color: var(--theme-text-color)
 
 h1
   @include header-shared(2rem, rgb(54, 151, 231))
@@ -111,3 +111,9 @@ main
     border-radius: 2px
     padding: .1rem .2rem
     color: #e02080
+
+@keyframes imgProgress
+  from
+    background-color: lighten(#e8e8e8, 4%)
+  to
+    background-color: #e8e8e8

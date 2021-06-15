@@ -1,16 +1,19 @@
 <template lang="pug">
 .gallery
-  placeholder.picBig(v-if="loading" :width="width" :height="height")
+  //- placeholder.picBig(v-if="loading" :width="width" :height="height")
   .imageArea
     a(:href="API_BASE + originalSrc" target="_blank" title="点击下载原图")
       img.picBig(:src="imgSrc" alt="" v-if="!loading")
-    .tips (这是预览图，点击下载原图)
-  .error(v-if="error") {{ error }}
+      .imgProgress.picBig(v-if="loading" :style="{width: width + 'px', height: height + 'px'}") {{ error }}
+      .error.picBig(v-if="error" :style="{width, height}") {{ error }}
+    .tips {{ loading ? '(图片正在加载~)' : '(这是预览图，点击下载原图)' }}
   .pagenator
-    button(@click="prevImg") ←
+    button(@click="prevImg")
+      fa(icon="arrow-left")
     input(v-model="imgCountInput" type="number")
     span.pageNow / {{ pages.length }}
-    button(@click="nextImg") →
+    button(@click="nextImg")
+      fa(icon="arrow-right")
 </template>
 
 <script>
@@ -104,6 +107,9 @@ export default defineComponent({
 
   &:hover
     box-shadow: var(--theme-box-shadow-hover)
+
+.imgProgress
+  animation: imgProgress 0.6s ease infinite alternate
 
 @media screen and(max-width: 800px)
   .picBig
