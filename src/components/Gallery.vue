@@ -4,8 +4,8 @@
   .imageArea
     a(:href="API_BASE + originalSrc" target="_blank" title="点击下载原图")
       img.picBig(:src="imgSrc" alt="" v-if="!loading")
-      .imgProgress.picBig(v-if="loading" :style="{width: width + 'px', height: height + 'px'}") {{ error }}
-      .error.picBig(v-if="error" :style="{width, height}") {{ error }}
+      svg.imgProgress.picBig(v-if="loading" :width="width" :height="height")
+      .error.picBig(v-if="error" :width="width" :height="height") {{ error }}
     .tips {{ loading ? '(图片正在加载~)' : '(这是预览图，点击下载原图)' }}
   .pagenator
     button(@click="prevImg")
