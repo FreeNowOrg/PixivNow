@@ -7,8 +7,9 @@ section
 
 section
   h2 通过作品 ID 查看
-  .inputArea
+  .searchBox.big
     input(v-model="artId" type="number" @keyup.enter="gotoArt")
+    fa(icon="image")
     //- button(@click="gotoArt") 查看
 
 </template>

@@ -22,12 +22,18 @@ section.user(v-if="!loading && !error")
       .username {{ user.name }}
       .following
         strong {{ user.following }}
-        | 
-        | 已关注
-      .gender {{ user.gender.name }}
-      .birthday {{ user.birthDay.name }}
-      .region {{ user.region.name }}
+        | &nbsp;已关注
+      .gender(v-if="user.gender.name") 
+        fa(icon="venus-double")
+        | {{ user.gender.name }}
+      .birthday(v-if="user.birthDay.name")
+        fa(icon="birthday-cake")
+        | {{ user.birthDay.name }}
+      .region(v-if="user.region.name")
+        fa(icon="map-marker-alt")
+        | {{ user.region.name }}
       .webpage(v-if="user.webpage")
+        fa(icon="home")
         a(
           :href="user.webpage"
           target="_blank"
@@ -140,6 +146,10 @@ export default {
 
     > div
       margin: 0.4rem auto
+
+      [data-icon]
+        width: 1rem
+        margin-right: .4rem
 
     .username
       font-size: 1.4rem

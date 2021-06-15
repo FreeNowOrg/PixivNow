@@ -1,6 +1,7 @@
 <template lang="pug">
 .searchBox
   input(v-model="keyword" @keyup.enter="makeSearch", placeholder="搜索插画")
+  fa.icon(icon="search")
 </template>
 
 <script lang="ts">
@@ -33,43 +34,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="sass">
-.searchBox
-  display: flex
-  align-items: center
-  // margin: 0 auto;
-
-  input
-    // width: 100%;
-    box-sizing: border-box
-    font-size: 0.8rem
-    border: 1px solid var(--theme-border-color)
-    border-radius: 4px
-    outline: none
-    padding: 0.2rem 0.6em
-    color: #444
-    height: 2rem
-    background-color: rgb(245, 245, 245)
-    width: 25vw
-    transition: all 0.12s ease-in-out
-
-    &:focus
-      background-color: var(--theme-background-color)
-      width: calc(25vw + 10em)
-
-  button
-    padding: 0.2rem 0.4rem
-    font-size: 1rem
-    border: none
-    border-radius: 4px
-    background-color: rgb(21, 109, 180)
-    color: #fff
-    display: block
-    margin-left: 1rem
-
-  &.big
-    input
-      width: 100%
-      height: 3rem
-      font-size: 1.4rem
-</style>
+<style lang="sass"></style>
