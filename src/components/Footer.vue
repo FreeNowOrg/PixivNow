@@ -3,15 +3,15 @@ footer.globalFooter
   p
     | &copy; Copyright {{ yearStr }}
     |
-    a(:href="GITHUB_REPO" target="_blank").
-      PixivNow
+    a(:href="GITHUB_URL" target="_blank").
+      {{ PROJECT_NAME }}
     | 
     em v{{ version }}
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { GITHUB_REPO } from '../config'
+import { GITHUB_URL, PROJECT_NAME } from '../config'
 import { version } from '../../package.json'
 
 export default defineComponent({
@@ -22,6 +22,7 @@ export default defineComponent({
       version,
       yearStr: 2021 === year ? year : `(2021 - ${year})`,
       GITHUB_REPO,
+      PROJECT_NAME,
     }
   },
 })

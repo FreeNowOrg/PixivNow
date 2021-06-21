@@ -1,12 +1,12 @@
 <template lang="pug">
 mixin repoLink
-  a(:href="GITHUB_REPO" target="_blank") PixivNow/PixivNow
+  a(:href="GITHUB_URL" target="_blank") {{ GITHUB_OWNER }}/{{ GITHUB_REPO }}
 
 h1 关于我们
 section.intro
   card(title="简介")
     p
-      strong PixivNow
+      strong {{ PROJECT_NAME }}
       |  是一个 Pixiv 代理服务，旨在为某些无法直接访问 Pixiv 地区的 ACGN 爱好者提供一个欣赏 P 站插画的途径。
 
   card(title="使用方法")
@@ -40,13 +40,16 @@ section.intro
 
 <script lang="ts">
 import Card from '../components/Card.vue'
-import { GITHUB_REPO } from '../config'
+import { PROJECT_NAME, GITHUB_OWNER, GITHUB_REPO, GITHUB_URL } from '../config'
 
 export default {
   components: { Card },
   data() {
     return {
+      PROJECT_NAME,
+      GITHUB_OWNER,
       GITHUB_REPO,
+      GITHUB_URL,
     }
   },
   mounted() {
