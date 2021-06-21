@@ -87,7 +87,7 @@ h3
     color: #fff
     background-color: rgba(0, 0, 0, 0.6)
     padding: .2rem .6rem
-    border-radius: 4px
+    border-radius: 1rem
 
     [data-icon]
       margin-right: .2rem

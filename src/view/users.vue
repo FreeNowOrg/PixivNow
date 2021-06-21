@@ -24,7 +24,7 @@ section.user(v-if="!loading && !error")
         strong {{ user.following }}
         | &nbsp;已关注
       .gender(v-if="user.gender.name") 
-        fa(icon="venus-double")
+        fa(icon="venus-mars")
         | {{ user.gender.name }}
       .birthday(v-if="user.birthDay.name")
         fa(icon="birthday-cake")
