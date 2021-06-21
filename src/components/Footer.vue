@@ -21,7 +21,7 @@ export default defineComponent({
     return {
       version,
       yearStr: 2021 === year ? year : `(2021 - ${year})`,
-      GITHUB_REPO,
+      GITHUB_URL,
       PROJECT_NAME,
     }
   },
