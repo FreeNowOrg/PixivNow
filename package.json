@@ -3,7 +3,7 @@
   "version": "2.0.4",
   "private": true,
   "main": "index.js",
-  "repository": "https://github.com/Wjghj-Project/pixiv-now.git",
+  "repository": "https://github.com/GratisNow/PixivNow.git",
   "author": "Dragon-Fish <824399619@qq.com>",
   "license": "MIT",
   "scripts": {

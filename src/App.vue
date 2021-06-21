@@ -1,7 +1,7 @@
 <template lang="pug">
 Header(ref="globalHeader")
 
-main(:style="{ minHeight: mainHeight + 'px' }")
+main
   article
     router-view
 
@@ -20,23 +20,10 @@ export default defineComponent({
   name: 'App',
   components: { Header, Footer, NProgress },
   data() {
-    return {
-      mainHeight: 0,
-    }
+    return {}
   },
-  methods: {
-    resizeMain() {
-      // const navHeight = this.$refs.globalHeader.$el.offsetHeight
-      // const footerHeight = this.$refs.globalFooter.$el.offsetHeight
-      // const clientHeight = window.screen.availHeight
-      // console.log({ navHeight, footerHeight, clientHeight })
-      // this.mainHeight = clientHeight - navHeight - footerHeight
-    },
-  },
-  mounted() {
-    this.resizeMain()
-    window.addEventListener('resize', this.resizeMain)
-  },
+  methods: {},
+  mounted() {},
 })
 </script>
 
