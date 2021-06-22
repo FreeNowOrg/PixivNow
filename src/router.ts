@@ -19,14 +19,14 @@ router.addRoute({
 // Illust index
 router.addRoute({
   path: '/artworks',
-  alias: ['/illust'],
+  alias: ['/illust', '/i'],
   name: 'artworks-index',
   component: () => import('./view/artwork/index.vue'),
 })
 // Illust view
 router.addRoute({
   path: '/artworks/:id',
-  alias: ['/illust/:id'],
+  alias: ['/illust/:id', '/i/:id'],
   name: 'artworks-view',
   component: () => import('./view/artwork/view.vue'),
 })
@@ -35,6 +35,7 @@ router.addRoute({
 router.addRoute({
   path: '/users/:id',
   name: 'users',
+  alias: ['/u/:id'],
   component: () => import('./view/users.vue'),
 })
 
