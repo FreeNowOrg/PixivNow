@@ -63,7 +63,7 @@ section.illust-container(v-if="!error && !loading")
 
 //- Error
 section.error(v-if="error")
-  error-page(title="出大问题" :description="error.message")
+  error-page(title="出大问题" :description="error")
 </template>
 
 <script lang="ts">
@@ -85,6 +85,7 @@ export default {
       showMore: false,
       illust: {},
       user: {},
+      comments: {},
       error: '',
     }
   },
@@ -107,21 +108,25 @@ export default {
         .get(`${API_BASE}/api/illust/${this.$route.params.id}`, {
           params: {
             full: 1,
+            lang: 'zh',
           },
         })
         .then(
           ({ data }) => {
             document.title = `${data.illustTitle} | Artwork | PixivNow`
-            this.loading = false
             this.illust = data
             this.getUser(data.userId)
+            this.getComments(data.id)
           },
           (err) => {
             console.warn('illust fetch error', `#${this.$route.params.id}`, err)
-            this.loading = false
-            this.error = err?.response?.data?.message || err.message || 'HTTP 请求超时'
+            this.error =
+              err?.response?.data?.message || err.message || 'HTTP 请求超时'
           }
         )
+        .finally(() => {
+          this.loading = false
+        })
     },
     async getUser(userId: number) {
       axios.get(`${API_BASE}/api/user/${userId}`).then(
@@ -132,6 +137,25 @@ export default {
           console.warn('User fetch error', err)
         }
       )
+    },
+    async getComments(id: string | number) {
+      axios
+        .get(`${API_BASE}/ajax/illusts/comments/roots`, {
+          params: {
+            illust_id: id || this.$route.params.id,
+            limit: 50,
+            lang: 'zh',
+          },
+        })
+        .then(
+          ({ data }) => {
+            console.log('Comments', data)
+            this.comments = data
+          },
+          (err) => {
+            console.warn('Comments fetch error', err)
+          }
+        )
     },
   },
   created() {

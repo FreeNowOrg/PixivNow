@@ -9,9 +9,8 @@ mixin pagenator()
 
 h1 搜索“{{ keyword }}”相关的作品 (第{{ p }}页)
 
-search-box(class="big" :style="{marginBottom: '1.2rem'}")
+search-box.big(:style="{marginBottom: '1.2rem'}")
 
-  
 //- Error
 section(v-if="error && !loading")
   error-page(title="出大问题", :description="error")

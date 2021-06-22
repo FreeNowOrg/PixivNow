@@ -88,7 +88,7 @@ export default {
           },
           (err) => {
             console.warn('user', err.response)
-            this.error = err?.response?.data?.message || err.message
+            this.error = err?.response?.data?.message || err.message || 'HTTP 请求超时'
           }
         )
         .finally(() => {
