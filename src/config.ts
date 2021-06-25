@@ -8,7 +8,7 @@ export const API_BASE =
 
 // Copyright links
 // Do not modify please
-export const GITHUB_OWNER = 'GratisNow'
+export const GITHUB_OWNER = 'FreeNowOrg'
 export const GITHUB_REPO = 'PixivNow'
 export const GITHUB_URL = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}`
 
