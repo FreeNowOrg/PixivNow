@@ -41,6 +41,9 @@ async function request(
       params,
       headers: {
         accept: headers.accept || '*/*',
+        'accept-language':
+          headers['accept-language'] ||
+          'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
         cookie: headers.cookie || defaultCookie,
         'user-agent': headers['user-agent'] || defaultAgent,
         referer: 'https://www.pixiv.net/',
