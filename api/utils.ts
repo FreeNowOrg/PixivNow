@@ -1,4 +1,5 @@
 import { VercelResponse } from '@vercel/node'
+import { IncomingHttpHeaders } from 'http'
 import axios, { Method } from 'axios'
 
 export function makeArtList(obj: any) {
@@ -34,9 +35,9 @@ export function handleError(err: any, res: VercelResponse) {
 
 export async function request(
   method: Method,
-  path: string,
+  path: `/${string}`,
   params?: any,
-  headers?: any
+  headers?: IncomingHttpHeaders
 ) {
   const url = `https://www.pixiv.net${path}`
   const defaultCookie = params.token ? 'PHPSESSID=' + params.token : ''
