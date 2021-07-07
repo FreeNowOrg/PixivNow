@@ -38,7 +38,7 @@ export async function request(
   params?: any,
   headers?: any
 ) {
-  const url = `https://www.pixiv.net/ajax${path}`
+  const url = `https://www.pixiv.net${path}`
   const defaultCookie = params.token ? 'PHPSESSID=' + params.token : ''
 
   try {

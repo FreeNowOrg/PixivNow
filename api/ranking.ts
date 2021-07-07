@@ -5,7 +5,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   const { query } = req
   request(
     'get',
-    '/top/illust',
+    '/ajax/top/illust',
     {
       mode: 'all',
       lang: 'zh',

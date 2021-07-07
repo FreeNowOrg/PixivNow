@@ -35,7 +35,12 @@ export default {
             this.list = data
           },
           (err) => {
-            this.error = err?.response?.data?.message || err.message
+            const code = err?.response?.data?.status
+            const message =
+              code === 400
+                ? '您需要配置密钥以查看排行榜。'
+                : err?.response?.data?.message || err.message
+            this.error = message
           }
         )
         .finally(() => {

@@ -7,7 +7,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   try {
     const { data } = await request(
       'get',
-      `/search/artworks/${encodeURI(word as string)}`,
+      `/ajax/search/artworks/${encodeURI(word as string)}`,
       {
         mode: 'safe',
         p: '1',
