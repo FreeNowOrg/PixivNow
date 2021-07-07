@@ -4,31 +4,44 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
     .logo: span.ph
       .left Pixiv
       .right Now
-  .mainLinksArea
-    router-link(to="/") Home
-    | ·
-    router-link(to="/artworks") Artworks
-    | ·
-    router-link(to="/ranking") Ranking
-    | ·
-    router-link(to="/about") About
-  .searchArea
-    search-box
 
-  .userArea.notLogIn(v-if="!user")
+  .flex
+    .mainLinksArea
+      router-link(to="/") Home
+      | ·
+      router-link(to="/artworks") Artworks
+      | ·
+      router-link(to="/ranking") Ranking
+      | ·
+      router-link(to="/about") About
+    .searchArea
+      search-box
+
+  .userArea
     a.userLink
-      img.avatar(:src="API_BASE + '/~/common/images/no_profile.png?' + Date.now()")
-      ul.dropdown
-        li
-          a(@click="userLogin") 用户登入
-  .userArea.isLogedIn(v-if="user")
-    a.userLink(:title="user.name + '(' + user.pixivId + ')'")
-      img.avatar(:src="user.profileImg")
-      ul.dropdown
-        li
-          router-link(:to="'/users/' + user.id") {{ user.name }}
-        li
-          a(@click="userLogout") 用户登出
+      img.avatar(:src="user ? user.profileImg : API_BASE + '/~/common/images/no_profile.png?' + Date.now()" :title="user ? user.name + ' (' + user.pixivId + ')' : '未登入'")
+      .dropdown
+        ul
+          //- notLogIn
+          li(v-if="!user")
+            .navUserCard
+              .left
+                img.avatar(:src="API_BASE + '/~/common/images/no_profile.png?' + Date.now()")
+              .right
+                .title 匿名
+          li(v-if="!user")
+            a(@click="userLogin") 用户登入
+
+          //- isLogedIn
+          li(v-if="user")
+            .navUserCard
+              .left
+                img.avatar(:src="API_BASE + user.profileImgBig")
+              .right
+                router-link.name(:to="'/users/' + user.id") {{ user.name }}
+                .tag ({{ user.pixivId }})
+          li(v-if="user")
+            a(@click="userLogout") 用户登出
 </template>
 
 <script lang="ts">
@@ -86,7 +99,7 @@ export default defineComponent({
     },
     userLogin() {
       const token = prompt(
-        '请输入您的 Pixiv 令牌\n在 www.pixiv.net 登录后使用 document.cookie.PHPSESSID 获取)'
+        '请输入您的 Pixiv 令牌\n登录 www.pixiv.net 后找到名为 PHPSESSID 的 cookie 填写到这里'
       )
       if (!token) return
       Cookies.set('PHPSESSID', token, {
@@ -145,7 +158,6 @@ export default defineComponent({
   padding: 0.4rem
   color: var(--theme-background-color)
   display: flex
-  overflow-y: auto
   align-items: center
   position: fixed
   width: 100%
@@ -154,6 +166,12 @@ export default defineComponent({
   top: 0
   z-index: 10
   transition: all .8s ease
+
+  .flex
+    display: flex
+    flex: 1
+    overflow-x: auto
+    align-items: center
 
   &.notAtTop
     box-shadow: 0 2px 4px var(--theme-box-shadow-color)
@@ -193,14 +211,54 @@ export default defineComponent({
     .dropdown
       display: none
       position: absolute
-      top: 2rem
+      top: 1.4rem
       right: 0
-      background: #fff
-      list-style: none
       padding: 0
+      padding-top: 0.4rem
+      
+      ul
+        list-style: none
+        padding: 4px
+        background-color: #fff
+        box-shadow: 0 0 4px #aaa
+
+        li > *
+          padding: 4px 8px
+
+        li a
+          display: block
+          cursor: pointer
+
+          &:hover
+            background-color: var(--theme-tag-color)
       
     &:hover .dropdown
       display: block
+
+.navUserCard
+  display: flex
+  border-bottom: 1px solid
+
+  .avatar
+    width: 50px
+    height: 50px
+
+  .right
+    margin-left: 1rem
+    display: flex
+    align-items: center
+    flex-wrap: wrap
+    text-align: center
+
+    > *
+      width: 100%
+
+    .name
+      font-size: 1.2rem
+
+    .tag
+      font-size: 0.8rem
+      color: #aaa
 
 .ph
   display: inline-block
