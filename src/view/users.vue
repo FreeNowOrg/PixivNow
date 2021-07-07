@@ -39,7 +39,7 @@ section.user(v-if="!loading && !error")
           target="_blank"
           rel="noopener noreferrer"
           ) {{ user.webpage }}
-      .comment {{ user.comment }}
+      .comment.pre {{ user.comment }}
       .more
         a(@click="userMore" href="javascript:;") 查看更多
   

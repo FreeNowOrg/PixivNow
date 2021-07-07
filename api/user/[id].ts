@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import { makeArtList, request } from '../utils'
+import { handleError, makeArtList, request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const id = req.query.id as string
@@ -11,8 +11,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
 
   Promise.all([
-    request('get', `/user/${id}`, { full: 1, ...req.query }, req.headers),
-    request('get', `/user/${id}/profile/top`, { ...req.query }, req.headers),
+    request('get', `/ajax/user/${id}`, { full: 1, ...req.query }, req.headers),
+    request('get', `/ajax/user/${id}/profile/top`, req.query, req.headers),
   ]).then(
     ([{ data: basic }, { data: more }]) => {
       const { illusts, manga, novels } = more
@@ -26,9 +26,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       res.send(data)
     },
     (err) => {
-      return res
-        .status(err?.response?.status || 503)
-        .send(err?.response?.data || err)
+      return handleError(err, res)
     }
   )
 }

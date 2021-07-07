@@ -18,12 +18,15 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/vue-fontawesome": "^3.0.0-4",
     "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.10",
+    "js-cookie": "^2.2.1",
     "nprogress": "^0.2.0",
     "vue": "^3.0.4",
     "vue-router": "^4.0.8"
   },
   "devDependencies": {
     "@dragon-fish/bump": "^0.0.15",
+    "@types/js-cookie": "^2.2.7",
     "@types/nprogress": "^0.2.0",
     "@vercel/node": "^1.11.0",
     "@vitejs/plugin-vue": "^1.2.3",

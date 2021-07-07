@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import { request } from '../utils'
+import { handleError, request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { query } = req
@@ -7,7 +7,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   try {
     const { data } = await request(
       'get',
-      `/search/artworks/${encodeURI(word as string)}`,
+      `/ajax/search/artworks/${encodeURI(word as string)}`,
       {
         mode: 'safe',
         p: '1',
@@ -17,8 +17,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     )
     res.send(data)
   } catch (err) {
-    return res
-      .status(err?.response?.status || 503)
-      .send(err?.response?.data || err)
+    return handleError(err, res)
   }
 }
