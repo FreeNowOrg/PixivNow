@@ -7,7 +7,7 @@ card
     .right
       h4: strong
         router-link(:to="'/users/' + user.userId") {{ user.name }}
-      p.description {{ user.comment }}
+      p.description.pre {{ user.comment }}
 </template>
 
 <script lang="ts">
