@@ -22,9 +22,16 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         if (meta.userData) {
           return res.send(replaceUrl(meta.userData))
         }
-        throw ''
+        throw 'userData is missing'
       } catch (error) {
-        throw { message: '意料外的元数据', meta: $meta.html(), error }
+        throw {
+          message: '意料外的元数据',
+          cheerio: {
+            length: $meta.length,
+            html: $meta.prop('outerHTML')
+          },
+          error,
+        }
       }
     })
     .catch((err) => {
