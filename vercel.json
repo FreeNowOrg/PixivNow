@@ -13,20 +13,19 @@
       "destination": "/api/proxy?prefix=s&path=$1"
     },
     {
-      {
-        "source": "/ajax/(.+)",
-        "destination": "/api/ajax?path=$1"
-      }
-    ],
-    "headers": [
-      {
-        "source": "/(api|ajax)(.*)",
-        "headers": [
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-          }
-        ]
-      }
-    ]
-  }
+      "source": "/ajax/(.+)",
+      "destination": "/api/ajax?path=$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(api|ajax)(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ]
+}
