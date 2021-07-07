@@ -26,7 +26,7 @@ export function replaceUrl(obj: any) {
   return obj
 }
 
-export function handleError(err, res: VercelResponse) {
+export function handleError(err: any, res: VercelResponse) {
   return res
     .status(err?.response?.status || 500)
     .send(err?.response?.data || err)
