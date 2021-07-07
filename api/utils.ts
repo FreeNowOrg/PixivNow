@@ -62,7 +62,7 @@ export async function request(
     res.data = replaceUrl(res.data?.body || res.data)
     return res
   } catch (err) {
-    console.error('axios error', err)
+    console.error('[AxiosError]', err)
     throw err
   }
 }

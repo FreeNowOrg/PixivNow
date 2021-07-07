@@ -7,7 +7,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     'get',
     '/top/illust',
     {
-      mode: 'safe',
+      mode: 'all',
       lang: 'zh',
       ...query,
     },
@@ -15,18 +15,18 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   )
     .then(({ data }) => {
       const rankingItems: { rank: string; id: string }[] =
-        data.page.ranking.item
-      const illustList: any[] = data.page.thumbnails.illust
+        data.page.ranking.items
+      const illustList: any[] = data.thumbnails.illust
 
-      rankingItems.map((i) => {
-        const details = illustList.find(({ id }) => id === i.id)
+      const list = rankingItems.map((i) => {
+        const illust = illustList.find(({ id }) => id === i.id)
         return {
           ...i,
-          details,
+          illust,
         }
       })
 
-      res.send(rankingItems)
+      res.send(list)
     })
     .catch((err) => {
       return handleError(err, res)
