@@ -17,7 +17,7 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
 
   .userArea.notLogIn(v-if="!user")
     a.userLink(@click="setToken")
-      img.avatar(src="/~/common/images/no_profile.png")
+      img.avatar(:src="API_BASE + '/~/common/images/no_profile.png'")
   .userArea.isLogedIn(v-if="user")
     a.userLink(:src="'/users/' + user.id" :title="user.name + '(' + user.pixivId + ')'")
       img.avatar(:src="user.profileImg")
@@ -55,6 +55,7 @@ export default defineComponent({
   },
   data() {
     return {
+      API_BASE,
       notAtTop: false,
       isHide: false,
       user: null,
