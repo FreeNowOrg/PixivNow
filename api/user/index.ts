@@ -15,6 +15,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       if (!$globalData.length || !$globalData?.attr('content')) {
         return res.status(403).send({ message: '无效用户密钥。' })
       }
+      return res.send($globalData.html().replace('<', '&lt;'))
       const { userData } = JSON.parse($globalData.attr('content'))
       return res.send(replaceUrl(userData))
     })
