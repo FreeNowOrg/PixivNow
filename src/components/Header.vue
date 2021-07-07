@@ -14,11 +14,39 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
     router-link(to="/about") About
   .searchArea
     search-box
+
+  .userArea.notLogIn(v-if="!user")
+    a.userLink(@click="setToken")
+      img.avatar(src="/~/common/images/no_profile.png")
+  .userArea.isLogedIn(v-if="user")
+    a.userLink(:src="'/users/' + user.id" :title="user.name + '(' + user.pixivId + ')'")
+      img.avatar(:src="user.profileImg")
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import SearchBox from './SearchBox.vue'
+import * as Cookies from 'js-cookie'
+import axios from 'axios'
+import { API_BASE } from '../config'
+
+declare global {
+  interface Window {
+    PixivUser: {
+      id: string
+      pixivId: string
+      name: string
+      profileImg: string
+      profileImgBig: string
+      premium: boolean
+      xRestrict: 0 | 1 | 2
+      adult: boolean
+      safeMode: boolean
+      illustCreator: boolean
+      novelCreator: boolean
+    } | null
+  }
+}
 
 export default defineComponent({
   name: 'com-header',
@@ -29,9 +57,47 @@ export default defineComponent({
     return {
       notAtTop: false,
       isHide: false,
+      user: null,
     }
   },
+  methods: {
+    initUser() {
+      const token = Cookies.get('PHPSESSID')
+      if (!token) return
+      axios.get(`${API_BASE}/api/user`).then(
+        ({ data }) => {
+          console.log('Log in', data)
+          this.user = data
+          window.PixivUser = data
+        },
+        (err) => {
+          console.warn('Log in failed', err)
+        }
+      )
+    },
+    login() {
+      const token = prompt(
+        '请输入您的 Pixiv 令牌\n在 www.pixiv.net 登录后使用 document.cookie.PHPSESSID 获取)'
+      )
+      if (!token) return
+      Cookies.set('PHPSESSID', token, {
+        expires: 180,
+        path: '/',
+      })
+      location.reload()
+    },
+    logout() {
+      const token = Cookies.get('PHPSESSID')
+      if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
+        // window.PixivUser = null
+        Cookies.remove('PHPSESSID')
+        location.reload()
+      }
+    },
+  },
   mounted() {
+    this.initUser()
+
     let scrollTop = document.documentElement.scrollTop
     window.addEventListener('scroll', () => {
       const newTop = document.documentElement.scrollTop
@@ -103,6 +169,14 @@ export default defineComponent({
 
 .searchArea
   // flex: 1
+
+.userArea
+  margin-left: 1rem
+
+  .avatar
+    height: 2rem
+    width: 2rem
+    border-radius: 50%
 
 .ph
   display: inline-block

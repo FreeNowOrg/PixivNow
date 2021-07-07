@@ -18,8 +18,8 @@ export function replaceUrl(obj: any) {
       /^https:\/\/[is]\.pximg\.net\//.test(obj[key])
     ) {
       obj[key] = obj[key]
-        .replace('https://i.pximg.net/', '/-/')
-        .replace('https://s.pximg.net/', '/~/')
+        .replaceAll('https://i.pximg.net/', '/-/')
+        .replaceAll('https://s.pximg.net/', '/~/')
     } else if (typeof obj[key] === 'object') {
       obj[key] = replaceUrl(obj[key])
     }
@@ -47,6 +47,7 @@ export async function request(
       url,
       method,
       params,
+      timeout: 9000,
       headers: {
         accept: headers.accept || '*/*',
         'accept-language':

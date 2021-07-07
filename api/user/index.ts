@@ -1,7 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import axios from 'axios'
 import cheerio from 'cheerio'
-import { handleError, request } from '../utils'
+import { handleError, replaceUrl, request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const token = req.cookies.PHPSESSID || req.query.token
@@ -13,9 +12,9 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     .then(({ data }) => {
       const $ = cheerio.load(data)
       const { userData } = JSON.parse($('#meta-global-data').attr('content'))
-      res.send(userData)
+      return res.send(replaceUrl(userData))
     })
     .catch((err) => {
-      handleError(err, res)
+      return handleError(err, res)
     })
 }
