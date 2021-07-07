@@ -11,14 +11,20 @@ export function makeArtList(obj: any) {
 }
 
 export function replaceUrl(obj: any) {
+  function replace(str: string) {
+    return str
+      .replace(/https:\/\/i\.pximg\.net\//g, '/-/')
+      .replace(/https:\/\/i\.pximg\.net\//g, '/~/')
+  }
+  
+  if (typeof obj === 'string') return replace(obj)
+  
   for (let key in obj) {
     if (
       typeof obj[key] === 'string' &&
       /^https:\/\/[is]\.pximg\.net\//.test(obj[key])
     ) {
-      obj[key] = obj[key]
-        .replaceAll('https://i.pximg.net/', '/-/')
-        .replaceAll('https://s.pximg.net/', '/~/')
+      obj[key] = replace(obj[key])
     } else if (typeof obj[key] === 'object') {
       obj[key] = replaceUrl(obj[key])
     }
