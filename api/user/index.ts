@@ -16,13 +16,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         return res.status(403).send({ message: '无效的用户密钥' })
       }
       try {
-        const meta: any = typeof $meta.attr('content') === 'string'
-          ? JSON.parse($meta.attr('content') as string)
-          : $meta.attr('content')
-        if (meta.userData) {
-          return res.send(replaceUrl(meta.userData))
+        let meta = $meta.attr('content') as string
+        meta = meta.replaceAll('&quot;', '"')
+        meta = JSON.parse(meta)
+        if (!meta.userData) {
+          throw 'userData is missing'
         }
-        throw 'userData is missing'
+        return res.send(replaceUrl(meta.userData))
       } catch (error) {
         throw {
           message: '意料外的元数据',
