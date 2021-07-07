@@ -7,6 +7,8 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
   .mainLinksArea
     router-link(to="/") Home
     | ·
+    router-link(to="/ranking") Ranking
+    | ·
     router-link(to="/artworks") Artworks
     | ·
     router-link(to="/about") About
