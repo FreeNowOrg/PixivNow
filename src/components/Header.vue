@@ -16,7 +16,7 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
     search-box
 
   .userArea.notLogIn(v-if="!user")
-    a.userLink(@click="setToken")
+    a.userLink(@click="userLogin")
       img.avatar(:src="API_BASE + '/~/common/images/no_profile.png'")
   .userArea.isLogedIn(v-if="user")
     a.userLink(:src="'/users/' + user.id" :title="user.name + '(' + user.pixivId + ')'")
@@ -62,7 +62,7 @@ export default defineComponent({
     }
   },
   methods: {
-    initUser() {
+    userInit() {
       const token = Cookies.get('PHPSESSID')
       if (!token) return
       axios.get(`${API_BASE}/api/user`).then(
@@ -76,7 +76,7 @@ export default defineComponent({
         }
       )
     },
-    login() {
+    userLogin() {
       const token = prompt(
         '请输入您的 Pixiv 令牌\n在 www.pixiv.net 登录后使用 document.cookie.PHPSESSID 获取)'
       )
@@ -87,7 +87,7 @@ export default defineComponent({
       })
       location.reload()
     },
-    logout() {
+    userLogout() {
       const token = Cookies.get('PHPSESSID')
       if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
         // window.PixivUser = null
@@ -97,7 +97,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.initUser()
+    this.userInit()
 
     let scrollTop = document.documentElement.scrollTop
     window.addEventListener('scroll', () => {
