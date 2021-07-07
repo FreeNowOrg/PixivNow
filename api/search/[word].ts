@@ -18,7 +18,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     res.send(data)
   } catch (err) {
     return res
-      .status(err?.response?.status || 503)
+      .status(err?.response?.status || 500)
       .send(err?.response?.data || err)
   }
 }

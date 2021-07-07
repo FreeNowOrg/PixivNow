@@ -2,8 +2,11 @@ import { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
-  const { path } = req.query
-  const url = `https://i.pximg.net/${path}`
+  const { prefix, path } = req.query
+  if (!prefix || !path) {
+    return res.status(400).send({ message: 'Missing param(s)' })
+  }
+  const url = `https://${prefix}.pximg.net/${path}`
 
   axios
     .get(url, {

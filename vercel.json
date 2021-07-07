@@ -2,26 +2,31 @@
   "rewrites": [
     {
       "source": "/image/(.+)",
-      "destination": "/api/proxy?type=image&path=$1"
+      "destination": "/api/proxy?prefix=i&path=$1"
     },
     {
       "source": "/-/(.+)",
-      "destination": "/api/proxy?type=image&path=$1"
+      "destination": "/api/proxy?prefix=i&path=$1"
     },
     {
-      "source": "/ajax/(.+)",
-      "destination": "/api/ajax?path=$1"
-    }
-  ],
-  "headers": [
+      "source": "/~/(.+)",
+      "destination": "/api/proxy?prefix=s&path=$1"
+    },
     {
-      "source": "/(api|ajax)(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    }
-  ]
-}
+      {
+        "source": "/ajax/(.+)",
+        "destination": "/api/ajax?path=$1"
+      }
+    ],
+    "headers": [
+      {
+        "source": "/(api|ajax)(.*)",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          }
+        ]
+      }
+    ]
+  }

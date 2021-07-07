@@ -13,9 +13,11 @@ function replaceUrl(obj: any) {
   for (let key in obj) {
     if (
       typeof obj[key] === 'string' &&
-      obj[key].startsWith('https://i.pximg.net/')
+      /^https:\/\/[is]\.pximg\.net\//.test(obj[key])
     ) {
-      obj[key] = obj[key].replace('https://i.pximg.net/', '/-/')
+      obj[key] = obj[key]
+        .replace('https://i.pximg.net/', '/-/')
+        .replace('https://s.pximg.net/', '/~/')
     } else if (typeof obj[key] === 'object') {
       obj[key] = replaceUrl(obj[key])
     }

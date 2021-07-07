@@ -12,8 +12,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   try {
     const [details, pages] = await Promise.all([
-      request('get', `/illust/${id}`, { ...req.query }, req.headers),
-      request('get', `/illust/${id}/pages`, { ...req.query }, req.headers),
+      request('get', `/illust/${id}`, req.query, req.headers),
+      request('get', `/illust/${id}/pages`, req.query, req.headers),
     ])
 
     try {
@@ -26,7 +26,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return res.send({ ...details.data, pages: pages.data })
   } catch (err) {
     return res
-      .status(err?.response?.status || 503)
+      .status(err?.response?.status || 500)
       .send(err?.response?.data || err)
   }
 }

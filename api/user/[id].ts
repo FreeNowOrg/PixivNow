@@ -12,7 +12,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   Promise.all([
     request('get', `/user/${id}`, { full: 1, ...req.query }, req.headers),
-    request('get', `/user/${id}/profile/top`, { ...req.query }, req.headers),
+    request('get', `/user/${id}/profile/top`, req.query, req.headers),
   ]).then(
     ([{ data: basic }, { data: more }]) => {
       const { illusts, manga, novels } = more
@@ -27,7 +27,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     },
     (err) => {
       return res
-        .status(err?.response?.status || 503)
+        .status(err?.response?.status || 500)
         .send(err?.response?.data || err)
     }
   )
