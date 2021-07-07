@@ -11,18 +11,20 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   request('get', '/', req.query, req.headers)
     .then(({ data }) => {
       const $ = cheerio.load(data)
-      const $meta = $('#meta-global-data')
+      const $meta = $('meta[name="global-data"]')
       if ($meta.length < 0 || !$meta.attr('content')) {
         return res.status(403).send({ message: '无效的用户密钥' })
       }
       try {
-        const meta = JSON.parse($meta.attr('content') || '')
+        const meta: any = typeof $meta.attr('content') === 'string'
+          ? JSON.parse($meta.attr('content') as string)
+          : $meta.attr('content')
         if (meta.userData) {
           return res.send(replaceUrl(meta.userData))
         }
         throw ''
-      } catch (e) {
-        throw { message: '意料外的元数据', meta: $meta.html() }
+      } catch (error) {
+        throw { message: '意料外的元数据', meta: $meta.html(), error }
       }
     })
     .catch((err) => {
