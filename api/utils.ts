@@ -32,11 +32,11 @@ async function request(
   const url = `https://www.pixiv.net/ajax${path}`
 
   // Safe headers
-  const headers1 = {}
-  for (let key in headers) {
-    const val = headers[key]
-    if (typeof val === 'string') headers1[key] = val
-  }
+  // const headers1: any = {}
+  // for (let key in headers) {
+  //   const val = headers[key]
+  //   if (typeof val === 'string') headers1[key] = val
+  // }
 
   try {
     const res = await axios({
@@ -44,14 +44,14 @@ async function request(
       method,
       params,
       headers: {
-        ...headers1,
+        ...headers,
         referer: 'https://www.pixiv.net/',
       },
     })
     res.data = replaceUrl(res.data?.body || res.data)
     return res
   } catch (err) {
-    console.error(err)
+    console.error('axios error', err)
     throw err
   }
 }
