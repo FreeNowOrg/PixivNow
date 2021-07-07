@@ -1,6 +1,7 @@
+import { VercelResponse } from '@vercel/node'
 import axios, { Method } from 'axios'
 
-function makeArtList(obj: any) {
+export function makeArtList(obj: any) {
   const list = []
   for (let item in obj) {
     list.push(obj[item])
@@ -9,7 +10,7 @@ function makeArtList(obj: any) {
   return list
 }
 
-function replaceUrl(obj: any) {
+export function replaceUrl(obj: any) {
   for (let key in obj) {
     if (
       typeof obj[key] === 'string' &&
@@ -25,7 +26,13 @@ function replaceUrl(obj: any) {
   return obj
 }
 
-async function request(
+export function handleError(err, res: VercelResponse) {
+  return res
+    .status(err?.response?.status || 500)
+    .send(err?.response?.data || err)
+}
+
+export async function request(
   method: Method,
   path: string,
   params?: any,
@@ -59,5 +66,3 @@ async function request(
     throw err
   }
 }
-
-export { makeArtList, request, replaceUrl }

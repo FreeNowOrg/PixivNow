@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import { request } from '../utils'
+import { handleError, request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { query } = req
@@ -17,8 +17,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     )
     res.send(data)
   } catch (err) {
-    return res
-      .status(err?.response?.status || 500)
-      .send(err?.response?.data || err)
+    return handleError(err, res)
   }
 }
