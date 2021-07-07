@@ -11,11 +11,11 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   request('get', '/', req.query, req.headers)
     .then(({ data }) => {
       const $ = cheerio.load(data)
-      const globalData = $('#meta-global-data').attr('content')
-      if (!globalData) {
+      const $globalData = $('#meta-global-data')
+      if (!$globalData.length || !$globalData?.attr('content')) {
         return res.status(403).send({ message: '无效用户密钥。' })
       }
-      const { userData } = JSON.parse(globalData)
+      const { userData } = JSON.parse($globalData.attr('content'))
       return res.send(replaceUrl(userData))
     })
     .catch((err) => {
