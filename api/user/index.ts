@@ -17,7 +17,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       }
       try {
         let meta = $meta.attr('content') as string
-        meta = meta.replaceAll('&quot;', '"')
         meta = JSON.parse(meta)
         if (!meta.userData) {
           throw 'userData is missing'
