@@ -26,17 +26,13 @@ function replaceUrl(obj: any) {
 async function request(
   method: Method,
   path: string,
-  params = {},
+  params?: any,
   headers?: any
 ) {
   const url = `https://www.pixiv.net/ajax${path}`
-
-  // Safe headers
-  // const headers1: any = {}
-  // for (let key in headers) {
-  //   const val = headers[key]
-  //   if (typeof val === 'string') headers1[key] = val
-  // }
+  const defaultAgent =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'
+  const defaultCookie = params.token ? 'PHPSESSID=' + params.token : ''
 
   try {
     const res = await axios({
@@ -44,7 +40,9 @@ async function request(
       method,
       params,
       headers: {
-        ...headers,
+        accept: headers.accept || '*/*',
+        cookie: headers.cookie || defaultCookie,
+        'user-agent': headers['user-agent'] || defaultAgent,
         referer: 'https://www.pixiv.net/',
       },
     })
