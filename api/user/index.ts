@@ -16,8 +16,12 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       if ($meta.length < 0 || !$meta.attr('content')) {
         return res.status(403).send({ message: '无效用户密钥。' })
       }
-      const { userData } = JSON.parse($meta.attr('content'))
-      return userData?res.send(replaceUrl(userData))
+      try {
+        const { userData } = JSON.parse($meta.attr('content'))
+        res.send(replaceUrl(userData))
+      } catch (e) {
+        throw e
+      }
     })
     .catch((err) => {
       return handleError(err, res)
