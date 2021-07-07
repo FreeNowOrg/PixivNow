@@ -16,11 +16,19 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
     search-box
 
   .userArea.notLogIn(v-if="!user")
-    a.userLink(@click="userLogin")
-      img.avatar(:src="API_BASE + '/~/common/images/no_profile.png'")
+    a.userLink
+      img.avatar(:src="API_BASE + '/~/common/images/no_profile.png?' + Date.now()")
+      ul.dropdown
+        li
+          a(@click="userLogin") 用户登入
   .userArea.isLogedIn(v-if="user")
-    a.userLink(:src="'/users/' + user.id" :title="user.name + '(' + user.pixivId + ')'")
+    a.userLink(:title="user.name + '(' + user.pixivId + ')'")
       img.avatar(:src="user.profileImg")
+      ul.dropdown
+        li
+          router-link(:to="'/users/' + user.id") {{ user.name }}
+        li
+          a(@click="userLogout") 用户登出
 </template>
 
 <script lang="ts">
@@ -178,6 +186,21 @@ export default defineComponent({
     height: 2rem
     width: 2rem
     border-radius: 50%
+    
+  .userLink
+    position: relative
+    
+    .dropdown
+      display: none
+      position: absolute
+      top: 2rem
+      right: 0
+      background: #fff
+      list-style: none
+      padding: 0
+      
+    &:hover .dropdown
+      display: block
 
 .ph
   display: inline-block
