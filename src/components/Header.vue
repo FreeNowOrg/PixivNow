@@ -19,55 +19,39 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
 
   .userArea
     a.userLink
-      img.avatar(:src="user ? user.profileImg : API_BASE + '/~/common/images/no_profile.png?' + Date.now()" :title="user ? user.name + ' (' + user.pixivId + ')' : '未登入'")
+      img.avatar(
+        :src="userData ? userData.profileImg : API_BASE + '/~/common/images/no_profile.png?' + Date.now()" 
+        :title="userData ? userData.name + ' (' + userData.pixivId + ')' : '未登入'"
+        )
       .dropdown
         ul
           //- notLogIn
-          li(v-if="!user")
+          li(v-if="!userData")
             .navUserCard
               .left
                 img.avatar(:src="API_BASE + '/~/common/images/no_profile.png?' + Date.now()")
               .right
                 .title 匿名
-          li(v-if="!user")
-            a(@click="userLogin") 用户登入
+          li(v-if="!userData && $route.path !== '/login'")
+            router-link(:to="'/login?back=' + $route.path") 用户登入
 
           //- isLogedIn
-          li(v-if="user")
+          li(v-if="userData")
             .navUserCard
               .left
-                img.avatar(:src="API_BASE + user.profileImgBig")
+                img.avatar(:src="API_BASE + userData.profileImgBig")
               .right
-                router-link.name(:to="'/users/' + user.id") {{ user.name }}
-                .tag ({{ user.pixivId }})
-          li(v-if="user")
+                router-link.name(:to="'/users/' + userData.id") {{ userData.name }}
+                .tag ({{ userData.pixivId }})
+          li(v-if="userData")
             a(@click="userLogout") 用户登出
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import SearchBox from './SearchBox.vue'
-import * as Cookies from 'js-cookie'
-import axios from 'axios'
 import { API_BASE } from '../config'
-
-declare global {
-  interface Window {
-    PixivUser: {
-      id: string
-      pixivId: string
-      name: string
-      profileImg: string
-      profileImgBig: string
-      premium: boolean
-      xRestrict: 0 | 1 | 2
-      adult: boolean
-      safeMode: boolean
-      illustCreator: boolean
-      novelCreator: boolean
-    } | null
-  }
-}
+import { userData, userLogout } from './userLogin'
 
 export default defineComponent({
   name: 'com-header',
@@ -79,47 +63,11 @@ export default defineComponent({
       API_BASE,
       notAtTop: false,
       isHide: false,
-      user: null,
+      userData,
+      // curPath: this.$route,
     }
   },
-  methods: {
-    userInit() {
-      const token = Cookies.get('PHPSESSID')
-      if (!token) return
-      axios.get(`${API_BASE}/api/user`).then(
-        ({ data }) => {
-          console.log('Log in', data)
-          this.user = data
-          window.PixivUser = data
-        },
-        (err) => {
-          console.warn('Log in failed', err)
-        }
-      )
-    },
-    userLogin() {
-      const token = prompt(
-        '请输入您的 Pixiv 令牌\n登录 www.pixiv.net 后找到名为 PHPSESSID 的 cookie 填写到这里'
-      )
-      if (!token) return
-      Cookies.set('PHPSESSID', token, {
-        expires: 180,
-        path: '/',
-      })
-      location.reload()
-    },
-    userLogout() {
-      const token = Cookies.get('PHPSESSID')
-      if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
-        // window.PixivUser = null
-        Cookies.remove('PHPSESSID')
-        location.reload()
-      }
-    },
-  },
   mounted() {
-    this.userInit()
-
     let scrollTop = document.documentElement.scrollTop
     window.addEventListener('scroll', () => {
       const newTop = document.documentElement.scrollTop
@@ -138,6 +86,9 @@ export default defineComponent({
         this.notAtTop = false
       }
     })
+  },
+  methods: {
+    userLogout,
   },
 })
 </script>
@@ -204,10 +155,10 @@ export default defineComponent({
     height: 2rem
     width: 2rem
     border-radius: 50%
-    
+
   .userLink
     position: relative
-    
+
     .dropdown
       display: none
       position: absolute
@@ -215,7 +166,7 @@ export default defineComponent({
       right: 0
       padding: 0
       padding-top: 0.4rem
-      
+
       ul
         list-style: none
         padding: 4px
@@ -231,7 +182,7 @@ export default defineComponent({
 
           &:hover
             background-color: var(--theme-tag-color)
-      
+
     &:hover .dropdown
       display: block
 

@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import cheerio from 'cheerio'
-import { handleError, replaceUrl, request } from '../utils'
+import { handleError, request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const token = req.cookies.PHPSESSID || req.query.token
@@ -9,29 +9,36 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
 
   request('get', '/', req.query, req.headers)
-    .then(({ data }) => {
+    .then(async ({ data }) => {
       const $ = cheerio.load(data)
       const $meta = $('meta[name="global-data"]')
       if ($meta.length < 0 || !$meta.attr('content')) {
         return res.status(403).send({ message: '无效的用户密钥' })
       }
+
+      let userData
       try {
-        let meta = $meta.attr('content') as string
-        meta = JSON.parse(meta)
+        const meta = JSON.parse($meta.attr('content') as string)
         if (!meta.userData) {
           throw 'userData is missing'
         }
-        return res.send(replaceUrl(meta.userData))
+        userData = meta.userData
       } catch (error) {
         throw {
           message: '意料外的元数据',
           cheerio: {
             length: $meta.length,
-            html: $meta.prop('outerHTML')
+            html: $meta.prop('outerHTML'),
           },
           error,
         }
       }
+
+      const extra = (
+        await request('get', '/ajax/user/extra', null, req.headers)
+      ).data
+
+      return res.send({ ...userData, ...extra })
     })
     .catch((err) => {
       return handleError(err, res)
