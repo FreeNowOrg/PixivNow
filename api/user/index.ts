@@ -34,11 +34,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         }
       }
 
-      const extra = (
-        await request('get', '/ajax/user/extra', null, req.headers)
-      ).data
-
-      return res.send({ ...userData, ...extra })
+      return res.send(userData)
     })
     .catch((err) => {
       return handleError(err, res)
