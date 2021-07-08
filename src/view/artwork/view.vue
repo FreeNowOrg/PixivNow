@@ -9,6 +9,8 @@ section.loading(v-if="loading")
 section.illust-container(v-if="!error && !loading")
   gallery(:pages="illust.pages" )
   .tags
+    .xRestrict(v-if="illust.xRestrict !== 0" title="R-18")
+      fa(icon="eye")
     art-tag(:key="_" v-for="(item, _) in illust.tags.tags" :tag="item.tag")
   
   .author

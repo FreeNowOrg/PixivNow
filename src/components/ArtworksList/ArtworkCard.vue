@@ -3,8 +3,11 @@
   .top
     router-link(:to="'/artworks/' + illust.id")
       .thumb
-        img(:src="'https://pixiv.js.org' + illust.url" alt="")
-      .pageCount 
+        img(:src="API_BASE + illust.url" alt="")
+      .xRestrict.tag(v-if="illust.xRestrict !== 0" title="R-18")
+        fa(icon="eye")
+        | R-18
+      .pageCount(:title="'共 ' + illust.pageCount + ' 张'")
         fa(icon="images")
         | {{ illust.pageCount }}
   .bottom
@@ -91,6 +94,15 @@ h3
 
     [data-icon]
       margin-right: .2rem
+
+  .xRestrict
+    position: absolute
+    top: .4rem
+    left: .4rem
+    color: #fff
+    background-color: rgb(255, 0, 0, 0.8)
+    padding: .4rem
+    border-radius: 50%
 
 .bottom
   // display: flex
