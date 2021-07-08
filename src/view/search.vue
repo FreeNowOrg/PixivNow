@@ -64,7 +64,7 @@ export default {
         .get(`${API_BASE}/api/search/${encodeURIComponent(this.keyword)}`, {
           params: {
             p: this.p || 1,
-            mode: this.$route.query.mode || 'safe',
+            mode: this.$route.query.mode || 'all',
           },
         })
         .then(

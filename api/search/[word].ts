@@ -9,7 +9,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       'get',
       `/ajax/search/artworks/${encodeURI(word as string)}`,
       {
-        mode: 'safe',
+        mode: 'all',
         p: '1',
         ...query,
       },

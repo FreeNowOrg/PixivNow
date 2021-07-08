@@ -18,13 +18,10 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         data.page.ranking.items
       const illustList: any[] = data.thumbnails.illust
 
-      const list = rankingItems.map((i) => {
-        const illust = illustList.find(({ id }) => id === i.id)
-        return {
-          ...i,
-          illust,
-        }
-      })
+      const list = rankingItems.map((i) => ({
+        ...i,
+        ...illustList.find(({ id }) => id === i.id),
+      }))
 
       res.send(list)
     })
