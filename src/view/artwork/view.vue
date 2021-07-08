@@ -1,5 +1,5 @@
 <template lang="pug">
-h1(:class="illust.xRestrict !== 0 ? 'danger' : 'safe'") {{ loading ? '正在读取作品 #' + $route.params.id : illust.illustTitle }}
+h1(:class="illust && illust.xRestrict !== 0 ? 'danger' : 'safe'") {{ loading ? '正在读取作品 #' + $route.params.id : illust.illustTitle }}
 
 //- Loading
 section.loading(v-if="loading")

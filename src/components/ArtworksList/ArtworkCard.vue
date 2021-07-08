@@ -4,7 +4,7 @@
     router-link(:to="'/artworks/' + illust.id")
       .thumb
         img(:src="API_BASE + illust.url" alt="")
-      .xRestrict.tag(v-if="illust.xRestrict == 0" title="R-18")
+      .xRestrict.tag(v-if="illust.xRestrict !== 0" title="R-18")
         fa(icon="eye")
       .pageCount(:title="'共 ' + illust.pageCount + ' 张'")
         fa(icon="images")
