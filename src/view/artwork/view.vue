@@ -1,5 +1,5 @@
 <template lang="pug">
-h1(:class="illust && illust.xRestrict !== 0 ? 'danger' : 'safe'") {{ loading ? '正在读取作品 #' + $route.params.id : illust.illustTitle }}
+h1(:class="illust.xRestrict ? 'danger' : ''") {{ loading ? '正在读取作品 #' + $route.params.id : illust.illustTitle }}
 
 //- Loading
 section.loading(v-if="loading")
@@ -9,7 +9,7 @@ section.loading(v-if="loading")
 section.illust-container(v-if="!error && !loading")
   gallery(:pages="illust.pages" )
   .tags
-    span.xRestrict(v-if="illust.xRestrict !== 0" title="R-18") R-18
+    span.xRestrict(v-if="illust.xRestrict" title="R-18") R-18
     art-tag(:key="_" v-for="(item, _) in illust.tags.tags" :tag="item.tag")
   
   .author

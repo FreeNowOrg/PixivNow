@@ -29,7 +29,7 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
           li(v-if="!userData")
             .navUserCard
               .left
-                img.avatar(:src="API_BASE + '/~/common/images/no_profile.png?' + Date.now()")
+                img.avatar(:src="API_BASE + '/~/common/images/no_profile.png'")
               .right
                 .title 匿名
           li(v-if="!userData && $route.path !== '/login'")
