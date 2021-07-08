@@ -20,7 +20,7 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
   .userArea
     a.userLink
       img.avatar(
-        :src="userData ? userData.profileImg : API_BASE + '/~/common/images/no_profile.png" 
+        :src="userData ? userData.profileImg : API_BASE + '/~/common/images/no_profile.png'" 
         :title="userData ? userData.name + ' (' + userData.pixivId + ')' : '未登入'"
         )
       .dropdown
