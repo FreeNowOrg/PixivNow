@@ -22,9 +22,10 @@ div.loginForm.notLogedIn(v-if="!userData")
     p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
 
 div.loginForm.isLogedIn(v-if="userData")
-  h2 查看您的 Pixiv 令牌
-  .token {{ userData.PHPSESSID }}
-  button.submit(@click="remove") 移除令牌
+  h1 查看您的 Pixiv 令牌
+  input.token(readonly="readonly" :value="userData.PHPSESSID")
+  .submit
+    button(@click="remove") 移除令牌
 </template>
 
 <script lang="ts">

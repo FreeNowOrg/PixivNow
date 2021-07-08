@@ -20,6 +20,7 @@ h1 排行榜
 <script lang="ts">
 import axios from 'axios'
 // import { router } from '../router'
+import { userData } from '../components/userLogin'
 import { API_BASE } from '../config'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
@@ -34,6 +35,7 @@ export default {
   },
   methods: {
     init() {
+      if (!userData) return
       this.loading = true
       axios
         .get(`${API_BASE}/api/ranking`)
@@ -42,11 +44,8 @@ export default {
             this.list = data
           },
           (err) => {
-            const code = err?.response?.data?.status
             const message =
-              code === 400
-                ? '您需要配置密钥以查看排行榜。'
-                : err?.response?.data?.message || err.message
+              err?.response?.data?.message || err.message || '发生未知问题'
             this.error = message
           }
         )
@@ -63,6 +62,7 @@ export default {
       loading: true,
       error: '',
       list: {},
+      userData,
     }
   },
 }
