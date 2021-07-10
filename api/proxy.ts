@@ -1,5 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
+import { handleError } from './utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { prefix, path } = req.query
@@ -23,9 +24,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         res.status(200).send(Buffer.from(data, 'base64'))
       },
       (err) => {
-        return res
-          .status(err?.response?.status || 503)
-          .send(err?.response?.data || err)
+        handleError(err, res)
       }
     )
 }

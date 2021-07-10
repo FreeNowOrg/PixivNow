@@ -1,20 +1,19 @@
 <template lang="pug">
-h1 排行榜
+h1(v-if="!list") 排行榜正在加载……
+h1(v-if="list") 排行榜 ({{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 第{{ list.page }}页)
 
-.isLogedIn(v-if="userData")
-  //- Error
-  section(v-if="error && !loading")
-    error-page(title="出大问题", :description="error")
+//- Error
+section(v-if="error && !loading")
+  error-page(title="出大问题", :description="error")
 
-  //- Result
-  section(v-if="!error")
-    artworks-list(:list="list")
+//- Loading
+section.loading(v-if="loading")
+  placeholder
 
-.noLogedIn(v-if="!userData")
-  section
-    p 您需要绑定您的 Pixiv 令牌以访问排行榜。
-    router-link(to="/login?back=/ranking")
-      button.btn 立即绑定
+//- Result
+section(v-if="!error")
+  artworks-list(:list="list.content")
+
 </template>
 
 <script lang="ts">
@@ -35,18 +34,35 @@ export default {
   },
   methods: {
     init() {
-      if (!userData) return
       this.loading = true
+      this.list = null
+
+      const { p, mode, date } = this.$route.params
       axios
-        .get(`${API_BASE}/api/ranking`)
+        .get(`${API_BASE}/api/ranking`, {
+          params: {
+            p,
+            mode,
+            date,
+          },
+        })
         .then(
           ({ data }) => {
+            // Date
+            let date: string = data.date
+            date =
+              date.substr(0, 4) +
+              '-' +
+              date.substr(4, 2) +
+              '-' +
+              date.substr(6, 2)
+            data.date = new Date(date)
+
             this.list = data
           },
           (err) => {
-            const message =
-              err?.response?.data?.message || err.message || '发生未知问题'
-            this.error = message
+            this.error =
+              err?.response?.data?.error || err.message || '出现未知问题'
           }
         )
         .finally(() => {
@@ -61,7 +77,7 @@ export default {
     return {
       loading: true,
       error: '',
-      list: {},
+      list: null,
       userData,
     }
   },

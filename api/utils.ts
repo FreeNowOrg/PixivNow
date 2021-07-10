@@ -1,4 +1,4 @@
-import { VercelResponse } from '@vercel/node'
+import { VercelRequest, VercelResponse } from '@vercel/node'
 import axios, { Method } from 'axios'
 
 export function makeArtList(obj: any) {
@@ -16,9 +16,9 @@ export function replaceUrl(obj: any) {
       .replace(/https:\/\/i\.pximg\.net\//g, '/-/')
       .replace(/https:\/\/s\.pximg\.net\//g, '/~/')
   }
-  
+
   if (typeof obj === 'string') return replace(obj)
-  
+
   for (let key in obj) {
     if (
       typeof obj[key] === 'string' &&
