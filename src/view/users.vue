@@ -146,7 +146,6 @@ export default {
     return {
       API_BASE,
       loading: true,
-      listLoading: true,
       error: '',
       user: {},
       userData,
@@ -156,19 +155,22 @@ export default {
   },
   methods: {
     init(id: any) {
+      // 初始化
+      this.user = {}
+      this.bookmarks = []
+      this.tab = 'illust'
+      this.loading = true
+
       const cache = getCache(`users.${id}`)
 
       if (cache) {
         this.loading = false
         this.user = cache
         document.title = `${cache.name} | User | PixivNow`
-        if (userData.value?.id === id) {
-          this.getBookmarks()
-        }
+        this.getBookmarks()
         return
       }
 
-      this.loading = true
       axios
         .get(`${API_BASE}/api/user/${id}`)
         .then(
@@ -177,9 +179,7 @@ export default {
             setCache(`users.${id}`, data)
             document.title = `${data.name} | User | PixivNow`
 
-            if (userData.value?.id === id) {
-              this.getBookmarks()
-            }
+            this.getBookmarks()
           },
           (err) => {
             console.warn('user', err.response)

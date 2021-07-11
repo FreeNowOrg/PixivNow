@@ -256,7 +256,12 @@ export default {
   },
   methods: {
     async init(id: string) {
-      if (!id) return
+      // 初始化
+      this.user = {}
+      this.comments = []
+      this.recommend = []
+      this.recommendNextIds = []
+      this.loading = true
 
       const cache = getCache(`illust.${id}`)
       if (cache) {
@@ -268,7 +273,6 @@ export default {
         this.getRecommend(id)
         return
       }
-      this.loading = true
 
       axios
         .get(`${API_BASE}/api/illust/${id}`, {
@@ -375,10 +379,7 @@ export default {
           })
           .then(
             ({ data }) => {
-              this.recommend = [
-                ...this.recommend,
-                ...data.illusts,
-              ] as never[]
+              this.recommend = [...this.recommend, ...data.illusts] as never[]
             },
             (err) => {
               console.warn('Load more recommends error', err)
