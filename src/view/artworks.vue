@@ -57,17 +57,17 @@ section.illust-container(v-if="!error && !loading")
     h2 相关推荐
     artworks-list(:list="recommend")
       .illustCard.loadMore(
-        v-if="!recommendNoMore"
+        v-if="recommendNextIds.length"
         @click="getRecommend"
         )
         .top
           div(:style="{width: '100%', paddingTop: '40%', paddingBottom: '40%', backgroundColor: '#efefef', textAlign: 'center'}")
             fa(
-              v-if="!recommendLoaging"
+              v-if="!recommendLoading"
               icon="ellipsis-h"
               size="5x")
             fa(
-              v-if="recommendLoaging"
+              v-if="recommendLoading"
               spin
               icon="spinner"
               size="5x")
@@ -75,10 +75,10 @@ section.illust-container(v-if="!error && !loading")
           h3.title 插画推荐
           p 发现更多推荐插画！
     show-more(
-      v-if="!recommendNoMore"
-      :text="recommendLoaging ? '加载中' : '加载更多'"
+      v-if="recommendNextIds.length"
+      :text="recommendLoading ? '加载中' : '加载更多'"
       :method="getRecommend"
-      :loading="recommendLoaging"
+      :loading="recommendLoading"
       )
 
 //- Error
@@ -236,8 +236,8 @@ export default {
       user: {},
       comments: [],
       recommend: [],
-      recommendLoaging: false,
-      recommendNoMore: false,
+      recommendLoading: false,
+      recommendNextIds: [],
       error: '',
       userData,
     }
@@ -255,7 +255,6 @@ export default {
   methods: {
     async init() {
       if (!this?.$route?.params?.id) return
-
       this.loading = true
 
       axios
@@ -315,34 +314,53 @@ export default {
         )
     },
     async getRecommend() {
-      if (this.recommendLoaging || this.recommendNoMore) return
-      this.recommendLoaging = true
-      axios
-        .get(`${API_BASE}/ajax/illust/89903546/recommend/init`, {
-          params: {
-            offset: this.recommend.length,
-            limit: 30,
-          },
-        })
-        .then(
-          ({ data }) => {
-            const illusts: Artwork[] = data.illusts
-            let total = illusts.length
-            let skip = 0
-            illusts.forEach((i) => {
-              if (this.recommend.find(({ id }) => i.id === id)) return skip++
-              // eslint-disable-next-line
-              this.recommend.push(i)
-            })
-            if (skip === total) this.recommendNoMore = true
-          },
-          (err) => {
-            console.warn('Get recommend error', err)
+      if (this.recommendLoading) return
+      this.recommendLoading = true
+
+      if (this.recommend.length < 1) {
+        // Init
+        console.log('init recommend')
+        axios
+          .get(
+            `${API_BASE}/ajax/illust/${this.$route.params.id}/recommend/init`,
+            {
+              params: {
+                limit: 18,
+              },
+            }
+          )
+          .then(
+            ({ data }) => {
+              this.recommend = data.illusts
+              this.recommendNextIds = data.nextIds
+            },
+            (err) => {
+              console.warn('Get recommend error', err)
+            }
+          )
+          .finally(() => {
+            this.recommendLoading = false
+          })
+      } else {
+        console.log('get more recommend')
+        // Loadmore
+        let requestIds: any[] = []
+        for (let i = 0; i < 18; i++) {
+          if (this.recommendNextIds.length > 0) {
+            requestIds.push(this.recommendNextIds.shift())
           }
-        )
-        .finally(() => {
-          this.recommendLoaging = false
-        })
+        }
+        axios
+          .get(
+            `${API_BASE}/ajax/illust/recommend/illusts`,
+            {
+              params: {
+                illust_ids: requestIds,
+              },
+            }
+          )
+          .then(console.log)
+      }
     },
   },
   created() {

@@ -47,6 +47,15 @@ export async function request(
   const url = `https://www.pixiv.net${path}`
   const defaultCookie = params.token ? 'PHPSESSID=' + params.token : ''
 
+  // 做一些转换防止抑郁
+  // "foo[]": [] -> "foo": []
+  for (let i in params) {
+    if (i.endsWith('[]') && Array.isArray(params[i])) {
+      params[i.replace(/\[\]$/, '')] = params[i]
+      delete params[i]
+    }
+  }
+
   try {
     const res = await axios({
       url,
