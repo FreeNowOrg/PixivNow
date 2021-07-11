@@ -50,21 +50,21 @@ export default {
     SearchBox,
   },
   methods: {
-    makeSearch() {
+    makeSearch(params: any) {
       this.loading = true
 
-      this.keyword = this.$route.params.keyword as string
-      this.p = parseInt(this.$route.params.p as string)
+      this.keyword = params.keyword
+      this.p = parseInt(params.p)
 
       if (!this.keyword) return
 
-      document.title = `${this.keyword} (第${this.p}页) | Search | PixivNow`
+      document.title = `${params.keyword} (第${params.p}页) | Search | PixivNow`
 
       axios
-        .get(`${API_BASE}/api/search/${encodeURIComponent(this.keyword)}`, {
+        .get(`${API_BASE}/api/search/${encodeURIComponent(params.keyword)}`, {
           params: {
-            p: this.p || 1,
-            mode: this.$route.query.mode || 'all',
+            p: params.p || 1,
+            mode: params.mode || 'all',
           },
         })
         .then(
@@ -73,7 +73,8 @@ export default {
             console.info(data?.illustManga?.data)
           },
           (err) => {
-            this.error = err?.response?.data?.message || err.message || 'HTTP 请求超时'
+            this.error =
+              err?.response?.data?.message || err.message || 'HTTP 请求超时'
           }
         )
         .finally(() => {
@@ -107,18 +108,11 @@ export default {
       )
     },
   },
-  created() {
-    this.$watch(
-      () => this.$route.params,
-      () => this.$route.params.keyword && this.makeSearch()
-    )
+  beforeRouteUpdate(to, from) {
+    this.makeSearch(to.params)
   },
-  // beforeRouteUpdate(to, from) {
-  //   console.info('router', { to, from })
-  //   this.makeSearch()
-  // },
   mounted() {
-    this.makeSearch()
+    this.makeSearch(this.$route.params)
   },
 }
 </script>

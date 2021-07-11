@@ -255,8 +255,7 @@ export default {
     ShowMore,
   },
   methods: {
-    async init() {
-      const id = this?.$route?.params?.id
+    async init(id: string) {
       if (!id) return
 
       const cache = getCache(`illust.${id}`)
@@ -265,8 +264,8 @@ export default {
         this.loading = false
         // Extra
         this.getUser(cache.userId)
-        this.getComments(cache.id)
-        this.getRecommend()
+        this.getComments(id)
+        this.getRecommend(id)
         return
       }
       this.loading = true
@@ -287,7 +286,7 @@ export default {
             // Extra
             this.getUser(data.userId)
             this.getComments(data.id)
-            this.getRecommend()
+            this.getRecommend(id)
           },
           (err) => {
             console.warn('illust fetch error', `#${id}`, err)
@@ -334,7 +333,7 @@ export default {
           }
         )
     },
-    async getRecommend() {
+    async getRecommend(id: string) {
       if (this.recommendLoading) return
       this.recommendLoading = true
 
@@ -342,14 +341,11 @@ export default {
         // Init
         console.log('init recommend')
         axios
-          .get(
-            `${API_BASE}/ajax/illust/${this.$route.params.id}/recommend/init`,
-            {
-              params: {
-                limit: 18,
-              },
-            }
-          )
+          .get(`${API_BASE}/ajax/illust/${id}/recommend/init`, {
+            params: {
+              limit: 18,
+            },
+          })
           .then(
             ({ data }) => {
               this.recommend = data.illusts
@@ -395,20 +391,12 @@ export default {
       }
     },
   },
-  created() {
-    this.$watch(
-      () => this.$route.params,
-      () => {
-        if (this?.$route?.params?.id) {
-          console.log('illust route')
-          return this.init()
-        }
-      }
-    )
+  beforeRouteUpdate(to, from) {
+    this.init(to.params.id as string)
   },
   mounted() {
     document.title = 'Artwork | PixivNow'
-    this.init()
+    this.init(this.$route.params.id as string)
   },
 }
 </script>

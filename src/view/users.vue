@@ -52,7 +52,7 @@ section.user(v-if="!loading && !error")
         @click="tab = 'manga'")
         a(:class="{tabActive: tab === 'manga'}") 漫画
       li(
-        v-if="userData && user.id === userData.id"
+        v-if="userData && bookmarks"
         @click="tab = 'bookmarks'")
         a(:class="{tabActive: tab === 'bookmarks'}") 收藏
     .tabContents
@@ -155,8 +155,7 @@ export default {
     }
   },
   methods: {
-    init() {
-      const id = this.$route.params.id
+    init(id: any) {
       const cache = getCache(`users.${id}`)
 
       if (cache) {
@@ -211,9 +210,12 @@ export default {
         })
     },
   },
+  beforeRouteUpdate(to, from) {
+    this.init(to.params.id)
+  },
   mounted() {
     document.title = `User | PixivNow`
-    this.init()
+    this.init(this.$route.params.id)
   },
 }
 </script>

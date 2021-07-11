@@ -1,5 +1,11 @@
 <template lang="pug">
 .loginForm.notLogedIn(v-if="!userData")
+  router-link.button(
+    v-if="$route.query.back"
+    :to="$route.query.back"
+  )
+    fa(icon="angle-left")
+    | &nbsp;取消
   label
     h1.title 设置 Pixiv 令牌
     input(
@@ -25,7 +31,13 @@
     p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
 
 div.loginForm.isLogedIn(v-if="userData")
-  h1 查看您的 Pixiv 令牌
+  router-link.button(
+    v-if="$route.query.back"
+    :to="$route.query.back"
+  )
+    fa(icon="angle-left")
+    | &nbsp;返回
+  h1 查看 Pixiv 令牌
   input.token(readonly="readonly" :value="userData.PHPSESSID")
   .submit
     button(@click="remove") 移除令牌
@@ -114,7 +126,7 @@ input
 
 .submit
   text-align: center
-  margin-top: 1rem
+  margin: 1rem auto
 
   .btn
     width: 50%

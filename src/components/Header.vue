@@ -1,19 +1,15 @@
 <template lang="pug">
 header.globalNavbar(:class="{ notAtTop, isHide }")
-  .logoArea
-    .logo: span.ph
-      .left Pixiv
-      .right Now
+  a.sideNavToggle.plain(@click="sideNavShow = true")
+    fa(icon="bars")
+
+  router-link.plain(to="/")
+    .logoArea
+      .logo: span.ph
+        .left Pixiv
+        .right Now
 
   .flex
-    .mainLinksArea
-      router-link(to="/") Home
-      //- | ·
-      //- router-link(to="/artworks") Artworks
-      | ·
-      router-link(to="/ranking") Ranking
-      | ·
-      router-link(to="/about") About
     .searchArea
       search-box
 
@@ -23,6 +19,7 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
         :src="userData ? userData.profileImg : API_BASE + '/~/common/images/no_profile.png'" 
         :title="userData ? userData.name + ' (' + userData.pixivId + ')' : '未登入'"
         )
+      fa(icon="angle-down")
       .dropdown
         ul
           //- notLogIn
@@ -32,8 +29,8 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
                 .bannerBg
                 img.avatar(:src="API_BASE + '/~/common/images/no_profile.png'")
               .details
-                .name 匿名
-                .uid 绑定令牌登录账号！
+                .name 游客
+                .uid 绑定令牌，同步您的 Pixiv 信息！
 
           //- isLogedIn
           li(v-if="userData")
@@ -47,7 +44,7 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
                 .uid @{{ userData.pixivId }}
 
           li(v-if="$route.path !== '/login'")
-            router-link(:to="'/login?back=' + $route.path") {{ userData ? '查看令牌' : '用户登入' }}
+            router-link.plain(:to="'/login?back=' + $route.path") {{ userData ? '查看令牌' : '用户登入' }}
           li(v-if="userData")
             a.plain(@click="userLogout") 用户登出
 </template>
@@ -57,11 +54,13 @@ import { defineComponent } from 'vue'
 import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
 import { userData, userLogout } from './userData'
+import SideNavigation, { sideNavShow } from './SideNav/SideNav.vue'
 
 export default defineComponent({
   name: 'com-header',
   components: {
     SearchBox,
+    SideNavigation,
   },
   data() {
     return {
@@ -69,6 +68,7 @@ export default defineComponent({
       notAtTop: false,
       isHide: false,
       userData,
+      sideNavShow,
       // curPath: this.$route,
     }
   },
@@ -135,6 +135,24 @@ export default defineComponent({
   &.isHide
     top: -80px
 
+.sideNavToggle
+  font-size: 1.2rem
+  text-align: center
+  margin: auto 0.5rem
+  color: var(--theme-accent-link-color)
+  cursor: pointer
+  width: 2.4rem
+  height: 2.4rem
+  border-radius: 50%
+  display: flex
+  align-items: center
+
+  &:hover
+    background-color: rgba(255,255,255,0.2)
+
+  [data-icon]
+    margin: 0 auto
+
 .logoArea
   // word-break:
 
@@ -163,6 +181,13 @@ export default defineComponent({
 
   .userLink
     position: relative
+    display: flex
+    align-items: center
+
+    [data-icon]
+      margin-left: 6px
+      color: #fff
+      transition: all 0.4s
 
     .dropdown
       display: none
@@ -190,8 +215,12 @@ export default defineComponent({
           &:hover
             background-color: var(--theme-tag-color)
 
-    &:hover .dropdown
-      display: block
+    &:hover
+      [data-icon]
+        transform: rotateZ(180deg)
+
+      .dropdown
+        display: block
 
 .navUserCard
   border-bottom: 1px solid
@@ -236,5 +265,6 @@ export default defineComponent({
   .right
     @extend %ph-left-right-shared
     background-color: var(--theme-accent-color)
+    color: var(--theme-accent-link-color)
     border-radius: 2px
 </style>
