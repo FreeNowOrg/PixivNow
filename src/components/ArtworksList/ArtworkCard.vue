@@ -3,7 +3,10 @@
   .top
     router-link(:to="'/artworks/' + illust.id")
       .thumb
-        img(:src="API_BASE + illust.url" alt="")
+        img(
+          :src="API_BASE + illust.url"
+          alt=""
+          lazyload="")
       .xRestrict.tag(v-if="illust.xRestrict" title="R-18")
         fa(icon="eye")
       .pageCount(:title="'共 ' + illust.pageCount + ' 张'")
@@ -14,7 +17,10 @@
       router-link(:to="'/artworks/' + illust.id") {{ illust.title }}
     .author(:title="illust.userName")
       router-link(:to="'/users/'+ illust.userId")
-        img.avatar(:src="API_BASE + illust.profileImageUrl")
+        img.avatar(
+          :src="API_BASE + illust.profileImageUrl"
+          lazyload=""
+          )
         | {{ illust.userName }}
     .tags
       router-link.tag(v-for="tagName in illust.tags", :to="'/search/' + tagName") \#{{ tagName }}

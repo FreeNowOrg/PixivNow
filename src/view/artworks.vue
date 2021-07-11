@@ -1,0 +1,383 @@
+<template lang="pug">
+h1(:class="illust.xRestrict ? 'danger' : ''") {{ loading ? '正在读取作品 #' + $route.params.id : illust.illustTitle }}
+
+//- Loading
+section.loading(v-if="loading")
+  placeholder
+
+//- Done
+section.illust-container(v-if="!error && !loading")
+  gallery(:pages="illust.pages" )
+  .tags
+    span.xRestrict(v-if="illust.xRestrict" title="R-18") R-18
+    art-tag(:key="_" v-for="(item, _) in illust.tags.tags" :tag="item.tag")
+  
+  .author
+    h2 作者
+    .loading(v-if="!user.userId")
+      placeholder
+    author-card(:user="user" v-if="user.userId")
+  
+  card.description(title="简介" class="" v-if="illust.description")
+    p(v-html="illust.description")
+  
+  card.about(title="关于")
+    ul
+      li
+        strong 浏览：
+        span {{ illust.viewCount }}
+      li
+        strong 点赞：
+        span {{ illust.likeCount }}
+      li
+        strong 评论：
+        span {{ illust.commentCount }}
+      li
+        strong 原创：
+        span {{ illust.isOriginal ? '是' : '?' }}
+      li
+        strong 发布：
+        span(:title="illust.createDate") {{ new Date(illust.createDate).toLocaleString() }}
+    div(:style="{textAlign: 'center'}")
+      a(
+        :href="illust?.extraData?.meta?.canonical || '#'"
+        target="_blank"
+        rel="noopener noreferrer"
+      ) 在 Pixiv 上查看 →
+
+  .breadCrumb
+    router-link.button(to="/artworks") ← 返回
+
+  .userIllusts
+    h2 用户作品
+    artworks-list.inline(:list="illust?.userIllusts")
+
+  //- 相关推荐
+  .recommendWorks
+    h2 相关推荐
+    artworks-list(:list="recommend")
+      .illustCard.loadMore(
+        v-if="!recommendNoMore"
+        @click="getRecommend"
+        )
+        .top
+          div(:style="{width: '100%', paddingTop: '40%', paddingBottom: '40%', backgroundColor: '#efefef', textAlign: 'center'}")
+            fa(
+              v-if="!recommendLoaging"
+              icon="ellipsis-h"
+              size="5x")
+            fa(
+              v-if="recommendLoaging"
+              spin
+              icon="spinner"
+              size="5x")
+        .bottom
+          h3.title 插画推荐
+          p 发现更多推荐插画！
+    show-more(
+      v-if="!recommendNoMore"
+      :text="recommendLoaging ? '加载中' : '加载更多'"
+      :method="getRecommend"
+      :loading="recommendLoaging"
+      )
+
+//- Error
+section.error(v-if="error")
+  error-page(title="出大问题" :description="error")
+</template>
+
+<script lang="ts">
+import axios from 'axios'
+import { API_BASE } from '../config'
+import { userData } from '../components/userData'
+
+import AuthorCard from '../components/AuthorCard.vue'
+import ArtTag from '../components/ArtTag.vue'
+import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import Card from '../components/Card.vue'
+import ErrorPage from '../components/ErrorPage.vue'
+import Gallery from '../components/Gallery.vue'
+import Placeholder from '../components/Placeholder.vue'
+import ShowMore from '../components/ShowMore.vue'
+
+// Types
+export interface ArtworkUrls {
+  mini: string
+  thumb: string
+  small: string
+  regular: string
+  original: string
+}
+export interface ArtworkTag {
+  tag: string
+  locked: boolean
+  deletable: boolean
+  userId: `${number}`
+  translation?: {
+    en?: string
+  }
+  userName: string
+}
+export interface Artwork {
+  illustId?: `${number}`
+  illustTitle?: string
+  illustComment?: string
+  id: `${number}`
+  title: string
+  illustType: 0
+  xRestrict: 0 | 1 | 2
+  restrict: 0
+  sl: 2
+  url: string
+  urls?: ArtworkUrls
+  pages?: { urls: ArtworkUrls; width: number; height: number }[]
+  description: string
+  tags:
+    | {
+        authorId: `${number}`
+        isLocked: boolean
+        tags: ArtworkTag[]
+      }
+    | string[]
+  storableTags?: string[]
+  userId: `${number}`
+  userName: string
+  userAccount?: string
+  userIllusts: Record<string, Artwork | null>
+  likeData: boolean
+  width: number
+  height: number
+  pageCount: number
+  bookmarkCount: number
+  likeCount: number
+  commentCount: number
+  responseCount: number
+  viewCount: number
+  isHowto: boolean
+  isOriginal: boolean
+  imageResponseOutData: any[]
+  imageResponseData: any[]
+  imageResponseCount: number
+  pollData: any
+  seriesNavData: any
+  descriptionBoothId: any
+  descriptionYoutubeId: any
+  comicPromotion: any
+  fanboxPromotion: any
+  contestBanners: any[]
+  isBookmarkable: boolean
+  contestData: any
+  bookmarkData?: {
+    id: `${number}`
+    private: boolean
+  } | null
+  alt: string
+  titleCaptionTranslation: {
+    workTitle: string
+    workCaption: string
+  }
+  createDate: string
+  updateDate: string
+  isUnlisted: boolean
+  isMasked: boolean
+  profileImageUrl: string
+  type: 'illust' | 'novel'
+  zoneConfig?: any
+  extraData?: {
+    meta: {
+      title: string
+      description: string
+      canonical: string
+      alternateLanguages: {
+        ja: string
+        en: string
+      }
+      descriptionHeader: string
+      ogp: {
+        description: string
+        image: string
+        title: string
+        type: string
+      }
+      twitter: {
+        description: string
+        image: string
+        title: string
+        card: string
+      }
+    }
+  }
+  noLoginData?: {
+    breadcrumbs: {
+      successor: any[]
+      current: {
+        zh?: string
+      }
+    }
+    zengoIdWorks: Artwork[]
+    zengoWorkData: {
+      nextWork: {
+        id: `${number}`
+        title: string
+      }
+      prevWork: {
+        id: `${number}`
+        title: string
+      }
+    }
+  }
+}
+
+export default {
+  data() {
+    return {
+      loading: true,
+      illust: {},
+      user: {},
+      comments: [],
+      recommend: [],
+      recommendLoaging: false,
+      recommendNoMore: false,
+      error: '',
+      userData,
+    }
+  },
+  components: {
+    AuthorCard,
+    ArtTag,
+    ArtworksList,
+    Card,
+    ErrorPage,
+    Gallery,
+    Placeholder,
+    ShowMore,
+  },
+  methods: {
+    async init() {
+      if (!this?.$route?.params?.id) return
+
+      this.loading = true
+
+      axios
+        .get(`${API_BASE}/api/illust/${this.$route.params.id}`, {
+          params: {
+            full: 1,
+            lang: 'zh',
+          },
+        })
+        .then(
+          ({ data }: { data: Artwork }) => {
+            document.title = `${data.illustTitle} | Artwork | PixivNow`
+            this.illust = data
+
+            // Extra
+            this.getUser(data.userId)
+            this.getComments(data.id)
+            this.getRecommend()
+          },
+          (err) => {
+            console.warn('illust fetch error', `#${this.$route.params.id}`, err)
+            this.error =
+              err?.response?.data?.message || err.message || 'HTTP 请求超时'
+          }
+        )
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    async getUser(userId: string) {
+      axios.get(`${API_BASE}/api/user/${userId}`).then(
+        ({ data }) => {
+          this.user = data
+        },
+        (err) => {
+          console.warn('User fetch error', err)
+        }
+      )
+    },
+    async getComments(id: string | number) {
+      axios
+        .get(`${API_BASE}/ajax/illusts/comments/roots`, {
+          params: {
+            illust_id: id || this.$route.params.id,
+            limit: 50,
+            lang: 'zh',
+          },
+        })
+        .then(
+          ({ data }) => {
+            console.log('Comments', data)
+            this.comments = data
+          },
+          (err) => {
+            console.warn('Comments fetch error', err)
+          }
+        )
+    },
+    async getRecommend() {
+      if (this.recommendLoaging || this.recommendNoMore) return
+      this.recommendLoaging = true
+      axios
+        .get(`${API_BASE}/ajax/illust/89903546/recommend/init`, {
+          params: {
+            offset: this.recommend.length,
+            limit: 30,
+          },
+        })
+        .then(
+          ({ data }) => {
+            const illusts: Artwork[] = data.illusts
+            let total = illusts.length
+            let skip = 0
+            illusts.forEach((i) => {
+              if (this.recommend.find(({ id }) => i.id === id)) return skip++
+              // eslint-disable-next-line
+              this.recommend.push(i)
+            })
+            if (skip === total) this.recommendNoMore = true
+          },
+          (err) => {
+            console.warn('Get recommend error', err)
+          }
+        )
+        .finally(() => {
+          this.recommendLoaging = false
+        })
+    },
+  },
+  created() {
+    this.$watch(
+      () => this.$route.params,
+      () => {
+        if (this?.$route?.params?.id) {
+          console.log('illust route')
+          return this.init()
+        }
+      }
+    )
+  },
+  mounted() {
+    document.title = 'Artwork | PixivNow'
+    this.init()
+  },
+}
+</script>
+
+<style scoped lang="sass">
+.loading
+  text-align: center
+
+.tags
+  margin: 1rem 0
+
+h1.danger
+  box-shadow: 0 -0.5em 0 #f55 inset
+
+.xRestrict
+  font-weight: bold
+  color: #c00
+  margin-right: 1rem
+
+.breadCrumb
+  margin-top: 1rem
+</style>

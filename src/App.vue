@@ -15,7 +15,7 @@ import { defineComponent } from 'vue'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import NProgress from './components/NProgress.vue'
-import { userInit } from './components/userLogin'
+import { userInit } from './components/userData'
 
 export default defineComponent({
   name: 'App',

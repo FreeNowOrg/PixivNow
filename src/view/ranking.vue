@@ -1,25 +1,36 @@
 <template lang="pug">
-h1(v-if="!list") 排行榜正在加载……
-h1(v-if="list") 排行榜 ({{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 第{{ list.page }}页)
+//- 未登录
+.noLogedIn(v-if="!userData")
+  h1 查看排行榜
+  section
+    p 绑定 Pixiv 令牌，享受排行榜以及更多功能！
+    router-link(to="/login?back=/ranking")
+      button.btn 立即绑定
 
-//- Error
-section(v-if="error && !loading")
-  error-page(title="出大问题", :description="error")
+//- 已登录
+.isLoggedIn(v-if="userData")
+  //- Error
+  h1 排行榜加载失败
+  section(v-if="error && !loading")
+    error-page(title="出大问题", :description="error")
 
-//- Loading
-section.loading(v-if="loading")
-  placeholder
+  //- Loading
+  section.loading(v-if="loading")
+    h1 排行榜加载中……
+    placeholder
 
-//- Result
-section(v-if="!error")
-  artworks-list(:list="list.content")
-
+  //- Result
+  section(v-if="!error && list")
+    h1 排行榜
+    .desc
+      | {{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 (第{{ list.page }}页)
+    artworks-list(:list="list.content")
 </template>
 
 <script lang="ts">
 import axios from 'axios'
 // import { router } from '../router'
-import { userData } from '../components/userLogin'
+import { userData } from '../components/userData'
 import { API_BASE } from '../config'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
@@ -71,6 +82,7 @@ export default {
     },
   },
   mounted() {
+    if (!userData) return console.log('需要绑定令牌')
     this.init()
   },
   data() {

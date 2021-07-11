@@ -38,7 +38,7 @@ import {
   userData,
   userLogin,
   userLogout,
-} from '../components/userLogin'
+} from '../components/userData'
 
 export default {
   data() {

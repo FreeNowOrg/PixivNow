@@ -2,6 +2,8 @@
 ul.artworksList
   li(v-for="item in list")
     artwork-card(v-if="item" :illust="item")
+  li 
+    slot/
 </template>
 
 <script lang="ts">

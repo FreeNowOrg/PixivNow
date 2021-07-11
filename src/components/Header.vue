@@ -8,8 +8,8 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
   .flex
     .mainLinksArea
       router-link(to="/") Home
-      | ·
-      router-link(to="/artworks") Artworks
+      //- | ·
+      //- router-link(to="/artworks") Artworks
       | ·
       router-link(to="/ranking") Ranking
       | ·
@@ -51,7 +51,7 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
 import { defineComponent } from 'vue'
 import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
-import { userData, userLogout } from './userLogin'
+import { userData, userLogout } from './userData'
 
 export default defineComponent({
   name: 'com-header',
