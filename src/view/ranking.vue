@@ -24,7 +24,7 @@
     h1 排行榜
     .desc
       | {{ list.date.getFullYear() }} 年 {{ list.date.getMonth() + 1 }} 月 {{ list.date.getDate() }} 日 (第{{ list.page }}页)
-    artworks-list(:list="list.content")
+    artworks-list(:list="list.contents")
 </template>
 
 <script lang="ts">
