@@ -1,7 +1,7 @@
 <template lang="pug">
-.illustCard(v-if="illust.illustId")
+.illustCard(v-if="illust.id || illust.illustId")
   .top
-    router-link(:to="'/artworks/' + illust.illustId")
+    router-link(:to="'/artworks/' + (illust.id || illust.illustId)")
       .thumb
         img(
           :src="API_BASE + illust.url"
@@ -15,7 +15,7 @@
       .ranking(v-if="illust.rank") {{ illust.rank }}
   .bottom
     h3.title(:title="illust.title")
-      router-link(:to="'/artworks/' + illust.illustId") {{ illust.title }}
+      router-link(:to="'/artworks/' + (illust.id || illust.illustId)") {{ illust.title }}
     .author(:title="illust.userName")
       router-link(:to="'/users/' + illust.userId")
         img.avatar(
