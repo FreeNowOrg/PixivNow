@@ -27,6 +27,7 @@ h2
 
 .inner
   box-shadow: var(--theme-box-shadow)
+  background-color: var(--theme-background-color)
   border-radius: 4px
   padding: 1rem
   transition: box-shadow .24s ease-in-out

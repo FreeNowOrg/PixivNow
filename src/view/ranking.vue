@@ -15,15 +15,14 @@
     error-page(title="出大问题", :description="error")
 
   //- Loading
-  section.loading(v-if="loading")
+  section(v-if="loading")
     h1 排行榜加载中……
-    placeholder
+    .loading
+      placeholder
 
   //- Result
   section(v-if="list")
-    h1 排行榜
-    .desc
-      | {{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 (第{{ list.page }}页)
+    h1 {{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 排行榜
     artworks-list(:list="list.contents")
 </template>
 
@@ -86,6 +85,8 @@ export default {
   mounted() {
     if (!userData) return console.log('需要绑定令牌')
     this.init()
+
+    document.title='Ranking | PixvNow'
   },
   data() {
     return {
@@ -98,4 +99,7 @@ export default {
 }
 </script>
 
-<style scoped lang="stylus"></style>
+<style scoped lang="sass">
+.loading
+  text-align: center
+</style>

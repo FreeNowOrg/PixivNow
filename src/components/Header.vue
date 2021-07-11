@@ -28,23 +28,27 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
           //- notLogIn
           li(v-if="!userData")
             .navUserCard
-              .left
+              .top
+                .bannerBg
                 img.avatar(:src="API_BASE + '/~/common/images/no_profile.png'")
-              .right
-                .title 匿名
+              .details
+                .name 匿名
+                .uid 绑定令牌登录账号！
           li(v-if="!userData && $route.path !== '/login'")
             router-link(:to="'/login?back=' + $route.path") 用户登入
 
           //- isLogedIn
           li(v-if="userData")
             .navUserCard
-              .left
-                img.avatar(:src="API_BASE + userData.profileImgBig")
-              .right
-                router-link.name(:to="'/users/' + userData.id") {{ userData.name }}
-                .tag ({{ userData.pixivId }})
+              .top
+                .bannerBg
+                router-link.plain.name(:to="'/users/' + userData.id")
+                  img.avatar(:src="API_BASE + userData.profileImgBig")
+              .details
+                router-link.plain.name(:to="'/users/' + userData.id") {{ userData.name }}
+                .uid @{{ userData.pixivId }}
           li(v-if="userData")
-            a(@click="userLogout") 用户登出
+            a.plain(@click="userLogout") 用户登出
 </template>
 
 <script lang="ts">
@@ -138,7 +142,7 @@ export default defineComponent({
   font-size: 1.2rem
 
 .mainLinksArea
-  flex: 1
+  // flex: 1
 
   a
     @extend %logo-link-shared
@@ -146,7 +150,7 @@ export default defineComponent({
     font-size: 1.2rem
 
 .searchArea
-  // flex: 1
+  flex: 1
 
 .userArea
   margin-left: 1rem
@@ -166,15 +170,17 @@ export default defineComponent({
       right: 0
       padding: 0
       padding-top: 0.4rem
+      width: 200px
 
       ul
         list-style: none
         padding: 4px
         background-color: #fff
         box-shadow: 0 0 4px #aaa
+        border-radius: 4px
 
         li > *
-          padding: 4px 8px
+          padding: 0.5rem
 
         li a
           display: block
@@ -187,27 +193,30 @@ export default defineComponent({
       display: block
 
 .navUserCard
-  display: flex
   border-bottom: 1px solid
+  position: relative
+
+  .bannerBg
+    position: absolute
+    top: calc(-0.4rem - 6px)
+    left: -12px
+    height: 56px
+    width: calc(100% + 24px)
+    background-color: rgba(var(--theme-accent-color--rgb), 0.1)
+    z-index: 0
+
+  a
+    display: inline !important
 
   .avatar
-    width: 50px
-    height: 50px
+    width: 68px
+    height: 68px
 
-  .right
-    margin-left: 1rem
-    display: flex
-    align-items: center
-    flex-wrap: wrap
-    text-align: center
-
-    > *
-      width: 100%
-
+  .details
     .name
-      font-size: 1.2rem
+      font-size: 1rem
 
-    .tag
+    .uid
       font-size: 0.8rem
       color: #aaa
 

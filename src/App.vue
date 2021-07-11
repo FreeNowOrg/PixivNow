@@ -32,10 +32,12 @@ export default defineComponent({
 
 <style scoped lang="sass">
 main
+  padding: 24px 0 60px 0
+  min-height: 100vh
+  position: relative
+
   article
+    padding: 1rem
+    background-color: rgba(0, 0, 0, 0.02)
     z-index: 1
-    min-height: 100vh
-    padding: 60px 1rem 100px 1rem
-    box-sizing: border-box
-    position: relative
 </style>

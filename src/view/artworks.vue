@@ -59,9 +59,10 @@ section.illust-container(v-if="!error && !loading")
       .illustCard.loadMore(
         v-if="recommendNextIds.length"
         @click="getRecommend"
+        :style="{cursor: 'pointer'}"
         )
         .top
-          div(:style="{width: '100%', paddingTop: '40%', paddingBottom: '40%', backgroundColor: '#efefef', textAlign: 'center'}")
+          div(:style="{width: '100%', paddingTop: '35%', paddingBottom: '35%', backgroundColor: '#efefef', textAlign: 'center'}")
             fa(
               v-if="!recommendLoading"
               icon="ellipsis-h"
@@ -72,8 +73,8 @@ section.illust-container(v-if="!error && !loading")
               icon="spinner"
               size="5x")
         .bottom
-          h3.title 插画推荐
-          p 发现更多推荐插画！
+          h3.title 推荐作品
+          p 点击这里，发现更多相关作品！
     show-more(
       v-if="recommendNextIds.length"
       :text="recommendLoading ? '加载中' : '加载更多'"
@@ -99,6 +100,7 @@ import ErrorPage from '../components/ErrorPage.vue'
 import Gallery from '../components/Gallery.vue'
 import Placeholder from '../components/Placeholder.vue'
 import ShowMore from '../components/ShowMore.vue'
+import { getCache, setCache } from './siteCache'
 
 // Types
 export interface ArtworkUrls {
@@ -254,11 +256,23 @@ export default {
   },
   methods: {
     async init() {
-      if (!this?.$route?.params?.id) return
+      const id = this?.$route?.params?.id
+      if (!id) return
+
+      const cache = getCache(`illust.${id}`)
+      if (cache) {
+        this.illust = cache
+        this.loading = false
+        // Extra
+        this.getUser(cache.userId)
+        this.getComments(cache.id)
+        this.getRecommend()
+        return
+      }
       this.loading = true
 
       axios
-        .get(`${API_BASE}/api/illust/${this.$route.params.id}`, {
+        .get(`${API_BASE}/api/illust/${id}`, {
           params: {
             full: 1,
             lang: 'zh',
@@ -267,6 +281,7 @@ export default {
         .then(
           ({ data }: { data: Artwork }) => {
             document.title = `${data.illustTitle} | Artwork | PixivNow`
+            setCache(`illust.${id}`, data)
             this.illust = data
 
             // Extra
@@ -275,7 +290,7 @@ export default {
             this.getRecommend()
           },
           (err) => {
-            console.warn('illust fetch error', `#${this.$route.params.id}`, err)
+            console.warn('illust fetch error', `#${id}`, err)
             this.error =
               err?.response?.data?.message || err.message || 'HTTP 请求超时'
           }
@@ -285,8 +300,14 @@ export default {
         })
     },
     async getUser(userId: string) {
+      if (getCache(`users.${userId}`)) {
+        this.user = getCache(`users.${userId}`)
+        return
+      }
+
       axios.get(`${API_BASE}/api/user/${userId}`).then(
         ({ data }) => {
+          setCache(`users.${userId}`, data)
           this.user = data
         },
         (err) => {
