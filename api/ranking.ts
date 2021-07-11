@@ -29,7 +29,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     req.headers
   )
     .then(({ data }) => {
-      data.content = data?.content?.map((i) => {
+      data.content = data?.content?.map((i: any) => {
         i.xRestrict = i?.illust_content_type?.sexual || 0
         return i
       })
