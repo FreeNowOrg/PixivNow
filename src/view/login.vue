@@ -18,7 +18,7 @@
     p 访问 <a href="https://www.pixiv.net" target="_blank">www.pixiv.net</a> 源站并登录，打开浏览器控制台(f12)，点击“存储(storage)”一栏，在 cookie 列表里找到“键(key)”为<code>PHPSESSID</code>的一栏，将它的“值(value)”复制后填写到这里。
     p
       | 它应该形如：
-      code(title="此处的令牌为随机生成，仅供演示使用" @click="randomToken">) {{ example }}
+      code(title="此处的令牌为随机生成，仅供演示使用" @click="randomToken") {{ example }}
       | 。
     h2 PixivNow 会窃取我的个人信息吗？
     p 我们<strong>不会</strong>存储或转让您的个人信息以及 cookie。
