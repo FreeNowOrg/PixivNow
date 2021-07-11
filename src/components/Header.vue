@@ -34,8 +34,6 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
               .details
                 .name 匿名
                 .uid 绑定令牌登录账号！
-          li(v-if="!userData && $route.path !== '/login'")
-            router-link(:to="'/login?back=' + $route.path") 用户登入
 
           //- isLogedIn
           li(v-if="userData")
@@ -47,6 +45,9 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
               .details
                 router-link.plain.name(:to="'/users/' + userData.id") {{ userData.name }}
                 .uid @{{ userData.pixivId }}
+
+          li(v-if="$route.path !== '/login'")
+            router-link(:to="'/login?back=' + $route.path") {{ userData ? '查看令牌' : '用户登入' }}
           li(v-if="userData")
             a.plain(@click="userLogout") 用户登出
 </template>
