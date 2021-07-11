@@ -4,7 +4,7 @@ axios.defaults.timeout = 45 * 1000
 
 // API endpoint
 export const API_BASE =
-  process.env.NODE_ENV === 'development' ? 'https://pixiv.js.org' : ''
+  process.env.NODE_ENV === 'development' ? 'https://pixiv-now-git-dev-dragon-fish.vercel.app' : ''
 
 // Copyright links
 // Do not modify please

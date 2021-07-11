@@ -929,6 +929,11 @@ callsites@^3.0.0:
   resolved "https://registry.npmjs.org/callsites/-/callsites-3.1.0.tgz#b3630abd8943432f54b3f0519238e33cd7df2f73"
   integrity sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
 
+camelcase-object-deep@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.npmjs.org/camelcase-object-deep/-/camelcase-object-deep-1.1.4.tgz#5eca4ff37a92da7b3889a66614ddbd0f92d41423"
+  integrity sha512-COeBFKyRCn1Y04GP5Ku+8AWueuoiZDefB31m8+AM7oBUG2ct2bona2CayCBzcIOX6ryMIWAaLZy+N1vAeAK2iw==
+
 camelcase@^5.3.1:
   version "5.3.1"
   resolved "https://registry.npmjs.org/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"

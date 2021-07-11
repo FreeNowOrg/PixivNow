@@ -3,30 +3,62 @@
   .title
     span PixivNow
   p.description Pixiv Service Proxy
+
+section.search
+  h2 探索发现
   search-box.big.search
-  p
-    ruby 前端在做了
-      rt 咕咕咕
-  p
-    a(href="https://github.com/Wjghj-Project/pixiv-now", target="_blank") API Documentation
+
+section.ranking
+  h2 今日排行
+  .loading(v-if="rankList.length < 1")
+    placeholder
+  artworks-list.inline(:list="rankList")
+
 </template>
 
 <script lang="ts">
+import axios from 'axios'
+import { API_BASE } from '../config'
+import { getCache, setCache } from './siteCache'
+
+import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
 import SearchBox from '../components/SearchBox.vue'
+import Placeholder from '../components/Placeholder.vue'
 
 export default {
   components: {
+    ArtworksList,
     SearchBox,
+    Placeholder,
+  },
+  data() {
+    return {
+      rankList: [],
+    }
+  },
+  methods: {
+    initRank() {
+      if (getCache('home.rankList')) {
+        this.rankList = getCache('home.rankList')
+        return
+      }
+      axios.get(`${API_BASE}/api/ranking`).then(({ data }) => {
+        this.rankList = data.contents
+        setCache('home.rankList', data.contents)
+      })
+    },
   },
   mounted() {
     document.title = 'PixivNow'
+
+    this.initRank()
   },
 }
 </script>
 
 <style scoped lang="sass">
 .home
-  margin: 4rem auto
+  margin: 4rem auto 2rem auto
   height: 100%
   text-align: center
 
@@ -44,5 +76,8 @@ export default {
     padding: 0 0.4em
 
 .search
-  margin: 4rem 0
+  margin: 1rem 0
+
+.loading
+  text-align: center
 </style>

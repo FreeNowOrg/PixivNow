@@ -1,25 +1,37 @@
 <template lang="pug">
-.illustCard(v-if="illust.id")
+.illustCard(v-if="illust.id || illust.illustId")
   .top
-    router-link(:to="'/artworks/' + illust.id")
+    router-link(:to="'/artworks/' + (illust.id || illust.illustId)")
       .thumb
-        img(:src="API_BASE + illust.url" alt="")
+        img(
+          :src="API_BASE + illust.url"
+          alt=""
+          lazyload="")
       .xRestrict.tag(v-if="illust.xRestrict" title="R-18")
         fa(icon="eye")
-      .pageCount(:title="'共 ' + illust.pageCount + ' 张'")
+      .pageCount(
+        v-if="illust.pageCount"
+        :title="'共 ' + illust.pageCount + ' 张'")
         fa(icon="images")
         | {{ illust.pageCount }}
+      .ranking(
+        v-if="illust.rank"
+        :class="{ gold: illust.rank === 1, silver: illust.rank === 2, brown: illust.rank === 3}"
+        ) {{ illust.rank }}
   .bottom
     h3.title(:title="illust.title")
-      router-link(:to="'/artworks/' + illust.id") {{ illust.title }}
+      router-link(:to="'/artworks/' + (illust.id || illust.illustId)") {{ illust.title }}
     .author(:title="illust.userName")
-      router-link(:to="'/users/'+ illust.userId")
-        img.avatar(:src="API_BASE + illust.profileImageUrl")
+      router-link(:to="'/users/' + illust.userId")
+        img.avatar(
+          :src="API_BASE + (illust.profileImageUrl || illust.profileImg)"
+          lazyload=""
+          )
         | {{ illust.userName }}
     .tags
       router-link.tag(v-for="tagName in illust.tags", :to="'/search/' + tagName") \#{{ tagName }}
 
-.illustCard(v-if="illust.isAdContainer")
+.illustCard.ad(v-if="illust.isAdContainer")
   .top
     div(:style="{width: '100%', paddingTop: '100%', backgroundColor: '#efefef'}")
   .bottom
@@ -55,7 +67,7 @@ h3
   min-width: 250px
   max-width: 350px
   width: 12.5vw
-  background-color: var(--theme-box-shadow)
+  background-color: var(--theme-background-color)
   border-radius: 4px
   transition: all .24s ease-in-out
 
@@ -81,6 +93,7 @@ h3
       left: 0
       width: 100%
       height: 100%
+
 
   .pageCount
     position: absolute
@@ -108,6 +121,27 @@ h3
 
     [data-icon]
       margin: 0 auto
+
+  .ranking
+    position: absolute
+    top: -1rem
+    left: -1rem
+    font-size: 1.4rem
+    color: #252525
+    background-color: #fff
+    border-radius: 50%
+    width: 2rem
+    height: 2rem
+    text-align: center
+    line-height: 1.4
+    box-shadow: 0 0 0 2px rgba(var(--theme-accent-color--rgb), 0.4) inset, 0 0 0 4px #fff
+
+    &.gold
+      box-shadow: 0 0 0 2px gold inset, 0 0 0 4px #fff
+    &.silver
+      box-shadow: 0 0 0 2px silver inset, 0 0 0 4px #fff
+    &.brown
+      box-shadow: 0 0 0 2px brown inset, 0 0 0 4px #fff
 
 .bottom
   // display: flex

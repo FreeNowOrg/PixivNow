@@ -1,5 +1,11 @@
 <template lang="pug">
 .loginForm.notLogedIn(v-if="!userData")
+  router-link.button(
+    v-if="$route.query.back"
+    :to="$route.query.back"
+  )
+    fa(icon="angle-left")
+    | &nbsp;取消
   label
     h1.title 设置 Pixiv 令牌
     input(
@@ -18,14 +24,20 @@
     p 访问 <a href="https://www.pixiv.net" target="_blank">www.pixiv.net</a> 源站并登录，打开浏览器控制台(f12)，点击“存储(storage)”一栏，在 cookie 列表里找到“键(key)”为<code>PHPSESSID</code>的一栏，将它的“值(value)”复制后填写到这里。
     p
       | 它应该形如：
-      code(title="此处的令牌为随机生成，仅供演示使用" @click="randomToken">) {{ example }}
+      code(title="此处的令牌为随机生成，仅供演示使用" @click="randomToken") {{ example }}
       | 。
     h2 PixivNow 会窃取我的个人信息吗？
     p 我们<strong>不会</strong>存储或转让您的个人信息以及 cookie。
     p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
 
 div.loginForm.isLogedIn(v-if="userData")
-  h1 查看您的 Pixiv 令牌
+  router-link.button(
+    v-if="$route.query.back"
+    :to="$route.query.back"
+  )
+    fa(icon="angle-left")
+    | &nbsp;返回
+  h1 查看 Pixiv 令牌
   input.token(readonly="readonly" :value="userData.PHPSESSID")
   .submit
     button(@click="remove") 移除令牌
@@ -38,7 +50,7 @@ import {
   userData,
   userLogin,
   userLogout,
-} from '../components/userLogin'
+} from '../components/userData'
 
 export default {
   data() {
@@ -53,7 +65,7 @@ export default {
   methods: {
     tokenValidator,
     goBack() {
-      const back = this.$route.params.back
+      const back = this.$route.query.back
       if (back) this.$router.push(back as string)
     },
     randomToken() {
@@ -84,12 +96,7 @@ export default {
       this.error = ''
     },
   },
-  mounted() {
-    if (userData.value) {
-      console.log('already')
-      // return this.goBack()
-    }
-  },
+  mounted() {},
 }
 </script>
 
@@ -119,7 +126,7 @@ input
 
 .submit
   text-align: center
-  margin-top: 1rem
+  margin: 1rem auto
 
   .btn
     width: 50%

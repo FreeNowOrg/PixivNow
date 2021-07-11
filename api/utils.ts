@@ -1,4 +1,4 @@
-import { VercelResponse } from '@vercel/node'
+import { VercelRequest, VercelResponse } from '@vercel/node'
 import axios, { Method } from 'axios'
 
 export function makeArtList(obj: any) {
@@ -16,9 +16,9 @@ export function replaceUrl(obj: any) {
       .replace(/https:\/\/i\.pximg\.net\//g, '/-/')
       .replace(/https:\/\/s\.pximg\.net\//g, '/~/')
   }
-  
+
   if (typeof obj === 'string') return replace(obj)
-  
+
   for (let key in obj) {
     if (
       typeof obj[key] === 'string' &&
@@ -46,6 +46,15 @@ export async function request(
 ) {
   const url = `https://www.pixiv.net${path}`
   const defaultCookie = params.token ? 'PHPSESSID=' + params.token : ''
+
+  // 做一些转换防止抑郁
+  // "foo[]": [] -> "foo": []
+  for (let i in params) {
+    if (i.endsWith('[]') && Array.isArray(params[i])) {
+      params[i.replace(/\[\]$/, '')] = params[i]
+      delete params[i]
+    }
+  }
 
   try {
     const res = await axios({

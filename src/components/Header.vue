@@ -1,19 +1,15 @@
 <template lang="pug">
 header.globalNavbar(:class="{ notAtTop, isHide }")
-  .logoArea
-    .logo: span.ph
-      .left Pixiv
-      .right Now
+  a.sideNavToggle.plain(@click="sideNavShow = true")
+    fa(icon="bars")
+
+  router-link.plain(to="/")
+    .logoArea
+      .logo: span.ph
+        .left Pixiv
+        .right Now
 
   .flex
-    .mainLinksArea
-      router-link(to="/") Home
-      | ·
-      router-link(to="/artworks") Artworks
-      | ·
-      router-link(to="/ranking") Ranking
-      | ·
-      router-link(to="/about") About
     .searchArea
       search-box
 
@@ -23,40 +19,48 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
         :src="userData ? userData.profileImg : API_BASE + '/~/common/images/no_profile.png'" 
         :title="userData ? userData.name + ' (' + userData.pixivId + ')' : '未登入'"
         )
+      fa(icon="angle-down")
       .dropdown
         ul
           //- notLogIn
           li(v-if="!userData")
             .navUserCard
-              .left
+              .top
+                .bannerBg
                 img.avatar(:src="API_BASE + '/~/common/images/no_profile.png'")
-              .right
-                .title 匿名
-          li(v-if="!userData && $route.path !== '/login'")
-            router-link(:to="'/login?back=' + $route.path") 用户登入
+              .details
+                .name 游客
+                .uid 绑定令牌，同步您的 Pixiv 信息！
 
           //- isLogedIn
           li(v-if="userData")
             .navUserCard
-              .left
-                img.avatar(:src="API_BASE + userData.profileImgBig")
-              .right
-                router-link.name(:to="'/users/' + userData.id") {{ userData.name }}
-                .tag ({{ userData.pixivId }})
+              .top
+                .bannerBg
+                router-link.plain.name(:to="'/users/' + userData.id")
+                  img.avatar(:src="API_BASE + userData.profileImgBig")
+              .details
+                router-link.plain.name(:to="'/users/' + userData.id") {{ userData.name }}
+                .uid @{{ userData.pixivId }}
+
+          li(v-if="$route.path !== '/login'")
+            router-link.plain(:to="'/login?back=' + $route.path") {{ userData ? '查看令牌' : '用户登入' }}
           li(v-if="userData")
-            a(@click="userLogout") 用户登出
+            a.plain(@click="userLogout") 用户登出
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
-import { userData, userLogout } from './userLogin'
+import { userData, userLogout } from './userData'
+import SideNavigation, { sideNavShow } from './SideNav/SideNav.vue'
 
 export default defineComponent({
   name: 'com-header',
   components: {
     SearchBox,
+    SideNavigation,
   },
   data() {
     return {
@@ -64,6 +68,7 @@ export default defineComponent({
       notAtTop: false,
       isHide: false,
       userData,
+      sideNavShow,
       // curPath: this.$route,
     }
   },
@@ -123,12 +128,31 @@ export default defineComponent({
     flex: 1
     overflow-x: auto
     align-items: center
+    margin: 0 1.5rem
 
   &.notAtTop
     box-shadow: 0 2px 4px var(--theme-box-shadow-color)
 
   &.isHide
     top: -80px
+
+.sideNavToggle
+  font-size: 1.2rem
+  text-align: center
+  margin: auto 0.5rem
+  color: var(--theme-accent-link-color)
+  cursor: pointer
+  width: 2.4rem
+  height: 2.4rem
+  border-radius: 50%
+  display: flex
+  align-items: center
+
+  &:hover
+    background-color: rgba(255,255,255,0.2)
+
+  [data-icon]
+    margin: 0 auto
 
 .logoArea
   // word-break:
@@ -138,7 +162,7 @@ export default defineComponent({
   font-size: 1.2rem
 
 .mainLinksArea
-  flex: 1
+  // flex: 1
 
   a
     @extend %logo-link-shared
@@ -146,10 +170,10 @@ export default defineComponent({
     font-size: 1.2rem
 
 .searchArea
-  // flex: 1
+  flex: 1
 
 .userArea
-  margin-left: 1rem
+  margin-left: 0.5rem
 
   .avatar
     height: 2rem
@@ -158,6 +182,13 @@ export default defineComponent({
 
   .userLink
     position: relative
+    display: flex
+    align-items: center
+
+    [data-icon]
+      margin-left: 6px
+      color: #fff
+      transition: all 0.4s
 
     .dropdown
       display: none
@@ -166,15 +197,17 @@ export default defineComponent({
       right: 0
       padding: 0
       padding-top: 0.4rem
+      width: 200px
 
       ul
         list-style: none
         padding: 4px
         background-color: #fff
         box-shadow: 0 0 4px #aaa
+        border-radius: 4px
 
         li > *
-          padding: 4px 8px
+          padding: 0.5rem
 
         li a
           display: block
@@ -183,31 +216,38 @@ export default defineComponent({
           &:hover
             background-color: var(--theme-tag-color)
 
-    &:hover .dropdown
-      display: block
+    &:hover
+      [data-icon]
+        transform: rotateZ(180deg)
+
+      .dropdown
+        display: block
 
 .navUserCard
-  display: flex
   border-bottom: 1px solid
+  position: relative
+
+  .bannerBg
+    position: absolute
+    top: calc(-0.4rem - 6px)
+    left: -12px
+    height: 56px
+    width: calc(100% + 24px)
+    background-color: rgba(var(--theme-accent-color--rgb), 0.1)
+    z-index: 0
+
+  a
+    display: inline !important
 
   .avatar
-    width: 50px
-    height: 50px
+    width: 68px
+    height: 68px
 
-  .right
-    margin-left: 1rem
-    display: flex
-    align-items: center
-    flex-wrap: wrap
-    text-align: center
-
-    > *
-      width: 100%
-
+  .details
     .name
-      font-size: 1.2rem
+      font-size: 1rem
 
-    .tag
+    .uid
       font-size: 0.8rem
       color: #aaa
 
@@ -226,5 +266,6 @@ export default defineComponent({
   .right
     @extend %ph-left-right-shared
     background-color: var(--theme-accent-color)
+    color: var(--theme-accent-link-color)
     border-radius: 2px
 </style>

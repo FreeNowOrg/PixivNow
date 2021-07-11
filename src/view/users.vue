@@ -43,21 +43,98 @@ section.user(v-if="!loading && !error")
       .more
         a(@click="userMore" href="javascript:;") 查看更多
   
-  .userArtworks
-    h2(v-if="user.illusts.length") 插画
-    artworks-list.inline(:list="user.illusts")
-    h2(v-if="user.manga.length") 漫画
-    artworks-list.inline(:list="user.manga")
-
+  .tabber
+    ul.tabBtn
+      li(
+        @click="tab = 'illust'")
+        a(:class="{tabActive: tab === 'illust'}") 插画
+      li(
+        @click="tab = 'manga'")
+        a(:class="{tabActive: tab === 'manga'}") 漫画
+      li(
+        v-if="userData && bookmarks"
+        @click="tab = 'bookmarks'")
+        a(:class="{tabActive: tab === 'bookmarks'}") 收藏
+    .tabContents
+      section(v-if="tab === 'illust'")
+        h2(v-if="user.illusts.length") 插画
+        artworks-list.inline(:list="user.illusts")
+      section(v-if="tab === 'manga'")
+        h2(v-if="user.manga.length") 漫画
+        artworks-list.inline(:list="user.manga")
+      section(v-if="tab === 'bookmarks'")
+        h2 收藏
+        artworks-list(:list="bookmarks")
 </template>
 
 <script lang="ts">
 import axios from 'axios'
 import { API_BASE } from '../config'
+import { userData } from '../components/userData'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Placeholder from '../components/Placeholder.vue'
+
+import { Artwork } from './artworks.vue'
+import { getCache, setCache } from './siteCache'
+
+// Types
+export type UserPrivacyLevel = '0' | '1' | '2'
+export interface User {
+  userId: `${number}`
+  name: string
+  image: string
+  imageBig: string
+  premium: boolean
+  isFollowed: boolean
+  isMypixiv: boolean
+  isBlocking: boolean
+  background: {} | null
+  sketchLiveId: {} | null
+  partial: number
+  acceptRequest: boolean
+  sketchLives: any[]
+  following: number
+  followedBack: boolean
+  comment: string
+  commentHtml: string
+  webpage: string | null
+  social: any[]
+  region: {
+    name: string
+    privacyLevel: UserPrivacyLevel
+  } | null
+  birthDay: {
+    name: string
+    privacyLevel: UserPrivacyLevel
+  } | null
+  gender: {
+    name: string
+    privacyLevel: UserPrivacyLevel
+  } | null
+  job: {
+    name: string
+    privacyLevel: UserPrivacyLevel
+  } | null
+  workspace: {
+    userWorkspacePc: string
+    userWorkspaceMonitor: string
+    userWorkspaceTool: string
+    userWorkspaceScanner: string
+    userWorkspaceTablet: string
+    userWorkspaceMouse: string
+    userWorkspacePrinter: string
+    userWorkspaceDesktop: string
+    userWorkspaceMusic: string
+    userWorkspaceDesk: string
+    userWorkspaceChair: string
+  }
+  official: boolean
+  group: null
+  illusts: Artwork[]
+  novels: Artwork[]
+}
 
 export default {
   components: {
@@ -72,23 +149,42 @@ export default {
       listLoading: true,
       error: '',
       user: {},
+      userData,
+      bookmarks: [],
+      tab: 'illust',
     }
   },
   methods: {
-    init() {
+    init(id: any) {
+      const cache = getCache(`users.${id}`)
+
+      if (cache) {
+        this.loading = false
+        this.user = cache
+        document.title = `${cache.name} | User | PixivNow`
+        if (userData.value?.id === id) {
+          this.getBookmarks()
+        }
+        return
+      }
+
       this.loading = true
       axios
-        .get(`${API_BASE}/api/user/${this.$route.params.id}`, {
-          params: { lang: 'zh' },
-        })
+        .get(`${API_BASE}/api/user/${id}`)
         .then(
-          ({ data }) => {
+          ({ data }: { data: User }) => {
             this.user = data
+            setCache(`users.${id}`, data)
             document.title = `${data.name} | User | PixivNow`
+
+            if (userData.value?.id === id) {
+              this.getBookmarks()
+            }
           },
           (err) => {
             console.warn('user', err.response)
-            this.error = err?.response?.data?.message || err.message || 'HTTP 请求超时'
+            this.error =
+              err?.response?.data?.message || err.message || 'HTTP 请求超时'
           }
         )
         .finally(() => {
@@ -98,10 +194,28 @@ export default {
     userMore() {
       alert(JSON.stringify(this.user, null, 2))
     },
+    getBookmarks() {
+      if (userData.value?.id !== this.$route.params.id) return
+      axios
+        .get(`${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`, {
+          params: {
+            tag: '',
+            offset: 0,
+            limit: 48,
+            rest: 'show',
+          },
+        })
+        .then(({ data }) => {
+          this.bookmarks = data.works
+        })
+    },
+  },
+  beforeRouteUpdate(to, from) {
+    this.init(to.params.id)
   },
   mounted() {
     document.title = `User | PixivNow`
-    this.init()
+    this.init(this.$route.params.id)
   },
 }
 </script>
@@ -169,4 +283,24 @@ export default {
       border-radius: 50%
       border: 4px solid #fff
       box-shadow: 0 4px 8px #efefef
+
+.tabber
+  ul.tabBtn
+    list-style: none
+    padding-left: 0
+    margin: 0
+
+    li
+      display: inline-block
+      margin: 1px 0
+
+      a
+        padding: 0.4rem 1rem
+        cursor: pointer
+
+        &.tabActive
+          font-weight: bold
+
+  .tabContents
+    border-top: 1px solid var(--theme-link-color)
 </style>

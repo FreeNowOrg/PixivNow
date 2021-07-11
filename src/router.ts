@@ -1,12 +1,12 @@
-import {
-  createRouter,
-  createWebHashHistory,
-  createWebHistory,
-} from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [],
+  scrollBehavior(to, from) {
+    if (to === from) return
+    return { top: 0 }
+  }
 })
 
 // Home
@@ -16,19 +16,12 @@ router.addRoute({
   component: () => import('./view/index.vue'),
 })
 
-// Illust index
-router.addRoute({
-  path: '/artworks',
-  alias: ['/illust', '/i'],
-  name: 'artworks-index',
-  component: () => import('./view/artwork/index.vue'),
-})
-// Illust view
+// Illust
 router.addRoute({
   path: '/artworks/:id',
   alias: ['/illust/:id', '/i/:id'],
-  name: 'artworks-view',
-  component: () => import('./view/artwork/view.vue'),
+  name: 'artworks',
+  component: () => import('./view/artworks.vue'),
 })
 
 // User

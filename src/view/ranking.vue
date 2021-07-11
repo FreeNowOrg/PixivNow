@@ -1,26 +1,35 @@
 <template lang="pug">
-h1 排行榜
+//- 未登录
+//- .noLogedIn(v-if="!userData")
+//-   h1 查看排行榜
+//-   section
+//-     p 绑定 Pixiv 令牌，享受排行榜以及更多功能！
+//-     router-link(to="/login?back=/ranking")
+//-       button.btn 立即绑定
 
-.isLogedIn(v-if="userData")
+//- 已登录
+.isLoggedIn()
   //- Error
-  section(v-if="error && !loading")
+  section(v-if="error")
+    h1 排行榜加载失败
     error-page(title="出大问题", :description="error")
 
-  //- Result
-  section(v-if="!error")
-    artworks-list(:list="list")
+  //- Loading
+  section(v-if="loading")
+    h1 排行榜加载中……
+    .loading
+      placeholder
 
-.noLogedIn(v-if="!userData")
-  section
-    p 您需要绑定您的 Pixiv 令牌以访问排行榜。
-    router-link(to="/login?back=/ranking")
-      button.btn 立即绑定
+  //- Result
+  section(v-if="list")
+    h1 {{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 排行榜
+    artworks-list(:list="list.contents")
 </template>
 
 <script lang="ts">
 import axios from 'axios'
 // import { router } from '../router'
-import { userData } from '../components/userLogin'
+import { userData } from '../components/userData'
 import { API_BASE } from '../config'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
@@ -35,18 +44,37 @@ export default {
   },
   methods: {
     init() {
-      if (!userData) return
+      this.error = ''
       this.loading = true
+      this.list = null
+
+      const { p, mode, date } = this.$route.params
       axios
-        .get(`${API_BASE}/api/ranking`)
+        .get(`${API_BASE}/api/ranking`, {
+          params: {
+            p,
+            mode,
+            date,
+          },
+        })
         .then(
           ({ data }) => {
+            // Date
+            let date: string = data.date
+            date =
+              date.substr(0, 4) +
+              '-' +
+              date.substr(4, 2) +
+              '-' +
+              date.substr(6, 2)
+            data.date = new Date(date)
+
             this.list = data
+            console.log(data.contents)
           },
           (err) => {
-            const message =
-              err?.response?.data?.message || err.message || '发生未知问题'
-            this.error = message
+            this.error =
+              err?.response?.data?.error || err.message || '出现未知问题'
           }
         )
         .finally(() => {
@@ -55,17 +83,23 @@ export default {
     },
   },
   mounted() {
+    if (!userData) return console.log('需要绑定令牌')
     this.init()
+
+    document.title='Ranking | PixvNow'
   },
   data() {
     return {
       loading: true,
       error: '',
-      list: {},
+      list: null,
       userData,
     }
   },
 }
 </script>
 
-<style scoped lang="stylus"></style>
+<style scoped lang="sass">
+.loading
+  text-align: center
+</style>
