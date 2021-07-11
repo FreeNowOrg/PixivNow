@@ -53,7 +53,7 @@ export default {
   methods: {
     tokenValidator,
     goBack() {
-      const back = this.$route.params.back
+      const back = this.$route.query.back
       if (back) this.$router.push(back as string)
     },
     randomToken() {
@@ -84,12 +84,7 @@ export default {
       this.error = ''
     },
   },
-  mounted() {
-    if (userData.value) {
-      console.log('already')
-      // return this.goBack()
-    }
-  },
+  mounted() {},
 }
 </script>
 
