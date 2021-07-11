@@ -376,7 +376,7 @@ export default {
           .then(
             ({ data }) => {
               this.recommend = [
-                ...this.recommendNextIds,
+                ...this.recommend,
                 ...data.illusts,
               ] as never[]
             },
