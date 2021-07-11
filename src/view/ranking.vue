@@ -10,8 +10,8 @@
 //- 已登录
 .isLoggedIn(v-if="userData")
   //- Error
-  h1 排行榜加载失败
-  section(v-if="error && !loading")
+  section(v-if="error")
+    h1 排行榜加载失败
     error-page(title="出大问题", :description="error")
 
   //- Loading
@@ -20,10 +20,10 @@
     placeholder
 
   //- Result
-  section(v-if="!error && list")
+  section(v-if="list")
     h1 排行榜
     .desc
-      | {{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 (第{{ list.page }}页)
+      | {{ list.date.getFullYear() }} 年 {{ list.date.getMonth() + 1 }} 月 {{ list.date.getDate() }} 日 (第{{ list.page }}页)
     artworks-list(:list="list.content")
 </template>
 
@@ -45,6 +45,7 @@ export default {
   },
   methods: {
     init() {
+      this.error = ''
       this.loading = true
       this.list = null
 
