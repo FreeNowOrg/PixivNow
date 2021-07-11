@@ -128,6 +128,7 @@ export default defineComponent({
     flex: 1
     overflow-x: auto
     align-items: center
+    margin: 0 1.5rem
 
   &.notAtTop
     box-shadow: 0 2px 4px var(--theme-box-shadow-color)
@@ -172,7 +173,7 @@ export default defineComponent({
   flex: 1
 
 .userArea
-  margin-left: 1rem
+  margin-left: 0.5rem
 
   .avatar
     height: 2rem
