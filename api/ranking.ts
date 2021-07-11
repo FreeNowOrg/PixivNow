@@ -1,5 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { handleError, request } from './utils'
+import camelCase from 'camelcase-keys'
 
 export interface RankingQuery {
   p?: number
@@ -33,7 +34,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         i.xRestrict = i?.illust_content_type?.sexual || 0
         return i
       })
-      res.send(data)
+      res.send(camelCase(data))
     })
     .catch((err) => {
       return handleError(err, res)

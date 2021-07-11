@@ -1,8 +1,8 @@
 <template lang="pug">
 .card
-  h2 {{ title }}
+  h2(v-if="title") {{ title }}
   .inner
-    slot
+    slot/
 </template>
 
 <script lang="ts">

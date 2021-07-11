@@ -1,14 +1,14 @@
 <template lang="pug">
 //- 未登录
-.noLogedIn(v-if="!userData")
-  h1 查看排行榜
-  section
-    p 绑定 Pixiv 令牌，享受排行榜以及更多功能！
-    router-link(to="/login?back=/ranking")
-      button.btn 立即绑定
+//- .noLogedIn(v-if="!userData")
+//-   h1 查看排行榜
+//-   section
+//-     p 绑定 Pixiv 令牌，享受排行榜以及更多功能！
+//-     router-link(to="/login?back=/ranking")
+//-       button.btn 立即绑定
 
 //- 已登录
-.isLoggedIn(v-if="userData")
+.isLoggedIn()
   //- Error
   section(v-if="error")
     h1 排行榜加载失败
@@ -23,7 +23,7 @@
   section(v-if="list")
     h1 排行榜
     .desc
-      | {{ list.date.getFullYear() }} 年 {{ list.date.getMonth() + 1 }} 月 {{ list.date.getDate() }} 日 (第{{ list.page }}页)
+      | {{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 (第{{ list.page }}页)
     artworks-list(:list="list.contents")
 </template>
 
@@ -71,6 +71,7 @@ export default {
             data.date = new Date(date)
 
             this.list = data
+            console.log(data.contents)
           },
           (err) => {
             this.error =

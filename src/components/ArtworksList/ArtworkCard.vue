@@ -1,7 +1,7 @@
 <template lang="pug">
-.illustCard(v-if="illust.id")
+.illustCard(v-if="illust.illustId")
   .top
-    router-link(:to="'/artworks/' + illust.id")
+    router-link(:to="'/artworks/' + illust.illustId")
       .thumb
         img(
           :src="API_BASE + illust.url"
@@ -12,11 +12,12 @@
       .pageCount(:title="'共 ' + illust.pageCount + ' 张'")
         fa(icon="images")
         | {{ illust.pageCount }}
+      .ranking(v-if="illust.rank") {{ illust.rank }}
   .bottom
     h3.title(:title="illust.title")
-      router-link(:to="'/artworks/' + illust.id") {{ illust.title }}
+      router-link(:to="'/artworks/' + illust.illustId") {{ illust.title }}
     .author(:title="illust.userName")
-      router-link(:to="'/users/'+ illust.userId")
+      router-link(:to="'/users/' + illust.userId")
         img.avatar(
           :src="API_BASE + illust.profileImageUrl"
           lazyload=""
@@ -25,7 +26,7 @@
     .tags
       router-link.tag(v-for="tagName in illust.tags", :to="'/search/' + tagName") \#{{ tagName }}
 
-.illustCard(v-if="illust.isAdContainer")
+.illustCard.ad(v-if="illust.isAdContainer")
   .top
     div(:style="{width: '100%', paddingTop: '100%', backgroundColor: '#efefef'}")
   .bottom
@@ -88,6 +89,7 @@ h3
       width: 100%
       height: 100%
 
+
   .pageCount
     position: absolute
     top: .4rem
@@ -114,6 +116,20 @@ h3
 
     [data-icon]
       margin: 0 auto
+
+  .ranking
+    position: absolute
+    top: -1rem
+    left: -1rem
+    font-size: 1.4rem
+    color: #252525
+    background-color: #fff
+    border-radius: 50%
+    width: 2rem
+    height: 2rem
+    text-align: center
+    line-height: 1.4
+    box-shadow: 0 0 0 2px #dedede inset, 0 0 0 4px #fff
 
 .bottom
   // display: flex

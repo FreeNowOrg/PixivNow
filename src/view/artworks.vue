@@ -351,15 +351,26 @@ export default {
           }
         }
         axios
-          .get(
-            `${API_BASE}/ajax/illust/recommend/illusts`,
-            {
-              params: {
-                illust_ids: requestIds,
-              },
+          .get(`${API_BASE}/ajax/illust/recommend/illusts`, {
+            params: {
+              illust_ids: requestIds,
+            },
+          })
+          .then(
+            ({ data }) => {
+              this.recommend = [
+                ...this.recommendNextIds,
+                ...data.illusts,
+              ] as never[]
+            },
+            (err) => {
+              console.warn('Load more recommends error', err)
+              this.recommendNextIds.unshift(...(requestIds as never[]))
             }
           )
-          .then(console.log)
+          .finally(() => {
+            this.recommendLoading = false
+          })
       }
     },
   },
