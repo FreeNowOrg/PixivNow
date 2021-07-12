@@ -52,7 +52,7 @@ section.user(v-if="!loading && !error")
         @click="tab = 'manga'")
         a(:class="{tabActive: tab === 'manga'}") 漫画
       li(
-        v-if="userData && bookmarks"
+        v-if="userData && userData.id === user.id"
         @click="tab = 'bookmarks'")
         a(:class="{tabActive: tab === 'bookmarks'}") 收藏
     .tabContents
@@ -161,12 +161,13 @@ export default {
       this.tab = 'illust'
       this.loading = true
 
+      // Cache
       const cache = getCache(`users.${id}`)
-
       if (cache) {
         this.loading = false
         this.user = cache
         document.title = `${cache.name} | User | PixivNow`
+        // Extra
         this.getBookmarks()
         return
       }

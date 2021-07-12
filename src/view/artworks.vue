@@ -46,7 +46,8 @@ section.illust-container(v-if="!error && !loading")
       ) 在 Pixiv 上查看 →
 
   card.comments(title="评论")
-    ul.commentsList
+    p(v-if="!comments.length") 评论区空空如也……
+    ul.commentsList(v-if="comments.length")
       comment(v-for="comment in comments" :comment="comment")
 
   .userIllusts
@@ -266,10 +267,12 @@ export default {
       this.recommendNextIds = []
       this.loading = true
 
+      // Cache
       const cache = getCache(`illust.${id}`)
       if (cache) {
         this.illust = cache
         this.loading = false
+        document.title = `${cache.illustTitle} | Artwork | PixivNow`
         // Extra
         this.getUser(cache.userId)
         this.getComments(id)
@@ -281,7 +284,6 @@ export default {
         .get(`${API_BASE}/api/illust/${id}`, {
           params: {
             full: 1,
-            lang: 'zh',
           },
         })
         .then(
@@ -326,8 +328,7 @@ export default {
         .get(`${API_BASE}/ajax/illusts/comments/roots`, {
           params: {
             illust_id: id || this.$route.params.id,
-            limit: 50,
-            lang: 'zh',
+            limit: 12,
           },
         })
         .then(
