@@ -45,11 +45,9 @@ section.user(v-if="!loading && !error")
   
   .tabber
     ul.tabBtn
-      li(
-        @click="tab = 'illust'")
+      li(@click="tab = 'illust'")
         a(:class="{tabActive: tab === 'illust'}") 插画
-      li(
-        @click="tab = 'manga'")
+      li(@click="tab = 'manga'")
         a(:class="{tabActive: tab === 'manga'}") 漫画
       li(
         v-if="userData && userData.id === user.id"
@@ -57,13 +55,16 @@ section.user(v-if="!loading && !error")
         a(:class="{tabActive: tab === 'bookmarks'}") 收藏
     .tabContents
       section(v-if="tab === 'illust'")
-        h2(v-if="user.illusts.length") 插画
-        artworks-list.inline(:list="user.illusts")
+        h2 插画
+        p.align-center(v-if="user.illusts && !user.illusts.length") 用户没有插画作品 (｡•́︿•̀｡)
+        artworks-list(:list="user.illusts")
       section(v-if="tab === 'manga'")
-        h2(v-if="user.manga.length") 漫画
-        artworks-list.inline(:list="user.manga")
+        h2 漫画
+        p.align-center(v-if="user.manga && !user.manga.length") 用户没有漫画作品 (*/ω＼*)
+        artworks-list(:list="user.manga")
       section(v-if="tab === 'bookmarks'")
         h2 收藏
+        p.align-center(v-if="user.manga && !user.manga.length") 收藏夹是空的 Σ(⊙▽⊙"a
         artworks-list(:list="bookmarks")
 </template>
 
@@ -290,6 +291,15 @@ export default {
     list-style: none
     padding-left: 0
     margin: 0
+    background-color: var(--theme-background-color)
+    box-shadow: 0 6px 10px -6px #ccc
+    transition: all 0.4s ease-in-out
+    z-index: 10
+    position: sticky
+    top: 51px
+
+    .globalNavbar_isHide &
+      top: 0
 
     li
       display: inline-block

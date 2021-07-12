@@ -72,6 +72,15 @@ export default defineComponent({
       // curPath: this.$route,
     }
   },
+  watch: {
+    isHide() {
+      if (this.isHide) {
+        document.body.classList.add('globalNavbar_isHide')
+      } else {
+        document.body.classList.remove('globalNavbar_isHide')
+      }
+    },
+  },
   mounted() {
     let scrollTop = document.documentElement.scrollTop
     window.addEventListener('scroll', () => {
@@ -188,7 +197,7 @@ export default defineComponent({
     [data-icon]
       margin-left: 6px
       color: #fff
-      transition: all 0.4s
+      transition: all 0.4s 
 
     .dropdown
       display: none
