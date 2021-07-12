@@ -1,18 +1,18 @@
 <template lang="pug">
 li.commentBlock
   .left
-    img.avatar(
-      :src="API_BASE + comment.img"
-      :title="comment.userName+ ' (' + comment.userId + ')'"
-    )
+    router-link.plain(:to="'/users/' + comment.userId")
+      .avatar(
+        :style="'background-image: url(' + API_BASE + comment.img + ')'"
+        :title="comment.userName+ ' (' + comment.userId + ')'"
+      )
   .right
     h4.user
-      router-link(:to="'/users' + comment.userId") {{ comment.userName }}
-    div
-      .content(v-if="!comment.stampId" v-html="replaceStamps(comment.comment)")
-      .content(v-if="comment.stampId")
+      router-link(:to="'/users/' + comment.userId") {{ comment.userName }}
+    .content(v-if="!comment.stampId" v-html="replaceStamps(comment.comment)")
+    .content(v-if="comment.stampId")
         img.bigStamp(:src="API_BASE + '/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'")
-      .commentDate {{ comment.commentDate }}
+    .commentDate {{ comment.commentDate }}
 </template>
 
 <script lang="ts">
@@ -22,19 +22,15 @@ import { stampList } from './stampList'
 
 function replaceStamps(str: string) {
   const reg = new RegExp(
-    '(' +
-      Object.keys(stampList)
-        .map((i) => `\\(${i}\\)`)
-        .join('|') +
-      ')',
+    `(${Object.keys(stampList)
+      .map((i) => `\\(${i}\\)`)
+      .join('|')})`,
     'g'
   )
-  str = str.replace(reg, (match) => {
+  return str.replace(reg, (match) => {
     const key = match.replace(/[\(\)]/g, '')
-    const src = `${API_BASE}${stampList[key]}`
-    return `<img src="${src}" class="stamp">`
+    return `<img src="${API_BASE}${stampList[key]}" class="stamp">`
   })
-  return str
 }
 
 export default defineComponent({
@@ -54,4 +50,29 @@ export default defineComponent({
 <style lang="sass" scoped>
 .commentBlock
   display: flex
+  gap: .6rem
+  margin: .4rem 0
+
+  .left
+    a
+      flex: none
+
+    .avatar
+      width: 4rem
+      height: 4rem
+      background-size: 4rem
+
+  .right
+    .user
+      margin: 0
+
+    .content
+      white-space: pre-wrap
+      margin-bottom: .3em
+
+      .bigStamp
+        width: 3em
+
+    .commentDate
+      font-size: .75em
 </style>
