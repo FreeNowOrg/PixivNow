@@ -8,7 +8,11 @@ li.commentBlock
       )
   .right
     h4.user
-      router-link(:to="'/users/' + comment.userId") {{ comment.userName }}
+      span.commentAuthor
+        router-link(:to="'/users/' + comment.userId") {{ comment.userName }}
+      span.commentReply(v-if="comment.replyToUserId")
+        | &emsp;▶&emsp;
+        router-link(:to="'/users/' + comment.userId") {{ comment.replyToUserName }}
     .content(v-if="!comment.stampId" v-html="replaceStamps(comment.comment)")
     .content(v-if="comment.stampId")
         img.bigStamp(:src="API_BASE + '/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'")
@@ -51,7 +55,9 @@ export default defineComponent({
 .commentBlock
   display: flex
   gap: .6rem
-  margin: .4rem 0
+
+  + .commentBlock
+    margin-top: .6em
 
   .left
     a
@@ -64,7 +70,7 @@ export default defineComponent({
 
   .right
     .user
-      margin: 0
+      margin: 0 0 .3em
 
     .content
       white-space: pre-wrap
