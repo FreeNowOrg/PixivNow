@@ -45,8 +45,9 @@ section.illust-container(v-if="!error && !loading")
         rel="noopener noreferrer"
       ) 在 Pixiv 上查看 →
 
-  .breadCrumb
-    router-link.button(to="/artworks") ← 返回
+  card.comments(title="评论")
+    ul.commentsList
+      comment(v-for="comment in comments" :comment="comment")
 
   .userIllusts
     h2 用户作品
@@ -96,6 +97,7 @@ import AuthorCard from '../components/AuthorCard.vue'
 import ArtTag from '../components/ArtTag.vue'
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
 import Card from '../components/Card.vue'
+import Comment from '../components/Comment/Comment.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Gallery from '../components/Gallery.vue'
 import Placeholder from '../components/Placeholder.vue'
@@ -249,6 +251,7 @@ export default {
     ArtTag,
     ArtworksList,
     Card,
+    Comment,
     ErrorPage,
     Gallery,
     Placeholder,
@@ -330,7 +333,7 @@ export default {
         .then(
           ({ data }) => {
             console.log('Comments', data)
-            this.comments = data
+            this.comments = data.comments
           },
           (err) => {
             console.warn('Comments fetch error', err)
@@ -419,4 +422,8 @@ h1.danger
 
 .breadCrumb
   margin-top: 1rem
+
+.commentsList
+  list-style: none
+  padding-left: 0
 </style>
