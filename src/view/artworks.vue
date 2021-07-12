@@ -1,13 +1,40 @@
 <template lang="pug">
-h1(:class="illust.xRestrict ? 'danger' : ''") {{ loading ? '正在读取作品 #' + $route.params.id : illust.illustTitle }}
 
 //- Loading
-section.loading(v-if="loading")
+section.align-center(v-if="loading")
   placeholder
 
 //- Done
 section.illust-container(v-if="!error && !loading")
   gallery(:pages="illust.pages" )
+  
+  card
+    h1(:class="illust.xRestrict ? 'danger' : ''") {{ illust.illustTitle }}
+    p.description.pre(v-html="illust.description")
+
+    .stats
+      span.isOriginal(v-if="illust.isOriginal")
+        fa(icon="laugh-wink")
+        | 原创
+      span.likeCount(title="点赞")
+        fa(icon="thumbs-up")
+        | {{ illust.likeCount }}
+      span.bookmarkCount(title="收藏")
+        fa(icon="heart")
+        | {{ illust.bookmarkCount }}
+      span.viewCount(title="浏览")
+        fa(icon="eye")
+        | {{ illust.viewCount }}
+
+    .createDate {{ new Date(illust.createDate).toLocaleString() }}
+
+    .align-center
+      a.button(
+        :href="illust?.extraData?.meta?.canonical || '#'"
+        target="_blank"
+        rel="noopener noreferrer"
+      ) 在 Pixiv 上查看 →
+
   .tags
     span.xRestrict(v-if="illust.xRestrict" title="R-18") R-18
     art-tag(:key="_" v-for="(item, _) in illust.tags.tags" :tag="item.tag")
@@ -17,38 +44,19 @@ section.illust-container(v-if="!error && !loading")
     .loading(v-if="!user.userId")
       placeholder
     author-card(:user="user" v-if="user.userId")
-  
-  card.description(title="简介" class="" v-if="illust.description")
-    p(v-html="illust.description")
-  
-  card.about(title="关于")
-    ul
-      li
-        strong 浏览：
-        span {{ illust.viewCount }}
-      li
-        strong 点赞：
-        span {{ illust.likeCount }}
-      li
-        strong 评论：
-        span {{ illust.commentCount }}
-      li
-        strong 原创：
-        span {{ illust.isOriginal ? '是' : '?' }}
-      li
-        strong 发布：
-        span(:title="illust.createDate") {{ new Date(illust.createDate).toLocaleString() }}
-    div(:style="{textAlign: 'center'}")
-      a(
-        :href="illust?.extraData?.meta?.canonical || '#'"
-        target="_blank"
-        rel="noopener noreferrer"
-      ) 在 Pixiv 上查看 →
 
   card.comments(title="评论")
-    p(v-if="!comments.length") 评论区空空如也……
+    p(v-if="!comments.length && !commentsLoading") 评论区空空如也……
+    .align-center(v-if="!comments.length && commentsLoading")
+      placeholder
     ul.commentsList(v-if="comments.length")
       comment(v-for="comment in comments" :comment="comment")
+      show-more(
+        v-if="comments.length && commentsHasNext"
+        :text="commentsLoading ? '正在加载……' : '查看更多'"
+        :method="getComments"
+        :loading="commentsLoading"
+      )
 
   .userIllusts
     h2 用户作品
@@ -240,6 +248,8 @@ export default {
       illust: {},
       user: {},
       comments: [],
+      commentsLoading: false,
+      commentsHasNext: true,
       recommend: [],
       recommendLoading: false,
       recommendNextIds: [],
@@ -324,22 +334,30 @@ export default {
       )
     },
     async getComments(id: string | number) {
+      if (this.commentsLoading) return
+      this.commentsLoading = true
+
       axios
         .get(`${API_BASE}/ajax/illusts/comments/roots`, {
           params: {
-            illust_id: id || this.$route.params.id,
-            limit: 12,
+            illust_id: isNaN(Number(id)) ? this.illust.id : id,
+            limit: this.comments.length ? 30 : 3,
+            offset: this.comments.length,
           },
         })
         .then(
           ({ data }) => {
             console.log('Comments', data)
-            this.comments = data.comments
+            this.commentsHasNext = data.hasNext
+            this.comments = [...this.comments, ...data.comments] as never[]
           },
           (err) => {
             console.warn('Comments fetch error', err)
           }
         )
+        .finally(() => {
+          this.commentsLoading = false
+        })
     },
     async getRecommend(id: string) {
       if (this.recommendLoading) return
@@ -413,8 +431,12 @@ export default {
 .tags
   margin: 1rem 0
 
-h1.danger
-  box-shadow: 0 -0.5em 0 #f55 inset
+h1
+  box-shadow: none
+  margin: 0
+
+  .danger
+    box-shadow: 0 -0.5em 0 #f55 inset
 
 .xRestrict
   font-weight: bold

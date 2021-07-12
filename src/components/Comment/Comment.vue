@@ -8,14 +8,16 @@ li.commentBlock
       )
   .right
     h4.user
-      span.commentAuthor
-        router-link(:to="'/users/' + comment.userId") {{ comment.userName }}
+      span.commentAuthor {{ comment.userName }}
       span.commentReply(v-if="comment.replyToUserId")
         | &emsp;▶&emsp;
         router-link(:to="'/users/' + comment.userId") {{ comment.replyToUserName }}
     .content(v-if="!comment.stampId" v-html="replaceStamps(comment.comment)")
     .content(v-if="comment.stampId")
-        img.bigStamp(:src="API_BASE + '/~/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'")
+        img.bigStamp(
+          :src="API_BASE + '/~/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'"
+          alt="表情包"
+          lazyload)
     .commentDate {{ comment.commentDate }}
 </template>
 
@@ -55,6 +57,7 @@ export default defineComponent({
 .commentBlock
   display: flex
   gap: .6rem
+  margin-bottom: 1rem
 
   + .commentBlock
     margin-top: .6em
@@ -64,8 +67,8 @@ export default defineComponent({
       flex: none
 
     .avatar
-      width: 4rem
-      height: 4rem
+      width: 40px
+      height: 40px
       background-size: 4rem
       border-radius: 50%
 
@@ -82,4 +85,5 @@ export default defineComponent({
 
     .commentDate
       font-size: .75em
+      color: #aaa
 </style>
