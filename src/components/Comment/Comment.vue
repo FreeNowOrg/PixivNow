@@ -15,7 +15,7 @@ li.commentBlock
         router-link(:to="'/users/' + comment.userId") {{ comment.replyToUserName }}
     .content(v-if="!comment.stampId" v-html="replaceStamps(comment.comment)")
     .content(v-if="comment.stampId")
-        img.bigStamp(:src="API_BASE + '/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'")
+        img.bigStamp(:src="API_BASE + '/~/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'")
     .commentDate {{ comment.commentDate }}
 </template>
 
@@ -67,6 +67,7 @@ export default defineComponent({
       width: 4rem
       height: 4rem
       background-size: 4rem
+      border-radius: 50%
 
   .right
     .user

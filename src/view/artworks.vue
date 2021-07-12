@@ -426,4 +426,6 @@ h1.danger
 .commentsList
   list-style: none
   padding-left: 0
+  max-height: 400px
+  overflow-y: auto
 </style>
