@@ -50,7 +50,7 @@ section.user(v-if="!loading && !error")
       li(@click="tab = 'manga'")
         a(:class="{tabActive: tab === 'manga'}") 漫画
       li(
-        v-if="userData && userData.id === user.id"
+        v-if="bookmarks.length"
         @click="tab = 'bookmarks'")
         a(:class="{tabActive: tab === 'bookmarks'}") 收藏
     .tabContents
@@ -148,10 +148,10 @@ export default {
       API_BASE,
       loading: true,
       error: '',
-      user: {},
+      user: {} as User | {},
       userData,
-      bookmarks: [],
-      tab: 'illust',
+      bookmarks: [] as Artwork[],
+      tab: 'illust' as 'illust' | 'manga' | 'bookmarks',
     }
   },
   methods: {

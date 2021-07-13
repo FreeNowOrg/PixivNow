@@ -247,12 +247,12 @@ export default {
       loading: true,
       illust: {},
       user: {},
-      comments: [],
+      comments: [] as any[],
       commentsLoading: false,
       commentsHasNext: true,
-      recommend: [],
+      recommend: [] as Artwork[],
       recommendLoading: false,
-      recommendNextIds: [],
+      recommendNextIds: [] as string[],
       error: '',
       userData,
     }
@@ -340,7 +340,7 @@ export default {
       axios
         .get(`${API_BASE}/ajax/illusts/comments/roots`, {
           params: {
-            illust_id: isNaN(Number(id)) ? this.illust.id : id,
+            illust_id: isNaN(Number(id)) ? (this.illust as Artwork).id : id,
             limit: this.comments.length ? 30 : 3,
             offset: this.comments.length,
           },
@@ -349,7 +349,7 @@ export default {
           ({ data }) => {
             console.log('Comments', data)
             this.commentsHasNext = data.hasNext
-            this.comments = [...this.comments, ...data.comments] as never[]
+            this.comments = [...this.comments, ...data.comments]
           },
           (err) => {
             console.warn('Comments fetch error', err)
@@ -401,7 +401,7 @@ export default {
           })
           .then(
             ({ data }) => {
-              this.recommend = [...this.recommend, ...data.illusts] as never[]
+              this.recommend = [...this.recommend, ...data.illusts]
             },
             (err) => {
               console.warn('Load more recommends error', err)

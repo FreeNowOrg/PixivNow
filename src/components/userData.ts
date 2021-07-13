@@ -1,7 +1,7 @@
 import * as Cookies from 'js-cookie'
 import axios from 'axios'
 import { API_BASE } from '../config'
-import { ref } from 'vue'
+import { Ref, ref } from 'vue'
 
 export interface PixivUser {
   id: string
@@ -19,7 +19,7 @@ export interface PixivUser {
 }
 
 // userData
-export const userData = ref()
+export const userData: Ref<PixivUser | null | undefined> = ref()
 
 export async function userInit(): Promise<PixivUser | null> {
   const token = Cookies.get('PHPSESSID')
