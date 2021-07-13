@@ -1,16 +1,16 @@
 <template lang="pug">
 .gallery
   .flex-center
-    .leftBtn
+    .leftBtn.align-right
       a(@click="prevImg")
         fa(icon="chevron-left" size="4x")
-    .centerImg
+    .centerImg.align-center
       a(:href="API_BASE + originalSrc" target="_blank" title="点击下载原图")
         img.picBig(:src="imgSrc" alt="" v-if="!loading")
         svg.imgProgress.picBig(v-if="loading" :width="width" :height="height")
         .error.picBig(v-if="error" :width="width" :height="height") {{ error }}
-      .tips.align-center {{ loading ? '(图片正在加载~)' : '(这是预览图，点击下载原图)' }}
-    .rightBtn
+      .tips {{ loading ? '(图片正在加载~)' : '(这是预览图，点击下载原图)' }}
+    .rightBtn.align-left
       a(@click="nextImg")
         fa(icon="chevron-right" size="4x")
   .pagenator.align-center
@@ -97,9 +97,6 @@ export default defineComponent({
   .leftBtn,
   .rightBtn
     flex: 1
-
-  .centerImg
-    flex: 2
 
   .leftBtn
     text-align: right
