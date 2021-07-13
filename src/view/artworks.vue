@@ -6,13 +6,13 @@ section.align-center(v-if="loading")
 
 //- Done
 section.illust-container(v-if="!error && !loading")
-  gallery(:pages="illust.pages" )
+  gallery(:pages="illust.pages")
   
   card
     h1(:class="illust.xRestrict ? 'danger' : ''") {{ illust.illustTitle }}
     p.description.pre(v-html="illust.description")
 
-    .stats
+    p.stats
       span.isOriginal(v-if="illust.isOriginal")
         fa(icon="laugh-wink")
         | 原创
@@ -26,7 +26,7 @@ section.illust-container(v-if="!error && !loading")
         fa(icon="eye")
         | {{ illust.viewCount }}
 
-    .createDate {{ new Date(illust.createDate).toLocaleString() }}
+    p.createDate {{ new Date(illust.createDate).toLocaleString() }}
 
     .align-center
       a.button(
@@ -51,12 +51,16 @@ section.illust-container(v-if="!error && !loading")
       placeholder
     ul.commentsList(v-if="comments.length")
       comment(v-for="comment in comments" :comment="comment")
-      show-more(
-        v-if="comments.length && commentsHasNext"
-        :text="commentsLoading ? '正在加载……' : '查看更多'"
-        :method="getComments"
-        :loading="commentsLoading"
-      )
+      .showMore.align-center
+        a.button(
+          v-if="comments.length && commentsHasNext"
+          @click="getComments(illust.id)"
+        )
+          | {{ commentsLoading ? '正在加载' : '查看更多' }}
+          | &nbsp;
+          fa(
+            :icon="commentsLoading ? 'spinner' : 'plus'"
+            :spin="commentsLoading")
 
   .userIllusts
     h2 用户作品
@@ -425,17 +429,18 @@ export default {
 </script>
 
 <style scoped lang="sass">
-.loading
-  text-align: center
+.gallery
+  margin: 1rem auto
 
 .tags
   margin: 1rem 0
 
 h1
-  box-shadow: none
+  // box-shadow: none
+  display: inline-block
   margin: 0
 
-  .danger
+  &.danger
     box-shadow: 0 -0.5em 0 #f55 inset
 
 .xRestrict
@@ -443,12 +448,23 @@ h1
   color: #c00
   margin-right: 1rem
 
+.stats
+  > span
+    margin-right: 0.5rem
+    color: #aaa
+
+    [data-icon]
+      margin-right: 4px
+.createDate
+  color: #aaa
+  font-size: 0.85rem
+
 .breadCrumb
   margin-top: 1rem
 
 .commentsList
   list-style: none
   padding-left: 0
-  max-height: 400px
-  overflow-y: auto
+  // max-height: 400px
+  // overflow-y: auto
 </style>

@@ -51,7 +51,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 .commentBlock
   display: flex
   gap: .6rem
@@ -78,6 +78,10 @@ export default defineComponent({
 
       .bigStamp
         width: 3em
+
+      .stamp
+        height: 1.4rem
+        width: auto
 
     .commentDate
       font-size: .75em

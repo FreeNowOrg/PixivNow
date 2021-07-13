@@ -1,19 +1,21 @@
 <template lang="pug">
 .gallery
-  //- placeholder.picBig(v-if="loading" :width="width" :height="height")
-  .imageArea
-    a(:href="API_BASE + originalSrc" target="_blank" title="点击下载原图")
-      img.picBig(:src="imgSrc" alt="" v-if="!loading")
-      svg.imgProgress.picBig(v-if="loading" :width="width" :height="height")
-      .error.picBig(v-if="error" :width="width" :height="height") {{ error }}
-    .tips {{ loading ? '(图片正在加载~)' : '(这是预览图，点击下载原图)' }}
-  .pagenator
-    button(@click="prevImg")
-      fa(icon="arrow-left")
+  .flex-center
+    .leftBtn
+      a(@click="prevImg")
+        fa(icon="chevron-left" size="4x")
+    .centerImg
+      a(:href="API_BASE + originalSrc" target="_blank" title="点击下载原图")
+        img.picBig(:src="imgSrc" alt="" v-if="!loading")
+        svg.imgProgress.picBig(v-if="loading" :width="width" :height="height")
+        .error.picBig(v-if="error" :width="width" :height="height") {{ error }}
+      .tips.align-center {{ loading ? '(图片正在加载~)' : '(这是预览图，点击下载原图)' }}
+    .rightBtn
+      a(@click="nextImg")
+        fa(icon="chevron-right" size="4x")
+  .pagenator.align-center
     input(v-model="imgCountInput" type="number")
     span.pageNow / {{ pages.length }}
-    button(@click="nextImg")
-      fa(icon="arrow-right")
 </template>
 
 <script>
@@ -64,10 +66,10 @@ export default defineComponent({
       }
     },
     prevImg() {
-      this.imgCount--
+      if (this.imgCount - 1 >= 1) this.imgCount--
     },
     nextImg() {
-      this.imgCount++
+      if (this.imgCount + 1 <= this.pages.length) this.imgCount++
     },
   },
   watch: {
@@ -89,8 +91,18 @@ export default defineComponent({
 </script>
 
 <style scoped lang="sass">
-.gallery
-  text-align: center
+.flex-center
+  gap: 1rem
+
+  .leftBtn,
+  .rightBtn
+    flex: 1
+
+  .centerImg
+    flex: 2
+
+  .leftBtn
+    text-align: right
 
 .tips
   font-size: small
