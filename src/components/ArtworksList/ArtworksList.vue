@@ -23,6 +23,7 @@ export default {
   flex-wrap: wrap
   padding-left: 0
   list-style: none
+  gap: 1.5rem
 
   &.inline
     flex-wrap: nowrap

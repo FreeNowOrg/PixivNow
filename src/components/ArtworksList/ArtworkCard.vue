@@ -62,9 +62,8 @@ h3
   display: inline-block
   box-sizing: border-box
   box-shadow: 0 0 4px #ccc
-  margin: 1rem
   padding: .4rem
-  min-width: 250px
+  min-width: calc(50vw - 2rem)
   max-width: 350px
   width: 12.5vw
   background-color: var(--theme-background-color)

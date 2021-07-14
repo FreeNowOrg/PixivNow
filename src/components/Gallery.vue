@@ -1,96 +1,70 @@
 <template lang="pug">
 .gallery
-  .flex-center
-    .leftBtn.align-right
-      a(@click="prevImg")
-        fa(icon="chevron-left" size="4x")
-    .centerImg.align-center
-      a(:href="API_BASE + originalSrc" target="_blank" title="点击下载原图")
-        img.picBig(:src="imgSrc" alt="" v-if="!loading")
-        svg.imgProgress.picBig(v-if="loading" :width="width" :height="height")
-        .error.picBig(v-if="error" :width="width" :height="height") {{ error }}
-      .tips {{ loading ? '(图片正在加载~)' : '(这是预览图，点击下载原图)' }}
-    .rightBtn.align-left
-      a(@click="nextImg")
-        fa(icon="chevron-right" size="4x")
-  .pagenator.align-center
-    input(v-model="imgCountInput" type="number")
-    span.pageNow / {{ pages.length }}
+  ul.centerImg.align-center(:class="showAll ? 'showAll' : 'showSingle'")
+    li(
+      v-if="showAll"
+      v-for="item in pages")
+      a(
+        :href="API_BASE + item.urls.original"
+        target="_blank"
+        title="点击下载原图")
+        LazyLoad.pic(
+          :src="API_BASE + item.urls.regular"
+          :width="item.width"
+          :height="item.height")
+    li(
+      v-if="!showAll")
+      a(
+        :href="API_BASE + pages[0].urls.original"
+        target="_blank"
+        title="点击下载原图"
+        )
+        LazyLoad.pic(
+          :src="API_BASE + pages[0].urls.regular"
+          :width="pages[0].width"
+          :height="pages[0].height")
+  .info.align-center
+    .tips (这是预览图，点击下载原图)
+    .showAllBtn
+      a.button(
+        v-if="pages.length > 1 && !showAll"
+        @click="showAll = true"
+        ) 查看全部 {{ pages.length }} 张
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 import { API_BASE } from '../config'
 
-import placeholder from './Placeholder.vue'
+import LazyLoad from './LazyLoad.vue'
 
 export default defineComponent({
-  components: { placeholder },
+  components: { LazyLoad },
   props: ['pages'],
   data() {
     return {
       API_BASE,
-      imgCount: 0,
-      imgCountInput: 1,
-      imgSrc: '',
-      originalSrc: '',
       loading: false,
       error: '',
-      width: 0,
-      height: 0,
+      showAll: false,
     }
-  },
-  methods: {
-    setImg(count) {
-      count = this.pages[count] ? count : 0
-      const item = this.pages[count]
-
-      this.error = ''
-      this.loading = true
-      this.width = item.width
-      this.height = item.height
-
-      this.originalSrc = item.urls.original
-      const url = `${API_BASE}${item.urls.regular}`
-
-      const img = new Image()
-      img.src = url
-      img.onload = () => {
-        this.imgSrc = url
-        this.loading = false
-      }
-      img.onerror = (err) => {
-        console.warn('Image load error', err)
-        this.error = '坏耶，图片加载失败！'
-        this.loading = false
-      }
-    },
-    prevImg() {
-      if (this.imgCount - 1 >= 1) this.imgCount--
-    },
-    nextImg() {
-      if (this.imgCount + 1 <= this.pages.length) this.imgCount++
-    },
-  },
-  watch: {
-    imgCount(val) {
-      this.imgCount = Math.max(0, this.imgCount)
-      this.imgCount = Math.min(this.pages.length - 1, this.imgCount)
-      // if (val < 0 || val + 1 > this.pages.length) this.imgCount = 0
-      this.imgCountInput = val + 1
-      this.setImg(this.imgCount)
-    },
-    imgCountInput(val) {
-      this.imgCount = val - 1
-    },
-  },
-  created() {
-    this.setImg(0)
   },
 })
 </script>
 
-<style scoped lang="sass">
+<style lang="sass">
+.centerImg
+  width: 100%
+  overflow: auto
+  margin: 0.4rem auto
+  padding-left: 0
+  display: flex
+  flex-wrap: nowrap
+
+  li
+    display: inline-block
+    margin: 0.2rem 0.4rem
+
 .flex-center
   gap: 1rem
 
@@ -105,17 +79,28 @@ export default defineComponent({
   font-size: small
   font-style: italic
 
-.picBig
-  max-width: 50vw
-  max-height: 75vh
-  width: auto
-  height: auto
+[rol="img"]
   border-radius: 4px
   box-shadow: var(--theme-box-shadow)
   transition: box-shadow 0.24s ease-in-out
 
   &:hover
     box-shadow: var(--theme-box-shadow-hover)
+
+.showSingle
+  display: block
+  text-align: center
+
+  [rol="img"]
+    max-width: 75vw
+    max-height: 75vh
+    width: auto
+    height: auto
+
+.showAll
+  [rol="img"]
+    height: 50vh
+    width: auto
 
 .imgProgress
   animation: imgProgress 0.6s ease infinite alternate

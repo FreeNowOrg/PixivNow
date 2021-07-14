@@ -3,14 +3,15 @@
 //- Loading
 section.align-center(v-if="loading")
   placeholder
+  p {{ '正在读取作品 #' + $route.params.id }}
 
 //- Done
 section.illust-container(v-if="!error && !loading")
   gallery(:pages="illust.pages")
   
-  card
+  .artworkInfo
     h1(:class="illust.xRestrict ? 'danger' : ''") {{ illust.illustTitle }}
-    p.description.pre(v-html="illust.description")
+    p.description.pre(v-html="illust.description || '(无简介)'")
 
     p.stats
       span.isOriginal(v-if="illust.isOriginal")
@@ -25,6 +26,9 @@ section.illust-container(v-if="!error && !loading")
       span.viewCount(title="浏览")
         fa(icon="eye")
         | {{ illust.viewCount }}
+      span.count
+        fa(icon="images")
+        | {{ illust.pages.length }}张
 
     p.createDate {{ new Date(illust.createDate).toLocaleString() }}
 
@@ -35,13 +39,13 @@ section.illust-container(v-if="!error && !loading")
         rel="noopener noreferrer"
       ) 在 Pixiv 上查看 →
 
-  .tags
+  .artworkTags
     span.xRestrict(v-if="illust.xRestrict" title="R-18") R-18
     art-tag(:key="_" v-for="(item, _) in illust.tags.tags" :tag="item.tag")
   
-  .author
+  .authorInfo
     h2 作者
-    .loading(v-if="!user.userId")
+    .align-center(v-if="!user.userId")
       placeholder
     author-card(:user="user" v-if="user.userId")
 
@@ -62,14 +66,10 @@ section.illust-container(v-if="!error && !loading")
             :icon="commentsLoading ? 'spinner' : 'plus'"
             :spin="commentsLoading")
 
-  .userIllusts
-    h2 用户作品
-    artworks-list.inline(:list="illust?.userIllusts")
-
   //- 相关推荐
   .recommendWorks
     h2 相关推荐
-    artworks-list(:list="recommend")
+    ArtworksMiniList(:list="recommend")
       .illustCard.loadMore(
         v-if="recommendNextIds.length"
         @click="getRecommend"
@@ -109,6 +109,7 @@ import { userData } from '../components/userData'
 import AuthorCard from '../components/AuthorCard.vue'
 import ArtTag from '../components/ArtTag.vue'
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworksMiniList from '../components/ArtworksList/ArtworksMiniList.vue'
 import Card from '../components/Card.vue'
 import Comment from '../components/Comment/Comment.vue'
 import ErrorPage from '../components/ErrorPage.vue'
@@ -265,6 +266,7 @@ export default {
     AuthorCard,
     ArtTag,
     ArtworksList,
+    ArtworksMiniList,
     Card,
     Comment,
     ErrorPage,
@@ -432,16 +434,19 @@ export default {
 .gallery
   margin: 1rem auto
 
-.tags
+.artworkTags
   margin: 1rem 0
 
 h1
-  // box-shadow: none
-  display: inline-block
+  // display: inline-block
+  box-shadow: none
+  background: linear-gradient(90deg, var(--theme-accent-color), rgba(255,255,255,0))
+  background-position: 0 1em
+  background-repeat: no-repeat
   margin: 0
 
   &.danger
-    box-shadow: 0 -0.5em 0 #f55 inset
+    background: linear-gradient(90deg, var(--theme-danger-color), rgba(255,255,255,0))
 
 .xRestrict
   font-weight: bold
@@ -452,6 +457,10 @@ h1
   > span
     margin-right: 0.5rem
     color: #aaa
+
+  .isOriginal
+    color: inherit
+    font-weight: 600
 
     [data-icon]
       margin-right: 4px
@@ -467,4 +476,10 @@ h1
   padding-left: 0
   // max-height: 400px
   // overflow-y: auto
+
+.userIllusts
+  ul
+    margin-left: -1rem
+    margin-right: -1rem
+    background-color: var(--theme-background-color)
 </style>

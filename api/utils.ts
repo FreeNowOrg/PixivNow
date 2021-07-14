@@ -6,7 +6,7 @@ export function makeArtList(obj: any) {
   for (let item in obj) {
     list.push(obj[item])
   }
-  list.sort((a, b) => b.id - a.d)
+  list.sort((a, b) => b.id - a.id)
   return list
 }
 
