@@ -7,7 +7,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   request(
     req.method as Method,
     `/${__PREFIX}${__PATH ? '/' + __PATH : ''}`,
-    req.query,
+    { ...req.query, ...req.body },
     req.headers
   ).then(
     ({ data }) => {

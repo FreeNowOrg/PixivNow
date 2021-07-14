@@ -50,21 +50,7 @@ section.illust-container(v-if="!error && !loading")
     author-card(:user="user" v-if="user.userId")
 
   card.comments(title="评论")
-    p(v-if="!comments.length && !commentsLoading") 评论区空空如也……
-    .align-center(v-if="!comments.length && commentsLoading")
-      placeholder
-    ul.commentsList(v-if="comments.length")
-      comment(v-for="comment in comments" :comment="comment")
-      .showMore.align-center
-        a.button(
-          v-if="comments.length && commentsHasNext"
-          @click="getComments(illust.id)"
-        )
-          | {{ commentsLoading ? '正在加载' : '查看更多' }}
-          | &nbsp;
-          fa(
-            :icon="commentsLoading ? 'spinner' : 'plus'"
-            :spin="commentsLoading")
+    CommentsArea(:id="illust.id || illust.illustId")
 
   //- 相关推荐
   .recommendWorks
@@ -111,7 +97,7 @@ import ArtTag from '../components/ArtTag.vue'
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
 import ArtworksMiniList from '../components/ArtworksList/ArtworksMiniList.vue'
 import Card from '../components/Card.vue'
-import Comment from '../components/Comment/Comment.vue'
+import CommentsArea from '../components/Comment/CommentsArea.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Gallery from '../components/Gallery.vue'
 import Placeholder from '../components/Placeholder.vue'
@@ -252,9 +238,6 @@ export default {
       loading: true,
       illust: {},
       user: {},
-      comments: [] as any[],
-      commentsLoading: false,
-      commentsHasNext: true,
       recommend: [] as Artwork[],
       recommendLoading: false,
       recommendNextIds: [] as string[],
@@ -268,7 +251,7 @@ export default {
     ArtworksList,
     ArtworksMiniList,
     Card,
-    Comment,
+    CommentsArea,
     ErrorPage,
     Gallery,
     Placeholder,
@@ -278,7 +261,6 @@ export default {
     async init(id: string) {
       // 初始化
       this.user = {}
-      this.comments = []
       this.recommend = []
       this.recommendNextIds = []
       this.loading = true
@@ -291,7 +273,6 @@ export default {
         document.title = `${cache.illustTitle} | Artwork | PixivNow`
         // Extra
         this.getUser(cache.userId)
-        this.getComments(id)
         this.getRecommend(id)
         return
       }
@@ -310,7 +291,6 @@ export default {
 
             // Extra
             this.getUser(data.userId)
-            this.getComments(data.id)
             this.getRecommend(id)
           },
           (err) => {
@@ -338,32 +318,6 @@ export default {
           console.warn('User fetch error', err)
         }
       )
-    },
-    async getComments(id: string | number) {
-      if (this.commentsLoading) return
-      this.commentsLoading = true
-
-      axios
-        .get(`${API_BASE}/ajax/illusts/comments/roots`, {
-          params: {
-            illust_id: isNaN(Number(id)) ? (this.illust as Artwork).id : id,
-            limit: this.comments.length ? 30 : 3,
-            offset: this.comments.length,
-          },
-        })
-        .then(
-          ({ data }) => {
-            console.log('Comments', data)
-            this.commentsHasNext = data.hasNext
-            this.comments = [...this.comments, ...data.comments]
-          },
-          (err) => {
-            console.warn('Comments fetch error', err)
-          }
-        )
-        .finally(() => {
-          this.commentsLoading = false
-        })
     },
     async getRecommend(id: string) {
       if (this.recommendLoading) return
@@ -472,12 +426,6 @@ h1
 
 .breadCrumb
   margin-top: 1rem
-
-.commentsList
-  list-style: none
-  padding-left: 0
-  // max-height: 400px
-  // overflow-y: auto
 
 .userIllusts
   ul

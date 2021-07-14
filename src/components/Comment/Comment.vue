@@ -8,7 +8,9 @@ li.commentBlock
       )
   .right
     h4.user
-      span.commentAuthor {{ comment.userName }}
+      span.commentAuthor
+        | {{ comment.userName }}
+        .tag(v-if="userData && userData.id === comment.userId") 您
       span.commentReply(v-if="comment.replyToUserId") &emsp;▶&emsp;{{ comment.replyToUserName }}
     .content(v-if="!comment.stampId" v-html="replaceStamps(comment.comment)")
     .content(v-if="comment.stampId")
@@ -16,13 +18,33 @@ li.commentBlock
           :src="API_BASE + '/~/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'"
           alt="表情包"
           lazyload)
-    .commentDate {{ comment.commentDate }}
+    .commentDate {{ new Date(comment.commentDate).toLocaleString() }}
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { API_BASE } from '../../config'
 import { stampList } from './stampList'
+import { userData } from '../userData'
+
+export interface Comment {
+  userId: `${number}`
+  userName: string
+  isDeletedUser: boolean
+  img: string
+  id: `${number}`
+  comment: string
+  stampId: number | null
+  stampLink: null
+  commentDate: string
+  commentRootId: string | null
+  commentParentId: string | null
+  commentUserId: `${number}`
+  replyToUserId: string | null
+  replyToUserName: string | null
+  editable: boolean
+  hasReplies: boolean
+}
 
 function replaceStamps(str: string) {
   const reg = new RegExp(
@@ -45,6 +67,7 @@ export default defineComponent({
   data() {
     return {
       API_BASE,
+      userData,
     }
   },
   mounted() {},

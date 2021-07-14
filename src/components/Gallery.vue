@@ -2,27 +2,17 @@
 .gallery
   ul.centerImg.align-center(:class="showAll ? 'showAll' : 'showSingle'")
     li(
-      v-if="showAll"
-      v-for="item in pages")
-      a(
-        :href="API_BASE + item.urls.original"
-        target="_blank"
-        title="点击下载原图")
-        LazyLoad.pic(
-          :src="API_BASE + item.urls.regular"
-          :width="item.width"
-          :height="item.height")
-    li(
-      v-if="!showAll")
-      a(
-        :href="API_BASE + pages[0].urls.original"
-        target="_blank"
-        title="点击下载原图"
-        )
-        LazyLoad.pic(
-          :src="API_BASE + pages[0].urls.regular"
-          :width="pages[0].width"
-          :height="pages[0].height")
+      v-for="(item, index) in pages")
+      div(v-if="showAll || index === 0")
+        a(
+          :href="API_BASE + item.urls.original"
+          target="_blank"
+          title="点击下载原图")
+          LazyLoad.pic(
+            :src="API_BASE + item.urls.regular"
+            :width="item.width"
+            :height="item.height")
+        span.count(v-if="showAll") {{ index + 1 }}
   .info.align-center
     .tips (这是预览图，点击下载原图)
     .showAllBtn
