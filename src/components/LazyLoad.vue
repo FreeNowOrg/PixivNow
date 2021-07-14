@@ -1,14 +1,14 @@
 <template lang="pug">
-svg.layload.isLoading(v-if="!loaded" :width="width" :height="height" rol="img")
-svg.layload.isError(v-if="error" :width="width" :height="height" rol="img")
-img.lazyload.isLoaded(v-if="loaded" :width="width" :height="height" :src="src" rol="img")
+svg.layload.isLoading(v-if="!loaded" :width="width" :height="height" rol="img" :class="class")
+svg.layload.isError(v-if="error" :width="width" :height="height" rol="img" :class="class")
+img.lazyload.isLoaded(v-if="loaded" :width="width" :height="height" :src="src" rol="img" :class="class")
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  props: ['src', 'width', 'height'],
+  props: ['src', 'width', 'height', 'class'],
   data() {
     return {
       loaded: false,
