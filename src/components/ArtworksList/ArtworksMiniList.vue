@@ -57,6 +57,10 @@ export default defineComponent({
   &.inline
     overflow-y: auto
     white-space: nowrap
+    display: block
+
+    li:not(:first-of-type)
+      margin-left: 0.75rem
 
   li
     width: 180px
@@ -123,18 +127,17 @@ export default defineComponent({
       display: inline-flex
 
 .tiny
-  flex-wrap: nowrap
   gap: 0.75rem
 
   li
-    min-width: none
-    width: 90px
+    width: 100px
 
   .info
     display: none
 
 .thumb .router-link-active
   cursor: default
+  box-shadow: 0 0 0 2px #aaa
 
   & + .cover
     background-color: rgba(100, 100, 100, 0.6) !important

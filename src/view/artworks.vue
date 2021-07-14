@@ -447,6 +447,8 @@ h1
 
   &.danger
     background: linear-gradient(90deg, var(--theme-danger-color), rgba(255,255,255,0))
+    background-position: 0 1em
+    background-repeat: no-repeat
 
 .xRestrict
   font-weight: bold

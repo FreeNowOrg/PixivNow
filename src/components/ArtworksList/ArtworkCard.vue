@@ -65,7 +65,6 @@ h3
   padding: .4rem
   width: 240px
   max-width: calc(50vw - 2rem)
-  width: 12.5vw
   background-color: var(--theme-background-color)
   border-radius: 4px
   transition: all .24s ease-in-out
@@ -92,7 +91,6 @@ h3
       left: 0
       width: 100%
       height: 100%
-
 
   .pageCount
     position: absolute
