@@ -1,25 +1,17 @@
 {
   "rewrites": [
     {
-      "source": "/image/(.+)",
-      "destination": "/api/proxy?prefix=i&path=$1"
+      "source": "/:__PREFIX(~|-|image)/:__PATH(.+)",
+      "destination": "/api/image"
     },
     {
-      "source": "/-/(.+)",
-      "destination": "/api/proxy?prefix=i&path=$1"
-    },
-    {
-      "source": "/~/(.+)",
-      "destination": "/api/proxy?prefix=s&path=$1"
-    },
-    {
-      "source": "/ajax/(.+)",
-      "destination": "/api/ajax?path=$1"
+      "source": "/:__PREFIX(ajax|rpc|.+\\.php)/:__PATH*",
+      "destination": "/api/http"
     }
   ],
   "headers": [
     {
-      "source": "/(api|ajax)(.*)",
+      "source": "/(api|ajax|rpc|.+\\.php)(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",

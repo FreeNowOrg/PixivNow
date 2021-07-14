@@ -3,11 +3,25 @@ import axios from 'axios'
 import { handleError } from './utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
-  const { prefix, path } = req.query
-  if (!prefix || !path) {
+  const { __PREFIX, __PATH } = req.query
+  if (!__PREFIX || !__PATH) {
     return res.status(400).send({ message: 'Missing param(s)' })
   }
-  const url = `https://${prefix}.pximg.net/${path}`
+
+  let domain
+  switch (__PREFIX) {
+    case 'image':
+    case '-':
+      domain = 'i'
+      break
+    case '~':
+      domain = 's'
+      break
+    default:
+      return res.status(400).send({ message: 'Invalid request' })
+  }
+
+  const url = `https://${domain}.pximg.net/${__PATH}`
 
   axios
     .get(url, {

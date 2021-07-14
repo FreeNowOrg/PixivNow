@@ -3,10 +3,13 @@ import { Method } from 'axios'
 import { request } from './utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
-  const { path } = req.query
-  delete req.query.path
-
-  request(req.method as Method, `/ajax/${path}`, req.query, req.headers).then(
+  const { __PREFIX, __PATH } = req.query
+  request(
+    req.method as Method,
+    `/${__PREFIX}${__PATH ? '/' + __PATH : ''}`,
+    req.query,
+    req.headers
+  ).then(
     ({ data }) => {
       res.status(200).send(data)
     },
