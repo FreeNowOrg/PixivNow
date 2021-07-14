@@ -41,18 +41,18 @@ export function handleError(err: any, res: VercelResponse) {
 export async function request(
   method: Method,
   path: `/${string}`,
-  data?: any,
+  params?: any,
   headers?: any
 ) {
   const url = `https://www.pixiv.net${path}`
-  const defaultCookie = data.token ? 'PHPSESSID=' + data.token : ''
+  const defaultCookie = params.token ? 'PHPSESSID=' + params.token : ''
 
   // 做一些转换防止抑郁
   // "foo[]": [] -> "foo": []
-  for (let i in data) {
-    if (i.endsWith('[]') && Array.isArray(data[i])) {
-      data[i.replace(/\[\]$/, '')] = data[i]
-      delete data[i]
+  for (let i in params) {
+    if (i.endsWith('[]') && Array.isArray(params[i])) {
+      params[i.replace(/\[\]$/, '')] = params[i]
+      delete params[i]
     }
   }
 
@@ -60,7 +60,7 @@ export async function request(
     const res = await axios({
       url,
       method,
-      data,
+      params,
       timeout: 9000,
       headers: {
         accept: headers.accept || '*/*',
