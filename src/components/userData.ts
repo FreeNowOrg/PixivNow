@@ -44,6 +44,7 @@ export function userLogin(token: string) {
   Cookies.set('PHPSESSID', token, {
     expires: 180,
     path: '/',
+    secure: true,
   })
   return userInit()
 }

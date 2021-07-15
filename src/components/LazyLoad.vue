@@ -1,5 +1,5 @@
 <template lang="pug">
-svg.layload.isLoading(v-if="!loaded" :width="width" :height="height" rol="img" :class="class")
+svg.layload.isLoading(v-if="!loaded && !error" :width="width" :height="height" rol="img" :class="class")
 svg.layload.isError(v-if="error" :width="width" :height="height" rol="img" :class="class")
 img.lazyload.isLoaded(v-if="loaded" :width="width" :height="height" :src="src" rol="img" :class="class")
 </template>
@@ -15,20 +15,27 @@ export default defineComponent({
       error: false,
     }
   },
-  mounted() {
-    const img = new Image()
-    img.src = this.src
-    img.onload = () => {
-      this.loaded = true
-    }
-    img.onerror = () => {
-      this.error = true
-    }
+  methods: {
+    init() {
+      this.loaded = false
+      this.error = false
+      const img = new Image()
+      img.src = this.src
+      img.onload = () => {
+        this.loaded = true
+      }
+      img.onerror = () => {
+        this.error = true
+      }
+    },
   },
   watch: {
-    error() {
-      if (this.error) this.loaded = false
+    src() {
+      this.init
     },
+  },
+  mounted() {
+    this.init()
   },
 })
 </script>

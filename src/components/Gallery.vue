@@ -1,25 +1,30 @@
 <template lang="pug">
 .gallery
-  ul.centerImg.align-center(:class="showAll ? 'showAll' : 'showSingle'")
-    li(
-      v-for="(item, index) in pages")
-      div(v-if="showAll || index === 0")
-        a(
-          :href="API_BASE + item.urls.original"
-          target="_blank"
-          title="点击下载原图")
-          LazyLoad.pic(
-            :src="API_BASE + item.urls.regular"
-            :width="item.width"
-            :height="item.height")
-        span.count(v-if="showAll") {{ index + 1 }}
-  .info.align-center
-    .tips (这是预览图，点击下载原图)
-    .showAllBtn
-      a.button(
-        v-if="pages.length > 1 && !showAll"
-        @click="showAll = true"
-        ) 查看全部 {{ pages.length }} 张
+  .centerImg(:class="showAll ? 'showAll' : 'showSingle'")
+    div(
+      v-for="(item, index) in pages"
+      :data-pic-index="index"
+      )
+      a.container(
+        v-if="picShow === index"
+        :href="API_BASE + item.urls.original"
+        target="_blank"
+        title="点击下载原图")
+        LazyLoad.pic(
+          :src="API_BASE + item.urls.regular"
+          :width="item.width"
+          :height="item.height")
+  .tips.align-center (这是预览图，点击下载原图)
+  ul.pagenator
+    li(v-for="(item, index) in pages")
+      a(
+        @click="picShow = index"
+        :class="{isActive: picShow === index}"
+        )
+        LazyLoad.pic(
+          :src="API_BASE + item.urls.thumb_mini"
+          :width="80"
+          :height="80")
 </template>
 
 <script>
@@ -37,6 +42,7 @@ export default defineComponent({
       loading: false,
       error: '',
       showAll: false,
+      picShow: 0,
     }
   },
 })
@@ -47,13 +53,15 @@ export default defineComponent({
   width: 100%
   overflow: auto
   margin: 0.4rem auto
-  padding-left: 0
+  padding: 0.2rem
   display: flex
   flex-wrap: nowrap
+  gap: 1rem
 
   li
     display: inline-block
-    margin: 0.2rem 0.4rem
+    // margin: 0.2rem 0
+    // gap: 1rem
 
 .flex-center
   gap: 1rem
@@ -77,39 +85,28 @@ export default defineComponent({
   &:hover
     box-shadow: var(--theme-box-shadow-hover)
 
-.showSingle
+.centerImg
   display: block
   text-align: center
 
+  .container
+    height: 60vh
+
   [rol="img"]
-    max-width: 75vw
-    max-height: 75vh
+    max-width: 100%
+    max-height: 100%
     width: auto
     height: auto
 
-.showAll
-  [rol="img"]
-    height: 50vh
-    width: auto
-
-.imgProgress
-  animation: imgProgress 0.6s ease infinite alternate
-
-@media screen and(max-width: 800px)
-  .picBig
-    max-width: 100%
-
 .pagenator
-  margin-top: 1rem
+  list-style: none
+  margin: 0
+  padding: 0.2rem
+  white-space: nowrap
+  overflow-y: auto
+  text-align: center
 
-  button
-    cursor: pointer
-
-  input, .pageNow
-    text-align: center
-    width: 3rem
-    margin: 0 0.4rem
-
-  input
-    margin-right: 0
+  li
+    margin: 0.5rem
+    display: inline-block
 </style>

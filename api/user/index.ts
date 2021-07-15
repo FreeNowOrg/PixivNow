@@ -1,7 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import cheerio from 'cheerio'
 import { handleError, request } from '../utils'
-import Cookies from 'js-cookie'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const token = req.cookies.PHPSESSID || req.query.token
@@ -18,12 +17,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       }
 
       let userData
+      let csrfToken
       try {
         const meta = JSON.parse($meta.attr('content') as string)
         if (!meta.userData) {
           throw 'userData is missing'
         }
-        Cookies.set('csrfToken', meta.token, { expires: 1 })
+        csrfToken = meta.token
         userData = meta.userData
       } catch (error) {
         throw {
@@ -36,7 +36,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         }
       }
 
-      return res.send(userData)
+      return res.setHeader('Set-Cookie',`csrfToken=${csrfToken}; path=/; secure`).send(userData)
     })
     .catch((err) => {
       return handleError(err, res)
