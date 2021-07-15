@@ -1,4 +1,4 @@
-import { VercelRequest, VercelResponse } from '@vercel/node'
+import { VercelRequest, VercelRequestCookies, VercelResponse } from '@vercel/node'
 import axios, { Method } from 'axios'
 
 export function makeArtList(obj: any) {
@@ -71,16 +71,19 @@ export async function request({
       data,
       timeout: 9000,
       headers: {
-        accept: headers.accept || '*/*',
+        Accept: headers.accept || '*/*',
         'accept-language':
           headers['accept-language'] ||
           'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
-        cookie: headers.cookie || defaultCookie,
+        Cookie: headers.cookie || defaultCookie,
         'user-agent':
           headers['user-agent'] ||
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
         // Keep this referer
-        referer: 'https://www.pixiv.net/',
+        Referer: 'https://www.pixiv.net/',
+        Host: 'www.pixiv.net',
+        Origin: 'https://www.pixiv.net',
+        'x-csrf-token': headers?.cookies?.csrfToken || null,
       },
     })
     res.data = replaceUrl(res.data?.body || res.data)

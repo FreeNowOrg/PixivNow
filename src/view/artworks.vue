@@ -27,7 +27,11 @@ section.illust-container(v-if="!error && !loading")
       span.likeCount(title="点赞")
         fa(icon="thumbs-up")
         | {{ illust.likeCount }}
-      span.bookmarkCount(title="收藏")
+      span.bookmarkCount(
+        :class="{isBookmarked: illust.bookmarkData}"
+        @click="addBookmark"
+        :title="illust.bookmarkData ? '已收藏' : '收藏'"
+        )
         fa(icon="heart")
         | {{ illust.bookmarkCount }}
       span.viewCount(title="浏览")
@@ -236,11 +240,12 @@ export default {
   data() {
     return {
       loading: true,
-      illust: {},
+      illust: {} as Artwork,
       user: {},
       recommend: [] as Artwork[],
       recommendLoading: false,
       recommendNextIds: [] as string[],
+      bookmarkLoading: false,
       error: '',
       userData,
     }
@@ -373,6 +378,37 @@ export default {
           })
       }
     },
+    addBookmark() {
+      if (!this.illust.isBookmarkable) return console.log('无法添加收藏。')
+      if (this.illust.bookmarkData) return console.log('已经收藏过啦。')
+
+      this.bookmarkLoading = true
+
+      axios({
+        url: `${API_BASE}/ajax/illusts/bookmarks/add`,
+        method: 'post',
+        data: {
+          illust_id: this.illust.id,
+          restrict: 0,
+          comment: '',
+          tags: [],
+        },
+      })
+        .then(
+          ({ data }) => {
+            if (data.last_bookmark_id) {
+              this.illust.bookmarkData = data
+              this.illust.bookmarkCount++
+            }
+          },
+          (err) => {
+            console.warn('添加收藏时出现问题', err)
+          }
+        )
+        .finally(() => {
+          this.bookmarkLoading = false
+        })
+    },
   },
   beforeRouteUpdate(to, from) {
     this.init(to.params.id as string)
@@ -414,12 +450,17 @@ h1
     margin-right: 0.5rem
     color: #aaa
 
+    [data-icon]
+      margin-right: 4px
+
   .isOriginal
     color: inherit
     font-weight: 600
 
-    [data-icon]
-      margin-right: 4px
+  .bookmarkCount.isBookmarked
+    color: pink
+    font-weight: 600
+
 .createDate
   color: #aaa
   font-size: 0.85rem
