@@ -12,8 +12,16 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   try {
     const [details, pages] = await Promise.all([
-      request('get', `/ajax/illust/${id}`, req.query, req.headers),
-      request('get', `/ajax/illust/${id}/pages`, req.query, req.headers),
+      request({
+        path: `/ajax/illust/${id}`,
+        params: req.query,
+        headers: req.headers,
+      }),
+      request({
+        path: `/ajax/illust/${id}/pages`,
+        params: req.query,
+        headers: req.headers,
+      }),
     ])
 
     try {

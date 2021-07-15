@@ -6,7 +6,7 @@ export function makeArtList(obj: any) {
   for (let item in obj) {
     list.push(obj[item])
   }
-  list.sort((a, b) => b.id - a.d)
+  list.sort((a, b) => b.id - a.id)
   return list
 }
 
@@ -38,12 +38,19 @@ export function handleError(err: any, res: VercelResponse) {
     .send(err?.response?.data || err)
 }
 
-export async function request(
-  method: Method,
-  path: `/${string}`,
-  params?: any,
+export async function request({
+  method = 'get',
+  path = '/',
+  params,
+  data,
+  headers,
+}: {
+  method?: Method
+  path?: `/${string}`
+  params?: any
+  data?: string
   headers?: any
-) {
+}) {
   const url = `https://www.pixiv.net${path}`
   const defaultCookie = params.token ? 'PHPSESSID=' + params.token : ''
 
@@ -61,6 +68,7 @@ export async function request(
       url,
       method,
       params,
+      data,
       timeout: 9000,
       headers: {
         accept: headers.accept || '*/*',

@@ -1,61 +1,61 @@
 <template lang="pug">
-h1(:class="illust.xRestrict ? 'danger' : ''") {{ loading ? '正在读取作品 #' + $route.params.id : illust.illustTitle }}
 
 //- Loading
-section.loading(v-if="loading")
+section.align-center(v-if="loading")
   placeholder
+  p {{ '正在读取作品 #' + $route.params.id }}
 
 //- Done
 section.illust-container(v-if="!error && !loading")
-  gallery(:pages="illust.pages" )
-  .tags
-    span.xRestrict(v-if="illust.xRestrict" title="R-18") R-18
-    art-tag(:key="_" v-for="(item, _) in illust.tags.tags" :tag="item.tag")
+  gallery(:pages="illust.pages")
   
-  .author
-    h2 作者
-    .loading(v-if="!user.userId")
-      placeholder
-    author-card(:user="user" v-if="user.userId")
-  
-  card.description(title="简介" class="" v-if="illust.description")
-    p(v-html="illust.description")
-  
-  card.about(title="关于")
-    ul
-      li
-        strong 浏览：
-        span {{ illust.viewCount }}
-      li
-        strong 点赞：
-        span {{ illust.likeCount }}
-      li
-        strong 评论：
-        span {{ illust.commentCount }}
-      li
-        strong 原创：
-        span {{ illust.isOriginal ? '是' : '?' }}
-      li
-        strong 发布：
-        span(:title="illust.createDate") {{ new Date(illust.createDate).toLocaleString() }}
-    div(:style="{textAlign: 'center'}")
-      a(
+  .artworkInfo
+    h1(:class="illust.xRestrict ? 'danger' : ''") {{ illust.illustTitle }}
+    p.description.pre(v-html="illust.description")
+    p.description.noDesc(v-if="!illust.description" :style="{color: '#aaa'}") (无简介)
+    p.canonicalLink
+      a.button(
         :href="illust?.extraData?.meta?.canonical || '#'"
         target="_blank"
         rel="noopener noreferrer"
       ) 在 Pixiv 上查看 →
 
-  .breadCrumb
-    router-link.button(to="/artworks") ← 返回
+    p.stats
+      span.isOriginal(v-if="illust.isOriginal")
+        fa(icon="laugh-wink")
+        | 原创
+      span.likeCount(title="点赞")
+        fa(icon="thumbs-up")
+        | {{ illust.likeCount }}
+      span.bookmarkCount(title="收藏")
+        fa(icon="heart")
+        | {{ illust.bookmarkCount }}
+      span.viewCount(title="浏览")
+        fa(icon="eye")
+        | {{ illust.viewCount }}
+      span.count
+        fa(icon="images")
+        | {{ illust.pages.length }}张
 
-  .userIllusts
-    h2 用户作品
-    artworks-list.inline(:list="illust?.userIllusts")
+    p.createDate {{ new Date(illust.createDate).toLocaleString() }}
+
+  .artworkTags
+    span.xRestrict(v-if="illust.xRestrict" title="R-18") R-18
+    art-tag(:key="_" v-for="(item, _) in illust.tags.tags" :tag="item.tag")
+  
+  .authorInfo
+    h2 作者
+    .align-center(v-if="!user.userId")
+      placeholder
+    author-card(:user="user" v-if="user.userId")
+
+  card.comments(title="评论")
+    CommentsArea(:id="illust.id || illust.illustId")
 
   //- 相关推荐
   .recommendWorks
     h2 相关推荐
-    artworks-list(:list="recommend")
+    ArtworksMiniList(:list="recommend")
       .illustCard.loadMore(
         v-if="recommendNextIds.length"
         @click="getRecommend"
@@ -95,7 +95,9 @@ import { userData } from '../components/userData'
 import AuthorCard from '../components/AuthorCard.vue'
 import ArtTag from '../components/ArtTag.vue'
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworksMiniList from '../components/ArtworksList/ArtworksMiniList.vue'
 import Card from '../components/Card.vue'
+import CommentsArea from '../components/Comment/CommentsArea.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Gallery from '../components/Gallery.vue'
 import Placeholder from '../components/Placeholder.vue'
@@ -236,10 +238,9 @@ export default {
       loading: true,
       illust: {},
       user: {},
-      comments: [],
-      recommend: [],
+      recommend: [] as Artwork[],
       recommendLoading: false,
-      recommendNextIds: [],
+      recommendNextIds: [] as string[],
       error: '',
       userData,
     }
@@ -248,7 +249,9 @@ export default {
     AuthorCard,
     ArtTag,
     ArtworksList,
+    ArtworksMiniList,
     Card,
+    CommentsArea,
     ErrorPage,
     Gallery,
     Placeholder,
@@ -256,25 +259,28 @@ export default {
   },
   methods: {
     async init(id: string) {
-      if (!id) return
+      // 初始化
+      this.user = {}
+      this.recommend = []
+      this.recommendNextIds = []
+      this.loading = true
 
+      // Cache
       const cache = getCache(`illust.${id}`)
       if (cache) {
         this.illust = cache
         this.loading = false
+        document.title = `${cache.illustTitle} | Artwork | PixivNow`
         // Extra
         this.getUser(cache.userId)
-        this.getComments(id)
         this.getRecommend(id)
         return
       }
-      this.loading = true
 
       axios
         .get(`${API_BASE}/api/illust/${id}`, {
           params: {
             full: 1,
-            lang: 'zh',
           },
         })
         .then(
@@ -285,7 +291,6 @@ export default {
 
             // Extra
             this.getUser(data.userId)
-            this.getComments(data.id)
             this.getRecommend(id)
           },
           (err) => {
@@ -313,25 +318,6 @@ export default {
           console.warn('User fetch error', err)
         }
       )
-    },
-    async getComments(id: string | number) {
-      axios
-        .get(`${API_BASE}/ajax/illusts/comments/roots`, {
-          params: {
-            illust_id: id || this.$route.params.id,
-            limit: 50,
-            lang: 'zh',
-          },
-        })
-        .then(
-          ({ data }) => {
-            console.log('Comments', data)
-            this.comments = data
-          },
-          (err) => {
-            console.warn('Comments fetch error', err)
-          }
-        )
     },
     async getRecommend(id: string) {
       if (this.recommendLoading) return
@@ -375,10 +361,7 @@ export default {
           })
           .then(
             ({ data }) => {
-              this.recommend = [
-                ...this.recommend,
-                ...data.illusts,
-              ] as never[]
+              this.recommend = [...this.recommend, ...data.illusts]
             },
             (err) => {
               console.warn('Load more recommends error', err)
@@ -402,20 +385,51 @@ export default {
 </script>
 
 <style scoped lang="sass">
-.loading
-  text-align: center
+.gallery
+  margin: 1rem auto
 
-.tags
+.artworkTags
   margin: 1rem 0
 
-h1.danger
-  box-shadow: 0 -0.5em 0 #f55 inset
+h1
+  // display: inline-block
+  box-shadow: none
+  background: linear-gradient(90deg, var(--theme-accent-color), rgba(255,255,255,0))
+  background-position: 0 1em
+  background-repeat: no-repeat
+  margin: 0
+
+  &.danger
+    background: linear-gradient(90deg, var(--theme-danger-color), rgba(255,255,255,0))
+    background-position: 0 1em
+    background-repeat: no-repeat
 
 .xRestrict
   font-weight: bold
   color: #c00
   margin-right: 1rem
 
+.stats
+  > span
+    margin-right: 0.5rem
+    color: #aaa
+
+  .isOriginal
+    color: inherit
+    font-weight: 600
+
+    [data-icon]
+      margin-right: 4px
+.createDate
+  color: #aaa
+  font-size: 0.85rem
+
 .breadCrumb
   margin-top: 1rem
+
+.userIllusts
+  ul
+    margin-left: -1rem
+    margin-right: -1rem
+    background-color: var(--theme-background-color)
 </style>

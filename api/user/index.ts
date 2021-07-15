@@ -8,7 +8,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return res.status(403).send({ message: '未配置用户密钥' })
   }
 
-  request('get', '/', req.query, req.headers)
+  request({ params: req.query, headers: req.headers })
     .then(async ({ data }) => {
       const $ = cheerio.load(data)
       const $meta = $('meta[name="global-data"]')
@@ -17,11 +17,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       }
 
       let userData
+      let csrfToken
       try {
         const meta = JSON.parse($meta.attr('content') as string)
         if (!meta.userData) {
           throw 'userData is missing'
         }
+        csrfToken = meta.token
         userData = meta.userData
       } catch (error) {
         throw {
@@ -34,7 +36,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         }
       }
 
-      return res.send(userData)
+      return res.setHeader('Set-Cookie',`csrfToken=${csrfToken}; path=/; secure`).send(userData)
     })
     .catch((err) => {
       return handleError(err, res)

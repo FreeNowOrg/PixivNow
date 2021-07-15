@@ -1,131 +1,114 @@
 <template lang="pug">
 .gallery
-  //- placeholder.picBig(v-if="loading" :width="width" :height="height")
-  .imageArea
-    a(:href="API_BASE + originalSrc" target="_blank" title="点击下载原图")
-      img.picBig(:src="imgSrc" alt="" v-if="!loading")
-      svg.imgProgress.picBig(v-if="loading" :width="width" :height="height")
-      .error.picBig(v-if="error" :width="width" :height="height") {{ error }}
-    .tips {{ loading ? '(图片正在加载~)' : '(这是预览图，点击下载原图)' }}
-  .pagenator
-    button(@click="prevImg")
-      fa(icon="arrow-left")
-    input(v-model="imgCountInput" type="number")
-    span.pageNow / {{ pages.length }}
-    button(@click="nextImg")
-      fa(icon="arrow-right")
+  .centerImg(:class="showAll ? 'showAll' : 'showSingle'")
+    div(
+      v-for="(item, index) in pages"
+      :data-pic-index="index"
+      )
+      a.container(
+        v-if="picShow === index"
+        :href="API_BASE + item.urls.original"
+        target="_blank"
+        title="点击下载原图")
+        LazyLoad.pic(
+          :src="API_BASE + item.urls.regular"
+          :width="item.width"
+          :height="item.height")
+  .tips.align-center (这是预览图，点击下载原图)
+  ul.pagenator
+    li(v-for="(item, index) in pages")
+      a(
+        @click="picShow = index"
+        :title="'第' + (index + 1) + '张 (共' + pages.length + '张)'"
+        :class="{isActive: picShow === index}"
+        )
+        LazyLoad.pic(
+          :src="API_BASE + item.urls.thumb_mini"
+          :width="80"
+          :height="80")
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 import { API_BASE } from '../config'
 
-import placeholder from './Placeholder.vue'
+import LazyLoad from './LazyLoad.vue'
 
 export default defineComponent({
-  components: { placeholder },
+  components: { LazyLoad },
   props: ['pages'],
   data() {
     return {
       API_BASE,
-      imgCount: 0,
-      imgCountInput: 1,
-      imgSrc: '',
-      originalSrc: '',
       loading: false,
       error: '',
-      width: 0,
-      height: 0,
+      showAll: false,
+      picShow: 0,
     }
-  },
-  methods: {
-    setImg(count) {
-      count = this.pages[count] ? count : 0
-      const item = this.pages[count]
-
-      this.error = ''
-      this.loading = true
-      this.width = item.width
-      this.height = item.height
-
-      this.originalSrc = item.urls.original
-      const url = `${API_BASE}${item.urls.regular}`
-
-      const img = new Image()
-      img.src = url
-      img.onload = () => {
-        this.imgSrc = url
-        this.loading = false
-      }
-      img.onerror = (err) => {
-        console.warn('Image load error', err)
-        this.error = '坏耶，图片加载失败！'
-        this.loading = false
-      }
-    },
-    prevImg() {
-      this.imgCount--
-    },
-    nextImg() {
-      this.imgCount++
-    },
-  },
-  watch: {
-    imgCount(val) {
-      this.imgCount = Math.max(0, this.imgCount)
-      this.imgCount = Math.min(this.pages.length - 1, this.imgCount)
-      // if (val < 0 || val + 1 > this.pages.length) this.imgCount = 0
-      this.imgCountInput = val + 1
-      this.setImg(this.imgCount)
-    },
-    imgCountInput(val) {
-      this.imgCount = val - 1
-    },
-  },
-  created() {
-    this.setImg(0)
   },
 })
 </script>
 
-<style scoped lang="sass">
+<style lang="sass">
 .gallery
-  text-align: center
+  .centerImg
+    width: 100%
+    overflow: auto
+    margin: 0.4rem auto
+    padding: 0.2rem
+    display: flex
+    flex-wrap: nowrap
+    gap: 1rem
 
-.tips
-  font-size: small
-  font-style: italic
+    li
+      display: inline-block
+      // margin: 0.2rem 0
+      // gap: 1rem
 
-.picBig
-  max-width: 50vw
-  max-height: 75vh
-  width: auto
-  height: auto
-  border-radius: 4px
-  box-shadow: var(--theme-box-shadow)
-  transition: box-shadow 0.24s ease-in-out
+  .flex-center
+    gap: 1rem
 
-  &:hover
-    box-shadow: var(--theme-box-shadow-hover)
+    .leftBtn,
+    .rightBtn
+      flex: 1
 
-.imgProgress
-  animation: imgProgress 0.6s ease infinite alternate
+    .leftBtn
+      text-align: right
 
-@media screen and(max-width: 800px)
-  .picBig
-    max-width: 100%
+  .tips
+    font-size: small
+    font-style: italic
 
-.pagenator
-  margin-top: 1rem
+  [role="img"]
+    border-radius: 4px
+    box-shadow: var(--theme-box-shadow)
+    transition: box-shadow 0.24s ease-in-out
 
-  button
-    cursor: pointer
+    &:hover
+      box-shadow: var(--theme-box-shadow-hover)
 
-  input, .pageNow
+  .centerImg
+    display: block
     text-align: center
-    width: 3rem
-    margin: 0 0.4rem
 
-  input
-    margin-right: 0
+    .container
+      // height: 60vh
+
+    [role="img"]
+      max-width: 100%
+      max-height: 60vh
+      width: auto
+      height: auto
+
+  .pagenator
+    list-style: none
+    margin: 0
+    padding: 0.2rem
+    white-space: nowrap
+    overflow-y: auto
+    text-align: center
+
+    li
+      margin: 0.5rem
+      display: inline-block
 </style>

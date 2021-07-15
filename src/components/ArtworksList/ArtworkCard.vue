@@ -62,11 +62,9 @@ h3
   display: inline-block
   box-sizing: border-box
   box-shadow: 0 0 4px #ccc
-  margin: 1rem
   padding: .4rem
-  min-width: 250px
-  max-width: 350px
-  width: 12.5vw
+  width: 240px
+  max-width: calc(50vw - 2rem)
   background-color: var(--theme-background-color)
   border-radius: 4px
   transition: all .24s ease-in-out
@@ -93,7 +91,6 @@ h3
       left: 0
       width: 100%
       height: 100%
-
 
   .pageCount
     position: absolute

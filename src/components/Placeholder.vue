@@ -27,30 +27,26 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-.svgspinner .spincircle {
-  animation: loading-round 1.2s infinite linear,
-    loading-dash 2s infinite linear alternate;
-  stroke-dasharray: 236;
-}
+<style scoped lang="sass">
+.svgspinner
+  max-width: 100%
 
-@keyframes loading-round {
-  0% {
-    transform: rotate(0deg);
-  }
+.svgspinner .spincircle
+  animation: loading-round 1.2s infinite linear, loading-dash 2s infinite linear alternate
+  stroke-dasharray: 236
 
-  100% {
-    transform: rotate(720deg);
-  }
-}
 
-@keyframes loading-dash {
-  0% {
-    stroke-dashoffset: 236;
-  }
+@keyframes loading-round
+  0%
+    transform: rotate(0deg)
 
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
+  100%
+    transform: rotate(720deg)
+
+@keyframes loading-dash
+  0%
+    stroke-dashoffset: 236
+
+  100%
+    stroke-dashoffset: 0
 </style>

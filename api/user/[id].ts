@@ -11,8 +11,16 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
 
   Promise.all([
-    request('get', `/ajax/user/${id}`, { full: 1, ...req.query }, req.headers),
-    request('get', `/ajax/user/${id}/profile/top`, req.query, req.headers),
+    request({
+      path: `/ajax/user/${id}`,
+      params: { full: 1, ...req.query },
+      headers: req.headers,
+    }),
+    request({
+      path: `/ajax/user/${id}/profile/top`,
+      params: req.query,
+      headers: req.headers,
+    }),
   ]).then(
     ([{ data: basic }, { data: more }]) => {
       const { illusts, manga, novels } = more

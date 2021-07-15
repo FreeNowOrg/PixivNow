@@ -17,7 +17,7 @@ library.add(fas)
 app.component('fa', FontAwesomeIcon)
 
 // Style
-import './static/common.sass'
+import './static/index.sass'
 
 // Mount
 app.mount('#app')

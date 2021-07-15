@@ -45,25 +45,29 @@ section.user(v-if="!loading && !error")
   
   .tabber
     ul.tabBtn
-      li(
-        @click="tab = 'illust'")
+      li(@click="tab = 'illust'")
         a(:class="{tabActive: tab === 'illust'}") 插画
-      li(
-        @click="tab = 'manga'")
+      li(@click="tab = 'manga'")
         a(:class="{tabActive: tab === 'manga'}") 漫画
       li(
-        v-if="userData && bookmarks"
+        v-if="bookmarks.length"
         @click="tab = 'bookmarks'")
         a(:class="{tabActive: tab === 'bookmarks'}") 收藏
     .tabContents
       section(v-if="tab === 'illust'")
-        h2(v-if="user.illusts.length") 插画
-        artworks-list.inline(:list="user.illusts")
+        h2 插画
+        .noResult(v-if="user.illusts && !user.illusts.length") 
+          div 用户没有插画作品 (｡•́︿•̀｡)
+        artworks-list(:list="user.illusts")
       section(v-if="tab === 'manga'")
-        h2(v-if="user.manga.length") 漫画
-        artworks-list.inline(:list="user.manga")
+        h2 漫画
+        .noResult(v-if="user.manga && !user.manga.length")
+          div 用户没有漫画作品 (*/ω＼*)
+        artworks-list(:list="user.manga")
       section(v-if="tab === 'bookmarks'")
         h2 收藏
+        .noResult(v-if="user.manga && !user.manga.length")
+          div 收藏夹是空的 Σ(⊙▽⊙"a
         artworks-list(:list="bookmarks")
 </template>
 
@@ -146,29 +150,32 @@ export default {
     return {
       API_BASE,
       loading: true,
-      listLoading: true,
       error: '',
-      user: {},
+      user: {} as User | {},
       userData,
-      bookmarks: [],
-      tab: 'illust',
+      bookmarks: [] as Artwork[],
+      tab: 'illust' as 'illust' | 'manga' | 'bookmarks',
     }
   },
   methods: {
     init(id: any) {
-      const cache = getCache(`users.${id}`)
+      // 初始化
+      this.user = {}
+      this.bookmarks = []
+      this.tab = 'illust'
+      this.loading = true
 
+      // Cache
+      const cache = getCache(`users.${id}`)
       if (cache) {
         this.loading = false
         this.user = cache
         document.title = `${cache.name} | User | PixivNow`
-        if (userData.value?.id === id) {
-          this.getBookmarks()
-        }
+        // Extra
+        this.getBookmarks()
         return
       }
 
-      this.loading = true
       axios
         .get(`${API_BASE}/api/user/${id}`)
         .then(
@@ -177,9 +184,7 @@ export default {
             setCache(`users.${id}`, data)
             document.title = `${data.name} | User | PixivNow`
 
-            if (userData.value?.id === id) {
-              this.getBookmarks()
-            }
+            this.getBookmarks()
           },
           (err) => {
             console.warn('user', err.response)
@@ -289,6 +294,15 @@ export default {
     list-style: none
     padding-left: 0
     margin: 0
+    background-color: var(--theme-background-color)
+    box-shadow: 0 6px 10px -6px #ccc
+    transition: all 0.4s ease-in-out
+    z-index: 10
+    position: sticky
+    top: 51px
+
+    .globalNavbar_isHide &
+      top: 0
 
     li
       display: inline-block
@@ -303,4 +317,13 @@ export default {
 
   .tabContents
     border-top: 1px solid var(--theme-link-color)
+
+.noResult
+  height: 300px
+  display: flex
+  align-items: center
+
+  > div
+    text-align: center
+    flex: 1
 </style>

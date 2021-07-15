@@ -1,5 +1,5 @@
 <template lang="pug">
-aside.globalSideNav(:class="{hidden: !show}")
+aside.globalSideNav(:class="{isHide: !show}")
   .backdrop(@click="show = false")
   .inner
     .banner
@@ -169,7 +169,7 @@ export default defineComponent({
     border-radius: 2px
 
 // Hidden state
-.hidden
+.isHide
   .inner
     left: -300px
   .backdrop

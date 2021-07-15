@@ -72,16 +72,25 @@ export default defineComponent({
       // curPath: this.$route,
     }
   },
+  watch: {
+    isHide() {
+      if (this.isHide) {
+        document.body.classList.add('globalNavbar_isHide')
+      } else {
+        document.body.classList.remove('globalNavbar_isHide')
+      }
+    },
+  },
   mounted() {
     let scrollTop = document.documentElement.scrollTop
     window.addEventListener('scroll', () => {
       const newTop = document.documentElement.scrollTop
 
-      if (scrollTop > 600) {
-        this.isHide = newTop - scrollTop > 0
-      } else {
-        this.isHide = false
-      }
+      // if (scrollTop > 600) {
+      //   this.isHide = newTop - scrollTop > 0
+      // } else {
+      //   this.isHide = false
+      // }
 
       scrollTop = newTop
 
@@ -133,8 +142,8 @@ export default defineComponent({
   &.notAtTop
     box-shadow: 0 2px 4px var(--theme-box-shadow-color)
 
-  &.isHide
-    top: -80px
+  // &.isHide
+  //   top: -52px
 
 .sideNavToggle
   font-size: 1.2rem
@@ -188,7 +197,7 @@ export default defineComponent({
     [data-icon]
       margin-left: 6px
       color: #fff
-      transition: all 0.4s
+      transition: all 0.4s 
 
     .dropdown
       display: none

@@ -11,6 +11,8 @@ import axios from 'axios'
 
 export default defineComponent({
   mounted() {
+    window.nprogress = nprogress
+
     // 介入路由事件
     router.beforeEach(() => {
       nprogress.start()
@@ -44,8 +46,11 @@ export default defineComponent({
 #nprogress
   .bar
     background-color: var(--theme-secondary-color)
+    top: 50px
 
   .spinner
+    top: 60px
+
     .spinner-icon
       border-top-color: var(--theme-secondary-color)
       border-left-color: var(--theme-secondary-color)

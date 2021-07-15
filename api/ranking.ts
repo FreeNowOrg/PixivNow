@@ -20,15 +20,14 @@ export interface RankingQuery {
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { query } = req
 
-  request(
-    'get',
-    '/ranking.php',
-    {
+  request({
+    path: '/ranking.php',
+    params: {
       ...query,
       format: 'json',
     },
-    req.headers
-  )
+    headers: req.headers,
+  })
     .then(({ data }) => {
       data.contents = data?.contents?.map((i: any) => {
         i.xRestrict = i?.illust_content_type?.sexual || 0

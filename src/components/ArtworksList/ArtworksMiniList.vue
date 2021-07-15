@@ -1,0 +1,173 @@
+<template lang="pug">
+ul.artworksMiniList
+  li(
+    v-for="item in list"
+    :class="{isAdContainer: item.isAdContainer}"
+    )
+    .thumb
+      .xRestrict.tag(v-if="item.xRestrict" title="R-18")
+          fa(icon="eye")
+      router-link(
+        v-if="item.id"
+        :to="'/artworks/' + item.id")
+        img(
+          :src="API_BASE + item.url"
+          :alt="item.alt"
+          :title="item.alt"
+          lazyload="")
+      .cover
+    .info
+      .title
+        a.plain.isAdContainer(v-if="item.isAdContainer") 广告
+        router-link(
+          v-if="item.id"
+          :to="'/artworks/' + item.id") {{ item.title }}
+      .author(:title="item.userName")
+        router-link(
+          v-if="item.id"
+          :to="'/users/' + item.userId")
+          img.avatar(
+            :src="API_BASE + (item.profileImageUrl || item.profileImg)"
+            lazyload=""
+            )
+          | {{ item.userName }}
+        a.plain.isAdContainer(v-if="item.isAdContainer")
+          | 我是一个广告
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { API_BASE } from '../../config'
+
+export default defineComponent({
+  data() {
+    return {
+      API_BASE,
+    }
+  },
+  props: ['list'],
+})
+</script>
+
+<style scoped lang="sass">
+.artworksMiniList
+  list-style: none
+  padding-left: 0
+  display: flex
+  flex-wrap: wrap
+  gap: 1.5rem
+
+  &.inline
+    overflow-y: auto
+    white-space: nowrap
+    display: block
+
+    li:not(:first-of-type)
+      margin-left: 0.75rem
+
+  li
+    width: 180px
+    max-width: calc(50vw - 2rem)
+    display: inline-block
+
+  .thumb
+    position: relative
+    overflow: hidden
+    border-radius: 8px
+    width: 100%
+    height: 0
+    padding-top: 100%
+    animation: imgProgress 0.6s ease infinite alternate
+
+    a
+      position: absolute
+      left: 0
+      top: 0
+      display: block
+
+    img
+      position: relative
+      left: 0
+      top: 0
+      width: 100%
+      height: 100%
+      transition: all 0.4s ease-in-out
+
+    .cover
+      position: absolute
+      // background-color: rgba(0, 0, 0, 0.05)
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      z-index: 1
+      pointer-events: none
+      transition: all 0.4s ease-in-out
+    
+    &:hover
+      .cover
+        background-color: rgba(255, 255, 255, 0.2)
+
+      img
+        transform: scale(1.1)
+
+  .title
+    margin: 0.4rem 0
+    text-overflow: ellipsis
+    overflow: hidden
+
+    a
+      display: inline
+      font-weight: 600
+
+  .author
+    img
+      width: 1.5rem
+      height: 1.5rem
+
+    a
+      font-size: 0.8rem
+      display: inline-flex
+
+.tiny
+  gap: 0.75rem
+
+  li
+    width: 100px
+
+  .info
+    display: none
+
+.thumb .router-link-active
+  cursor: default
+  box-shadow: 0 0 0 2px #aaa
+
+  & + .cover
+    background-color: rgba(100, 100, 100, 0.6) !important
+
+.xRestrict
+  position: absolute
+  top: .4rem
+  left: .4rem
+  color: #fff
+  background-color: rgb(255, 0, 0, 0.8)
+  width: 1.5rem
+  height: 1.5rem
+  border-radius: 50%
+  display: flex
+  align-items: center
+  z-index: 10
+
+  [data-icon]
+    margin: 0 auto
+    font-size: 0.8rem
+
+.isAdContainer
+  a
+    color: var(--theme-text-color)
+    cursor: default
+
+  .thumb
+    background-color: #efefef
+    animation: none
+</style>

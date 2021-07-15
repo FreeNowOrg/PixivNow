@@ -34,7 +34,7 @@ export default defineComponent({
 
 <style scoped lang="sass">
 main
-  padding: 40px 0 60px 0
+  padding: 50px 0 60px 0
   min-height: 100vh
   position: relative
 
