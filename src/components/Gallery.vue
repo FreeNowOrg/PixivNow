@@ -50,64 +50,65 @@ export default defineComponent({
 </script>
 
 <style lang="sass">
-.centerImg
-  width: 100%
-  overflow: auto
-  margin: 0.4rem auto
-  padding: 0.2rem
-  display: flex
-  flex-wrap: nowrap
-  gap: 1rem
+.gallery
+  .centerImg
+    width: 100%
+    overflow: auto
+    margin: 0.4rem auto
+    padding: 0.2rem
+    display: flex
+    flex-wrap: nowrap
+    gap: 1rem
 
-  li
-    display: inline-block
-    // margin: 0.2rem 0
-    // gap: 1rem
+    li
+      display: inline-block
+      // margin: 0.2rem 0
+      // gap: 1rem
 
-.flex-center
-  gap: 1rem
+  .flex-center
+    gap: 1rem
 
-  .leftBtn,
-  .rightBtn
-    flex: 1
+    .leftBtn,
+    .rightBtn
+      flex: 1
 
-  .leftBtn
-    text-align: right
+    .leftBtn
+      text-align: right
 
-.tips
-  font-size: small
-  font-style: italic
-
-[role="img"]
-  border-radius: 4px
-  box-shadow: var(--theme-box-shadow)
-  transition: box-shadow 0.24s ease-in-out
-
-  &:hover
-    box-shadow: var(--theme-box-shadow-hover)
-
-.centerImg
-  display: block
-  text-align: center
-
-  .container
-    height: 60vh
+  .tips
+    font-size: small
+    font-style: italic
 
   [role="img"]
-    max-width: 100%
-    max-height: 100%
-    width: auto
-    height: auto
+    border-radius: 4px
+    box-shadow: var(--theme-box-shadow)
+    transition: box-shadow 0.24s ease-in-out
 
-.pagenator
-  list-style: none
-  margin: 0
-  padding: 0.2rem
-  white-space: nowrap
-  overflow-y: auto
-  text-align: center
+    &:hover
+      box-shadow: var(--theme-box-shadow-hover)
 
-  li
-    margin: 0.5rem
-    display: inline-block
+  .centerImg
+    display: block
+    text-align: center
+
+    .container
+      height: 60vh
+
+    [role="img"]
+      max-width: 100%
+      max-height: 100%
+      width: auto
+      height: auto
+
+  .pagenator
+    list-style: none
+    margin: 0
+    padding: 0.2rem
+    white-space: nowrap
+    overflow-y: auto
+    text-align: center
+
+    li
+      margin: 0.5rem
+      display: inline-block
 </style>
