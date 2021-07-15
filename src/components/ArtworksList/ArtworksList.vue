@@ -26,6 +26,7 @@ export default {
   gap: 1.5rem
 
   &.inline
+    padding: 1rem
     flex-wrap: nowrap
     overflow-y: auto
 
