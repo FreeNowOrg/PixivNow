@@ -6,7 +6,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let status = true
   let error
   try {
-    await request('get', '/user/10', {}, req.headers)
+    await request({ path: '/user/10', params: req.headers })
   } catch (err) {
     status = false
     error = err

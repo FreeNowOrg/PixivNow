@@ -8,7 +8,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return res.status(403).send({ message: '未配置用户密钥' })
   }
 
-  request('get', '/', req.query, req.headers)
+  request({ params: req.query, headers: req.headers })
     .then(async ({ data }) => {
       const $ = cheerio.load(data)
       const $meta = $('meta[name="global-data"]')
