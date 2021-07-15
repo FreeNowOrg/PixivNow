@@ -92,11 +92,11 @@ export default defineComponent({
     text-align: center
 
     .container
-      height: 60vh
+      // height: 60vh
 
     [role="img"]
       max-width: 100%
-      max-height: 100%
+      max-height: 60vh
       width: auto
       height: auto
 
