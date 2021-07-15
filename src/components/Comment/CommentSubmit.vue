@@ -18,6 +18,7 @@
 
 <script lang="ts">
 import axios from 'axios'
+import Cookies from 'js-cookie'
 import { defineComponent } from 'vue'
 import { API_BASE } from '../../config'
 import { userData } from '../userData'
@@ -36,13 +37,19 @@ export default defineComponent({
       if (this.loading) return
       this.loading = true
 
-      axios
-        .post(`${API_BASE}/rpc/post_comment.php`, {
+      axios({
+        method: 'post',
+        url: `${API_BASE}/rpc/post_comment.php`,
+        data: {
           type: 'comment',
           illust_id: this.id,
           author_user_id: userData.value?.id,
           comment: this.comment,
-        })
+        },
+        headers: {
+          'x-csrf-token': Cookies.get('csrfToken'),
+        },
+      })
         .then(
           ({ data }) => {
             this.comment = ''
