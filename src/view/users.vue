@@ -56,15 +56,18 @@ section.user(v-if="!loading && !error")
     .tabContents
       section(v-if="tab === 'illust'")
         h2 插画
-        p.align-center(v-if="user.illusts && !user.illusts.length") 用户没有插画作品 (｡•́︿•̀｡)
+        .noResult(v-if="user.illusts && !user.illusts.length") 
+          div 用户没有插画作品 (｡•́︿•̀｡)
         artworks-list(:list="user.illusts")
       section(v-if="tab === 'manga'")
         h2 漫画
-        p.align-center(v-if="user.manga && !user.manga.length") 用户没有漫画作品 (*/ω＼*)
+        .noResult(v-if="user.manga && !user.manga.length")
+          div 用户没有漫画作品 (*/ω＼*)
         artworks-list(:list="user.manga")
       section(v-if="tab === 'bookmarks'")
         h2 收藏
-        p.align-center(v-if="user.manga && !user.manga.length") 收藏夹是空的 Σ(⊙▽⊙"a
+        .noResult(v-if="user.manga && !user.manga.length")
+          div 收藏夹是空的 Σ(⊙▽⊙"a
         artworks-list(:list="bookmarks")
 </template>
 
@@ -314,4 +317,13 @@ export default {
 
   .tabContents
     border-top: 1px solid var(--theme-link-color)
+
+.noResult
+  height: 300px
+  display: flex
+  align-items: center
+
+  > div
+    text-align: center
+    flex: 1
 </style>

@@ -19,6 +19,7 @@
     li(v-for="(item, index) in pages")
       a(
         @click="picShow = index"
+        :title="'第' + (index + 1) + '张 (共' + pages.length + '张)'"
         :class="{isActive: picShow === index}"
         )
         LazyLoad.pic(
@@ -77,7 +78,7 @@ export default defineComponent({
   font-size: small
   font-style: italic
 
-[rol="img"]
+[role="img"]
   border-radius: 4px
   box-shadow: var(--theme-box-shadow)
   transition: box-shadow 0.24s ease-in-out
@@ -92,7 +93,7 @@ export default defineComponent({
   .container
     height: 60vh
 
-  [rol="img"]
+  [role="img"]
     max-width: 100%
     max-height: 100%
     width: auto

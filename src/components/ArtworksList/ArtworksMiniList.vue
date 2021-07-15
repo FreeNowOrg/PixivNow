@@ -1,6 +1,9 @@
 <template lang="pug">
 ul.artworksMiniList
-  li(v-for="item in list")
+  li(
+    v-for="item in list"
+    :class="{isAdContainer: item.isAdContainer}"
+    )
     .thumb
       .xRestrict.tag(v-if="item.xRestrict" title="R-18")
           fa(icon="eye")
@@ -15,7 +18,7 @@ ul.artworksMiniList
       .cover
     .info
       .title
-        a.isAdContainer(v-if="item.isAdContainer") 广告
+        a.plain.isAdContainer(v-if="item.isAdContainer") 广告
         router-link(
           v-if="item.id"
           :to="'/artworks/' + item.id") {{ item.title }}
@@ -28,7 +31,7 @@ ul.artworksMiniList
             lazyload=""
             )
           | {{ item.userName }}
-        a.isAdContainer(v-if="item.isAdContainer")
+        a.plain.isAdContainer(v-if="item.isAdContainer")
           | 我是一个广告
 </template>
 
@@ -158,4 +161,13 @@ export default defineComponent({
   [data-icon]
     margin: 0 auto
     font-size: 0.8rem
+
+.isAdContainer
+  a
+    color: var(--theme-text-color)
+    cursor: default
+
+  .thumb
+    background-color: #efefef
+    animation: none
 </style>

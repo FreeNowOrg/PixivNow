@@ -1,6 +1,6 @@
 <template lang="pug">
 .commentsArea
-  CommentSubmit(:id="id" @push-comment="pushComment")
+  //- CommentSubmit(:id="id" @push-comment="pushComment")
   em.stats
     | 共{{ comments.length }}条评论
   p(v-if="!comments.length && !loading") 还没有人发表评论呢~

@@ -4,7 +4,7 @@
   .flex.isLoggedIn(v-if="userData")
     .left
       .avatar
-        //- img(:src="API_BASE + userData.userImageUrl")
+        img(:src="API_BASE + userData.userImageUrl")
     .right
       textarea(v-model="comment" :disabled="loading")
     .submit.align-right

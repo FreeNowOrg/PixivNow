@@ -1,7 +1,7 @@
 <template lang="pug">
-svg.layload.isLoading(v-if="!loaded && !error" :width="width" :height="height" rol="img" :class="class")
-svg.layload.isError(v-if="error" :width="width" :height="height" rol="img" :class="class")
-img.lazyload.isLoaded(v-if="loaded" :width="width" :height="height" :src="src" rol="img" :class="class")
+svg.layload.isLoading(v-if="!loaded && !error" :width="width" :height="height" role="img" :class="class")
+svg.layload.isError(v-if="error" :width="width" :height="height" role="img" :class="class")
+img.lazyload.isLoaded(v-if="loaded" :width="width" :height="height" :src="src" role="img" :class="class")
 </template>
 
 <script lang="ts">
