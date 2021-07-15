@@ -11,7 +11,14 @@ section.illust-container(v-if="!error && !loading")
   
   .artworkInfo
     h1(:class="illust.xRestrict ? 'danger' : ''") {{ illust.illustTitle }}
-    p.description.pre(v-html="illust.description || '(无简介)'")
+    p.description.pre(v-html="illust.description")
+    p.description.noDesc(v-if="!illust.description" :style="{color: '#aaa'}") (无简介)
+    p.canonicalLink
+      a.button(
+        :href="illust?.extraData?.meta?.canonical || '#'"
+        target="_blank"
+        rel="noopener noreferrer"
+      ) 在 Pixiv 上查看 →
 
     p.stats
       span.isOriginal(v-if="illust.isOriginal")
@@ -31,13 +38,6 @@ section.illust-container(v-if="!error && !loading")
         | {{ illust.pages.length }}张
 
     p.createDate {{ new Date(illust.createDate).toLocaleString() }}
-
-    .align-center
-      a.button(
-        :href="illust?.extraData?.meta?.canonical || '#'"
-        target="_blank"
-        rel="noopener noreferrer"
-      ) 在 Pixiv 上查看 →
 
   .artworkTags
     span.xRestrict(v-if="illust.xRestrict" title="R-18") R-18

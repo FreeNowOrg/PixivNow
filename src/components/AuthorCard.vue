@@ -1,16 +1,15 @@
 <template lang="pug">
-card
-  .authorCard
-    .flex-center
-      .left
-        router-link(:to="'/users/' + user.userId")
-          img(:src="API + user.imageBig" alt="")
-      .right
-        h4: strong
-          router-link(:to="'/users/' + user.userId") {{ user.name }}
-        p.description.pre {{ user.comment }}
+card.authorCard
+  .flex-center
+    .left
+      router-link(:to="'/users/' + user.userId")
+        img(:src="API + user.imageBig" alt="")
+    .right
+      h4: strong
+        router-link(:to="'/users/' + user.userId") {{ user.name }}
+      p.description.pre {{ user.comment }}
 
-    ArtworksMiniList.inline.tiny(:list="user.illusts")
+  ArtworksMiniList.inline.tiny(:list="user.illusts")
 </template>
 
 <script lang="ts">

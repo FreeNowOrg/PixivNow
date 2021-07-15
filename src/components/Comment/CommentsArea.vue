@@ -9,7 +9,7 @@
     .showMore.align-center
       a.button(
         v-if="comments.length && hasNext"
-        @click="getComments(id)"
+        @click="init(id)"
       )
         | {{ loading ? '正在加载' : '查看更多' }}
         | &nbsp;
