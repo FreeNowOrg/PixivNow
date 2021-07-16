@@ -64,7 +64,7 @@ export async function request({
   headers?: any
 }) {
   const url = `https://www.pixiv.net${path}`
-  let cookies = cookiesObj(headers.cookie)
+  const cookies = cookiesObj(headers.cookie)
 
   // 做一些转换防止抑郁
   // "foo[]": [] -> "foo": []
@@ -96,7 +96,7 @@ export async function request({
       host: 'www.pixiv.net',
       origin: 'https://www.pixiv.net',
       // Token
-      'x-csrf-token': cookies.CSRFTOKEN,
+      'x-csrf-token': cookies.CSRFTOKEN || '',
     },
   }
 
