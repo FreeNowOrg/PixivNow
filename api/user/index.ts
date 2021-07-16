@@ -35,7 +35,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         throw { error: true, message: 'userData 已遗失', meta }
       }
 
-      res.setHeader('set-cookie', `csrfToken=${token}; path=/; secure`)
+      res.setHeader('set-cookie', `CSRFTOKEN=${token}; path=/; secure`)
       res.send(userData)
     })
     .catch((err) => {
