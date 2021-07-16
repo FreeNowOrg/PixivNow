@@ -7,9 +7,7 @@ aside.globalSideNav(:class="{isHide: !show}")
         fa(icon="bars")
       router-link.plain(to="/")
         .logoArea
-          .logo: span.ph
-            .left Pixiv
-            .right Now
+          img.siteLogo(:src="LogoH")
 
     //- .group
     //-   .searchArea(style="padding: 0 1.6rem")
@@ -45,6 +43,7 @@ import { userData } from '../userData'
 
 import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
+import LogoH from '../../assets/LogoH.png'
 
 export default defineComponent({
   components: { SearchBox, ListLink },
@@ -52,6 +51,7 @@ export default defineComponent({
     return {
       show: sideNavShow,
       userData,
+      LogoH,
     }
   },
   watch: {
@@ -133,40 +133,13 @@ export default defineComponent({
 
 // Top banner
 .banner
-  height: 56px
+  height: 50px
   padding: 0.4rem
   display: flex
   align-items: center
 
-// Logo
-%ph-left-right-shared
-  display: inline-block
-  padding: 0.1rem
-  margin: 0.1rem
-
-.logo
-  font-size: 1.2rem
-  margin: 0 0.4rem
-  text-decoration: none
-  --color: var(--theme-accent-link-color)
-
-.ph
-  display: inline-block
-  background-color: #252525
-  border-radius: 4px
-  padding: 0.2rem
-  user-select: none
-  white-space: nowrap
-
-  .left
-    @extend %ph-left-right-shared
-    color: var(--theme-accent-link-color)
-
-  .right
-    @extend %ph-left-right-shared
-    background-color: var(--theme-accent-color)
-    color: var(--theme-accent-link-color)
-    border-radius: 2px
+.siteLogo
+  height: 2.2rem
 
 // Hidden state
 .isHide

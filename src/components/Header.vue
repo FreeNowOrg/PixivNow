@@ -3,11 +3,9 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
   a.sideNavToggle.plain(@click="sideNavShow = true")
     fa(icon="bars")
 
-  router-link.plain(to="/")
-    .logoArea
-      .logo: span.ph
-        .left Pixiv
-        .right Now
+  .logoArea
+    router-link.plain(to="/")
+      img.siteLogo(:src="LogoH")
 
   .flex
     .searchArea
@@ -55,6 +53,7 @@ import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
 import { userData, userLogout } from './userData'
 import SideNavigation, { sideNavShow } from './SideNav/SideNav.vue'
+import LogoH from '../assets/LogoH.png'
 
 export default defineComponent({
   name: 'com-header',
@@ -69,7 +68,7 @@ export default defineComponent({
       isHide: false,
       userData,
       sideNavShow,
-      // curPath: this.$route,
+      LogoH,
     }
   },
   watch: {
@@ -108,16 +107,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="sass">
-%logo-link-shared
-  margin: 0 0.4rem
-  text-decoration: none
-  --color: var(--theme-accent-link-color)
-
-%ph-left-right-shared
-  display: inline-block
-  padding: 0.1rem
-  margin: 0.1rem
-
 .globalNavbar
   background-color: var(--theme-accent-color)
   padding: 0.4rem
@@ -125,6 +114,7 @@ export default defineComponent({
   display: flex
   align-items: center
   position: fixed
+  height: 50px
   width: 100%
   box-sizing: border-box
   white-space: nowrap
@@ -164,19 +154,9 @@ export default defineComponent({
     margin: 0 auto
 
 .logoArea
-  // word-break:
-
-.logo
-  @extend %logo-link-shared
-  font-size: 1.2rem
-
-.mainLinksArea
-  // flex: 1
-
-  a
-    @extend %logo-link-shared
-    font-variant: small-caps
-    font-size: 1.2rem
+  .siteLogo
+    height: 2.2rem
+    width: auto
 
 .searchArea
   flex: 1
@@ -197,7 +177,7 @@ export default defineComponent({
     [data-icon]
       margin-left: 6px
       color: #fff
-      transition: all 0.4s 
+      transition: all 0.4s
 
     .dropdown
       display: none
@@ -259,22 +239,4 @@ export default defineComponent({
     .uid
       font-size: 0.8rem
       color: #aaa
-
-.ph
-  display: inline-block
-  background-color: #252525
-  border-radius: 4px
-  padding: 0.2rem
-  user-select: none
-  white-space: nowrap
-
-  .left
-    @extend %ph-left-right-shared
-    color: var(--theme-accent-link-color)
-
-  .right
-    @extend %ph-left-right-shared
-    background-color: var(--theme-accent-color)
-    color: var(--theme-accent-link-color)
-    border-radius: 2px
 </style>

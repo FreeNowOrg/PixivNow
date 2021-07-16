@@ -95,7 +95,7 @@ export async function request({
         referer: 'https://www.pixiv.net/',
         host: 'www.pixiv.net',
         origin: 'https://www.pixiv.net',
-        'x-csrf-token': cookies.csrfToken,
+        'x-csrf-token': cookies.csrfToken || null,
       },
     })
     res.data = replaceUrl(res.data?.body || res.data)
