@@ -116,9 +116,9 @@ export default defineComponent({
       height: 100%
       transition: all 0.4s ease-in-out
 
+<<<<<<< HEAD
 
     .hoverTitle
-      z-index: 10
       color: #fff
       position: absolute
       left: 50%
@@ -134,13 +134,16 @@ export default defineComponent({
     & a.router-link-active
       &::before
         background-color: rgba(0, 0, 0, 0.2)
+=======
+    .cover
+      position: absolute
 
-      img
-        transform: scale(1.1)
-
+<<<<<<< HEAD
       .hoverTitle
         opacity: 1
 
+=======
+>>>>>>> master
   .title
     margin: 0.4rem 0
     text-overflow: ellipsis
@@ -175,6 +178,7 @@ export default defineComponent({
   & + .cover
     background-color: rgba(100, 100, 100, 0.6) !important
 
+<<<<<<< HEAD
 .sideTags > *
   position: absolute
   z-index: 10
@@ -199,12 +203,20 @@ export default defineComponent({
   left: .4rem
   color: #fff
   font-size: 0.8rem
+=======
+.xRestrict
+  position: absolute
+  top: .4rem
+  left: .4rem
+  color: #fff
+>>>>>>> master
   background-color: rgb(255, 0, 0, 0.8)
   width: 1.5rem
   height: 1.5rem
   border-radius: 50%
   display: flex
   align-items: center
+<<<<<<< HEAD
 
 .bookmark
   bottom: 0.4rem
@@ -214,6 +226,13 @@ export default defineComponent({
 
   &.isBookmarked
     color: var(--theme-bookmark-color)
+=======
+  z-index: 10
+
+  [data-icon]
+    margin: 0 auto
+    font-size: 0.8rem
+>>>>>>> master
 
 .isAdContainer
   a

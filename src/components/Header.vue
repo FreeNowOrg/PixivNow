@@ -177,7 +177,7 @@ export default defineComponent({
     [data-icon]
       margin-left: 6px
       color: #fff
-      transition: all 0.4s
+      transition: all 0.4s 
 
     .dropdown
       display: none
