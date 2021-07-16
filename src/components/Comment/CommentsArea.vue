@@ -2,7 +2,7 @@
 .commentsArea
   //- CommentSubmit(:id="id" @push-comment="pushComment")
   em.stats
-    | 共{{ comments.length }}条评论
+    | 共{{ count || comments.length || 0 }}条评论
   p(v-if="!comments.length && !loading") 还没有人发表评论呢~
   ul.commentsList(v-if="comments.length")
     comment(v-for="item in comments" :comment="item")
@@ -30,7 +30,7 @@ import CommentSubmit from './CommentSubmit.vue'
 import Placeholder from '../Placeholder.vue'
 
 export default defineComponent({
-  props: ['id'],
+  props: ['id', 'count'],
   components: { Comment, CommentSubmit, Placeholder },
   data() {
     return {

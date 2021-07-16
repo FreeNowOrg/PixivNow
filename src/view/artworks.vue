@@ -54,7 +54,9 @@ section.illust-container(v-if="!error && !loading")
     author-card(:user="user" v-if="user.userId")
 
   card.comments(title="评论")
-    CommentsArea(:id="illust.id || illust.illustId")
+    CommentsArea(
+      :id="illust.id || illust.illustId"
+      :count="illust.commentCount")
 
   //- 相关推荐
   .recommendWorks

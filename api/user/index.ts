@@ -36,7 +36,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         }
       }
 
-      res.setHeader('Set-Cookie', `csrfToken=${csrfToken}; path=/; secure`)
+      res.setHeader('set-cookie', `csrfToken=${csrfToken}; path=/; secure`)
       res.send(userData)
     })
     .catch((err) => {

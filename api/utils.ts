@@ -71,19 +71,19 @@ export async function request({
       data,
       timeout: 9000,
       headers: {
-        Accept: headers.accept || '*/*',
+        accept: headers.accept || '*/*',
         'accept-language':
           headers['accept-language'] ||
           'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
-        Cookie: headers.cookie || defaultCookie,
+        cookie: headers.cookies || defaultCookie,
         // 避免国产阴间浏览器或手机端等导致的验证码
-        'User-Agent':
+        'user-agent':
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
         // Keep this referer
-        Referer: 'https://www.pixiv.net/',
-        Host: 'www.pixiv.net',
-        Origin: 'https://www.pixiv.net',
-        'x-csrf-token': headers?.cookie?.csrfToken || null,
+        referer: 'https://www.pixiv.net/',
+        host: 'www.pixiv.net',
+        origin: 'https://www.pixiv.net',
+        'x-csrf-token': headers?.cookies?.csrfToken || null,
       },
     })
     res.data = replaceUrl(res.data?.body || res.data)
