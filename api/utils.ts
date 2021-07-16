@@ -52,7 +52,10 @@ export async function request({
   headers?: any
 }) {
   const url = `https://www.pixiv.net${path}`
-  const defaultCookie = params.token ? 'PHPSESSID=' + params.token : ''
+  let cookieStr = ''
+  for (let key in headers.cookies) {
+    cookieStr += `${key}=${headers.cookies[key]};`
+  }
 
   // 做一些转换防止抑郁
   // "foo[]": [] -> "foo": []
@@ -75,7 +78,7 @@ export async function request({
         'accept-language':
           headers['accept-language'] ||
           'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
-        cookie: headers.cookies || defaultCookie,
+        cookie: cookieStr,
         // 避免国产阴间浏览器或手机端等导致的验证码
         'user-agent':
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
