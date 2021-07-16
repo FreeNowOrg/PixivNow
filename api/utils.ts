@@ -35,8 +35,10 @@ export function replaceUrl(obj: any) {
 export function cookiesObj(cookies: string) {
   let obj: Record<string, string> = {}
   cookies?.split(';').forEach((i) => {
-    const key = i.split('=')[0].trim()
-    const val = i.split('=')[1].trim()
+    const s = i.split('=')
+    if (s.length < 2) return
+    const key = s[0].trim()
+    const val = s[1].trim()
     obj[key] = val
   })
   return obj
@@ -93,7 +95,7 @@ export async function request({
         referer: 'https://www.pixiv.net/',
         host: 'www.pixiv.net',
         origin: 'https://www.pixiv.net',
-        'x-csrf-token': cookies.csrfToken || null,
+        'x-csrf-token': cookies.csrfToken,
       },
     })
     res.data = replaceUrl(res.data?.body || res.data)

@@ -27,13 +27,25 @@ section.illust-container(v-if="!error && !loading")
       span.likeCount(title="点赞")
         fa(icon="thumbs-up")
         | {{ illust.likeCount }}
+
+      //- 收藏
+      //- 未收藏/不可收藏
       span.bookmarkCount(
-        :class="{isBookmarked: illust.bookmarkData}"
-        @click="addBookmark"
-        :title="illust.bookmarkData ? '已收藏' : '收藏'"
+        v-if="!illust.bookmarkData"
+        @click="userData ? addBookmark : null"
+        :title="userData ? '添加收藏' : '收藏'"
         )
         fa(icon="heart")
         | {{ illust.bookmarkCount }}
+      //- 已收藏
+      router-link.bookmarkCount.isBookmarked(
+        v-if="illust.bookmarkData"
+        :to="'/users/' + userData.id"
+        title="查看收藏"
+        )
+        fa(icon="heart")
+        | {{ illust.bookmarkCount }}
+
       span.viewCount(title="浏览")
         fa(icon="eye")
         | {{ illust.viewCount }}
@@ -448,7 +460,7 @@ h1
   margin-right: 1rem
 
 .stats
-  > span
+  > span, > a
     margin-right: 0.5rem
     color: #aaa
 
@@ -460,7 +472,7 @@ h1
     font-weight: 600
 
   .bookmarkCount.isBookmarked
-    color: pink
+    color: var(--theme-bookmark-color)
     font-weight: 600
 
 .createDate
