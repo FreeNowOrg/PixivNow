@@ -20,23 +20,28 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       try {
         meta = JSON.parse($meta.attr('content') as string)
       } catch (error) {
-        throw {
+        res.status(403).send({
           message: '意料外的元数据',
           cheerio: {
             length: $meta.length,
             html: $meta.prop('outerHTML'),
           },
           error,
-        }
+        })
+
+        return
       }
 
-      const { token, userData } = meta
-      if (!userData) {
-        throw { error: true, message: 'userData 已遗失', meta }
+      if (!meta.userData) {
+        res.status(403).send({
+          message: '无法获取登录状态',
+          meta,
+        })
+        return
       }
 
       res.setHeader('set-cookie', `CSRFTOKEN=${token}; path=/; secure`)
-      res.send(userData)
+      res.send(meta)
     })
     .catch((err) => {
       return handleError(err, res)
