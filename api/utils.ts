@@ -1,5 +1,5 @@
 import { VercelResponse } from '@vercel/node'
-import axios, { Method } from 'axios'
+import axios, { AxiosRequestConfig, Method } from 'axios'
 
 export function makeArtList(obj: any) {
   const list = []
@@ -75,29 +75,34 @@ export async function request({
     }
   }
 
+  const config: AxiosRequestConfig = {
+    url,
+    method,
+    params,
+    data,
+    timeout: 9000,
+    headers: {
+      accept: headers.accept || '*/*',
+      'accept-language':
+        headers['accept-language'] ||
+        'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
+      cookie: headers.cookie,
+      // 避免国产阴间浏览器或手机端等导致的验证码
+      'user-agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+      // Keep this referer
+      referer: 'https://www.pixiv.net/',
+      host: 'www.pixiv.net',
+      origin: 'https://www.pixiv.net',
+    },
+  }
+
+  if (cookies.csrfToken) {
+    config.headers['x-csrf-token'] = cookies.csrfToken
+  }
+
   try {
-    const res = await axios({
-      url,
-      method,
-      params,
-      data,
-      timeout: 9000,
-      headers: {
-        accept: headers.accept || '*/*',
-        'accept-language':
-          headers['accept-language'] ||
-          'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
-        cookie: headers.cookie,
-        // 避免国产阴间浏览器或手机端等导致的验证码
-        'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
-        // Keep this referer
-        referer: 'https://www.pixiv.net/',
-        host: 'www.pixiv.net',
-        origin: 'https://www.pixiv.net',
-        'x-csrf-token': cookies.csrfToken || null,
-      },
-    })
+    const res = await axios(config)
     res.data = replaceUrl(res.data?.body || res.data)
     return res
   } catch (err) {

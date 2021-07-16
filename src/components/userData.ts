@@ -24,6 +24,7 @@ export const userData: Ref<PixivUser | null | undefined> = ref()
 export async function userInit(): Promise<PixivUser | null> {
   const token = Cookies.get('PHPSESSID')
   if (!token) {
+    Cookies.remove('csrfToken')
     userData.value = null
     throw { message: '令牌已丢失！' }
   }
@@ -35,6 +36,7 @@ export async function userInit(): Promise<PixivUser | null> {
     return res as PixivUser
   } catch (err) {
     userData.value = null
+    Cookies.remove('csrfToken')
     throw { message: '访问令牌可能失效' }
   }
 }
@@ -53,6 +55,7 @@ export function userLogout() {
   const token = Cookies.get('PHPSESSID')
   if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
     Cookies.remove('PHPSESSID')
+    Cookies.remove('csrfToken')
     userData.value = null
   }
 }
