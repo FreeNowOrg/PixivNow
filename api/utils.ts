@@ -32,6 +32,16 @@ export function replaceUrl(obj: any) {
   return obj
 }
 
+export function cookiesObj(cookies: string) {
+  let obj: Record<string, string> = {}
+  cookies?.split(';').forEach((i) => {
+    const key = i.split('=')[0].trim()
+    const val = i.split('=')[1].trim()
+    obj[key] = val
+  })
+  return obj
+}
+
 export function handleError(err: any, res: VercelResponse) {
   return res
     .status(err?.response?.status || 500)
@@ -52,10 +62,7 @@ export async function request({
   headers?: any
 }) {
   const url = `https://www.pixiv.net${path}`
-  let cookieStr = ''
-  for (let key in headers.cookies) {
-    cookieStr += `${key}=${headers.cookies[key]};`
-  }
+  let cookies = cookiesObj(headers.cookie)
 
   // 做一些转换防止抑郁
   // "foo[]": [] -> "foo": []
@@ -78,7 +85,7 @@ export async function request({
         'accept-language':
           headers['accept-language'] ||
           'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
-        cookie: cookieStr,
+        cookie: headers.cookie,
         // 避免国产阴间浏览器或手机端等导致的验证码
         'user-agent':
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
@@ -86,7 +93,7 @@ export async function request({
         referer: 'https://www.pixiv.net/',
         host: 'www.pixiv.net',
         origin: 'https://www.pixiv.net',
-        'x-csrf-token': headers?.cookies?.csrfToken || null,
+        'x-csrf-token': cookies.csrfToken || null,
       },
     })
     res.data = replaceUrl(res.data?.body || res.data)
