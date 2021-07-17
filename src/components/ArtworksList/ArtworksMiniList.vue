@@ -205,6 +205,9 @@ export default defineComponent({
   display: flex
   align-items: center
 
+  [data-icon]
+    margin: 0 auto
+
 .bookmark
   bottom: 0.4rem
   right: 0.4rem
