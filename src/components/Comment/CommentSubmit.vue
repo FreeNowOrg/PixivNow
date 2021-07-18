@@ -55,7 +55,7 @@ export default defineComponent({
             this.comment = ''
             this.$emit('push-comment', {
               img: userData.value?.profileImg,
-              commentDate: Date.now(),
+              commentDate: new Date().toLocaleString(),
               ...data,
             })
           },

@@ -32,7 +32,7 @@ section.illust-container(v-if="!error && !loading")
       //- 未收藏/不可收藏
       span.bookmarkCount(
         v-if="!illust.bookmarkData"
-        @click="userData ? addBookmark : null"
+        @click="addBookmark"
         :title="userData ? '添加收藏' : '收藏'"
         )
         fa(icon="heart")
@@ -393,6 +393,7 @@ export default {
       }
     },
     addBookmark() {
+      if (!userData) return console.log('需要登录才可以添加收藏')
       if (!this.illust.isBookmarkable) return console.log('无法添加收藏。')
       if (this.illust.bookmarkData) return console.log('已经收藏过啦。')
 

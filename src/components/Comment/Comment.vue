@@ -18,7 +18,7 @@ li.commentBlock
           :src="API_BASE + '/~/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'"
           alt="表情包"
           lazyload)
-    .commentDate {{ new Date(comment.commentDate).toLocaleString() }}
+    .commentDate {{ comment.commentDate }}
 </template>
 
 <script lang="ts">
