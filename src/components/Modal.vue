@@ -1,6 +1,6 @@
 <template lang="pug">
 .modalContainer
-  .modalArea(v-if="show" @keydown.escape="console.log('esc')")
+  .modalArea(v-if="show")
     .modalBackdrop(@click="closeModal")
     .modalWindow
       a.plain.closeBtn(roll="button" @click="closeModal")
@@ -72,7 +72,6 @@ export default defineComponent({
   position: relative
   width: 640px
   max-width: 100%
-  overflow: hidden
   z-index: 1
 
 .modalContent
@@ -81,6 +80,7 @@ export default defineComponent({
   border-radius: 1.5rem
   background: var(--theme-background-color)
   padding: 2rem
+  overflow: hidden
   word-break: break-all
 
 .closeBtn
@@ -90,4 +90,5 @@ export default defineComponent({
   font-size: 1.5rem
   color: #aaa
   cursor: pointer
+  z-index: 10
 </style>
