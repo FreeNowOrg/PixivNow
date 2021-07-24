@@ -92,11 +92,11 @@ export async function request({
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
 
       // ↓ Keep these headers
-      referer: 'https://www.pixiv.net/',
       host: 'www.pixiv.net',
       origin: 'https://www.pixiv.net',
+      referer: 'https://www.pixiv.net/',
       // Token
-      'x-csrf-token': cookies.CSRFTOKEN || '',
+      'x-csrf-token': headers['x-csrf-token'] || cookies.CSRFTOKEN || '',
     },
   }
 

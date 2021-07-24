@@ -1,0 +1,43 @@
+GET https://www.pixiv.net/ajax/notification
+
+[HTTP/1.1 200 OK]
+application/json
+{
+  "error": false,
+  "message": "",
+  "body": {
+    "items": [
+      {
+        "id": 698556583,
+        "type": "bookmarked",
+        "unread": true,
+        "notifiedAt": "2021-07-17T12:22:25+09:00",
+        "linkUrl": "/bookmark_detail.php?illust_id=86468782",
+        "iconUrl": "https://i.pximg.net/c/128x128/img-master/img/2020/12/23/05/25/48/86468782_p0_square1200.jpg",
+        "targetBlank": false,
+        "isProfileIcon": false,
+        "content": "2以上的用户把你的作品加入收藏了: <span>\"[草图] 原创角色 Kunika\"</span>"
+      }
+    ],
+    "remaining_unread_count": 0,
+    "imageResponseCount": 0,
+    "quotationCount": 0,
+    "isNotAuthorized": false,
+    "filter": {
+      "reactions": [
+        "bookmarked",
+        "nice",
+        "commented",
+        "tagged",
+        "content_response",
+        "favorited",
+        "group_content_reference",
+        "group_like",
+        "group_comment",
+        "received_stacc_message",
+        "series_watchlist_watched"
+      ]
+    }
+  }
+}
+
