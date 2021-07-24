@@ -119,7 +119,7 @@ export default defineComponent({
   box-sizing: border-box
   white-space: nowrap
   top: 0
-  z-index: 10
+  z-index: 100
   transition: all .8s ease
 
   .flex

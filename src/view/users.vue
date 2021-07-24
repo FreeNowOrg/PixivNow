@@ -39,9 +39,19 @@ section.user(v-if="!loading && !error")
           target="_blank"
           rel="noopener noreferrer"
           ) {{ user.webpage }}
-      .comment.pre {{ user.comment }}
-      .more
-        a(@click="userMore" href="javascript:;") 查看更多
+      .comment
+        .pre {{ user.comment }}
+        .userMore
+          a(@click="userMore" href="javascript:;") 查看更多
+
+  modal.userInfo(v-model:show="showUserMore")
+    .top
+      h3
+        a.avatar(:href="API_BASE + user.imageBig" title="查看头像")
+          img(:src="API_BASE + user.imageBig")
+        .title {{ user.name }}
+        .follow
+          button Follow
   
   .tabber
     ul.tabBtn
@@ -69,6 +79,7 @@ section.user(v-if="!loading && !error")
         .noResult(v-if="user.manga && !user.manga.length")
           div 收藏夹是空的 Σ(⊙▽⊙"a
         artworks-list(:list="bookmarks")
+
 </template>
 
 <script lang="ts">
@@ -78,6 +89,7 @@ import { userData } from '../components/userData'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
+import Modal from '../components/Modal.vue'
 import Placeholder from '../components/Placeholder.vue'
 
 import { Artwork } from './artworks.vue'
@@ -144,6 +156,7 @@ export default {
   components: {
     ArtworksList,
     ErrorPage,
+    Modal,
     Placeholder,
   },
   data() {
@@ -155,6 +168,7 @@ export default {
       userData,
       bookmarks: [] as Artwork[],
       tab: 'illust' as 'illust' | 'manga' | 'bookmarks',
+      showUserMore: false,
     }
   },
   methods: {
@@ -197,7 +211,8 @@ export default {
         })
     },
     userMore() {
-      alert(JSON.stringify(this.user, null, 2))
+      // alert(JSON.stringify(this.user, null, 2))
+      this.showUserMore = true
     },
     getBookmarks() {
       if (userData.value?.id !== this.$route.params.id) return
@@ -274,6 +289,9 @@ export default {
       font-size: 1.4rem
       font-weight: 600
 
+    // .userMore
+    //   float: right
+
   .avatarArea
     position: absolute
     top: calc(45vh - 50px)
@@ -326,4 +344,25 @@ export default {
   > div
     text-align: center
     flex: 1
+
+.userInfo
+  position: relative
+
+  .top
+    text-align: center
+    background-color: #efefef
+    z-index: 1
+    margin: -3.5rem -2rem 0 -2rem
+    padding: 2rem
+
+    .avatar
+      width: 80px
+      margin: 0 auto
+      
+      img
+        border-radius: 50%
+        width: 80px
+
+    .title
+      font-weight: 600
 </style>

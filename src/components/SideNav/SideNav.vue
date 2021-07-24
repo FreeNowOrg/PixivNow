@@ -73,7 +73,7 @@ export default defineComponent({
 
 <style scoped lang="sass">
 .globalSideNav
-  z-index: 50
+  z-index: 110
 
 .backdrop
   position: fixed
@@ -82,7 +82,7 @@ export default defineComponent({
   width: 100vw
   height: 100vh
   background-color: rgba(0, 0, 0, 0.1)
-  z-index: 50
+  z-index: 110
 
 .inner
   position: fixed
@@ -92,7 +92,7 @@ export default defineComponent({
   max-width: 80vw
   height: 100vh
   background-color: #fff
-  z-index: 60
+  z-index: 120
   transition: all 0.5s
 
 .sideNavToggle
