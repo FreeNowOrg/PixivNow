@@ -24,6 +24,7 @@ export default {
   padding-left: 0
   list-style: none
   gap: 1.5rem
+  justify-content: space-around
 
   &.inline
     padding: 1rem
