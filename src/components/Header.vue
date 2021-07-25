@@ -12,12 +12,13 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
       search-box
 
   .userArea
-    a.userLink
-      img.avatar(
-        :src="userData ? userData.profileImg : API_BASE + '/~/common/images/no_profile.png'" 
-        :title="userData ? userData.name + ' (' + userData.pixivId + ')' : '未登入'"
-        )
-      fa(icon="angle-down")
+    details.userLink
+      summary
+        img.avatar(
+          :src="userData ? userData.profileImg : API_BASE + '/~/common/images/no_profile.png'" 
+          :title="userData ? userData.name + ' (' + userData.pixivId + ')' : '未登入'"
+          )
+        fa(icon="angle-down")
       .dropdown
         ul
           //- notLogIn
@@ -171,8 +172,11 @@ export default defineComponent({
 
   .userLink
     position: relative
-    display: flex
-    align-items: center
+
+    summary
+      list-style: none
+      display: flex
+      align-items: center
 
     [data-icon]
       margin-left: 6px
@@ -180,7 +184,6 @@ export default defineComponent({
       transition: all 0.4s 
 
     .dropdown
-      display: none
       position: absolute
       top: 1.4rem
       right: 0
@@ -205,12 +208,9 @@ export default defineComponent({
           &:hover
             background-color: var(--theme-tag-color)
 
-    &:hover
+    &[open]
       [data-icon]
-        transform: rotateZ(180deg)
-
-      .dropdown
-        display: block
+        transform: rotateX(180deg)
 
 .navUserCard
   border-bottom: 1px solid

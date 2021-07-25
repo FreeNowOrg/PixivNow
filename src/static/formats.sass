@@ -17,8 +17,24 @@
   display: flex
   align-items: center
 
-.pre
+.pre,
+.poem
   white-space: pre-wrap
 
 .flex
   display: flex
+
+.flexList
+  .listItem
+    display: flex
+    gap: 0.5rem
+
+    &:not(:first-of-type)
+      margin-top: 4px
+
+    > div
+      flex: 1
+
+    .key
+      font-weight: 600
+      box-shadow: 2px 0 #dedede

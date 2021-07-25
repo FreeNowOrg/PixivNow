@@ -48,18 +48,73 @@ section.user(v-if="!loading && !error")
       h3
         a.avatar(:href="API_BASE + user.imageBig" title="查看头像")
           img(:src="API_BASE + user.imageBig")
+          .premiumIcon(
+            v-if="user.premium"
+            title="该用户订阅了高级会员"
+          )
+            fa(icon="parking")
         .title {{ user.name }}
         .follow
           button 关注
 
     .bottom
-      section
+      section.userComment
         h4 个人简介
-        .comment.pre {{ user.comment }}
-      hr
-      section
+        .comment.pre {{ user.comment || '-' }}
+      section.userWorkspace(v-if="user.workspace")
+        hr
         h4 工作环境
-        pre {{ JSON.stringify(user.workspace) }}
+        .flexList
+          .listItem(v-if="user.workspace.wsUrl")
+            img(
+              :src="user.workspace.wsUrl"
+              style="width: 100%; height: auto"
+              alt="工作环境照片"
+              )
+          .listItem(v-if="user.workspace.userWorkspacePc")
+            .key 主机
+            .value {{ user.workspace.userWorkspacePc }}
+          .listItem(v-if="user.workspace.userWorkspaceMonitor")
+            .key 显示器
+            .value {{ user.workspace.userWorkspaceMonitor }}
+          .listItem(v-if="user.workspace.userWorkspaceTool")
+            .key 软件
+            .value {{ user.workspace.userWorkspaceTool }}
+          .listItem(v-if="user.workspace.userWorkspaceScanner")
+            .key 扫描仪
+            .value {{ user.workspace.userWorkspaceScanner }}
+          .listItem(v-if="user.workspace.userWorkspaceTablet")
+            .key 数码版
+            .value {{ user.workspace.userWorkspaceTablet }}
+          .listItem(v-if="user.workspace.userWorkspacePrinter")
+            .key 打印机
+            .value {{ user.workspace.userWorkspacePrinter }}
+          .listItem(v-if="user.workspace.userWorkspaceDesktop")
+            .key 台面
+            .value {{ user.workspace.userWorkspaceDesktop }}
+          .listItem(v-if="user.workspace.userWorkspaceMusic")
+            .key 音乐
+            .value {{ user.workspace.userWorkspaceMusic }}
+          .listItem(v-if="user.workspace.userWorkspaceDesk")
+            .key 桌子
+            .value {{ user.workspace.userWorkspaceDesk }}
+          .listItem(v-if="user.workspace.userWorkspaceChair")
+            .key 椅子
+            .value {{ user.workspace.userWorkspaceChair }}
+          .listItem(v-if="user.workspace.userWorkspaceComment")
+            .key 说明
+            .value {{ user.workspace.userWorkspaceComment }}
+      section.devTest
+        hr
+        h4 Debug Info
+        details
+          pre(style="overflow: auto; background: #efefef; padding: 4px") {{ JSON.stringify(user, null, 2) }}
+
+  .devTest
+    h2 Dev Test
+    .align-center
+      button(@click="addFollow") addFollow
+      button(@click="removeFollow") removeFollow
   
   .tabber
     ul.tabBtn
@@ -94,6 +149,7 @@ section.user(v-if="!loading && !error")
 import axios from 'axios'
 import { API_BASE } from '../config'
 import { userData } from '../components/userData'
+import { addFollow, removeFollow } from '../utils/userActions'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
@@ -237,6 +293,8 @@ export default {
           this.bookmarks = data.works
         })
     },
+    addFollow,
+    removeFollow,
   },
   beforeRouteUpdate(to, from) {
     this.init(to.params.id)
@@ -351,7 +409,7 @@ export default {
     border-top: 1px solid var(--theme-link-color)
 
 .noResult
-  height: 300px
+  height: 90vh
   display: flex
   align-items: center
 
@@ -379,10 +437,17 @@ export default {
     .avatar
       width: 80px
       margin: 0 auto
-      
+
       img
         border-radius: 50%
         width: 80px
+      
+      .premiumIcon
+        position: absolute
+        bottom: 0
+        right: 0
+        color: #ffa500
+        cursor: help
 
     .title
       font-size: 1rem
@@ -397,5 +462,5 @@ export default {
         padding: 0.3rem 1.5rem
 
   .bottom
-    margin-top: 1.5rem
+    margin: 1.5rem 5%
 </style>
