@@ -21,8 +21,7 @@ section.user(v-if="!loading && !error")
     .infoArea
       .username {{ user.name }}
       .following
-        strong {{ user.following }}
-        | &nbsp;已关注
+        | 关注了 <strong>{{ user.following }}</strong> 人
       .gender(v-if="user.gender.name") 
         fa(icon="venus-mars")
         | {{ user.gender.name }}
@@ -39,19 +38,28 @@ section.user(v-if="!loading && !error")
           target="_blank"
           rel="noopener noreferrer"
           ) {{ user.webpage }}
-      .comment
-        .pre {{ user.comment }}
+      .flex
+        .comment {{ user.comment }}
         .userMore
           a(@click="userMore" href="javascript:;") 查看更多
 
-  modal.userInfo(v-model:show="showUserMore")
+  modal.infoModal(v-model:show="showUserMore")
     .top
       h3
         a.avatar(:href="API_BASE + user.imageBig" title="查看头像")
           img(:src="API_BASE + user.imageBig")
         .title {{ user.name }}
         .follow
-          button Follow
+          button 关注
+
+    .bottom
+      section
+        h4 个人简介
+        .comment.pre {{ user.comment }}
+      hr
+      section
+        h4 工作环境
+        pre {{ JSON.stringify(user.workspace) }}
   
   .tabber
     ul.tabBtn
@@ -289,8 +297,14 @@ export default {
       font-size: 1.4rem
       font-weight: 600
 
-    // .userMore
-    //   float: right
+    .comment
+      max-height: 4rem
+      overflow: hidden
+      white-space: nowrap
+      text-overflow: ellipsis
+
+    .userMore
+      white-space: nowrap
 
   .avatarArea
     position: absolute
@@ -345,12 +359,19 @@ export default {
     text-align: center
     flex: 1
 
-.userInfo
+.infoModal
   position: relative
+
+  hr
+    margin: 1.5rem auto
+    width: 75%
+    border: none
+    height: 2px
+    background-color: #dedede
 
   .top
     text-align: center
-    background-color: #efefef
+    background-color: #f4f4f4
     z-index: 1
     margin: -3.5rem -2rem 0 -2rem
     padding: 2rem
@@ -364,5 +385,17 @@ export default {
         width: 80px
 
     .title
+      font-size: 1rem
       font-weight: 600
+
+    .follow
+      button
+        font-size: 1rem
+        background-color: #ddd
+        border-radius: 1rem
+        color: var(--theme-text-color)
+        padding: 0.3rem 1.5rem
+
+  .bottom
+    margin-top: 1.5rem
 </style>
