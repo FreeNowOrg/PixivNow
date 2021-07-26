@@ -59,7 +59,7 @@ export default defineComponent({
   props: ['list'],
   methods: {
     toggleBookmark() {
-      alert('1')
+      alert('假装已经添加上了收藏')
     }
   }
 })

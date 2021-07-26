@@ -2,8 +2,8 @@
 li.commentBlock
   .left
     router-link.plain(:to="'/users/' + comment.userId")
-      .avatar(
-        :style="'background-image: url(' + API_BASE + comment.img + ')'"
+      img.avatar(
+        :src="API_BASE + comment.img"
         :title="comment.userName+ ' (' + comment.userId + ')'"
       )
   .right
