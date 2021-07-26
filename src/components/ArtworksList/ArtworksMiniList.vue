@@ -15,7 +15,8 @@ ul.artworksMiniList
           | {{ item.pageCount }}
         .bookmark(
           v-if="!item.isAdContainer"
-          :class="{isBookmarked: item.bookmarkData}")
+          :class="{isBookmarked: item.bookmarkData}"
+          @click="toggleBookmark")
           fa(icon="heart")
       router-link(
         v-if="item.id"
@@ -56,6 +57,11 @@ export default defineComponent({
     }
   },
   props: ['list'],
+  methods: {
+    toggleBookmark() {
+      alert('1')
+    }
+  }
 })
 </script>
 
@@ -116,6 +122,9 @@ export default defineComponent({
       width: 100%
       height: 100%
       transition: all 0.4s ease-in-out
+
+    .bookmark
+      cursor: pointer
 
     .hoverTitle
       z-index: 10

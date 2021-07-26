@@ -472,9 +472,12 @@ h1
     color: inherit
     font-weight: 600
 
-  .bookmarkCount.isBookmarked
-    color: var(--theme-bookmark-color)
-    font-weight: 600
+  .bookmarkCount
+    cursor: pointer
+
+  &.isBookmarked
+      color: var(--theme-bookmark-color)
+      font-weight: 600
 
 .createDate
   color: #aaa
