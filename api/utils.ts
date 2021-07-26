@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, Method } from 'axios'
 
 export function makeArtList(obj: any) {
   const list = []
-  for (let item in obj) {
+  for (const item in obj) {
     list.push(obj[item])
   }
   list.sort((a, b) => b.id - a.id)
@@ -19,7 +19,7 @@ export function replaceUrl(obj: any) {
 
   if (typeof obj === 'string') return replace(obj)
 
-  for (let key in obj) {
+  for (const key in obj) {
     if (
       typeof obj[key] === 'string' &&
       /^https:\/\/[is]\.pximg\.net\//.test(obj[key])
@@ -68,7 +68,7 @@ export async function request({
 
   // 做一些转换防止抑郁
   // "foo[]": [] -> "foo": []
-  for (let i in params) {
+  for (const i in params) {
     if (i.endsWith('[]') && Array.isArray(params[i])) {
       params[i.replace(/\[\]$/, '')] = params[i]
       delete params[i]
