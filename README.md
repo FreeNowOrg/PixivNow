@@ -1,14 +1,12 @@
 <div align="center">
 
-# <img src="src/assets/LogoH.png">
+![PixivNow Logo](src/assets/LogoH.png)
 
 Pixiv Service Proxy.
 
 → https://pixiv.js.org ←
 
 </div>
-
----
 
 ## API
 
@@ -24,15 +22,13 @@ Get user details by UID
 
 Search illusts by keyword
 
-## `/api/ranking`
+### `/api/ranking`
 
 Ranking
 
 ### `/ajax/*`
 
 AJAX
-
----
 
 ## Image Proxy
 
