@@ -1,0 +1,11 @@
+POST https://www.pixiv.net/bookmark_add.php
+content-type: application/x-www-form-urlencoded
+
+{
+	"mode": "add",
+	"type": "user",
+	"user_id": "15552366",
+	"tag": "",
+	"restrict": "0",
+	"format": "json"
+}

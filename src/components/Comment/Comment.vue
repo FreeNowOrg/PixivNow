@@ -2,8 +2,8 @@
 li.commentBlock
   .left
     router-link.plain(:to="'/users/' + comment.userId")
-      .avatar(
-        :style="'background-image: url(' + API_BASE + comment.img + ')'"
+      img.avatar(
+        :src="API_BASE + comment.img"
         :title="comment.userName+ ' (' + comment.userId + ')'"
       )
   .right
@@ -18,7 +18,7 @@ li.commentBlock
           :src="API_BASE + '/~/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'"
           alt="表情包"
           lazyload)
-    .commentDate {{ new Date(comment.commentDate).toLocaleString() }}
+    .commentDate {{ comment.commentDate }}
 </template>
 
 <script lang="ts">

@@ -24,17 +24,23 @@ export const userData: Ref<PixivUser | null | undefined> = ref()
 export async function userInit(): Promise<PixivUser | null> {
   const token = Cookies.get('PHPSESSID')
   if (!token) {
+    Cookies.remove('CSRFTOKEN')
     userData.value = null
     throw { message: '令牌已丢失！' }
   }
   try {
-    const { data } = await axios.get(`${API_BASE}/api/user`)
+    const { data } = await axios.get(`${API_BASE}/api/user`, {
+      headers: {
+        'cache-control': 'no-store',
+      },
+    })
     console.log('访问令牌认证成功', data)
-    const res = { ...data, PHPSESSID: token }
+    const res = { ...data.userData, PHPSESSID: token, CSRFTOKEN: data.token }
     userData.value = res
     return res as PixivUser
   } catch (err) {
     userData.value = null
+    Cookies.remove('CSRFTOKEN')
     throw { message: '访问令牌可能失效' }
   }
 }
@@ -53,6 +59,7 @@ export function userLogout() {
   const token = Cookies.get('PHPSESSID')
   if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
     Cookies.remove('PHPSESSID')
+    Cookies.remove('CSRFTOKEN')
     userData.value = null
   }
 }

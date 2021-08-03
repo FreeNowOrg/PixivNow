@@ -1,0 +1,22 @@
+.fadeInUp
+  animation: fadeInUp 0.24s ease
+
+.fadeOutDown
+  animation: fadeOutDown 0.4s ease
+
+@keyframes fadeInUp
+  0%
+    opacity: 0
+    transform: translate3d(0, 1rem, 0)
+
+  to
+    opacity: 1
+    transform: translateZ(0)
+
+@keyframes fadeOutDown
+  0%
+    opacity: 1
+
+  to
+    opacity: 0
+    transform: translate3d(0, 1rem, 0)

@@ -16,13 +16,12 @@ section.user(v-if="!loading && !error")
       .bgContainer(:style="{backgroundImage: 'url(' + API_BASE + user?.background?.url + ')'}")
         span(v-if="!user.background") 用户未设置封面~
     .avatarArea
-      a(:href="API_BASE + user.imageBig" title="查看头像")
+      a.plain.pointer(@click="showUserMore = true")
         img(:src="API_BASE + user.imageBig")
     .infoArea
       .username {{ user.name }}
       .following
-        strong {{ user.following }}
-        | &nbsp;已关注
+        | 关注了 <strong>{{ user.following }}</strong> 人
       .gender(v-if="user.gender.name") 
         fa(icon="venus-mars")
         | {{ user.gender.name }}
@@ -39,9 +38,87 @@ section.user(v-if="!loading && !error")
           target="_blank"
           rel="noopener noreferrer"
           ) {{ user.webpage }}
-      .comment.pre {{ user.comment }}
-      .more
-        a(@click="userMore" href="javascript:;") 查看更多
+      .flex
+        .comment {{ user.comment }}
+        .userMore
+          a(@click="userMore" href="javascript:;") 查看更多
+
+  modal.infoModal(v-model:show="showUserMore")
+    .top
+      h3
+        a.avatar(
+          :href="API_BASE + user.imageBig"
+          title="查看头像"
+          target="_blank"
+          )
+          img(:src="API_BASE + user.imageBig")
+          .premiumIcon(
+            v-if="user.premium"
+            title="该用户订阅了高级会员"
+          )
+            fa(icon="parking")
+        .title {{ user.name }}
+        .follow
+          button 关注
+
+    .bottom
+      section.userComment
+        h4 个人简介
+        .comment.pre {{ user.comment || '-' }}
+      section.userWorkspace(v-if="user.workspace")
+        hr
+        h4 工作环境
+        .flexList
+          .listItem(v-if="user.workspace.wsUrl")
+            img(
+              :src="user.workspace.wsUrl"
+              style="width: 100%; height: auto"
+              alt="工作环境照片"
+              )
+          .listItem(v-if="user.workspace.userWorkspacePc")
+            .key 主机
+            .value {{ user.workspace.userWorkspacePc }}
+          .listItem(v-if="user.workspace.userWorkspaceMonitor")
+            .key 显示器
+            .value {{ user.workspace.userWorkspaceMonitor }}
+          .listItem(v-if="user.workspace.userWorkspaceTool")
+            .key 软件
+            .value {{ user.workspace.userWorkspaceTool }}
+          .listItem(v-if="user.workspace.userWorkspaceScanner")
+            .key 扫描仪
+            .value {{ user.workspace.userWorkspaceScanner }}
+          .listItem(v-if="user.workspace.userWorkspaceTablet")
+            .key 数码版
+            .value {{ user.workspace.userWorkspaceTablet }}
+          .listItem(v-if="user.workspace.userWorkspacePrinter")
+            .key 打印机
+            .value {{ user.workspace.userWorkspacePrinter }}
+          .listItem(v-if="user.workspace.userWorkspaceDesktop")
+            .key 台面
+            .value {{ user.workspace.userWorkspaceDesktop }}
+          .listItem(v-if="user.workspace.userWorkspaceMusic")
+            .key 音乐
+            .value {{ user.workspace.userWorkspaceMusic }}
+          .listItem(v-if="user.workspace.userWorkspaceDesk")
+            .key 桌子
+            .value {{ user.workspace.userWorkspaceDesk }}
+          .listItem(v-if="user.workspace.userWorkspaceChair")
+            .key 椅子
+            .value {{ user.workspace.userWorkspaceChair }}
+          .listItem(v-if="user.workspace.userWorkspaceComment")
+            .key 说明
+            .value {{ user.workspace.userWorkspaceComment }}
+      section.devOnly
+        hr
+        h4 Debug Info
+        details
+          pre(style="overflow: auto; background: #efefef; padding: 4px") {{ JSON.stringify(user, null, 2) }}
+
+  .devOnly
+    h2 Follow Test
+    .align-center
+      button(@click="addFollow") addFollow
+      button(@click="removeFollow") removeFollow
   
   .tabber
     ul.tabBtn
@@ -69,15 +146,18 @@ section.user(v-if="!loading && !error")
         .noResult(v-if="user.manga && !user.manga.length")
           div 收藏夹是空的 Σ(⊙▽⊙"a
         artworks-list(:list="bookmarks")
+
 </template>
 
 <script lang="ts">
 import axios from 'axios'
 import { API_BASE } from '../config'
 import { userData } from '../components/userData'
+import { addFollow, removeFollow } from '../utils/userActions'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
+import Modal from '../components/Modal.vue'
 import Placeholder from '../components/Placeholder.vue'
 
 import { Artwork } from './artworks.vue'
@@ -144,6 +224,7 @@ export default {
   components: {
     ArtworksList,
     ErrorPage,
+    Modal,
     Placeholder,
   },
   data() {
@@ -155,6 +236,7 @@ export default {
       userData,
       bookmarks: [] as Artwork[],
       tab: 'illust' as 'illust' | 'manga' | 'bookmarks',
+      showUserMore: false,
     }
   },
   methods: {
@@ -197,7 +279,8 @@ export default {
         })
     },
     userMore() {
-      alert(JSON.stringify(this.user, null, 2))
+      // alert(JSON.stringify(this.user, null, 2))
+      this.showUserMore = true
     },
     getBookmarks() {
       if (userData.value?.id !== this.$route.params.id) return
@@ -214,6 +297,8 @@ export default {
           this.bookmarks = data.works
         })
     },
+    addFollow,
+    removeFollow,
   },
   beforeRouteUpdate(to, from) {
     this.init(to.params.id)
@@ -274,6 +359,15 @@ export default {
       font-size: 1.4rem
       font-weight: 600
 
+    .comment
+      max-height: 4rem
+      overflow: hidden
+      white-space: nowrap
+      text-overflow: ellipsis
+
+    .userMore
+      white-space: nowrap
+
   .avatarArea
     position: absolute
     top: calc(45vh - 50px)
@@ -319,11 +413,58 @@ export default {
     border-top: 1px solid var(--theme-link-color)
 
 .noResult
-  height: 300px
+  height: 90vh
   display: flex
   align-items: center
 
   > div
     text-align: center
     flex: 1
+
+.infoModal
+  position: relative
+
+  hr
+    margin: 1.5rem auto
+    width: 75%
+    border: none
+    height: 2px
+    background-color: #dedede
+
+  .top
+    text-align: center
+    background-color: #f4f4f4
+    z-index: 1
+    margin: -3.5rem -2rem 0 -2rem
+    padding: 2rem
+
+    .avatar
+      width: 80px
+      margin: 0 auto
+
+      img
+        border-radius: 50%
+        width: 80px
+      
+      .premiumIcon
+        position: absolute
+        bottom: 0
+        right: 0
+        color: #ffa500
+        cursor: help
+
+    .title
+      font-size: 1rem
+      font-weight: 600
+
+    .follow
+      button
+        font-size: 1rem
+        background-color: #ddd
+        border-radius: 1rem
+        color: var(--theme-text-color)
+        padding: 0.3rem 1.5rem
+
+  .bottom
+    margin: 1.5rem 5%
 </style>

@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { SITE_ENV } from './config'
 
 // Create App
 import App from './App.vue'
@@ -17,7 +18,10 @@ library.add(fas)
 app.component('fa', FontAwesomeIcon)
 
 // Style
-import './static/index.sass'
+import './styles/index.sass'
 
 // Mount
 app.mount('#app')
+document.body?.classList.add(
+  SITE_ENV === 'development' ? 'env-development' : 'env-production'
+)

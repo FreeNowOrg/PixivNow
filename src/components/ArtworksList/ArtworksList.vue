@@ -24,11 +24,13 @@ export default {
   padding-left: 0
   list-style: none
   gap: 1.5rem
+  justify-content: center
 
   &.inline
     padding: 1rem
     flex-wrap: nowrap
     overflow-y: auto
+    justify-content: left
 
     .illustCard
       height: 500px

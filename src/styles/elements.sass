@@ -27,6 +27,9 @@ a
   &.plain
     display: unset
 
+  &.pointer
+    cursor: pointer
+
   &:not(.plain)::after
     content: ''
     display: block
@@ -83,6 +86,11 @@ button
       box-shadow: 0 0 0 2px #fff inset, 0 0 0 2px #ccc
 
 // Code
+pre
+  overflow: auto
+  background: #efefef
+  padding: 4px
+
 code
   background-color: #efefef
   display: inline

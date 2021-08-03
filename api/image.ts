@@ -1,6 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
 import { handleError } from './utils'
+import { IMAGE_CACHE_SECONDS } from '../src/config'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { __PREFIX, __PATH } = req.query
@@ -35,6 +36,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     .then(
       ({ data, headers }) => {
         res.setHeader('content-type', headers?.['content-type'])
+        res.setHeader('Cache-Control', `public, max-age=${IMAGE_CACHE_SECONDS}`)
         res.status(200).send(Buffer.from(data, 'base64'))
       },
       (err) => {

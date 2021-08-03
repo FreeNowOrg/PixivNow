@@ -1,6 +1,7 @@
 @import variables.sass
 @import elements.sass
 @import formats.sass
+@import animate.sass
 @import searchBox.sass
 
 html,
@@ -17,6 +18,14 @@ body
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   color: var(--theme-text-color)
+
+// Env specific
+.env-production
+  .devOnly, .devTest
+    display: none !important
+.env-development
+  .prodOnly
+    display: none !important
 
 @keyframes imgProgress
   from

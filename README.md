@@ -1,8 +1,12 @@
-# Pixiv Now
+<div align="center">
 
-https://pixiv.js.org
+![PixivNow Logo](src/assets/LogoH.png)
 
 Pixiv Service Proxy.
+
+→ https://pixiv.js.org ←
+
+</div>
 
 ## API
 
@@ -18,13 +22,18 @@ Get user details by UID
 
 Search illusts by keyword
 
+### `/api/ranking`
+
+Ranking
+
 ### `/ajax/*`
 
 AJAX
 
 ## Image Proxy
 
-`/image/*`
+- `i.pximg.net` → `/-/*`
+- `s.pximg.net` → `/~/*`
 
 ---
 

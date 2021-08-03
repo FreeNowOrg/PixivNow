@@ -1,9 +1,9 @@
-import { VercelRequest, VercelResponse } from '@vercel/node'
-import axios, { Method } from 'axios'
+import { VercelResponse } from '@vercel/node'
+import axios, { AxiosRequestConfig, Method } from 'axios'
 
 export function makeArtList(obj: any) {
   const list = []
-  for (let item in obj) {
+  for (const item in obj) {
     list.push(obj[item])
   }
   list.sort((a, b) => b.id - a.id)
@@ -19,7 +19,7 @@ export function replaceUrl(obj: any) {
 
   if (typeof obj === 'string') return replace(obj)
 
-  for (let key in obj) {
+  for (const key in obj) {
     if (
       typeof obj[key] === 'string' &&
       /^https:\/\/[is]\.pximg\.net\//.test(obj[key])
@@ -29,6 +29,18 @@ export function replaceUrl(obj: any) {
       obj[key] = replaceUrl(obj[key])
     }
   }
+  return obj
+}
+
+export function cookiesObj(cookies: string) {
+  let obj: Record<string, string> = {}
+  cookies?.split(';').forEach((i) => {
+    const s = i.split('=')
+    if (s.length < 2) return
+    const key = s[0].trim()
+    const val = s[1].trim()
+    obj[key] = val
+  })
   return obj
 }
 
@@ -52,37 +64,44 @@ export async function request({
   headers?: any
 }) {
   const url = `https://www.pixiv.net${path}`
-  const defaultCookie = params.token ? 'PHPSESSID=' + params.token : ''
+  const cookies = cookiesObj(headers.cookie)
 
   // 做一些转换防止抑郁
   // "foo[]": [] -> "foo": []
-  for (let i in params) {
+  for (const i in params) {
     if (i.endsWith('[]') && Array.isArray(params[i])) {
       params[i.replace(/\[\]$/, '')] = params[i]
       delete params[i]
     }
   }
 
+  const config: AxiosRequestConfig = {
+    url,
+    method,
+    params,
+    data,
+    timeout: 9000,
+    headers: {
+      accept: headers.accept || '*/*',
+      'accept-language':
+        headers['accept-language'] ||
+        'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
+      cookie: headers.cookie || '',
+      // 避免国产阴间浏览器或手机端等导致的验证码
+      'user-agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+
+      // ↓ Keep these headers
+      host: 'www.pixiv.net',
+      origin: 'https://www.pixiv.net',
+      referer: 'https://www.pixiv.net/',
+      // Token
+      'x-csrf-token': headers['x-csrf-token'] || cookies.CSRFTOKEN || '',
+    },
+  }
+
   try {
-    const res = await axios({
-      url,
-      method,
-      params,
-      data,
-      timeout: 9000,
-      headers: {
-        accept: headers.accept || '*/*',
-        'accept-language':
-          headers['accept-language'] ||
-          'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2',
-        cookie: headers.cookie || defaultCookie,
-        'user-agent':
-          headers['user-agent'] ||
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
-        // Keep this referer
-        referer: 'https://www.pixiv.net/',
-      },
-    })
+    const res = await axios(config)
     res.data = replaceUrl(res.data?.body || res.data)
     return res
   } catch (err) {

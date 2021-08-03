@@ -1,9 +1,9 @@
 {
   "name": "pixiv-now",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": true,
   "main": "index.js",
-  "repository": "https://github.com/GratisNow/PixivNow.git",
+  "repository": "https://github.com/FreeNowOrg/PixivNow.git",
   "author": "Dragon-Fish <824399619@qq.com>",
   "license": "MIT",
   "scripts": {
@@ -39,7 +39,7 @@
     "pug": "^3.0.2",
     "sass": "^1.34.1",
     "typescript": "^4.3.2",
-    "vercel": "^23.0.0",
+    "vercel": "^23.0.1",
     "vite": "^1.0.0-rc.13"
   }
 }
