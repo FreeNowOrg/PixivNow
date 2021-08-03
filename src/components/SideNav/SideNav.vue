@@ -67,6 +67,9 @@ export default defineComponent({
     this.$router.beforeEach(() => {
       this.show = false
     })
+    document.addEventListener('keydown', ({ key }) => {
+      if (key === 'Escape') this.show = false
+    })
   },
 })
 </script>

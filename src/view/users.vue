@@ -16,7 +16,7 @@ section.user(v-if="!loading && !error")
       .bgContainer(:style="{backgroundImage: 'url(' + API_BASE + user?.background?.url + ')'}")
         span(v-if="!user.background") 用户未设置封面~
     .avatarArea
-      a(:href="API_BASE + user.imageBig" title="查看头像")
+      a.plain.pointer(@click="showUserMore = true")
         img(:src="API_BASE + user.imageBig")
     .infoArea
       .username {{ user.name }}
@@ -46,7 +46,11 @@ section.user(v-if="!loading && !error")
   modal.infoModal(v-model:show="showUserMore")
     .top
       h3
-        a.avatar(:href="API_BASE + user.imageBig" title="查看头像")
+        a.avatar(
+          :href="API_BASE + user.imageBig"
+          title="查看头像"
+          target="_blank"
+          )
           img(:src="API_BASE + user.imageBig")
           .premiumIcon(
             v-if="user.premium"
@@ -104,14 +108,14 @@ section.user(v-if="!loading && !error")
           .listItem(v-if="user.workspace.userWorkspaceComment")
             .key 说明
             .value {{ user.workspace.userWorkspaceComment }}
-      section.devTest
+      section.devOnly
         hr
         h4 Debug Info
         details
           pre(style="overflow: auto; background: #efefef; padding: 4px") {{ JSON.stringify(user, null, 2) }}
 
-  .devTest
-    h2 Dev Test
+  .devOnly
+    h2 Follow Test
     .align-center
       button(@click="addFollow") addFollow
       button(@click="removeFollow") removeFollow

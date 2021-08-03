@@ -42,7 +42,7 @@ section.illust-container(v-if="!error && !loading")
         v-if="illust.bookmarkData"
         :to="'/users/' + userData.id"
         title="查看收藏"
-        )
+      )
         fa(icon="heart")
         | {{ illust.bookmarkCount }}
 
@@ -475,7 +475,7 @@ h1
   .bookmarkCount
     cursor: pointer
 
-  &.isBookmarked
+    &.isBookmarked
       color: var(--theme-bookmark-color)
       font-weight: 600
 

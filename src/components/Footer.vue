@@ -7,6 +7,12 @@ footer.globalFooter
       {{ PROJECT_NAME }}
     | 
     em v{{ version }}
+  .align-center.devOnly
+    | This is test site →&nbsp;
+    a(
+      :href="'https://pixiv.js.org' + $route.path"
+      target="_blank"
+    ) Go to Prod.
 </template>
 
 <script lang="ts">

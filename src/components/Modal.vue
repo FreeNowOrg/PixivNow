@@ -40,7 +40,11 @@ export default defineComponent({
       }
     },
   },
-  mounted() {},
+  mounted() {
+    document.addEventListener('keydown', ({ code }) => {
+      if (code === 'Escape') this.closeModal()
+    })
+  },
 })
 </script>
 

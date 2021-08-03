@@ -11,41 +11,53 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
     .searchArea
       search-box
 
-  .userArea
-    details.userLink
-      summary
+  .userArea(id="globalNav__userArea")
+    .userLink
+      a.dropdownBtn.plain.pointer(
+        :class="{ isShown: userDropdownShow }"
+        @click="userDropdownShow = !userDropdownShow"
+      )
         img.avatar(
           :src="userData ? userData.profileImg : API_BASE + '/~/common/images/no_profile.png'" 
           :title="userData ? userData.name + ' (' + userData.pixivId + ')' : '未登入'"
           )
         fa(icon="angle-down")
-      .dropdown
-        ul
-          //- notLogIn
-          li(v-if="!userData")
-            .navUserCard
-              .top
-                .bannerBg
-                img.avatar(:src="API_BASE + '/~/common/images/no_profile.png'")
-              .details
-                .name 游客
-                .uid 绑定令牌，同步您的 Pixiv 信息！
 
-          //- isLogedIn
-          li(v-if="userData")
-            .navUserCard
-              .top
-                .bannerBg
-                router-link.plain.name(:to="'/users/' + userData.id")
-                  img.avatar(:src="API_BASE + userData.profileImgBig")
-              .details
-                router-link.plain.name(:to="'/users/' + userData.id") {{ userData.name }}
-                .uid @{{ userData.pixivId }}
+      transition(
+        name="fade"
+        mode="out-in"
+        enter-active-class = "fadeInUp"
+        leave-active-class = "fadeOutDown"
+      )
+        .dropdownContent(
+          v-show="userDropdownShow"
+        )
+          ul
+            //- notLogIn
+            li(v-if="!userData")
+              .navUserCard
+                .top
+                  .bannerBg
+                  img.avatar(:src="API_BASE + '/~/common/images/no_profile.png'")
+                .details
+                  a.userName 游客
+                  .uid 绑定令牌，同步您的 Pixiv 信息！
 
-          li(v-if="$route.path !== '/login'")
-            router-link.plain(:to="'/login?back=' + $route.path") {{ userData ? '查看令牌' : '用户登入' }}
-          li(v-if="userData")
-            a.plain(@click="userLogout") 用户登出
+            //- isLogedIn
+            li(v-if="userData")
+              .navUserCard
+                .top
+                  .bannerBg
+                  router-link.plain.name(:to="'/users/' + userData.id")
+                    img.avatar(:src="API_BASE + userData.profileImgBig")
+                .details
+                  router-link.plain.userName(:to="'/users/' + userData.id") {{ userData.name }}
+                  .uid @{{ userData.pixivId }}
+
+            li(v-if="$route.path !== '/login'")
+              router-link.plain(:to="'/login?back=' + $route.path") {{ userData ? '查看令牌' : '用户登入' }}
+            li(v-if="userData")
+              a.plain(@click="userLogout") 用户登出
 </template>
 
 <script lang="ts">
@@ -69,6 +81,7 @@ export default defineComponent({
       isHide: false,
       userData,
       sideNavShow,
+      userDropdownShow: false,
       LogoH,
     }
   },
@@ -82,23 +95,34 @@ export default defineComponent({
     },
   },
   mounted() {
+    // Scroll state
     let scrollTop = document.documentElement.scrollTop
     window.addEventListener('scroll', () => {
       const newTop = document.documentElement.scrollTop
-
       // if (scrollTop > 600) {
       //   this.isHide = newTop - scrollTop > 0
       // } else {
       //   this.isHide = false
       // }
-
       scrollTop = newTop
-
       if (newTop > 0) {
         this.notAtTop = true
       } else {
         this.notAtTop = false
       }
+    })
+
+    // Outside close user dropdown
+    document
+      .getElementById('globalNav__userArea')
+      ?.addEventListener('click', (e) => {
+        e.stopPropagation()
+      })
+    document.addEventListener('click', (e) => {
+      if (this.userDropdownShow) this.userDropdownShow = false
+    })
+    this.$router.beforeEach(() => {
+      this.userDropdownShow = false
     })
   },
   methods: {
@@ -173,7 +197,7 @@ export default defineComponent({
   .userLink
     position: relative
 
-    summary
+    .dropdownBtn
       list-style: none
       display: flex
       align-items: center
@@ -181,9 +205,13 @@ export default defineComponent({
     [data-icon]
       margin-left: 6px
       color: #fff
-      transition: all 0.4s 
+      transition: all 0.4s
 
-    .dropdown
+    .dropdownBtn.isShown
+      [data-icon]
+        transform: rotateZ(180deg)
+
+    .dropdownContent
       position: absolute
       top: 1.4rem
       right: 0
@@ -208,9 +236,6 @@ export default defineComponent({
           &:hover
             background-color: var(--theme-tag-color)
 
-    &[open]
-      [data-icon]
-        transform: rotateX(180deg)
 
 .navUserCard
   border-bottom: 1px solid
@@ -233,7 +258,7 @@ export default defineComponent({
     height: 68px
 
   .details
-    .name
+    .userName
       font-size: 1rem
 
     .uid
