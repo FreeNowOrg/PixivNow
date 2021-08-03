@@ -1,54 +1,52 @@
 <template lang="pug">
 ul.artworksMiniList
-  li(
-    v-for="item in list"
-    :class="{isAdContainer: item.isAdContainer}"
-    )
+  li(v-for="(item, index) in list"
+    :key="item.id"
+    :class="{ isAdContainer: item.isAdContainer }"
+  )
     .thumb
       .sideTags
         .xRestrict(v-if="item.xRestrict" title="R-18")
-            fa(icon="eye")
+          fa(icon="eye")
         .pageCount(
           v-if="item.pageCount"
-          :title="'共 ' + item.pageCount + ' 张'")
+          :title="'共 ' + item.pageCount + ' 张'"
+        )
           fa(icon="images")
           | {{ item.pageCount }}
         .bookmark(
           v-if="!item.isAdContainer"
-          :class="{isBookmarked: item.bookmarkData}"
-          @click="toggleBookmark")
+          :class="{ isBookmarked: item.bookmarkData }"
+          @click="toggleBookmark(index)"
+        )
           fa(icon="heart")
-      router-link(
-        v-if="item.id"
-        :to="'/artworks/' + item.id")
+      router-link(v-if="item.id" :to="'/artworks/' + item.id")
         img(
           :src="API_BASE + item.url"
           :alt="item.alt"
           :title="item.alt"
-          lazyload="")
+          lazyload=""
+        )
         .hoverTitle {{ item.title }}
     .info
       .title
         a.plain.isAdContainer(v-if="item.isAdContainer") 广告
-        router-link(
-          v-if="item.id"
-          :to="'/artworks/' + item.id") {{ item.title }}
+        router-link(v-if="item.id", :to="'/artworks/' + item.id") {{ item.title }}
       .author(:title="item.userName")
-        router-link(
-          v-if="item.id"
-          :to="'/users/' + item.userId")
+        router-link(v-if="item.id", :to="'/users/' + item.userId")
           img.avatar(
             :src="API_BASE + (item.profileImageUrl || item.profileImg)"
             lazyload=""
-            )
+          )
           | {{ item.userName }}
         a.plain.isAdContainer(v-if="item.isAdContainer")
           | 我是一个广告
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { API_BASE } from '../../config'
+import { defineComponent } from "vue"
+import { API_BASE } from "../../config"
+import { addBookmark, removeBookmark } from "../../utils/artworkActions"
 
 export default defineComponent({
   data() {
@@ -56,10 +54,16 @@ export default defineComponent({
       API_BASE,
     }
   },
-  props: ['list'],
+  props: ["list"],
   methods: {
-    toggleBookmark() {
-      alert('假装已经添加上了收藏')
+    toggleBookmark(index: number) {
+      const item = this.list[index]
+      if (!item.bookmarkData) {
+        addBookmark(item.id)
+      }
+      else {
+        removeBookmark(item.id)
+      }
     }
   }
 })
