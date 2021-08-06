@@ -11,7 +11,10 @@ footer.globalFooter
     section.flex-1
       h4 关注我们
       ul
-        li bbb
+        li
+          a(:href="`https://github.com/${GITHUB_OWNER}`") Free Now Tech.
+        li
+          router-link(to="/users/32338232") 站长的 Pixiv
     section.flex-1
       h4 概览
       ul
@@ -46,7 +49,7 @@ footer.globalFooter
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { GITHUB_URL, PROJECT_NAME } from '../config'
+import { GITHUB_URL, PROJECT_NAME, GITHUB_OWNER } from '../config'
 import { version } from '../../package.json'
 
 export default defineComponent({
@@ -58,6 +61,7 @@ export default defineComponent({
       yearStr: 2021 === year ? year : `(2021 - ${year})`,
       GITHUB_URL,
       PROJECT_NAME,
+      GITHUB_OWNER,
     }
   },
 })
@@ -106,6 +110,10 @@ h4
 ul
   padding-left: 1rem
   margin: 0.2rem 0
+
+  a
+    border-bottom: 1px solid
+    display: inline
 
 @media screen and (max-width: 600px)
   .top

@@ -1,6 +1,6 @@
 <template lang="pug">
 .searchBox
-  input(v-model="keyword" @keyup.enter="makeSearch", placeholder="搜索插画")
+  input(v-model="keyword" @keyup.enter="makeSearch", placeholder="输入关键词搜索/输入 id:xxx 查看作品")
   fa.icon(icon="search")
 </template>
 
@@ -17,6 +17,10 @@ export default defineComponent({
   methods: {
     makeSearch() {
       if (!this.keyword) {
+        return
+      }
+      if (/^id:(\d+)$/.test(this.keyword)) {
+        router.push(`/artworks/${/^id:(\d+)$/.exec(this.keyword)?.[1]}`)
         return
       }
       router.push(`/search/${encodeURIComponent(this.keyword)}/1`)
