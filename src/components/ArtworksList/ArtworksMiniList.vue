@@ -20,10 +20,7 @@ ul.artworksMiniList
           @click="toggleBookmark(index)"
         )
           fa(icon="heart")
-      router-link(
-        v-if="item.id"
-        :to="'/artworks/' + (illust.id || illust.illustId)"
-        )
+      router-link(v-if="item.id" :to="'/artworks/' + item.id")
         img(
           :src="API_BASE + item.url"
           :alt="item.alt"
