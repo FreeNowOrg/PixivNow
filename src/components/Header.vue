@@ -10,6 +10,10 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
   .flex
     .searchArea
       search-box
+    .searchIcon.align-right.flex-1
+      button.pointer(@click="sideNavShow = true")
+        fa(icon="search")
+        | &nbsp;搜索
 
   .userArea(id="globalNav__userArea")
     .userLink
@@ -264,4 +268,13 @@ export default defineComponent({
     .uid
       font-size: 0.8rem
       color: #aaa
+
+.searchIcon
+  display: none
+
+@media screen and (max-width: 450px)
+  .searchArea
+    display: none
+  .searchIcon
+    display: block
 </style>

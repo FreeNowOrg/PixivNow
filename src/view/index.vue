@@ -1,18 +1,21 @@
 <template lang="pug">
-.home
-  .title
-    span PixivNow
-  p.description Pixiv Service Proxy
+.topSlider.align-center(:style="{ 'background-image': `url(${backgroundImage})` }")
 
-section.search
-  h2 探索发现
-  search-box.big.search
+  section.searchArea.flex-1
+    search-box.big.search
+
+  .siteLogo
+    img(:src="LogoH")
+  .description Pixiv Service Proxy
+
+  .bgInfo
+    a(href="javascript:;") 查看背景
 
 section.ranking
   h2 今日排行
   .loading(v-if="rankList.length < 1")
     placeholder
-  artworks-list.inline(:list="rankList")
+  ArtworksList(:list="rankList")
 
 </template>
 
@@ -22,18 +25,25 @@ import { API_BASE } from '../config'
 import { getCache, setCache } from './siteCache'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworksMiniList from '../components/ArtworksList/ArtworksMiniList.vue'
 import SearchBox from '../components/SearchBox.vue'
 import Placeholder from '../components/Placeholder.vue'
+
+import LogoH from '../assets/LogoH.png'
 
 export default {
   components: {
     ArtworksList,
+    ArtworksMiniList,
     SearchBox,
     Placeholder,
   },
   data() {
     return {
       rankList: [],
+      LogoH,
+      backgroundImage:
+        'https://blog.wjghj.cn/_statics/images/background/2021BeneathTheLightOfJadeite/bg.jpg',
     }
   },
   methods: {
@@ -57,26 +67,59 @@ export default {
 </script>
 
 <style scoped lang="sass">
-.home
-  margin: 4rem auto 2rem auto
-  height: 100%
-  text-align: center
+.topSlider
+  min-height: calc(100vh - 50px)
+  margin: -1rem
+  margin-bottom: 1rem
+  padding: 30px 10%
+  background-position: center
+  background-repeat: no-repeat
+  background-size: cover
+  background-attachment: fixed
+  position: relative
+  color: #fff
+  text-shadow: 0 0 2px #222
+  display: flex
+  flex-direction: column
+
+  &::before
+    content: ''
+    display: block
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background-color: rgba(0, 0, 0, 0.2)
+    pointer-events: none
+    z-index: 0
+
+  > *
+    position: relative
+    z-index: 1
+
+  .bgInfo
+    position: absolute
+    right: 1.5rem
+    bottom: 1rem
+
+    a
+      --color: #fff
+
+.siteLogo
+  img
+    height: 4rem
+    width: auto
 
 .description
   font-size: 1.2rem
 
-.title
-  font-size: 6rem
-  font-weight: bold
-  user-select: none
+.searchArea
+  display: flex
+  align-items: center
 
-  > span
-    box-shadow: 0 -0.5em 0 var(--theme-accent-color) inset
-    text-shadow: 2px 2px var(--theme-text-shadow-color)
-    padding: 0 0.4em
-
-.search
-  margin: 1rem 0
+  > *
+    width: 100%
 
 .loading
   text-align: center

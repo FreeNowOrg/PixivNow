@@ -9,9 +9,9 @@ aside.globalSideNav(:class="{isHide: !show}")
         .logoArea
           img.siteLogo(:src="LogoH")
 
-    //- .group
-    //-   .searchArea(style="padding: 0 1.6rem")
-    //-     search-box
+    .group
+      .searchArea(style="padding: 0 1.6rem")
+        search-box
 
     .list
       .group
@@ -150,4 +150,11 @@ export default defineComponent({
     left: -300px
   .backdrop
     display: none
+
+.searchArea
+  display: none
+
+@media screen and (max-width: 450px)
+  .searchArea
+    display: block
 </style>

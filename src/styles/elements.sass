@@ -27,9 +27,6 @@ a
   &.plain
     display: unset
 
-  &.pointer
-    cursor: pointer
-
   &:not(.plain)::after
     content: ''
     display: block
@@ -41,7 +38,7 @@ a
     background-color: var(--color)
     visibility: hidden
     transform: scaleX(0)
-    transition: 0.4s ease-in-out
+    transition: all 0.4s ease-in-out
 
   &:not(.plain):hover::after,
   &.router-link-active::after,

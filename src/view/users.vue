@@ -39,7 +39,7 @@ section.user(v-if="!loading && !error")
           rel="noopener noreferrer"
           ) {{ user.webpage }}
       .flex
-        .comment {{ user.comment }}
+        .comment.flex-1 {{ user.comment }}
         .userMore
           a(@click="userMore" href="javascript:;") 查看更多
 
@@ -325,9 +325,9 @@ export default {
       width: 100%
       height: 45vh
       background-color: #efefef
-      background-position: center top
+      background-position: center
       background-repeat: no-repeat
-      background-size: 100%
+      background-size: cover
       background-attachment: fixed
 
       @media screen and(max-width: 800px)
