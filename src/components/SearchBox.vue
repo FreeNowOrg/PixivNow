@@ -53,7 +53,8 @@ export default defineComponent({
     color: var(--theme-border-color)
     font-size: inherit
     box-sizing: border-box
-    border: 2px solid #fff
+    border: none
+    // border: 2px solid #fff
     border-radius: 1em
     outline: none
     padding: 0.2rem 0.6em
