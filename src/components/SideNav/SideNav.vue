@@ -154,6 +154,10 @@ export default defineComponent({
 .searchArea
   display: none
 
+  .searchBox
+    box-shadow: 0 0 8px #ddd
+    border-radius: 1em
+
 @media screen and (max-width: 450px)
   .searchArea
     display: block

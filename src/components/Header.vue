@@ -7,8 +7,8 @@ header.globalNavbar(:class="{ notAtTop, isHide }")
     router-link.plain(to="/")
       img.siteLogo(:src="LogoH")
 
-  .flex
-    .searchArea
+  .flex.searchArea
+    .searchFull.align-right.flex-1
       search-box
     .searchIcon.align-right.flex-1
       button.pointer(@click="sideNavShow = true")
@@ -135,7 +135,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="sass">
+<style lang="sass">
 .globalNavbar
   background-color: var(--theme-accent-color)
   padding: 0.4rem
@@ -159,122 +159,120 @@ export default defineComponent({
     margin: 0 1.5rem
 
   &.notAtTop
-    box-shadow: 0 2px 4px var(--theme-box-shadow-color)
+    box-shadow: 0 0px 8px var(--theme-box-shadow-color)
 
   // &.isHide
   //   top: -52px
 
-.sideNavToggle
-  font-size: 1.2rem
-  text-align: center
-  margin: auto 0.5rem
-  color: var(--theme-accent-link-color)
-  cursor: pointer
-  width: 2.4rem
-  height: 2.4rem
-  border-radius: 50%
-  display: flex
-  align-items: center
-
-  &:hover
-    background-color: rgba(255,255,255,0.2)
-
-  [data-icon]
-    margin: 0 auto
-
-.logoArea
-  .siteLogo
-    height: 2.2rem
-    width: auto
-
-.searchArea
-  flex: 1
-
-.userArea
-  margin-left: 0.5rem
-
-  .avatar
-    height: 2rem
-    width: 2rem
+  .sideNavToggle
+    font-size: 1.2rem
+    text-align: center
+    margin: auto 0.5rem
+    color: var(--theme-accent-link-color)
+    cursor: pointer
+    width: 2.4rem
+    height: 2.4rem
     border-radius: 50%
+    display: flex
+    align-items: center
 
-  .userLink
-    position: relative
-
-    .dropdownBtn
-      list-style: none
-      display: flex
-      align-items: center
+    &:hover
+      background-color: rgba(255,255,255,0.2)
 
     [data-icon]
-      margin-left: 6px
-      color: #fff
-      transition: all 0.4s
+      margin: 0 auto
 
-    .dropdownBtn.isShown
-      [data-icon]
-        transform: rotateZ(180deg)
+  .logoArea
+    .siteLogo
+      height: 2.2rem
+      width: auto
 
-    .dropdownContent
-      position: absolute
-      top: 1.4rem
-      right: 0
-      padding: 0
-      padding-top: 0.4rem
-      width: 200px
+  .userArea
+    margin-left: 0.5rem
 
-      ul
+    .avatar
+      height: 2rem
+      width: 2rem
+      border-radius: 50%
+
+    .userLink
+      position: relative
+
+      .dropdownBtn
         list-style: none
-        padding: 4px
-        background-color: #fff
-        box-shadow: 0 0 4px #aaa
-        border-radius: 4px
+        display: flex
+        align-items: center
 
-        li > *
-          padding: 0.5rem
+      [data-icon]
+        margin-left: 6px
+        color: #fff
+        transition: all 0.4s
 
-        li a
-          display: block
-          cursor: pointer
+      .dropdownBtn.isShown
+        [data-icon]
+          transform: rotateZ(180deg)
 
-          &:hover
-            background-color: var(--theme-tag-color)
+      .dropdownContent
+        position: absolute
+        top: 1.4rem
+        right: 0
+        padding: 0
+        padding-top: 0.4rem
+        width: 200px
+
+        ul
+          list-style: none
+          padding: 4px
+          background-color: #fff
+          box-shadow: 0 0 4px #aaa
+          border-radius: 4px
+
+          li > *
+            padding: 0.5rem
+
+          li a
+            display: block
+            cursor: pointer
+
+            &:hover
+              background-color: var(--theme-tag-color)
 
 
-.navUserCard
-  border-bottom: 1px solid
-  position: relative
+  .navUserCard
+    border-bottom: 1px solid
+    position: relative
 
-  .bannerBg
-    position: absolute
-    top: calc(-0.4rem - 6px)
-    left: -12px
-    height: 56px
-    width: calc(100% + 24px)
-    background-color: rgba(var(--theme-accent-color--rgb), 0.1)
-    z-index: 0
+    .bannerBg
+      position: absolute
+      top: calc(-0.4rem - 6px)
+      left: -12px
+      height: 56px
+      width: calc(100% + 24px)
+      background-color: rgba(var(--theme-accent-color--rgb), 0.1)
+      z-index: 0
 
-  a
-    display: inline !important
+    a
+      display: inline !important
 
-  .avatar
-    width: 68px
-    height: 68px
+    .avatar
+      width: 68px
+      height: 68px
 
-  .details
-    .userName
-      font-size: 1rem
+    .details
+      .userName
+        font-size: 1rem
 
-    .uid
-      font-size: 0.8rem
-      color: #aaa
+      .uid
+        font-size: 0.8rem
+        color: #aaa
 
-.searchIcon
-  display: none
+  .searchIcon
+    display: none
 
 @media screen and (max-width: 450px)
-  .searchArea
-    display: none
-  .searchIcon
-    display: block
+  .globalNavbar
+    .searchFull
+      display: none
+    .searchIcon
+      display: block
 </style>

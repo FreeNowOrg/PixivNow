@@ -13,7 +13,7 @@
 
 section.ranking
   h2 今日排行
-  .loading(v-if="rankList.length < 1")
+  .align-center(v-if="rankList.length < 1")
     placeholder
   ArtworksList(:list="rankList")
 
@@ -66,61 +66,73 @@ export default {
 }
 </script>
 
-<style scoped lang="sass">
-.topSlider
-  min-height: calc(100vh - 50px)
-  margin: -1rem
-  margin-bottom: 1rem
-  padding: 30px 10%
-  background-position: center
-  background-repeat: no-repeat
-  background-size: cover
-  background-attachment: fixed
-  position: relative
-  color: #fff
-  text-shadow: 0 0 2px #222
-  display: flex
-  flex-direction: column
-
-  &::before
-    content: ''
-    display: block
-    position: absolute
-    top: 0
-    left: 0
-    width: 100%
-    height: 100%
-    background-color: rgba(0, 0, 0, 0.2)
-    pointer-events: none
-    z-index: 0
-
-  > *
+<style lang="sass">
+[data-route="home"]
+  .topSlider
+    min-height: calc(100vh)
+    margin-left: -1rem
+    margin-right: -1rem
+    margin-top: calc(-50px - 1rem)
+    padding: 30px 10%
+    background-position: center
+    background-repeat: no-repeat
+    background-size: cover
+    background-attachment: fixed
     position: relative
-    z-index: 1
+    color: #fff
+    text-shadow: 0 0 2px #222
+    display: flex
+    flex-direction: column
 
-  .bgInfo
-    position: absolute
-    right: 1.5rem
-    bottom: 1rem
+    &::before
+      content: ''
+      display: block
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background-color: rgba(0, 0, 0, 0.2)
+      pointer-events: none
+      z-index: 0
 
-    a
-      --color: #fff
+    > *
+      position: relative
+      z-index: 1
 
-.siteLogo
-  img
-    height: 4rem
-    width: auto
+    .bgInfo
+      position: absolute
+      right: 1.5rem
+      bottom: 1rem
 
-.description
-  font-size: 1.2rem
+      a
+        --color: #fff
 
-.searchArea
-  display: flex
-  align-items: center
+  .siteLogo
+    img
+      height: 4rem
+      width: auto
 
-  > *
-    width: 100%
+  .description
+    font-size: 1.2rem
 
-.loading
-  text-align: center
+  .searchArea
+    display: flex
+    align-items: center
+
+    > *
+      width: 100%
+
+  .globalNavbar
+    background: none
+    .searchArea
+      opacity: 0
+      transition: opacity 0.4s ease
+      pointer-events: none
+
+    &.notAtTop
+      background-color: var(--theme-accent-color)
+      .searchArea
+        opacity: 1
+        pointer-events: all
 </style>

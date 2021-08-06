@@ -6,7 +6,7 @@ const router = createRouter({
   scrollBehavior(to, from) {
     if (to === from) return
     return { top: 0 }
-  }
+  },
 })
 
 // Home
@@ -70,6 +70,10 @@ router.addRoute({
   path: '/:pathMatch(.*)*',
   name: 'not-found',
   component: () => import('./view/404.vue'),
+})
+
+router.beforeEach(({ name }) => {
+  document.body.setAttribute('data-route', name as string)
 })
 
 export { router }
