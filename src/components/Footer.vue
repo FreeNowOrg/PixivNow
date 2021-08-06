@@ -68,9 +68,9 @@ export default defineComponent({
   font-size: 1rem
   color: var(--theme-accent-link-color)
 
-
   > div
-    padding: 0.5rem 1rem
+    padding-top: 0.5rem
+    padding-bottom: 0.5rem
 
 a
   --color: var(--theme-accent-link-color)
