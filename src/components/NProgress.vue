@@ -47,6 +47,8 @@ export default defineComponent({
   .bar
     background-color: var(--theme-secondary-color)
     top: 50px
+    .peg
+      display: none
 
   .spinner
     top: 60px

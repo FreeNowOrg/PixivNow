@@ -7,9 +7,9 @@ mixin pagenator()
     button.next(@click="nextPage") 下一页
 
 
-h1 搜索“{{ keyword }}”相关的作品 (第{{ p }}页)
+//- h1 搜索“{{ keyword }}”相关的作品 (第{{ p }}页)
 
-search-box.big(:style="{marginBottom: '1.2rem'}")
+search-box.big
 
 //- Error
 section(v-if="error && !loading")
@@ -131,4 +131,9 @@ export default {
   padding: 1rem
   border-radius: 4px
   box-shadow: 0 0 4px #aaaaaa
+
+.searchBox
+  margin: 2rem auto
+  box-shadow: 0 0 8px #ddd
+  border-radius: 2em
 </style>

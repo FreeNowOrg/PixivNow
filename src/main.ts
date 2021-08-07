@@ -9,6 +9,12 @@ const app = createApp(App)
 import { router } from './router'
 app.use(router)
 
+// Global components
+import ExternalLink from './components/ExternalLink.vue'
+app.component('external-link', ExternalLink)
+import Lazyload from './components/LazyLoad.vue'
+app.component('lazyload', Lazyload)
+
 // FontAwesome
 // https://fontawesome.com/v5.15/icons
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -22,6 +28,4 @@ import './styles/index.sass'
 
 // Mount
 app.mount('#app')
-document.body?.classList.add(
-  SITE_ENV === 'development' ? 'env-development' : 'env-production'
-)
+document.body?.setAttribute('data-env', SITE_ENV)

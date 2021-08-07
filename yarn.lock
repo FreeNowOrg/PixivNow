@@ -133,6 +133,11 @@
     commander "^7.1.0"
     fs-extra "^9.1.0"
 
+"@dragon-fish/sensitive-words-filter@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@dragon-fish/sensitive-words-filter/-/sensitive-words-filter-1.0.0.tgz#671713b83463a6368344a5c4cafee11cd45d366a"
+  integrity sha512-O+cqan1iM12BfQD4S4ybqrlUr2cQbAkS14648CBuW0ew7knNmqgsPZpYo8ZKiJzsE4XHZFqr3ioq1f8aej7fag==
+
 "@fortawesome/fontawesome-common-types@^0.2.35":
   version "0.2.35"
   resolved "https://registry.npmjs.org/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.35.tgz#01dd3d054da07a00b764d78748df20daf2b317e9"

@@ -34,9 +34,9 @@ export default defineComponent({
 
 <style scoped lang="sass">
 main
-  padding: 50px 0 60px 0
-  min-height: 100vh
+  padding-top: 50px
   position: relative
+  flex: 1
 
   article
     padding: 1rem

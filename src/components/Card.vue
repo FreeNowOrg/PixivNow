@@ -1,6 +1,6 @@
 <template lang="pug">
 .card
-  h2(v-if="title") {{ title }}
+  h2(v-if="title" :id="title") {{ title }}
   .inner
     slot/
 </template>

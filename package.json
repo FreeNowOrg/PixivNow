@@ -1,6 +1,6 @@
 {
   "name": "pixiv-now",
-  "version": "2.4.0",
+  "version": "2.5.1",
   "private": true,
   "main": "index.js",
   "repository": "https://github.com/FreeNowOrg/PixivNow.git",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@dragon-fish/bump": "^0.0.15",
+    "@dragon-fish/sensitive-words-filter": "^1.0.0",
     "@types/js-cookie": "^2.2.7",
     "@types/nprogress": "^0.2.0",
     "@vercel/node": "^1.11.0",

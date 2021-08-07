@@ -4,7 +4,7 @@
     router-link(:to="'/artworks/' + (illust.id || illust.illustId)")
       .thumb
         img(
-          :src="API_BASE + illust.url"
+          :src="API_BASE + illust.url.replace('p0_master', 'p0_square')"
           alt=""
           lazyload="")
       .xRestrict.tag(v-if="illust.xRestrict" title="R-18")
