@@ -40,6 +40,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         return
       }
 
+      res.setHeader('cache-control', 'no-cache')
       res.setHeader('set-cookie', `CSRFTOKEN=${meta.token}; path=/; secure`)
       res.send(meta)
     })

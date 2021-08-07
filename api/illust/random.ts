@@ -72,7 +72,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       ({ data, headers }) => {
         res.status(200)
         res.setHeader('content-type', headers?.['content-type'])
-        res.setHeader('cache-control', `no-store`)
+        res.setHeader('cache-control', 'no-cache')
         res.setHeader('illust-id', item.id)
         res.setHeader('image-width', item.width)
         res.setHeader('image-height', item.height)
