@@ -14,26 +14,21 @@ footer.globalFooter
       h4 关注我们
       ul
         li
+          | FreeNow 团队：
           external-link(:href="`https://github.com/${GITHUB_OWNER}`") Free Now Tech.
         li
           | PixivNow 团队：
-          router-link.plain(to="/users/32338232") 小鱼君
+          router-link.plain(to="/users/32338232") Dragon Fish
           | 、
-          router-link.plain(to="/users/15552366") 猫猫
+          router-link.plain(to="/users/15552366") MysticNebula70
     //- section.flex-1
-    //-   h4 概览
-    //-   ul
-    //-     li ccc
-    //-     li ccc
-    //-     li ccc
+    //-   h4 社交媒体
+    //-     p Placeholder
     section.flex-1
       h4 友情链接
-      ul
-        li 链接
-        li 链接
-        li 链接
-        li 链接
-        li 链接
+      div 快来 GitHub issues 交换友链吧~
+      //- ul
+      //-   li 链接
 
   .bottom.align-center
     p.copyright
