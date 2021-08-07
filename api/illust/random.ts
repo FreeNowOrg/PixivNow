@@ -5,16 +5,25 @@ import { request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const isImage =
-    req.headers.accept?.includes('image') || req.query.format === 'image'
+    (req.headers.accept?.includes('image') || req.query.format === 'image') &&
+    req.query.format !== 'json'
 
-  const { data } = await request({
-    path: '/ajax/illust/discovery',
-    params: {
-      mode: req.query.mode || 'safe',
-      max: isImage ? 1 : req.query.max || 18,
-    },
-    headers: req.headers,
-  })
+  let data
+  try {
+    data = (
+      await request({
+        path: '/ajax/illust/discovery',
+        params: {
+          mode: req.query.mode || 'safe',
+          max: isImage ? 1 : req.query.max || 18,
+        },
+        headers: req.headers,
+      })
+    ).data
+  } catch (err) {
+    return handleError(err, res)
+  }
+
   const list: any[] = data?.illusts || []
   list.forEach((item, index) => {
     if (item.isAdContainer) {
@@ -58,7 +67,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   // return image
   if (isImage) {
-    return res.send(list[0])
     const url = list[0].urls.regular.replace('/-/', '/')
     getBuffer(`https://i.pximg.net${url}`).then(
       ({ data, headers }) => {
