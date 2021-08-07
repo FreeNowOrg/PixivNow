@@ -27,7 +27,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   getBuffer(url).then(
     ({ data, headers }) => {
       res.setHeader('content-type', headers?.['content-type'])
-      res.setHeader('Cache-Control', `public, max-age=${IMAGE_CACHE_SECONDS}`)
+      res.setHeader('cache-control', `public, max-age=${IMAGE_CACHE_SECONDS}`)
       res.status(200).send(Buffer.from(data, 'base64'))
     },
     (err) => {

@@ -66,22 +66,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   // return image
   if (isImage) {
-    const item = list[0]
-    const url = (item?.urls.regular || item.url).replace('/-/', '/')
-    getBuffer(`https://i.pximg.net${url}`).then(
-      ({ data, headers }) => {
-        res.status(200)
-        res.setHeader('content-type', headers?.['content-type'])
-        res.setHeader('cache-control', 'no-cache')
-        res.setHeader('illust-id', item.id)
-        res.setHeader('image-width', item.width)
-        res.setHeader('image-height', item.height)
-        res.send(Buffer.from(data, 'base64'))
-      },
-      (err) => {
-        handleError(err, res)
-      }
-    )
+    res.redirect(list[0].urls.regular)
     return
   }
 
