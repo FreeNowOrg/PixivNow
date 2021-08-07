@@ -17,7 +17,11 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   })
   const list: any[] = data?.illusts || []
   list.forEach((item, index) => {
-    if (item.isAdContainer) list.splice(index, 1)
+    if (item.isAdContainer) {
+      list.splice(index, 1)
+      return
+    }
+    if (!item.url) return
     // /-/c/250x250_80_a2/img-master/img/2007/09/09/22/14/07/20_p0_square1200.jpg
     const middle = item.url
       .replace(/^\/-/, '')

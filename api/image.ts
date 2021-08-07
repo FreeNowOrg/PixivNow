@@ -36,7 +36,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   )
 }
 
-export function getBuffer(url) {
+export function getBuffer(url: string) {
   return axios.get(url, {
     responseType: 'arraybuffer',
     headers: {
