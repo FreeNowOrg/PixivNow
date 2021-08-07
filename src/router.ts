@@ -74,6 +74,8 @@ router.addRoute({
 
 router.afterEach(({ name }) => {
   document.body.setAttribute('data-route', name as string)
+  // Fix route when modal opened
+  document.body.style.overflow = 'visible'
 })
 
 export { router }
