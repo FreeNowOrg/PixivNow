@@ -11,5 +11,9 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     },
     headers: req.headers,
   })
-  res.send(data.illusts || [])
+  const list: any[] = data?.illusts || []
+  list.forEach((item, index) => {
+    if (item.isAdContainer) list.splice(index, 1)
+  })
+  res.send(list)
 }
