@@ -220,6 +220,8 @@ export default {
         opacity: 1
         pointer-events: all
   .bgInfoModal
+    h3
+      margin-top: 0
     .thumb
       > *
         width: auto

@@ -16,7 +16,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     if (item.isAdContainer) list.splice(index, 1)
   })
 
-  if (req.headers.accept.includes('image')) {
+  if (req.headers.accept.includes('image') || req.query.format === 'image') {
     const url = list
       .shift()
       ?.url.replace(/\/c\/.+?\//, '/')

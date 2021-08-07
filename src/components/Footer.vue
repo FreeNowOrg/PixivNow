@@ -5,6 +5,8 @@ footer.globalFooter
       h4 探索更多
       ul
         li
+          external-link(href="/api/illust/random?format=image") 随机图片
+        li
           router-link(to="/ranking") 今日排行
         li
           router-link(to="/about") 关于本站
@@ -14,7 +16,10 @@ footer.globalFooter
         li
           external-link(:href="`https://github.com/${GITHUB_OWNER}`") Free Now Tech.
         li
-          router-link(to="/users/32338232") 站长的 Pixiv
+          | PixivNow 团队：
+          router-link.plain(to="/users/32338232") 小鱼君
+          | 、
+          router-link.plain(to="/users/15552366") 猫猫
     //- section.flex-1
     //-   h4 概览
     //-   ul
@@ -81,7 +86,7 @@ export default defineComponent({
   padding-bottom: 0.5rem
 
 a
-  --color: var(--theme-accent-link-color)
+  --color: #eee
   font-weight: 600
 
   &::after
