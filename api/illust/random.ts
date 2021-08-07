@@ -15,5 +15,15 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   list.forEach((item, index) => {
     if (item.isAdContainer) list.splice(index, 1)
   })
+
+  if (req.headers.accept.includes('image')) {
+    const url = list
+      .shift()
+      ?.url.replace(/\/c\/.+?\//, '/')
+      .replace('square', 'master')
+    res.redirect(url)
+    return
+  }
+
   res.send(list)
 }

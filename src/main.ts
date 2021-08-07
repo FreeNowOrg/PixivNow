@@ -9,9 +9,11 @@ const app = createApp(App)
 import { router } from './router'
 app.use(router)
 
-// ExternalLink
+// Global components
 import ExternalLink from './components/ExternalLink.vue'
 app.component('external-link', ExternalLink)
+import Lazyload from './components/LazyLoad.vue'
+app.component('lazyload', Lazyload)
 
 // FontAwesome
 // https://fontawesome.com/v5.15/icons
