@@ -59,7 +59,7 @@ export default defineComponent({
     box-sizing: border-box
     border: none
     // border: 2px solid #fff
-    border-radius: 1em
+    border-radius: 2em
     outline: none
     padding: 0.2rem 0.6em
     padding-left: 2em

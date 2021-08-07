@@ -9,7 +9,8 @@
   .description Pixiv Service Proxy
 
   .bgInfo
-    a(href="javascript:;") 查看背景
+    a(href="javascript:;" title="查看背景")
+      fa(icon="question-circle")
 
 section.ranking
   h2 今日排行
@@ -43,7 +44,13 @@ export default {
       rankList: [],
       LogoH,
       backgroundImage:
-        'https://blog.wjghj.cn/_statics/images/background/2021BeneathTheLightOfJadeite/bg.jpg',
+        // 钟离我的钟离呜呜呜呜呜钟离！！！！！
+        // 'https://blog.wjghj.cn/_statics/images/background/2021BeneathTheLightOfJadeite/bg.jpg',
+        // 这个里面可能有色图
+        //     `https://cdn.jsdelivr.net/gh/Moe-Dog/Moe-Dog.github.io@0.4/statics/img/${parseInt(
+        //       '' + Math.random() * 20 + 1
+        //     )}.jpg`,
+        'https://api.daihan.top/api/acg',
     }
   },
   methods: {

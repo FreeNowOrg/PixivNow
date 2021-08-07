@@ -135,5 +135,5 @@ export default {
 .searchBox
   margin: 2rem auto
   box-shadow: 0 0 8px #ddd
-  border-radius: 1em
+  border-radius: 2em
 </style>

@@ -1,8 +1,8 @@
 <template lang="pug">
 mixin repoLink
-  a(:href="GITHUB_URL" target="_blank") {{ GITHUB_OWNER }}/{{ GITHUB_REPO }}
+  external-link(:href="GITHUB_URL" target="_blank") {{ GITHUB_OWNER }}/{{ GITHUB_REPO }}
 
-h1 关于我们
+h1#top 关于我们
 section.intro
   card(title="简介")
     p
@@ -27,7 +27,7 @@ section.intro
       li 能够访问自己的收藏夹（暂时无法编辑）
       li 能够访问 NSFW 内容（设定为允许时）
       li 能够使用高级搜索（订阅过 Pixiv 会员时）
-    p 部分高级功能的效果取决于您在 Pixiv 源站的设定，您可以在<a href="https://www.pixiv.net/setting_profile.php" target="_blank">这里</a>查看。
+    p 部分高级功能的效果取决于您在 Pixiv 源站的设定，您可以在 <external-link href="https://www.pixiv.net/setting_profile.php" target="_blank">这里</external-link> 查看。
 
   card(title="开销")
     p

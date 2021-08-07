@@ -109,7 +109,7 @@ export default defineComponent({
       //   this.isHide = false
       // }
       scrollTop = newTop
-      if (newTop > 0) {
+      if (newTop > 50) {
         this.notAtTop = true
       } else {
         this.notAtTop = false

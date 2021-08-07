@@ -72,7 +72,7 @@ router.addRoute({
   component: () => import('./view/404.vue'),
 })
 
-router.beforeEach(({ name }) => {
+router.afterEach(({ name }) => {
   document.body.setAttribute('data-route', name as string)
 })
 

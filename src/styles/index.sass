@@ -31,9 +31,9 @@ body
     margin-right: 2rem
 
 // Env specific
-.env-production
+[data-env="production"]
   .devOnly, .devTest
     display: none !important
-.env-development
+[data-env="development"]
   .prodOnly
     display: none !important

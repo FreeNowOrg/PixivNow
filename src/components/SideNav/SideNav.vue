@@ -156,7 +156,7 @@ export default defineComponent({
   padding: 0 1.6rem
   .searchBox
     box-shadow: 0 0 8px #ddd
-    border-radius: 1em
+    border-radius: 2em
 
 @media screen and (min-width: 450px)
   .searchArea

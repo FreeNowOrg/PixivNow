@@ -4,32 +4,31 @@ footer.globalFooter
     section.flex-1
       h4 探索更多
       ul
-        li aaa
-        li aaa
-        li aaa
-        li aaa
+        li
+          router-link(to="/ranking") 今日排行
+        li
+          router-link(to="/about") 关于本站
     section.flex-1
       h4 关注我们
       ul
         li
-          a(:href="`https://github.com/${GITHUB_OWNER}`") Free Now Tech.
+          external-link(:href="`https://github.com/${GITHUB_OWNER}`") Free Now Tech.
         li
           router-link(to="/users/32338232") 站长的 Pixiv
-    section.flex-1
-      h4 概览
-      ul
-        li ccc
-        li ccc
-        li ccc
+    //- section.flex-1
+    //-   h4 概览
+    //-   ul
+    //-     li ccc
+    //-     li ccc
+    //-     li ccc
     section.flex-1
       h4 友情链接
       ul
-        li ddd
-        li ddd
-        li ddd
-        li ddd
-        li ddd
-        li ddd
+        li 链接
+        li 链接
+        li 链接
+        li 链接
+        li 链接
 
   .bottom.align-center
     p.copyright
@@ -72,9 +71,14 @@ export default defineComponent({
   font-size: 1rem
   color: var(--theme-accent-link-color)
 
-  > div
-    padding-top: 0.5rem
-    padding-bottom: 0.5rem
+.top
+  padding-top: 2rem
+  padding-bottom: 2rem
+  gap: 1.5rem
+
+.bottom
+  padding-top: 0.5rem
+  padding-bottom: 0.5rem
 
 a
   --color: var(--theme-accent-link-color)
@@ -93,27 +97,19 @@ a
   background-color: var(--theme-accent-color-darken)
 
 h4
-  display: inline-block
   position: relative
   margin: 1rem 0 0.5rem 0
-
-  &::after
-    content: ''
-    display: block
-    position: absolute
-    width: 100%
-    height: 2px
-    bottom: -2px
-    left: 0
-    background-color: var(--theme-accent-link-color)
+  padding-bottom: 0.2rem
+  border-bottom: 2px solid
+  font-size: 1.1rem
 
 ul
   padding-left: 1rem
   margin: 0.2rem 0
 
   a
-    border-bottom: 1px solid
     display: inline
+    font-weight: 400
 
 @media screen and (max-width: 600px)
   .top
