@@ -36,11 +36,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       return
     }
 
-    if (!item.url) return
-
-    // 传入的例子：
-    // /-/c/250x250_80_a2/img-master/img/2007/09/09/22/14/07/20_p0_square1200.jpg
-
     // 将时间转换为日本时区，东 9 区
     let date = new Date(item.createDate)
     const targetTimezone = -9
@@ -73,15 +68,15 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   // return image
   if (isImage) {
     const item = list[0]
-    const url = item.urls.regular.replace('/-/', '/')
+    const url = (item?.urls.regular || item.url).replace('/-/', '/')
     getBuffer(`https://i.pximg.net${url}`).then(
       ({ data, headers }) => {
         res.status(200)
         res.setHeader('content-type', headers?.['content-type'])
         res.setHeader('cache-control', `no-store`)
+        res.setHeader('illust-id', item.id)
         res.setHeader('image-width', item.width)
         res.setHeader('image-height', item.height)
-        res.setHeader('illust-info', JSON.stringify(item))
         res.send(Buffer.from(data, 'base64'))
       },
       (err) => {
