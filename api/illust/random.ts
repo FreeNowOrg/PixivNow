@@ -5,7 +5,7 @@ import { request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const isImage =
-    req.headers?.accept.includes('image') || req.query.format === 'image'
+    req.headers.accept?.includes('image') || req.query.format === 'image'
 
   const { data } = await request({
     path: '/ajax/illust/discovery',
@@ -58,6 +58,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   // return image
   if (isImage) {
+    return res.send(list[0])
     const url = list[0].urls.regular.replace('/-/', '/')
     getBuffer(`https://i.pximg.net${url}`).then(
       ({ data, headers }) => {
