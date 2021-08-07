@@ -34,7 +34,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     .filter(({ isAdContainer }) => !isAdContainer)
     .map((item) => {
       // 将时间转换为日本时区，东 9 区
-      let date = new Date(item.createDate)
+      let date = new Date(item.updateDate)
       const targetTimezone = -9
       // date 与机器时间相差的分钟数
       const minDiff = date.getTimezoneOffset()
