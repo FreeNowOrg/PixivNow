@@ -11,5 +11,5 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     },
     headers: req.headers,
   })
-  return data.illusts || []
+  res.send(data.illusts || [])
 }
