@@ -118,9 +118,7 @@ export default {
           this.randomBg.info = {} as Artwork
           return
         }
-        const url =
-          API_BASE +
-          info.url.replace(/\/c\/.+?\//, '/').replace('square', 'master')
+        const url = API_BASE + info.urls.regular
         this.randomBg.info = info
         this.randomBg.url = url
         setCache('home.randomBg', { info, url })

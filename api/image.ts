@@ -24,23 +24,25 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   const url = `https://${domain}.pximg.net/${__PATH}`
 
-  axios
-    .get(url, {
-      responseType: 'arraybuffer',
-      headers: {
-        referer: 'https://www.pixiv.net/',
-        'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
-      },
-    })
-    .then(
-      ({ data, headers }) => {
-        res.setHeader('content-type', headers?.['content-type'])
-        res.setHeader('Cache-Control', `public, max-age=${IMAGE_CACHE_SECONDS}`)
-        res.status(200).send(Buffer.from(data, 'base64'))
-      },
-      (err) => {
-        handleError(err, res)
-      }
-    )
+  getBuffer(url).then(
+    ({ data, headers }) => {
+      res.setHeader('content-type', headers?.['content-type'])
+      res.setHeader('cache-control', `public, max-age=${IMAGE_CACHE_SECONDS}`)
+      res.status(200).send(Buffer.from(data, 'base64'))
+    },
+    (err) => {
+      handleError(err, res)
+    }
+  )
+}
+
+export function getBuffer(url: string) {
+  return axios.get(url, {
+    responseType: 'arraybuffer',
+    headers: {
+      referer: 'https://www.pixiv.net/',
+      'user-agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+    },
+  })
 }
