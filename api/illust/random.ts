@@ -3,6 +3,11 @@ import { getBuffer } from '../image'
 import { dateFormat, handleError } from '../utils'
 import { request } from '../utils'
 
+import { Artwork } from '../../src/types'
+interface ArtworkOrAd extends Artwork {
+  isAdContainer?: boolean
+}
+
 export default async (req: VercelRequest, res: VercelResponse) => {
   const isImage =
     (req.headers.accept?.includes('image') || req.query.format === 'image') &&
@@ -24,7 +29,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return handleError(err, res)
   }
 
-  const list: any[] = data?.illusts || []
+  const list: ArtworkOrAd[] = data?.illusts || []
   list.forEach((item, index) => {
     if (item.isAdContainer) {
       list.splice(index, 1)
@@ -67,12 +72,17 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   // return image
   if (isImage) {
-    const url = list[0].urls.regular.replace('/-/', '/')
+    const item = list[0]
+    const url = item.urls.regular.replace('/-/', '/')
     getBuffer(`https://i.pximg.net${url}`).then(
       ({ data, headers }) => {
+        res.status(200)
         res.setHeader('content-type', headers?.['content-type'])
         res.setHeader('cache-control', `no-store`)
-        res.status(200).send(Buffer.from(data, 'base64'))
+        res.setHeader('image-width', item.width)
+        res.setHeader('image-height', item.height)
+        res.setHeader('illust-info', JSON.stringify(item))
+        res.send(Buffer.from(data, 'base64'))
       },
       (err) => {
         handleError(err, res)
