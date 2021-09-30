@@ -13,8 +13,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   switch (__PREFIX) {
     case 'image':
     case '-':
-      domain = 'i'
-      break
+      // domain = 'i'
+      return res.redirect(`https://i.pixiv.cat/${__PATH}`)
     case '~':
       domain = 's'
       break

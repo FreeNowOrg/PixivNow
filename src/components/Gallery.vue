@@ -5,12 +5,12 @@
       v-for="(item, index) in pages"
       :data-pic-index="index"
       )
-      a.container(
+      a.imageContainer(
         v-if="picShow === index"
         :href="API_BASE + item.urls.original"
         target="_blank"
         title="点击下载原图")
-        LazyLoad.pic(
+        Lazyload.pic(
           :src="API_BASE + item.urls.regular"
           :width="item.width"
           :height="item.height")
@@ -22,7 +22,7 @@
         :title="'第' + (index + 1) + '张 (共' + pages.length + '张)'"
         :class="{isActive: picShow === index}"
         )
-        LazyLoad.pic(
+        Lazyload.pic(
           :src="API_BASE + item.urls.thumb_mini"
           :width="80"
           :height="80")
@@ -32,10 +32,8 @@
 import { defineComponent } from 'vue'
 import { API_BASE } from '../config'
 
-import LazyLoad from './LazyLoad.vue'
-
 export default defineComponent({
-  components: { LazyLoad },
+  components: {},
   props: ['pages'],
   data() {
     return {
@@ -90,9 +88,6 @@ export default defineComponent({
   .centerImg
     display: block
     text-align: center
-
-    .container
-      // height: 60vh
 
     [role="img"]
       max-width: 100%
