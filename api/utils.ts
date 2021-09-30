@@ -13,7 +13,7 @@ export function makeArtList(obj: any) {
 export function replaceUrl(obj: any) {
   const replace = (str: string) =>
     str
-      .replace(/https:\/\/i\.pximg\.net\//g, '/-/')
+      .replace(/https:\/\/i\.pximg\.net\//g, 'https://i.pixiv.cat/')
       .replace(/https:\/\/s\.pximg\.net\//g, '/~/')
 
   if (typeof obj === 'string') return replace(obj)
