@@ -21,15 +21,6 @@ body
   flex-direction: column
   min-height: 100vh
 
-.container
-  margin-left: 10%
-  margin-right: 10%
-
-@media screen and (max-width: 800px)
-  .container
-    margin-left: 2rem
-    margin-right: 2rem
-
 // Env specific
 [data-env="production"]
   .devOnly, .devTest
@@ -37,3 +28,19 @@ body
 [data-env="development"]
   .prodOnly
     display: none !important
+
+.container
+  margin-left: 10%
+  margin-right: 10%
+
+.narrowOnly
+  display: none
+
+@media screen and (max-width: 800px)
+  .container
+    margin-left: 2rem
+    margin-right: 2rem
+  .narrowOnly
+    display: inherit
+  .wideOnly
+    display: none
