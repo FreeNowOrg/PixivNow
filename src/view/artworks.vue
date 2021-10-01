@@ -73,6 +73,8 @@ section.illust-container(v-if="!error && !loading")
   //- 相关推荐
   .recommendWorks
     h2 相关推荐
+    .align-center.loading(v-if="!recommend.length")
+      placeholder
     ArtworksMiniList(:list="recommend")
       .illustCard.loadMore(
         v-if="recommendNextIds.length"

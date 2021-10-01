@@ -10,7 +10,7 @@
         :href="API_BASE + item.urls.original"
         target="_blank"
         title="点击下载原图")
-        Lazyload.pic(
+        lazyload.pic(
           :src="API_BASE + item.urls.regular"
           :width="item.width"
           :height="item.height")
@@ -22,7 +22,7 @@
         :title="'第' + (index + 1) + '张 (共' + pages.length + '张)'"
         :class="{isActive: picShow === index}"
         )
-        Lazyload.pic(
+        lazyload.pic(
           :src="API_BASE + item.urls.thumb_mini"
           :width="80"
           :height="80")

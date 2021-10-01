@@ -21,11 +21,10 @@ ul.artworksMiniList
         )
           fa(icon="heart")
       router-link(v-if="item.id" :to="'/artworks/' + item.id")
-        img(
+        lazyload.img(
           :src="API_BASE + item.url"
           :alt="item.alt"
           :title="item.alt"
-          lazyload=""
         )
         .hoverTitle {{ item.title }}
     .info
@@ -69,7 +68,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="sass">
+<style lang="sass">
 .artworksMiniList
   list-style: none
   padding-left: 0
@@ -119,7 +118,7 @@ export default defineComponent({
         pointer-events: none
         transition: all 0.4s ease-in-out
 
-    img
+    .img
       position: relative
       left: 0
       top: 0
@@ -172,71 +171,71 @@ export default defineComponent({
       font-size: 0.8rem
       display: inline-flex
 
-.tiny
-  gap: 0.75rem
+  &.tiny
+    gap: 0.75rem
 
-  li
-    width: 100px
+    li
+      width: 100px
 
-  .info
-    display: none
+    .info
+      display: none
 
-.thumb .router-link-active
-  cursor: default
-  box-shadow: 0 0 0 2px #aaa
+    .thumb .router-link-active
+      cursor: default
+      box-shadow: 0 0 0 2px #aaa
 
-  & + .cover
-    background-color: rgba(100, 100, 100, 0.6) !important
+      & + .cover
+        background-color: rgba(100, 100, 100, 0.6) !important
 
-.sideTags > *
-  position: absolute
-  z-index: 10
+    .sideTags > *
+      position: absolute
+      z-index: 10
 
-  [data-icon]
-    font-size: 1em
+      [data-icon]
+        font-size: 1em
 
-.pageCount
-  top: .4rem
-  right: .4rem
-  color: #fff
-  background-color: rgba(0, 0, 0, 0.6)
-  padding: .1rem .2rem
-  border-radius: 4px
-  font-size: 0.8rem
+  .pageCount
+    top: .4rem
+    right: .4rem
+    color: #fff
+    background-color: rgba(0, 0, 0, 0.6)
+    padding: .1rem .2rem
+    border-radius: 4px
+    font-size: 0.8rem
 
-  [data-icon]
-    margin-right: .2rem
+    [data-icon]
+      margin-right: .2rem
 
-.xRestrict
-  top: .4rem
-  left: .4rem
-  color: #fff
-  font-size: 0.8rem
-  background-color: rgb(255, 0, 0, 0.8)
-  width: 1.5rem
-  height: 1.5rem
-  border-radius: 50%
-  display: flex
-  align-items: center
+  .xRestrict
+    top: .4rem
+    left: .4rem
+    color: #fff
+    font-size: 0.8rem
+    background-color: rgb(255, 0, 0, 0.8)
+    width: 1.5rem
+    height: 1.5rem
+    border-radius: 50%
+    display: flex
+    align-items: center
 
-  [data-icon]
-    margin: 0 auto
+    [data-icon]
+      margin: 0 auto
 
-.bookmark
-  bottom: 0.4rem
-  right: 0.4rem
-  font-size: 1.2rem
-  color: #fff
+  .bookmark
+    bottom: 0.4rem
+    right: 0.4rem
+    font-size: 1.2rem
+    color: #fff
 
-  &.isBookmarked
-    color: var(--theme-bookmark-color)
+    &.isBookmarked
+      color: var(--theme-bookmark-color)
 
-.isAdContainer
-  a
-    color: var(--theme-text-color)
-    cursor: default
+  .isAdContainer
+    a
+      color: var(--theme-text-color)
+      cursor: default
 
-  .thumb
-    background-color: #efefef
-    animation: none
+    .thumb
+      background-color: #efefef
+      animation: none
 </style>

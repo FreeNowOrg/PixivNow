@@ -11,7 +11,7 @@
         class="spincircle"
         r="36"
         stroke-width="5"
-        stroke="#088488"
+        stroke="#3697e7"
         fill="none"
         stroke-linecap="round"
       />

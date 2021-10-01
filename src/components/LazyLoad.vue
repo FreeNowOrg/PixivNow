@@ -24,39 +24,39 @@ img.lazyload.isLoaded(
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  props: ['src', 'width', 'height', 'class'],
+  props: ["src", "width", "height", "class"],
   data() {
     return {
       loaded: false,
       error: false,
-    }
+    };
   },
   methods: {
     init() {
-      this.loaded = false
-      this.error = false
-      const img = new Image()
-      img.src = this.src
+      this.loaded = false;
+      this.error = false;
+      const img = new Image();
+      img.src = this.src;
       img.onload = () => {
-        this.loaded = true
-      }
+        this.loaded = true;
+      };
       img.onerror = () => {
-        this.error = true
-      }
+        this.error = true;
+      };
     },
   },
   watch: {
     src() {
-      this.init
+      this.init;
     },
   },
   mounted() {
-    this.init()
+    this.init();
   },
-})
+});
 </script>
 
 <style scoped lang="sass">
