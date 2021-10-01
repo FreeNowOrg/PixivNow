@@ -1,10 +1,10 @@
 <template lang="pug">
 .modalContainer
-  .modalArea(v-if="show")
-    .modalBackdrop(@click="closeModal")
+  .modalArea(v-if='show')
+    .modalBackdrop(@click='closeModal')
     .modalWindow
-      a.plain.closeBtn(roll="button" @click="closeModal")
-        fa(icon="times")
+      a.plain.closeBtn(roll='button', @click='closeModal')
+        fa(icon='times')
       section.modalContent
         div
           slot

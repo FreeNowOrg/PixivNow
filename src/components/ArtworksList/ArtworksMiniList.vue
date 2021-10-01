@@ -180,19 +180,19 @@ export default defineComponent({
     .info
       display: none
 
-    .thumb .router-link-active
-      cursor: default
-      box-shadow: 0 0 0 2px #aaa
+  .thumb .router-link-active
+    cursor: default
+    box-shadow: 0 0 0 2px #aaa
 
-      & + .cover
-        background-color: rgba(100, 100, 100, 0.6) !important
+    & + .cover
+      background-color: rgba(100, 100, 100, 0.6) !important
 
-    .sideTags > *
-      position: absolute
-      z-index: 10
+  .sideTags > *
+    position: absolute
+    z-index: 10
 
-      [data-icon]
-        font-size: 1em
+    [data-icon]
+      font-size: 1em
 
   .pageCount
     top: .4rem
