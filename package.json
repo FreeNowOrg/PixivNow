@@ -1,6 +1,6 @@
 {
   "name": "pixiv-now",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "private": true,
   "main": "index.js",
   "repository": "https://github.com/FreeNowOrg/PixivNow.git",
