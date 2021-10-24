@@ -27,6 +27,7 @@
   "devDependencies": {
     "@dragon-fish/bump": "^0.0.15",
     "@dragon-fish/sensitive-words-filter": "^1.0.0",
+    "@prettier/plugin-pug": "^1.17.0",
     "@types/js-cookie": "^2.2.7",
     "@types/nprogress": "^0.2.0",
     "@vercel/node": "^1.11.0",
@@ -37,6 +38,7 @@
     "camelcase-object-deep": "^1.1.4",
     "cheerio": "^1.0.0-rc.10",
     "conventional-changelog-cli": "^2.1.1",
+    "prettier": "^2.4.1",
     "pug": "^3.0.2",
     "sass": "^1.34.1",
     "typescript": "^4.3.2",

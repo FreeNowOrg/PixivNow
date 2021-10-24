@@ -1,14 +1,7 @@
 <template lang="pug">
-aside.globalSideNav(:class="{isHide: !show}")
-  .backdrop(@click="show = false")
+aside.globalSideNav(:class='{ isHide: !show }')
+  .backdrop(@click='show = false')
   .inner
-    .banner
-      a.sideNavToggle.plain(@click="show = false")
-        fa(icon="bars")
-      router-link.plain(to="/")
-        .logoArea
-          img.siteLogo(:src="LogoH")
-
     .group
       .searchArea
         search-box
@@ -17,22 +10,30 @@ aside.globalSideNav(:class="{isHide: !show}")
       .group
         .title 导航
         ul
-          list-link(icon="home" link="/" text="首页")
-          list-link.not-allowed(icon="image" link="" text="插画")
-          list-link(icon="user" link="" text="用户")
-          list-link(icon="crown" link="/ranking" text="排行榜")
-      
+          list-link(icon='home', link='/', text='首页')
+          list-link.not-allowed(icon='image', link='', text='插画')
+          list-link(icon='user', link='', text='用户')
+          list-link(icon='crown', link='/ranking', text='排行榜')
+
       .group
         .title Pixiv 令牌
         ul
           li
-            list-link(icon="fingerprint" link="/login" :text="userData ? '查看令牌' : '设置令牌'")
-      
+            list-link(
+              icon='fingerprint',
+              link='/login',
+              :text='userData ? "查看令牌" : "设置令牌"'
+            )
+
       .group
         .title PixivNow
         ul
-          list-link(icon="external-link-alt" externalLink="https://www.pixiv.net/" text="Pixiv.net")
-          list-link(icon="heart" link="/about" text="关于我们")
+          list-link(
+            icon='external-link-alt',
+            externalLink='https://www.pixiv.net/',
+            text='Pixiv.net'
+          )
+          list-link(icon='heart', link='/about', text='关于我们')
 </template>
 
 <script lang="ts">
@@ -43,7 +44,6 @@ import { userData } from '../userData'
 
 import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
-import LogoH from '../../assets/LogoH.png'
 
 export default defineComponent({
   components: { SearchBox, ListLink },
@@ -51,7 +51,6 @@ export default defineComponent({
     return {
       show: sideNavShow,
       userData,
-      LogoH,
     }
   },
   watch: {
@@ -76,7 +75,7 @@ export default defineComponent({
 
 <style scoped lang="sass">
 .globalSideNav
-  z-index: 110
+  z-index: 90
 
 .backdrop
   position: fixed
@@ -85,7 +84,7 @@ export default defineComponent({
   width: 100vw
   height: 100vh
   background-color: rgba(0, 0, 0, 0.1)
-  z-index: 110
+  z-index: 90
 
 .inner
   position: fixed
@@ -93,9 +92,10 @@ export default defineComponent({
   left: 0
   width: 240px
   max-width: 80vw
+  padding-top: 50px
   height: 100vh
   background-color: #fff
-  z-index: 120
+  z-index: 95
   transition: all 0.5s
 
 .sideNavToggle

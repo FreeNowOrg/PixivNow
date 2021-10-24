@@ -1,152 +1,145 @@
 <template lang="pug">
+#user-view
+  //- Loading
+  section.loading(v-if='loading')
+    placeholder
+    p {{ loading ? "正在读取用户 #" + $route.params.id : "“" + user.name + "”的空间" }}
 
-//- Loading
-section.loading(v-if="loading")
-  placeholder
-  p {{ loading ? '正在读取用户 #' + $route.params.id : '“' + user.name + '”的空间' }}
+  //- Error
+  section.error(v-if='error')
+    error-page(title='出大问题', :description='error')
 
-//- Error
-section.error(v-if="error")
-  error-page(title="出大问题" :description="error")
+  //- :)
+  section.user(v-if='!loading && !error')
+    .userInfo
+      .bgArea
+        .bgContainer(
+          :style='{ backgroundImage: "url(" + API_BASE + user?.background?.url + ")" }'
+        )
+          span(v-if='!user.background') 用户未设置封面~
+      .avatarArea
+        a.plain.pointer(@click='showUserMore = true')
+          img(:src='API_BASE + user.imageBig')
+      .infoArea
+        .username {{ user.name }}
+        .following
+          | 关注了 <strong>{{ user.following }}</strong> 人
+        .gender(v-if='user.gender.name') 
+          fa(icon='venus-mars')
+          | {{ user.gender.name }}
+        .birthday(v-if='user.birthDay.name')
+          fa(icon='birthday-cake')
+          | {{ user.birthDay.name }}
+        .region(v-if='user.region.name')
+          fa(icon='map-marker-alt')
+          | {{ user.region.name }}
+        .webpage(v-if='user.webpage')
+          fa(icon='home')
+          a(:href='user.webpage', target='_blank', rel='noopener noreferrer') {{ user.webpage }}
+        .flex
+          .comment.flex-1 {{ user.comment }}
+          .userMore
+            a(@click='userMore', href='javascript:;') 查看更多
 
-//- :)
-section.user(v-if="!loading && !error")
-  .userInfo
-    .bgArea
-      .bgContainer(:style="{backgroundImage: 'url(' + API_BASE + user?.background?.url + ')'}")
-        span(v-if="!user.background") 用户未设置封面~
-    .avatarArea
-      a.plain.pointer(@click="showUserMore = true")
-        img(:src="API_BASE + user.imageBig")
-    .infoArea
-      .username {{ user.name }}
-      .following
-        | 关注了 <strong>{{ user.following }}</strong> 人
-      .gender(v-if="user.gender.name") 
-        fa(icon="venus-mars")
-        | {{ user.gender.name }}
-      .birthday(v-if="user.birthDay.name")
-        fa(icon="birthday-cake")
-        | {{ user.birthDay.name }}
-      .region(v-if="user.region.name")
-        fa(icon="map-marker-alt")
-        | {{ user.region.name }}
-      .webpage(v-if="user.webpage")
-        fa(icon="home")
-        a(
-          :href="user.webpage"
-          target="_blank"
-          rel="noopener noreferrer"
-          ) {{ user.webpage }}
-      .flex
-        .comment.flex-1 {{ user.comment }}
-        .userMore
-          a(@click="userMore" href="javascript:;") 查看更多
-
-  modal.infoModal(v-model:show="showUserMore")
-    .top
-      h3
-        a.avatar(
-          :href="API_BASE + user.imageBig"
-          title="查看头像"
-          target="_blank"
+    modal.infoModal(v-model:show='showUserMore')
+      .top
+        h3
+          a.avatar(
+            :href='API_BASE + user.imageBig',
+            title='查看头像',
+            target='_blank'
           )
-          img(:src="API_BASE + user.imageBig")
-          .premiumIcon(
-            v-if="user.premium"
-            title="该用户订阅了高级会员"
-          )
-            fa(icon="parking")
-        .title {{ user.name }}
-        .follow
-          button 关注
+            img(:src='API_BASE + user.imageBig')
+            .premiumIcon(v-if='user.premium', title='该用户订阅了高级会员')
+              fa(icon='parking')
+          .title {{ user.name }}
+          .follow
+            button 关注
 
-    .bottom
-      section.userComment
-        h4 个人简介
-        .comment.pre {{ user.comment || '-' }}
-      section.userWorkspace(v-if="user.workspace")
-        hr
-        h4 工作环境
-        .flexList
-          .listItem(v-if="user.workspace.wsUrl")
-            img(
-              :src="user.workspace.wsUrl"
-              style="width: 100%; height: auto"
-              alt="工作环境照片"
+      .bottom
+        section.userComment
+          h4 个人简介
+          .comment.pre {{ user.comment || "-" }}
+        section.userWorkspace(v-if='user.workspace')
+          hr
+          h4 工作环境
+          .flexList
+            .listItem(v-if='user.workspace.wsUrl')
+              img(
+                :src='user.workspace.wsUrl',
+                style='width: 100%; height: auto',
+                alt='工作环境照片'
               )
-          .listItem(v-if="user.workspace.userWorkspacePc")
-            .key 主机
-            .value {{ user.workspace.userWorkspacePc }}
-          .listItem(v-if="user.workspace.userWorkspaceMonitor")
-            .key 显示器
-            .value {{ user.workspace.userWorkspaceMonitor }}
-          .listItem(v-if="user.workspace.userWorkspaceTool")
-            .key 软件
-            .value {{ user.workspace.userWorkspaceTool }}
-          .listItem(v-if="user.workspace.userWorkspaceScanner")
-            .key 扫描仪
-            .value {{ user.workspace.userWorkspaceScanner }}
-          .listItem(v-if="user.workspace.userWorkspaceTablet")
-            .key 数码版
-            .value {{ user.workspace.userWorkspaceTablet }}
-          .listItem(v-if="user.workspace.userWorkspacePrinter")
-            .key 打印机
-            .value {{ user.workspace.userWorkspacePrinter }}
-          .listItem(v-if="user.workspace.userWorkspaceDesktop")
-            .key 台面
-            .value {{ user.workspace.userWorkspaceDesktop }}
-          .listItem(v-if="user.workspace.userWorkspaceMusic")
-            .key 音乐
-            .value {{ user.workspace.userWorkspaceMusic }}
-          .listItem(v-if="user.workspace.userWorkspaceDesk")
-            .key 桌子
-            .value {{ user.workspace.userWorkspaceDesk }}
-          .listItem(v-if="user.workspace.userWorkspaceChair")
-            .key 椅子
-            .value {{ user.workspace.userWorkspaceChair }}
-          .listItem(v-if="user.workspace.userWorkspaceComment")
-            .key 说明
-            .value {{ user.workspace.userWorkspaceComment }}
-      section.devOnly
-        hr
-        h4 Debug Info
-        details
-          pre(style="overflow: auto; background: #efefef; padding: 4px") {{ JSON.stringify(user, null, 2) }}
+            .listItem(v-if='user.workspace.userWorkspacePc')
+              .key 主机
+              .value {{ user.workspace.userWorkspacePc }}
+            .listItem(v-if='user.workspace.userWorkspaceMonitor')
+              .key 显示器
+              .value {{ user.workspace.userWorkspaceMonitor }}
+            .listItem(v-if='user.workspace.userWorkspaceTool')
+              .key 软件
+              .value {{ user.workspace.userWorkspaceTool }}
+            .listItem(v-if='user.workspace.userWorkspaceScanner')
+              .key 扫描仪
+              .value {{ user.workspace.userWorkspaceScanner }}
+            .listItem(v-if='user.workspace.userWorkspaceTablet')
+              .key 数码版
+              .value {{ user.workspace.userWorkspaceTablet }}
+            .listItem(v-if='user.workspace.userWorkspacePrinter')
+              .key 打印机
+              .value {{ user.workspace.userWorkspacePrinter }}
+            .listItem(v-if='user.workspace.userWorkspaceDesktop')
+              .key 台面
+              .value {{ user.workspace.userWorkspaceDesktop }}
+            .listItem(v-if='user.workspace.userWorkspaceMusic')
+              .key 音乐
+              .value {{ user.workspace.userWorkspaceMusic }}
+            .listItem(v-if='user.workspace.userWorkspaceDesk')
+              .key 桌子
+              .value {{ user.workspace.userWorkspaceDesk }}
+            .listItem(v-if='user.workspace.userWorkspaceChair')
+              .key 椅子
+              .value {{ user.workspace.userWorkspaceChair }}
+            .listItem(v-if='user.workspace.userWorkspaceComment')
+              .key 说明
+              .value {{ user.workspace.userWorkspaceComment }}
+        section.devOnly
+          hr
+          h4 Debug Info
+          details
+            pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
 
-  .devOnly
-    h2 Follow Test
-    .align-center
-      button(@click="addFollow") addFollow
-      button(@click="removeFollow") removeFollow
-  
-  .tabber
-    ul.tabBtn
-      li(@click="tab = 'illust'")
-        a(:class="{tabActive: tab === 'illust'}") 插画
-      li(@click="tab = 'manga'")
-        a(:class="{tabActive: tab === 'manga'}") 漫画
-      li(
-        v-if="bookmarks.length"
-        @click="tab = 'bookmarks'")
-        a(:class="{tabActive: tab === 'bookmarks'}") 收藏
-    .tabContents
-      section(v-if="tab === 'illust'")
-        h2 插画
-        .noResult(v-if="user.illusts && !user.illusts.length") 
-          div 用户没有插画作品 (｡•́︿•̀｡)
-        artworks-list(:list="user.illusts")
-      section(v-if="tab === 'manga'")
-        h2 漫画
-        .noResult(v-if="user.manga && !user.manga.length")
-          div 用户没有漫画作品 (*/ω＼*)
-        artworks-list(:list="user.manga")
-      section(v-if="tab === 'bookmarks'")
-        h2 收藏
-        .noResult(v-if="user.manga && !user.manga.length")
-          div 收藏夹是空的 Σ(⊙▽⊙"a
-        artworks-list(:list="bookmarks")
+    .devOnly
+      h2 Follow Test
+      .align-center
+        button(@click='addFollow') addFollow
+        button(@click='removeFollow') removeFollow
 
+    .body-inner
+      .tabber
+        ul.tabBtn
+          li(@click='tab = "illust"')
+            a(:class='{ tabActive: tab === "illust" }') 插画
+          li(@click='tab = "manga"')
+            a(:class='{ tabActive: tab === "manga" }') 漫画
+          li(v-if='bookmarks.length', @click='tab = "bookmarks"')
+            a(:class='{ tabActive: tab === "bookmarks" }') 收藏
+        .tabContents
+          section(v-if='tab === "illust"')
+            h2 插画
+            .noResult(v-if='user.illusts && !user.illusts.length') 
+              div 用户没有插画作品 (｡•́︿•̀｡)
+            artworks-list(:list='user.illusts')
+          section(v-if='tab === "manga"')
+            h2 漫画
+            .noResult(v-if='user.manga && !user.manga.length')
+              div 用户没有漫画作品 (*/ω＼*)
+            artworks-list(:list='user.manga')
+          section(v-if='tab === "bookmarks"')
+            h2 收藏
+            .noResult(v-if='user.manga && !user.manga.length')
+              div 收藏夹是空的 Σ(⊙▽⊙"a
+            artworks-list(:list='bookmarks')
 </template>
 
 <script lang="ts">
@@ -260,7 +253,7 @@ export default {
 
 .userInfo
   position: relative
-  margin: -1rem -1rem 1rem -1rem
+  // margin: -1rem -1rem 1rem -1rem
   // box-shadow: 0 4px 16px var(--theme-box-shadow-color)
 
   .bgArea

@@ -1,29 +1,22 @@
 <template lang="pug">
-//- 未登录
-//- .noLogedIn(v-if="!userData")
-//-   h1 查看排行榜
-//-   section
-//-     p 绑定 Pixiv 令牌，享受排行榜以及更多功能！
-//-     router-link(to="/login?back=/ranking")
-//-       button.btn 立即绑定
+#ranking-view
+  //- 已登录
+  .isLoggedIn.body-inner
+    //- Error
+    section(v-if='error')
+      h1 排行榜加载失败
+      error-page(title='出大问题', :description='error')
 
-//- 已登录
-.isLoggedIn()
-  //- Error
-  section(v-if="error")
-    h1 排行榜加载失败
-    error-page(title="出大问题", :description="error")
+    //- Loading
+    section(v-if='loading')
+      h1 排行榜加载中……
+      .loading
+        placeholder
 
-  //- Loading
-  section(v-if="loading")
-    h1 排行榜加载中……
-    .loading
-      placeholder
-
-  //- Result
-  section(v-if="list")
-    h1 {{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 排行榜
-    artworks-list(:list="list.contents")
+    //- Result
+    section(v-if='list')
+      h1 {{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 排行榜
+      artworks-list(:list='list.contents')
 </template>
 
 <script lang="ts">
@@ -86,7 +79,7 @@ export default {
     if (!userData) return console.log('需要绑定令牌')
     this.init()
 
-    document.title='Ranking | PixvNow'
+    document.title = 'Ranking | PixvNow'
   },
   data() {
     return {

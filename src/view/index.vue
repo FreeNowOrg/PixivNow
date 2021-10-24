@@ -1,71 +1,75 @@
 <template lang="pug">
-.topSlider.align-center(:style="{ 'background-image': `url(${randomBg.url})` }")
-  section.searchArea.flex-1
-    search-box.big.search
+#home-view
+  .topSlider.align-center(
+    :style='{ "background-image": `url(${randomBg.url})` }'
+  )
+    section.searchArea.flex-1
+      search-box.big.search
 
-  .siteLogo
-    img(:src="LogoH")
-  .description Pixiv Service Proxy
+    .siteLogo
+      img(:src='LogoH')
+    .description Pixiv Service Proxy
 
-  .bgInfo
-    a.pointer(
-      style="margin-right: 0.5em",
-      title="换一个~",
-      @click="setRandomBg(true)"
-    )
-      fa(icon="random")
-    a.pointer(
-      v-if="randomBg.info.id",
-      title="关于背景",
-      @click="showBgInfo = true"
-    )
-      fa(icon="question-circle")
-
-modal.bgInfoModal(v-model:show="showBgInfo")
-  h3 背景图片：{{ randomBg.info.title }}
-  .align-center
-    router-link.thumb(:to="'/artworks/' + randomBg.info.id")
-      lazyload(:src="randomBg.url")
-    .desc
-      strong {{ randomBg.info.title }}
-      | &nbsp;-&nbsp;
-      router-link(:to="'/users/' + randomBg.info.userId") {{ randomBg.info.userName }}
-      | 的作品 (ID: {{ randomBg.info.id }})
-
-section.discover
-  h2 探索发现
-  .align-center
-    a.button(@click="discoverList.length ? setDiscovered(true) : void 0")
-      | {{ discoverList.length ? '换一批' : '加载中' }}
-      |
-      fa(
-        :icon="discoverList.length ? 'random' : 'spinner'",
-        :spin="!discoverList.length"
+    .bgInfo
+      a.pointer(
+        style='margin-right: 0.5em',
+        title='换一个~',
+        @click='setRandomBg(true)'
       )
-  .align-center(v-if="!discoverList.length")
-    placeholder
-  ArtworksMiniList(:list="discoverList")
+        fa(icon='random')
+      a.pointer(
+        v-if='randomBg.info.id',
+        title='关于背景',
+        @click='showBgInfo = true'
+      )
+        fa(icon='question-circle')
 
-//- section.ranking
-//-   h2 今日排行
-//-   .align-center(v-if="rankList.length < 1")
-//-     placeholder
-//-   ArtworksList(:list="rankList")
+  modal.bgInfoModal(v-model:show='showBgInfo')
+    h3 背景图片：{{ randomBg.info.title }}
+    .align-center
+      router-link.thumb(:to='"/artworks/" + randomBg.info.id')
+        lazyload(:src='randomBg.url')
+      .desc
+        strong {{ randomBg.info.title }}
+        | &nbsp;-&nbsp;
+        router-link(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
+        | 的作品 (ID: {{ randomBg.info.id }})
+
+  .body-inner
+    section.discover
+      h2 探索发现
+      .align-center
+        a.button(@click='discoverList.length ? setDiscovered(true) : void 0')
+          | {{ discoverList.length ? "换一批" : "加载中" }}
+          |
+          fa(
+            :icon='discoverList.length ? "random" : "spinner"',
+            :spin='!discoverList.length'
+          )
+      .align-center(v-if='!discoverList.length')
+        placeholder
+      ArtworksMiniList(:list='discoverList')
+
+    //- section.ranking
+    //-   h2 今日排行
+    //-   .align-center(v-if="rankList.length < 1")
+    //-     placeholder
+    //-   ArtworksList(:list="rankList")
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { API_BASE } from "../config";
-import { getCache, setCache } from "./siteCache";
+import axios from 'axios'
+import { API_BASE } from '../config'
+import { getCache, setCache } from './siteCache'
 
-import ArtworksList from "../components/ArtworksList/ArtworksList.vue";
-import ArtworksMiniList from "../components/ArtworksList/ArtworksMiniList.vue";
-import Modal from "../components/Modal.vue";
-import SearchBox from "../components/SearchBox.vue";
-import Placeholder from "../components/Placeholder.vue";
-import LogoH from "../assets/LogoH.png";
+import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworksMiniList from '../components/ArtworksList/ArtworksMiniList.vue'
+import Modal from '../components/Modal.vue'
+import SearchBox from '../components/SearchBox.vue'
+import Placeholder from '../components/Placeholder.vue'
+import LogoH from '../assets/LogoH.png'
 
-import { Artwork } from "../types";
+import { Artwork } from '../types'
 
 export default {
   components: {
@@ -90,70 +94,68 @@ export default {
           //       '' + Math.random() * 20 + 1
           //     )}.jpg`,
           // 'https://api.daihan.top/api/acg',
-          "",
+          '',
         info: {} as Artwork,
       },
-    };
+    }
   },
   methods: {
     initRank() {
-      if (getCache("home.rankList")) {
-        this.rankList = getCache("home.rankList");
-        return;
+      if (getCache('home.rankList')) {
+        this.rankList = getCache('home.rankList')
+        return
       }
       axios.get(`${API_BASE}/api/ranking`).then(({ data }) => {
-        this.rankList = data.contents;
-        setCache("home.rankList", data.contents);
-      });
+        this.rankList = data.contents
+        setCache('home.rankList', data.contents)
+      })
     },
     setRandomBg(noCache?: boolean) {
-      if (!noCache && getCache("home.randomBg")) {
-        this.randomBg = getCache("home.randomBg");
-        return;
+      if (!noCache && getCache('home.randomBg')) {
+        this.randomBg = getCache('home.randomBg')
+        return
       }
       axios.get(`${API_BASE}/api/illust/random?max=1`).then(({ data }) => {
-        const info = data[0];
+        const info = data[0]
         if (!info) {
-          this.randomBg.url = "https://api.daihan.top/api/acg";
-          this.randomBg.info = {} as Artwork;
-          return;
+          this.randomBg.url = 'https://api.daihan.top/api/acg'
+          this.randomBg.info = {} as Artwork
+          return
         }
-        const url = API_BASE + info.urls.regular;
-        this.randomBg.info = info;
-        this.randomBg.url = url;
-        setCache("home.randomBg", { info, url });
-      });
+        const url = API_BASE + info.urls.regular
+        this.randomBg.info = info
+        this.randomBg.url = url
+        setCache('home.randomBg', { info, url })
+      })
     },
     setDiscovered(noCache?: boolean) {
-      if (!noCache && getCache("home.discoverList")) {
-        this.discoverList = getCache("home.discoverList");
-        return;
+      if (!noCache && getCache('home.discoverList')) {
+        this.discoverList = getCache('home.discoverList')
+        return
       }
-      this.discoverList = [];
+      this.discoverList = []
       axios
         .get(`${API_BASE}/api/illust/random?max=8&mode=all`)
         .then(({ data }) => {
-          this.discoverList = data;
-          setCache("home.discoverList", data);
-        });
+          this.discoverList = data
+          setCache('home.discoverList', data)
+        })
     },
   },
   mounted() {
-    document.title = "PixivNow";
+    document.title = 'PixivNow'
 
     // this.initRank()
-    this.setRandomBg();
-    this.setDiscovered();
+    this.setRandomBg()
+    this.setDiscovered()
   },
-};
+}
 </script>
 
 <style lang="sass">
 [data-route="home"]
   .topSlider
     min-height: calc(100vh)
-    margin-left: -1rem
-    margin-right: -1rem
     margin-top: calc(-50px - 1rem)
     padding: 30px 10%
     background-position: center

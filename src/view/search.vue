@@ -7,29 +7,29 @@ mixin pagenator()
     button.next(@click="nextPage") 下一页
 
 
-//- h1 搜索“{{ keyword }}”相关的作品 (第{{ p }}页)
+#search-view
+  .body-inner
+    search-box.big
 
-search-box.big
+    //- Error
+    section(v-if="error && !loading")
+      error-page(title="出大问题", :description="error")
 
-//- Error
-section(v-if="error && !loading")
-  error-page(title="出大问题", :description="error")
+    //- Result
+    section(v-if="!error")
+      +pagenator()
 
-//- Result
-section(v-if="!error")
-  +pagenator()
+      //- Loading
+      .loadingArea(v-if="loading")
+        div(style={'text-align': 'center'})
+          placeholder
 
-  //- Loading
-  .loadingArea(v-if="loading")
-    div(style={'text-align': 'center'})
-      placeholder
+      .resultArea(v-if="!loading")
+        artworks-list(:list="resultList")
 
-  .resultArea(v-if="!loading")
-    artworks-list(:list="resultList")
+      .noMore(v-if="!loading && resultList.length < 60") 没有了，一滴都没有了……
 
-  .noMore(v-if="!loading && resultList.length < 60") 没有了，一滴都没有了……
-
-  +pagenator()
+      +pagenator()
 </template>
 
 <script lang="ts">

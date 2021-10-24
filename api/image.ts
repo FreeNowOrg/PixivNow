@@ -14,7 +14,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     case 'image':
     case '-':
       // domain = 'i'
-      return res.redirect(`https://i.pixiv.cat/${__PATH}`)
+      res.redirect(`https://i.pixiv.cat/${__PATH}`)
+      return
     case '~':
       domain = 's'
       break

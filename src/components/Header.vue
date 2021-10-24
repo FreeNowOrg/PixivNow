@@ -1,67 +1,68 @@
 <template lang="pug">
-header.globalNavbar(:class="{ notAtTop, isHide }")
-  a.sideNavToggle.plain(@click="sideNavShow = true")
-    fa(icon="bars")
+header.globalNavbar(:class='{ notAtTop, isHide }')
+  .flex
+    a.sideNavToggle.plain(@click='sideNavShow = !sideNavShow')
+      fa(icon='bars')
 
-  .logoArea
-    router-link.plain(to="/")
-      img.siteLogo(:src="LogoH")
+    .logoArea
+      router-link.plain(to='/')
+        img.siteLogo(:src='LogoH')
 
-  .flex.searchArea
-    .searchFull.align-right.flex-1
-      search-box
-    .searchIcon.align-right.flex-1
-      button.pointer(@click="sideNavShow = true")
-        fa(icon="search")
-        | &nbsp;搜索
+    .flex.searchArea
+      .searchFull.align-right.flex-1
+        search-box
+      .searchIcon.align-right.flex-1
+        button.pointer(@click='sideNavShow = true')
+          fa(icon='search')
+          | &nbsp;搜索
 
-  .userArea(id="globalNav__userArea")
-    .userLink
-      a.dropdownBtn.plain.pointer(
-        :class="{ isShown: userDropdownShow }"
-        @click="userDropdownShow = !userDropdownShow"
-      )
-        img.avatar(
-          :src="userData ? userData.profileImg : API_BASE + '/~/common/images/no_profile.png'" 
-          :title="userData ? userData.name + ' (' + userData.pixivId + ')' : '未登入'"
-          )
-        fa(icon="angle-down")
-
-      transition(
-        name="fade"
-        mode="out-in"
-        enter-active-class = "fadeInUp"
-        leave-active-class = "fadeOutDown"
-      )
-        .dropdownContent(
-          v-show="userDropdownShow"
+    #globalNav__userArea.userArea
+      .userLink
+        a.dropdownBtn.plain.pointer(
+          :class='{ isShown: userDropdownShow }',
+          @click='userDropdownShow = !userDropdownShow'
         )
-          ul
-            //- notLogIn
-            li(v-if="!userData")
-              .navUserCard
-                .top
-                  .bannerBg
-                  img.avatar(:src="API_BASE + '/~/common/images/no_profile.png'")
-                .details
-                  a.userName 游客
-                  .uid 绑定令牌，同步您的 Pixiv 信息！
+          img.avatar(
+            :src='userData ? userData.profileImg : API_BASE + "/~/common/images/no_profile.png"',
+            :title='userData ? userData.name + " (" + userData.pixivId + ")" : "未登入"'
+          )
+          fa(icon='angle-down')
 
-            //- isLogedIn
-            li(v-if="userData")
-              .navUserCard
-                .top
-                  .bannerBg
-                  router-link.plain.name(:to="'/users/' + userData.id")
-                    img.avatar(:src="API_BASE + userData.profileImgBig")
-                .details
-                  router-link.plain.userName(:to="'/users/' + userData.id") {{ userData.name }}
-                  .uid @{{ userData.pixivId }}
+        transition(
+          name='fade',
+          mode='out-in',
+          enter-active-class='fadeInUp',
+          leave-active-class='fadeOutDown'
+        )
+          .dropdownContent(v-show='userDropdownShow')
+            ul
+              //- notLogIn
+              li(v-if='!userData')
+                .navUserCard
+                  .top
+                    .bannerBg
+                    img.avatar(
+                      :src='API_BASE + "/~/common/images/no_profile.png"'
+                    )
+                  .details
+                    a.userName 游客
+                    .uid 绑定令牌，同步您的 Pixiv 信息！
 
-            li(v-if="$route.path !== '/login'")
-              router-link.plain(:to="'/login?back=' + $route.path") {{ userData ? '查看令牌' : '用户登入' }}
-            li(v-if="userData")
-              a.plain(@click="userLogout") 用户登出
+              //- isLogedIn
+              li(v-if='userData')
+                .navUserCard
+                  .top
+                    .bannerBg
+                    router-link.plain.name(:to='"/users/" + userData.id')
+                      img.avatar(:src='API_BASE + userData.profileImgBig')
+                  .details
+                    router-link.plain.userName(:to='"/users/" + userData.id') {{ userData.name }}
+                    .uid @{{ userData.pixivId }}
+
+              li(v-if='$route.path !== "/login"')
+                router-link.plain(:to='"/login?back=" + $route.path') {{ userData ? "查看令牌" : "用户登入" }}
+              li(v-if='userData')
+                a.plain(@click='userLogout') 用户登出
 </template>
 
 <script lang="ts">
@@ -138,7 +139,7 @@ export default defineComponent({
 <style lang="sass">
 .globalNavbar
   background-color: var(--theme-accent-color)
-  padding: 0.4rem
+  padding: 0.4rem 1rem
   color: var(--theme-background-color)
   display: flex
   align-items: center
@@ -153,21 +154,16 @@ export default defineComponent({
 
   .flex
     display: flex
-    flex: 1
-    overflow-x: auto
+    width: 100%
+    gap: 1rem
     align-items: center
-    margin: 0 1.5rem
 
   &.notAtTop
     box-shadow: 0 0px 8px var(--theme-box-shadow-color)
 
-  // &.isHide
-  //   top: -52px
-
   .sideNavToggle
     font-size: 1.2rem
     text-align: center
-    margin: auto 0.5rem
     color: var(--theme-accent-link-color)
     cursor: pointer
     width: 2.4rem
@@ -187,9 +183,10 @@ export default defineComponent({
       height: 2.2rem
       width: auto
 
-  .userArea
-    margin-left: 0.5rem
+  .searchArea
+    flex: 1
 
+  .userArea
     .avatar
       height: 2rem
       width: 2rem

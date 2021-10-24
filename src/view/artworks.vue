@@ -1,110 +1,117 @@
 <template lang="pug">
+#artwork-view
+  //- Loading
+  section.align-center(v-if='loading')
+    placeholder
+    p {{ "正在读取作品 #" + $route.params.id }}
 
-//- Loading
-section.align-center(v-if="loading")
-  placeholder
-  p {{ '正在读取作品 #' + $route.params.id }}
+  //- Done
+  section.illust-container(v-if='!error && !loading')
+    #top-area
+      gallery(:pages='illust.pages')
 
-//- Done
-section.illust-container(v-if="!error && !loading")
-  gallery(:pages="illust.pages")
-  
-  .artworkInfo
-    h1(:class="illust.xRestrict ? 'danger' : ''") {{ illust.illustTitle }}
-    p.description.pre(v-html="illust.description")
-    p.description.noDesc(v-if="!illust.description" :style="{color: '#aaa'}") (无简介)
-    p.canonicalLink
-      a.button(
-        :href="illust?.extraData?.meta?.canonical || '#'"
-        target="_blank"
-        rel="noopener noreferrer"
-      ) 在 Pixiv 上查看 →
+      .body-inner
+        #meta-area
+          .artworkInfo
+            h1(:class='illust.xRestrict ? "danger" : ""') {{ illust.illustTitle }}
+            p.description.pre(v-html='illust.description')
+            p.description.noDesc(
+              v-if='!illust.description',
+              :style='{ color: "#aaa" }'
+            ) (无简介)
+            p.canonicalLink
+              a.button(
+                :href='illust?.extraData?.meta?.canonical || "#"',
+                target='_blank',
+                rel='noopener noreferrer'
+              ) 在 Pixiv 上查看 →
 
-    p.stats
-      span.isOriginal(v-if="illust.isOriginal")
-        fa(icon="laugh-wink")
-        | 原创
-      span.likeCount(title="点赞")
-        fa(icon="thumbs-up")
-        | {{ illust.likeCount }}
+            p.stats
+              span.isOriginal(v-if='illust.isOriginal')
+                fa(icon='laugh-wink')
+                | 原创
+              span.likeCount(title='点赞')
+                fa(icon='thumbs-up')
+                | {{ illust.likeCount }}
 
-      //- 收藏
-      //- 未收藏/不可收藏
-      span.bookmarkCount(
-        v-if="!illust.bookmarkData"
-        @click="addBookmark"
-        :title="userData ? '添加收藏' : '收藏'"
+              //- 收藏
+              //- 未收藏/不可收藏
+              span.bookmarkCount(
+                v-if='!illust.bookmarkData',
+                @click='addBookmark',
+                :title='userData ? "添加收藏" : "收藏"'
+              )
+                fa(icon='heart')
+                | {{ illust.bookmarkCount }}
+              //- 已收藏
+              router-link.bookmarkCount.isBookmarked(
+                v-if='illust.bookmarkData',
+                :to='"/users/" + userData.id',
+                title='查看收藏'
+              )
+                fa(icon='heart')
+                | {{ illust.bookmarkCount }}
+
+              span.viewCount(title='浏览')
+                fa(icon='eye')
+                | {{ illust.viewCount }}
+              span.count
+                fa(icon='images')
+                | {{ illust.pages.length }}张
+
+            p.createDate {{ new Date(illust.createDate).toLocaleString() }}
+
+          .artworkTags
+            span.xRestrict(v-if='illust.xRestrict', title='R-18') R-18
+            art-tag(
+              :key='_',
+              v-for='(item, _) in illust.tags.tags',
+              :tag='item.tag'
+            )
+
+        aside#author-area
+          .authorInfo
+            h2 作者
+            .align-center(v-if='!user.userId')
+              placeholder
+            author-card(:user='user', v-if='user.userId')
+
+        card.comments(title='评论')
+          CommentsArea(
+            :id='illust.id || illust.illustId',
+            :count='illust.commentCount'
+          )
+
+    //- 相关推荐
+    .recommendWorks
+      h2 相关推荐
+      .align-center.loading(v-if='!recommend.length')
+        placeholder
+      ArtworksMiniList(:list='recommend')
+        .illustCard.loadMore(
+          v-if='recommendNextIds.length',
+          @click='getRecommend',
+          :style='{ cursor: "pointer" }'
         )
-        fa(icon="heart")
-        | {{ illust.bookmarkCount }}
-      //- 已收藏
-      router-link.bookmarkCount.isBookmarked(
-        v-if="illust.bookmarkData"
-        :to="'/users/' + userData.id"
-        title="查看收藏"
-      )
-        fa(icon="heart")
-        | {{ illust.bookmarkCount }}
-
-      span.viewCount(title="浏览")
-        fa(icon="eye")
-        | {{ illust.viewCount }}
-      span.count
-        fa(icon="images")
-        | {{ illust.pages.length }}张
-
-    p.createDate {{ new Date(illust.createDate).toLocaleString() }}
-
-  .artworkTags
-    span.xRestrict(v-if="illust.xRestrict" title="R-18") R-18
-    art-tag(:key="_" v-for="(item, _) in illust.tags.tags" :tag="item.tag")
-  
-  .authorInfo
-    h2 作者
-    .align-center(v-if="!user.userId")
-      placeholder
-    author-card(:user="user" v-if="user.userId")
-
-  card.comments(title="评论")
-    CommentsArea(
-      :id="illust.id || illust.illustId"
-      :count="illust.commentCount")
-
-  //- 相关推荐
-  .recommendWorks
-    h2 相关推荐
-    .align-center.loading(v-if="!recommend.length")
-      placeholder
-    ArtworksMiniList(:list="recommend")
-      .illustCard.loadMore(
-        v-if="recommendNextIds.length"
-        @click="getRecommend"
-        :style="{cursor: 'pointer'}"
-        )
-        .top
-          div(:style="{width: '100%', paddingTop: '35%', paddingBottom: '35%', backgroundColor: '#efefef', textAlign: 'center'}")
-            fa(
-              v-if="!recommendLoading"
-              icon="ellipsis-h"
-              size="5x")
-            fa(
-              v-if="recommendLoading"
-              spin
-              icon="spinner"
-              size="5x")
-        .bottom
-          h3.title 推荐作品
-          p 点击这里，发现更多相关作品！
-    show-more(
-      v-if="recommendNextIds.length"
-      :text="recommendLoading ? '加载中' : '加载更多'"
-      :method="getRecommend"
-      :loading="recommendLoading"
+          .top
+            div(
+              :style='{ width: "100%", paddingTop: "35%", paddingBottom: "35%", backgroundColor: "#efefef", textAlign: "center" }'
+            )
+              fa(v-if='!recommendLoading', icon='ellipsis-h', size='5x')
+              fa(v-if='recommendLoading', spin, icon='spinner', size='5x')
+          .bottom
+            h3.title 推荐作品
+            p 点击这里，发现更多相关作品！
+      show-more(
+        v-if='recommendNextIds.length',
+        :text='recommendLoading ? "加载中" : "加载更多"',
+        :method='getRecommend',
+        :loading='recommendLoading'
       )
 
-//- Error
-section.error(v-if="error")
-  error-page(title="出大问题" :description="error")
+  //- Error
+  section.error(v-if='error')
+    error-page(title='出大问题', :description='error')
 </template>
 
 <script lang="ts">

@@ -1,31 +1,31 @@
 <template lang="pug">
 .gallery
-  .centerImg(:class="showAll ? 'showAll' : 'showSingle'")
-    div(
-      v-for="(item, index) in pages"
-      :data-pic-index="index"
-      )
+  .centerImg(:class='showAll ? "showAll" : "showSingle"')
+    div(v-for='(item, index) in pages', :data-pic-index='index')
       a.imageContainer(
-        v-if="picShow === index"
-        :href="API_BASE + item.urls.original"
-        target="_blank"
-        title="点击下载原图")
+        v-if='picShow === index',
+        :href='API_BASE + item.urls.original',
+        target='_blank',
+        title='点击下载原图'
+      )
         lazyload.pic(
-          :src="API_BASE + item.urls.regular"
-          :width="item.width"
-          :height="item.height")
-  .tips.align-center (这是预览图，点击下载原图)
-  ul.pagenator
-    li(v-for="(item, index) in pages")
-      a(
-        @click="picShow = index"
-        :title="'第' + (index + 1) + '张 (共' + pages.length + '张)'"
-        :class="{isActive: picShow === index}"
+          :src='API_BASE + item.urls.regular',
+          :width='item.width',
+          :height='item.height'
         )
+  //- .tips.align-center (这是预览图，点击下载原图)
+  ul.pagenator(v-if='pages.length > 1')
+    li(v-for='(item, index) in pages')
+      a(
+        @click='picShow = index',
+        :title='"第" + (index + 1) + "张 (共" + pages.length + "张)"',
+        :class='{ isActive: picShow === index }'
+      )
         lazyload.pic(
-          :src="API_BASE + item.urls.thumb_mini"
-          :width="80"
-          :height="80")
+          :src='API_BASE + item.urls.thumb_mini',
+          :width='80',
+          :height='80'
+        )
 </template>
 
 <script>
