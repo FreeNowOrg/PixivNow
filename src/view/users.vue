@@ -238,7 +238,7 @@ export default {
         .get(`${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`, {
           params: {
             tag: '',
-            offset: this.getBookmarks.length ?? 0,
+            offset: this.bookmarks.length ?? 0,
             limit: 48,
             rest: 'show',
           },
