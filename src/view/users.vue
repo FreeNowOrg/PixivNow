@@ -140,13 +140,16 @@
             artworks-list(:list='user.manga')
           section(v-if='tab === "bookmarks"')
             h2 收藏
-            .noResult(v-if='user.manga && !user.manga.length')
+            .noResult(v-if='!loadingBookmarks && !bookmarks.length')
               div 收藏夹是空的 Σ(⊙▽⊙"a
             artworks-list(:list='bookmarks')
             .more-btn.align-center
               a.button(@click='getBookmarks')
-                fa(icon='arrow-down')
-                | 加载更多
+                fa(
+                  :icon='loadingBookmarks ? "spinner" : "arrow-down"',
+                  :spin='loadingBookmarks'
+                )
+                | {{ loadingBookmarks ? "正在加载……" : "加载更多" }}
 </template>
 
 <script lang="ts">
@@ -163,7 +166,6 @@ import Placeholder from '../components/Placeholder.vue'
 import { Artwork } from './artworks.vue'
 import { getCache, setCache } from './siteCache'
 import { User } from '../types'
-import { nextTick } from 'vue'
 
 export default {
   components: {
@@ -242,7 +244,10 @@ export default {
           },
         })
         .then(({ data }) => {
-          this.bookmarks.push(data.works)
+          this.bookmarks = [...this.bookmarks, ...data.works]
+        })
+        .finally(() => {
+          this.loadingBookmarks = false
         })
     },
     addFollow,
