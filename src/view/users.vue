@@ -115,14 +115,17 @@
         button(@click='addFollow') addFollow
         button(@click='removeFollow') removeFollow
 
-    .body-inner
+    #user-artworks
       .tabber
         ul.tabBtn
           li(@click='tab = "illust"')
             a(:class='{ tabActive: tab === "illust" }') 插画
           li(@click='tab = "manga"')
             a(:class='{ tabActive: tab === "manga" }') 漫画
-          li(v-if='bookmarks.length', @click='tab = "bookmarks"')
+          li(
+            v-if='$route.params.id === userData?.id',
+            @click='tab = "bookmarks"'
+          )
             a(:class='{ tabActive: tab === "bookmarks" }') 收藏
         .tabContents
           section(v-if='tab === "illust"')
@@ -140,6 +143,10 @@
             .noResult(v-if='user.manga && !user.manga.length')
               div 收藏夹是空的 Σ(⊙▽⊙"a
             artworks-list(:list='bookmarks')
+            .more-btn.align-center
+              a.button(@click='getBookmarks')
+                fa(icon='arrow-down')
+                | 加载更多
 </template>
 
 <script lang="ts">
@@ -156,6 +163,7 @@ import Placeholder from '../components/Placeholder.vue'
 import { Artwork } from './artworks.vue'
 import { getCache, setCache } from './siteCache'
 import { User } from '../types'
+import { nextTick } from 'vue'
 
 export default {
   components: {
@@ -172,6 +180,7 @@ export default {
       user: {} as User | {},
       userData,
       bookmarks: [] as Artwork[],
+      loadingBookmarks: false,
       tab: 'illust' as 'illust' | 'manga' | 'bookmarks',
       showUserMore: false,
     }
@@ -221,17 +230,19 @@ export default {
     },
     getBookmarks() {
       if (userData.value?.id !== this.$route.params.id) return
+      if (this.loadingBookmarks) return
+      this.loadingBookmarks = true
       axios
         .get(`${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`, {
           params: {
             tag: '',
-            offset: 0,
+            offset: this.getBookmarks.length ?? 0,
             limit: 48,
             rest: 'show',
           },
         })
         .then(({ data }) => {
-          this.bookmarks = data.works
+          this.bookmarks.push(data.works)
         })
     },
     addFollow,
@@ -330,7 +341,7 @@ export default {
     transition: all 0.4s ease-in-out
     z-index: 10
     position: sticky
-    top: 51px
+    top: 50px
 
     .globalNavbar_isHide &
       top: 0
