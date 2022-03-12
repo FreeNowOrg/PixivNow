@@ -7,6 +7,10 @@
     {
       "source": "/:__PREFIX(ajax|rpc|.+\\.php)/:__PATH*",
       "destination": "/api/http"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "redirects": [
