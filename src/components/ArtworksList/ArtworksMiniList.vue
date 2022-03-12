@@ -42,30 +42,35 @@ ul.artworksMiniList
           | 我是一个广告
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue"
+<script lang="ts" setup>
 import { API_BASE } from "../../config"
 import { addBookmark, removeBookmark } from "../../utils/artworkActions"
 
-export default defineComponent({
-  data() {
-    return {
-      API_BASE,
-    }
-  },
-  props: ["list"],
-  methods: {
-    toggleBookmark(index: number) {
-      const item = this.list[index]
-      if (!item.bookmarkData) {
-        addBookmark(item.id)
-      }
-      else {
-        removeBookmark(item.id)
-      }
-    }
+const props = defineProps<{
+  list: {
+    id: number
+    title: string
+    userName: string
+    userId: string
+    profileImageUrl: string
+    profileImg: string
+    xRestrict: boolean
+    pageCount: number
+    isAdContainer: boolean
+    url: string
+    bookmarkData: any
+    alt: string
+  }[]
+}>()
+
+function toggleBookmark(index: number) {
+  const item = props.list[index]
+  if (item.bookmarkData) {
+    removeBookmark(item.bookmarkData.id)
+  } else {
+    addBookmark(item.id)
   }
-})
+}
 </script>
 
 <style lang="sass">

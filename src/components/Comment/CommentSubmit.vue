@@ -4,7 +4,7 @@
   .flex.isLoggedIn(v-if="userData")
     .left
       .avatar
-        img(:src="API_BASE + userData.userImageUrl")
+        img(:src="API_BASE + userData.profileImg")
     .right
       textarea(v-model="comment" :disabled="loading")
     .submit.align-right
@@ -16,60 +16,60 @@
       | 以发表评论。
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import axios from 'axios'
 import Cookies from 'js-cookie'
-import { defineComponent } from 'vue'
+import { ref } from 'vue'
 import { API_BASE } from '../../config'
 import { userData } from '../userData'
 
-export default defineComponent({
-  props: ['id'],
-  data() {
-    return {
-      comment: '',
-      userData,
-      loading: false,
-    }
-  },
-  methods: {
-    submit() {
-      if (this.loading) return
-      this.loading = true
+const loading = ref(false)
+const comment = ref('')
 
-      axios({
-        method: 'post',
-        url: `${API_BASE}/rpc/post_comment.php`,
-        data: {
-          type: 'comment',
-          illust_id: this.id,
-          author_user_id: userData.value?.id,
-          comment: this.comment,
-        },
-        headers: {
-          'x-csrf-token': Cookies.get('csrfToken'),
-        },
-      })
-        .then(
-          ({ data }) => {
-            this.comment = ''
-            this.$emit('push-comment', {
-              img: userData.value?.profileImg,
-              commentDate: new Date().toLocaleString(),
-              ...data,
-            })
-          },
-          (err) => {
-            console.error('Submit comment error', err)
-            alert(`出大问题：${err.message}`)
-          }
-        )
-        .finally(() => {
-          this.loading = false
-        })
+const props = defineProps<{ id: string }>()
+const emit = defineEmits<{
+  (
+    e: 'push-comment',
+    value: {
+      img: string
+      commentDate: string
+      [key: string]: any
+    }
+  ): void
+}>()
+
+function submit() {
+  if (loading.value) return
+  loading.value = true
+  axios({
+    method: 'post',
+    url: `${API_BASE}/ajax/illusts/comments/post`,
+    headers: {
+      'X-CSRF-TOKEN': Cookies.get('csrf_token'),
     },
-  },
-})
+    data: {
+      type: 'comment',
+      illust_id: props.id,
+      author_user_id: userData.value?.id,
+      comment,
+    },
+  })
+    .then(
+      ({ data }) => {
+        comment.value = ''
+        emit('push-comment', {
+          img: userData.value?.profileImg,
+          commentDate: new Date().toLocaleString(),
+          ...data,
+        })
+      },
+      (err) => {
+        console.error('Submit comment error', err)
+        alert(`出大问题：${err.message}`)
+      }
+    )
+    .finally(() => loading.value = false)
+}
 </script>
 
 <style scoped lang="sass">

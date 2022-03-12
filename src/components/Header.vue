@@ -1,7 +1,7 @@
 <template lang="pug">
 header.globalNavbar(:class='{ notAtTop, isHide }')
   .flex
-    a.sideNavToggle.plain(@click='sideNavShow = !sideNavShow')
+    a.sideNavToggle.plain(@click='toggleSideNav')
       fa(icon='bars')
 
     .logoArea
@@ -10,7 +10,7 @@ header.globalNavbar(:class='{ notAtTop, isHide }')
 
     .flex.searchArea
       .searchFull.align-right.flex-1
-        search-box
+        SearchBox
       .searchIcon.align-right.flex-1
         button.pointer(@click='sideNavShow = true')
           fa(icon='search')
@@ -65,74 +65,66 @@ header.globalNavbar(:class='{ notAtTop, isHide }')
                 a.plain(@click='userLogout') 用户登出
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { ref, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
 import { userData, userLogout } from './userData'
-import SideNavigation, { sideNavShow } from './SideNav/SideNav.vue'
 import LogoH from '../assets/LogoH.png'
 
-export default defineComponent({
-  name: 'com-header',
-  components: {
-    SearchBox,
-    SideNavigation,
-  },
-  data() {
-    return {
-      API_BASE,
-      notAtTop: false,
-      isHide: false,
-      userData,
-      sideNavShow,
-      userDropdownShow: false,
-      LogoH,
-    }
-  },
-  watch: {
-    isHide() {
-      if (this.isHide) {
-        document.body.classList.add('globalNavbar_isHide')
-      } else {
-        document.body.classList.remove('globalNavbar_isHide')
-      }
-    },
-  },
-  mounted() {
-    // Scroll state
-    let scrollTop = document.documentElement.scrollTop
-    window.addEventListener('scroll', () => {
-      const newTop = document.documentElement.scrollTop
-      // if (scrollTop > 600) {
-      //   this.isHide = newTop - scrollTop > 0
-      // } else {
-      //   this.isHide = false
-      // }
-      scrollTop = newTop
-      if (newTop > 50) {
-        this.notAtTop = true
-      } else {
-        this.notAtTop = false
-      }
-    })
+const emit = defineEmits<{
+  (
+    e: 'toggle-sidenav',
+    value: boolean
+  ): void
+}>()
 
-    // Outside close user dropdown
-    document
-      .getElementById('globalNav__userArea')
-      ?.addEventListener('click', (e) => {
-        e.stopPropagation()
-      })
+const isHide = ref(false)
+const notAtTop = ref(false)
+const router = useRouter()
+const sideNavShow = ref(false)
+const userDropdownShow = ref(false)
+
+function toggleSideNav() {
+  sideNavShow.value = !sideNavShow.value
+  emit('toggle-sidenav', sideNavShow.value)
+}
+
+watch(isHide, (value) => {
+  if (value) {
+    document.body.classList.add('globalNavbar_isHide')
+  } else {
+    document.body.classList.remove('globalNavbar_isHide')
+  }
+})
+
+onMounted(() => {
+  // Scroll state
+  let scrollTop = document.documentElement.scrollTop
+  window.addEventListener('scroll', () => {
+    const newTop = document.documentElement.scrollTop
+    // if (scrollTop > 600) {
+    //   this.isHide = newTop - scrollTop > 0
+    // } else {
+    //   this.isHide = false
+    // }
+    scrollTop = newTop
+    if (newTop > 50) {
+      notAtTop.value = true
+    } else {
+      notAtTop.value = false
+    }
+  })
+
+  // Outside close user dropdown
+  document
+    .getElementById('globalNav__userArea')
+    ?.addEventListener('click', (e) => e.stopPropagation())
     document.addEventListener('click', (e) => {
-      if (this.userDropdownShow) this.userDropdownShow = false
+      if (userDropdownShow.value) userDropdownShow.value = false
     })
-    this.$router.beforeEach(() => {
-      this.userDropdownShow = false
-    })
-  },
-  methods: {
-    userLogout,
-  },
+    router.beforeEach(() => userDropdownShow.value = false)
 })
 </script>
 

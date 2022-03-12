@@ -5,23 +5,13 @@
     slot/
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
 
-export default defineComponent({
-  props: {
-    title: {
-      type: String,
-    },
-  },
-  data() {
-    return {}
-  },
-  // setup() {},
-})
+const props = defineProps<{ title: string | undefined }>()
 </script>
 
 <style scoped lang="sass">
+
 h2
   text-align: center
 

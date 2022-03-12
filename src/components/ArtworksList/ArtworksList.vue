@@ -6,15 +6,26 @@ ul.artworksList
     slot/
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import ArtworkCard from './ArtworkCard.vue'
 
-export default {
-  props: ['list'],
-  components: {
-    ArtworkCard,
-  },
-}
+const props = defineProps<{
+  list: {
+    id: string
+    illustId: string
+    title: string
+    userName: string
+    userId: string
+    profileImageUrl: string
+    profileImg: string
+    tags: string[]
+    xRestrict: boolean
+    pageCount: number
+    rank: number
+    isAdContainer: boolean
+    url: string
+  }[]
+}>()
 </script>
 
 <style lang="sass">

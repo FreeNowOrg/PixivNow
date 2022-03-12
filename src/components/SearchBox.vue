@@ -4,41 +4,28 @@
   fa.icon(icon="search")
 </template>
 
-<script lang="ts">
-import { router } from '../router'
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { useRoute, useRouter } from 'vue-router'
+import { ref } from 'vue'
 
-export default defineComponent({
-  data() {
-    return {
-      keyword: (this.$route.params.keyword as string) || '',
-    }
-  },
-  methods: {
-    makeSearch() {
-      if (!this.keyword) {
-        return
-      }
-      if (/^id:(\d+)$/.test(this.keyword)) {
-        router.push(`/artworks/${/^id:(\d+)$/.exec(this.keyword)?.[1]}`)
-        return
-      }
-      router.push(`/search/${encodeURIComponent(this.keyword)}/1`)
-    },
-  },
-  created() {
-    this.$watch(
-      () => this.$route.params,
-      () =>
-        this.$route.params.keyword
-          ? (this.keyword = this.$route.params.keyword as string)
-          : null
-    )
-  },
-})
+const route = useRoute()
+const router = useRouter()
+const keyword = ref(route.params.keyword as string || '')
+
+function makeSearch(): void {
+  if (!keyword.value) {
+    return
+  }
+  if (/^id:(\d+)$/.test(keyword.value)) {
+    router.push(`/artworks/${/^id:(\d+)$/.exec(keyword.value)?.[1]}`)
+    return
+  }
+  router.push(`/search/${encodeURIComponent(keyword.value)}/1`)
+}
 </script>
 
 <style lang="sass">
+
 // Search Box
 .searchBox
   display: flex

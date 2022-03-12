@@ -36,40 +36,36 @@ aside.globalSideNav(:class='{ isHide: !show }')
           list-link(icon='heart', link='/about', text='关于我们')
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
-export const sideNavShow = ref()
-sideNavShow.value = false
+<script lang="ts" setup>
+import { ref, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { userData } from '../userData'
 
 import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
 
-export default defineComponent({
-  components: { SearchBox, ListLink },
-  data() {
-    return {
-      show: sideNavShow,
-      userData,
+const show = ref(false)
+const router = useRouter()
+
+defineExpose({
+  show,
+})
+
+watch(show, (value) => {
+  if (value) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = 'visible'
+  }
+})
+
+onMounted(() => {
+  router.beforeEach(() => show.value = false)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      show.value = false
     }
-  },
-  watch: {
-    show() {
-      if (this.show) {
-        document.body.style.overflow = 'hidden'
-      } else {
-        document.body.style.overflow = 'visible'
-      }
-    },
-  },
-  mounted() {
-    this.$router.beforeEach(() => {
-      this.show = false
-    })
-    document.addEventListener('keydown', ({ key }) => {
-      if (key === 'Escape') this.show = false
-    })
-  },
+  })
 })
 </script>
 

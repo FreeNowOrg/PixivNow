@@ -28,23 +28,25 @@
         )
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { ref } from 'vue'
 import { API_BASE } from '../config'
 
-export default defineComponent({
-  components: {},
-  props: ['pages'],
-  data() {
-    return {
-      API_BASE,
-      loading: false,
-      error: '',
-      showAll: false,
-      picShow: 0,
+const props = defineProps<{
+  pages: {
+    urls: {
+      original: string
+      regular: string
+      thumb_mini: string
     }
-  },
-})
+    width: string
+    height: string
+  }[]
+}>()
+const loading = ref(false)
+const error = ref('')
+const showAll = ref(false)
+const picShow = ref(0)
 </script>
 
 <style lang="sass">

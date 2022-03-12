@@ -40,18 +40,26 @@
     div 这里是 Pixiv 源站上的广告位，我们才不帮他们显示广告呢（笑
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { API_BASE } from '../../config'
 
-export default {
-  components: {},
-  data() {
-    return {
-      API_BASE,
-    }
-  },
-  props: ['illust'],
-}
+const props = defineProps<{
+  illust: {
+    id: string
+    illustId: string
+    title: string
+    userName: string
+    userId: string
+    profileImageUrl: string
+    profileImg: string
+    tags: string[]
+    xRestrict: boolean
+    pageCount: number
+    rank: number
+    isAdContainer: boolean
+    url: string
+  }
+}>()
 </script>
 
 <style lang="sass">

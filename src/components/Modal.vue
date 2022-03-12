@@ -1,50 +1,48 @@
 <template lang="pug">
 .modalContainer
   .modalArea(v-if='show')
-    .modalBackdrop(@click='closeModal')
+    .modalBackdrop(@click='$emit("update:show", false)')
     .modalWindow
-      a.plain.closeBtn(roll='button', @click='closeModal')
+      a.plain.closeBtn(roll='button', @click='$emit("update:show", false)')
         fa(icon='times')
       section.modalContent
         div
           slot
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { onMounted, watch } from 'vue'
 
-export default defineComponent({
-  props: {
-    show: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  data() {
-    return {}
-  },
-  methods: {
-    showModal() {
-      this.$emit('update:show', true)
-    },
-    closeModal() {
-      this.$emit('update:show', false)
-    },
-  },
-  watch: {
-    show() {
-      if (this.show) {
-        document.body.style.overflow = 'hidden'
-      } else {
-        document.body.style.overflow = 'visible'
-      }
-    },
-  },
-  mounted() {
-    document.addEventListener('keydown', ({ code }) => {
-      if (code === 'Escape') this.closeModal()
-    })
-  },
+const props = defineProps<{
+  show: boolean
+}>()
+
+watch(props, () => {
+  if (props.show) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = 'visible'
+  }
+})
+
+const emit = defineEmits<{
+  (e: 'update:show', updateShow: boolean): void
+}>()
+
+function showModal() {
+  emit('update:show', true)
+}
+
+function closeModal() {
+  emit('update:show', false)
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal()
+    }
+  })
 })
 </script>
 

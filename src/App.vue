@@ -1,6 +1,6 @@
 <template lang="pug">
-SideNav
-Header(ref="globalHeader")
+SideNav(ref="globalSideNav")
+Header(ref="globalHeader" @toggle-sidenav="toggleSideNav")
 
 main
   article
@@ -11,28 +11,28 @@ Footer(ref="globalFooter")
 NProgress
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 import SideNav from './components/SideNav/SideNav.vue'
 import NProgress from './components/NProgress.vue'
 import { userInit } from './components/userData'
+import { onMounted, ref } from 'vue'
 
-export default defineComponent({
-  name: 'App',
-  components: { Header, SideNav, Footer, NProgress },
-  data() {
-    return {}
-  },
-  methods: {},
-  mounted() {
-    userInit()
-  },
-})
+const globalSideNav = ref(null)
+
+function toggleSideNav(showSideNav: boolean): void {
+  if (globalSideNav.value) {
+    globalSideNav.value.show = showSideNav
+  }
+}
+const name = ref('App')
+
+onMounted(userInit)
 </script>
 
 <style scoped lang="sass">
+
 main
   padding-top: 50px
   position: relative

@@ -4,21 +4,13 @@ a(:href="href" target="_blank" rel="nofollow")
   fa.externalIcon(icon="external-link-alt")
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
 
-export default defineComponent({
-  components: {},
-  props: ['href'],
-  data() {
-    return {}
-  },
-  methods: {},
-  mounted() {},
-})
+const props = defineProps<{ href: string }>()
 </script>
 
 <style scoped lang="sass">
+
 .externalIcon
   margin-left: 0.4em
   font-size: 0.7em

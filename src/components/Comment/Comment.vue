@@ -21,30 +21,13 @@ li.commentBlock
     .commentDate {{ comment.commentDate }}
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
 import { API_BASE } from '../../config'
 import { stampList } from './stampList'
 import { userData } from '../userData'
+import { Comments } from '../../types'
 
-export interface Comment {
-  userId: `${number}`
-  userName: string
-  isDeletedUser: boolean
-  img: string
-  id: `${number}`
-  comment: string
-  stampId: number | null
-  stampLink: null
-  commentDate: string
-  commentRootId: string | null
-  commentParentId: string | null
-  commentUserId: `${number}`
-  replyToUserId: string | null
-  replyToUserName: string | null
-  editable: boolean
-  hasReplies: boolean
-}
+const props = defineProps<{ comment: Comments }>()
 
 function replaceStamps(str: string) {
   const reg = new RegExp(
@@ -58,20 +41,6 @@ function replaceStamps(str: string) {
     return `<img src="${API_BASE}${stampList[key]}" class="stamp">`
   })
 }
-
-export default defineComponent({
-  props: ['comment'],
-  methods: {
-    replaceStamps,
-  },
-  data() {
-    return {
-      API_BASE,
-      userData,
-    }
-  },
-  mounted() {},
-})
 </script>
 
 <style lang="sass">

@@ -46,24 +46,14 @@ footer.globalFooter
       ) Go to Prod.
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { ref } from 'vue'
 import { GITHUB_URL, PROJECT_NAME, GITHUB_OWNER } from '../config'
 import { version } from '../../package.json'
 
-export default defineComponent({
-  name: 'comp-footer',
-  setup() {
-    const year = new Date().getFullYear()
-    return {
-      version,
-      yearStr: 2021 === year ? year : `(2021 - ${year})`,
-      GITHUB_URL,
-      PROJECT_NAME,
-      GITHUB_OWNER,
-    }
-  },
-})
+const name = ref('comp-footer')
+const year = new Date().getFullYear()
+const yearStr = ref(year === 2021 ? '2021' : `(2021 - ${year})`)
 </script>
 <style scoped lang="sass">
 .globalFooter

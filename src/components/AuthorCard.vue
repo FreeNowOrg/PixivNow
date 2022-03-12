@@ -1,5 +1,5 @@
 <template lang="pug">
-card.authorCard
+Card.authorCard(title='')
   .flex-center
     .left
       router-link(:to="'/users/' + user.userId")
@@ -16,20 +16,34 @@ card.authorCard
   ArtworksMiniList.inline.tiny(:list="user.illusts")
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { ref } from 'vue'
 import ArtworksMiniList from '../components/ArtworksList/ArtworksMiniList.vue'
 import Card from './Card.vue'
 
-export default defineComponent({
-  components: { ArtworksMiniList, Card },
-  props: ['user'],
-  data() {
-    return {
-      API: 'https://pixiv.js.org',
-    }
-  },
-})
+const props = defineProps<{
+  user: {
+    userId: string
+    imageBig: string
+    name: string
+    comment: string
+    illusts: {
+      id: number
+      title: string
+      userName: string
+      userId: string
+      profileImageUrl: string
+      profileImg: string
+      xRestrict: boolean
+      pageCount: number
+      isAdContainer: boolean
+      url: string
+      bookmarkData: any
+      alt: string
+    }[]
+  }
+}>()
+const API = ref('https://pixiv.js.org')
 </script>
 
 <style scoped lang="sass">
