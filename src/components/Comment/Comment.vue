@@ -31,7 +31,7 @@ const props = defineProps<{ comment: Comments }>()
 
 function replaceStamps(str: string): string {
   for (const [stampName, stampUrl] of Object.entries(stampList)) {
-    str = str.replaceAll(`(${stampName})`, `<img src="${API_BASE}${stampUrl}" alt="表情包" lazyload>`)
+    str = str.replaceAll(`(${stampName})`, `<img class="stamp" src="${API_BASE}${stampUrl}" alt="表情包" lazyload>`)
   }
   return str
 }
