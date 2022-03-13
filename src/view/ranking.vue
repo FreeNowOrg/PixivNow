@@ -84,6 +84,8 @@ function init(): void {
 onMounted(() => {
   if (!userData.value) {
     console.log('需要绑定令牌')
+    error.value = '需要绑定令牌'
+    loading.value = false
     return
   }
   document.title = 'Ranking | PixvNow'
