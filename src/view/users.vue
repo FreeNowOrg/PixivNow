@@ -152,7 +152,7 @@
                 | {{ loadingBookmarks ? "正在加载……" : "加载更多" }}
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import axios from 'axios'
 import { API_BASE } from '../config'
 import { userData } from '../components/userData'
@@ -163,104 +163,80 @@ import ErrorPage from '../components/ErrorPage.vue'
 import Modal from '../components/Modal.vue'
 import Placeholder from '../components/Placeholder.vue'
 
-import { Artwork } from './artworks.vue'
 import { getCache, setCache } from './siteCache'
-import { User } from '../types'
+import { Artwork, User } from '../types'
+import { onMounted, ref } from 'vue'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
-export default {
-  components: {
-    ArtworksList,
-    ErrorPage,
-    Modal,
-    Placeholder,
-  },
-  data() {
-    return {
-      API_BASE,
-      loading: true,
-      error: '',
-      user: {} as User | {},
-      userData,
-      bookmarks: [] as Artwork[],
-      loadingBookmarks: false,
-      tab: 'illust' as 'illust' | 'manga' | 'bookmarks',
-      showUserMore: false,
-    }
-  },
-  methods: {
-    init(id: any) {
-      // 初始化
-      this.user = {}
-      this.bookmarks = []
-      this.tab = 'illust'
-      this.loading = true
+const loading = ref(true)
+const user = ref<User | null>(null)
+const bookmarks = ref<Artwork[]>([])
+const loadingBookmarks = ref(false)
+const tab = ref<'illust' | 'manga' | 'bookmarks'>('illust')
+const error = ref('')
+const showUserMore = ref(false)
+const route = useRoute()
 
-      // Cache
-      const cache = getCache(`users.${id}`)
-      if (cache) {
-        this.loading = false
-        this.user = cache
-        document.title = `${cache.name} | User | PixivNow`
-        // Extra
-        this.getBookmarks()
-        return
-      }
+function init(id: string | number): void {
+  const cache = getCache(`users.${id}`)
+  if (cache) {
+    loading.value = false
+    user.value = cache
+    document.title = `${cache.name} | User | PixivNow`
+    // Extra
+    getBookmarks()
+    return
+  }
 
-      axios
-        .get(`${API_BASE}/api/user/${id}`)
-        .then(
-          ({ data }: { data: User }) => {
-            this.user = data
-            setCache(`users.${id}`, data)
-            document.title = `${data.name} | User | PixivNow`
+  axios.get(`${API_BASE}/api/user/${id}`)
+    .then(
+      ({ data }: { data: User }) => {
+        user.value = data
+        setCache(`users.${id}`, data)
+        document.title = `${data.name} | User | PixivNow`
 
-            this.getBookmarks()
-          },
-          (err) => {
-            console.warn('user', err.response)
-            this.error =
-              err?.response?.data?.message || err.message || 'HTTP 请求超时'
-          }
-        )
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    userMore() {
-      // alert(JSON.stringify(this.user, null, 2))
-      this.showUserMore = true
-    },
-    getBookmarks() {
-      if (userData.value?.id !== this.$route.params.id) return
-      if (this.loadingBookmarks) return
-      this.loadingBookmarks = true
-      axios
-        .get(`${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`, {
-          params: {
-            tag: '',
-            offset: this.bookmarks.length ?? 0,
-            limit: 48,
-            rest: 'show',
-          },
-        })
-        .then(({ data }) => {
-          this.bookmarks = [...this.bookmarks, ...data.works]
-        })
-        .finally(() => {
-          this.loadingBookmarks = false
-        })
-    },
-    addFollow,
-    removeFollow,
-  },
-  beforeRouteUpdate(to, from) {
-    this.init(to.params.id)
-  },
-  mounted() {
-    document.title = `User | PixivNow`
-    this.init(this.$route.params.id)
-  },
+        getBookmarks()
+      })
+      .catch(
+        (err) => {
+          console.warn('user', err.response)
+          error.value =
+            err?.response?.data?.message || err.message || 'HTTP 请求超时'
+        }
+      )
+      .finally(() => loading.value = false)
 }
+
+function userMore(): void {
+  showUserMore.value = true
+}
+
+function getBookmarks(): void {
+  if (userData.value?.id !== route.params.id) return
+  if (loadingBookmarks.value) return
+  loadingBookmarks.value = true
+
+  axios
+    .get(`${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`, {
+      params: {
+        offset: bookmarks.value.length ?? 0,
+        tag: '',
+        limits: 48,
+        rest: 'show',
+      },
+    })
+    .then(({ data }: { data: { works: Artwork[] } }) => {
+      bookmarks.value = bookmarks.value.concat(data.works)
+    })
+    .finally(() => loadingBookmarks.value = false)
+}
+
+onBeforeRouteUpdate((to) => init(to.params.id as string))
+
+onMounted(() => {
+  document.title = `User | PixivNow`
+  init(route.params.id as string)
+})
 </script>
 
 <style scoped lang="sass">

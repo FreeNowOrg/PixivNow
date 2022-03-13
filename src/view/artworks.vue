@@ -90,7 +90,7 @@
       ArtworksMiniList(:list='recommend')
         .illustCard.loadMore(
           v-if='recommendNextIds.length',
-          @click='getRecommend',
+          @click='getMoreRecommend',
           :style='{ cursor: "pointer" }'
         )
           .top
@@ -105,7 +105,7 @@
       show-more(
         v-if='recommendNextIds.length',
         :text='recommendLoading ? "加载中" : "加载更多"',
-        :method='getRecommend',
+        :method='getMoreRecommend',
         :loading='recommendLoading'
       )
 
@@ -114,7 +114,7 @@
     error-page(title='出大问题', :description='error')
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import axios from 'axios'
 import { API_BASE } from '../config'
 import { userData } from '../components/userData'
@@ -132,191 +132,143 @@ import ShowMore from '../components/ShowMore.vue'
 import { getCache, setCache } from './siteCache'
 
 // Types
-import { Artwork } from '../types'
+import { onMounted, ref } from 'vue'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
-export default {
-  data() {
-    return {
-      loading: true,
-      illust: {} as Artwork,
-      user: {},
-      recommend: [] as Artwork[],
-      recommendLoading: false,
-      recommendNextIds: [] as string[],
-      bookmarkLoading: false,
-      error: '',
-      userData,
-    }
-  },
-  components: {
-    AuthorCard,
-    ArtTag,
-    ArtworksList,
-    ArtworksMiniList,
-    Card,
-    CommentsArea,
-    ErrorPage,
-    Gallery,
-    Placeholder,
-    ShowMore,
-  },
-  methods: {
-    async init(id: string) {
-      // 初始化
-      this.user = {}
-      this.recommend = []
-      this.recommendNextIds = []
-      this.loading = true
+const loading = ref(true)
+const error = ref('')
+const illust = ref<any>({} as any)
+const user = ref<any>({})
+const recommend = ref<any[]>([])
+const recommendNextIds = ref<string[]>([])
+const recommendLoading = ref(false)
+const bookmarkLoading = ref(false)
+const route = useRoute()
 
-      // Cache
-      const cache = getCache(`illust.${id}`)
-      if (cache) {
-        this.illust = cache
-        this.loading = false
-        document.title = `${cache.illustTitle} | Artwork | PixivNow`
-        // Extra
-        this.getUser(cache.userId)
-        this.getRecommend(id)
-        return
-      }
+function init(id: string): void {
+  const cache = getCache(`illust.${id}`)
+  if (cache) {
+    illust.value = cache
+    loading.value = false
+    document.title = `${cache.illustTitle} | Artwork | PixivNow`
+    getUser(cache.userId)
+    getFirstRecommend(id)
+    return
+  }
 
-      axios
-        .get(`${API_BASE}/api/illust/${id}`, {
-          params: {
-            full: 1,
-          },
-        })
-        .then(
-          ({ data }: { data: Artwork }) => {
-            document.title = `${data.illustTitle} | Artwork | PixivNow`
-            setCache(`illust.${id}`, data)
-            this.illust = data
-
-            // Extra
-            this.getUser(data.userId)
-            this.getRecommend(id)
-          },
-          (err) => {
-            console.warn('illust fetch error', `#${id}`, err)
-            this.error =
-              err?.response?.data?.message || err.message || 'HTTP 请求超时'
-          }
-        )
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    async getUser(userId: string) {
-      if (getCache(`users.${userId}`)) {
-        this.user = getCache(`users.${userId}`)
-        return
-      }
-
-      axios.get(`${API_BASE}/api/user/${userId}`).then(
-        ({ data }) => {
-          setCache(`users.${userId}`, data)
-          this.user = data
-        },
-        (err) => {
-          console.warn('User fetch error', err)
-        }
-      )
-    },
-    async getRecommend(id: string) {
-      if (this.recommendLoading) return
-      this.recommendLoading = true
-
-      if (this.recommend.length < 1) {
-        // Init
-        console.log('init recommend')
-        axios
-          .get(`${API_BASE}/ajax/illust/${id}/recommend/init`, {
-            params: {
-              limit: 18,
-            },
-          })
-          .then(
-            ({ data }) => {
-              this.recommend = data.illusts
-              this.recommendNextIds = data.nextIds
-            },
-            (err) => {
-              console.warn('Get recommend error', err)
-            }
-          )
-          .finally(() => {
-            this.recommendLoading = false
-          })
-      } else {
-        console.log('get more recommend')
-        // Loadmore
-        let requestIds: any[] = []
-        for (let i = 0; i < 18; i++) {
-          if (this.recommendNextIds.length > 0) {
-            requestIds.push(this.recommendNextIds.shift())
-          }
-        }
-        axios
-          .get(`${API_BASE}/ajax/illust/recommend/illusts`, {
-            params: {
-              illust_ids: requestIds,
-            },
-          })
-          .then(
-            ({ data }) => {
-              this.recommend = [...this.recommend, ...data.illusts]
-            },
-            (err) => {
-              console.warn('Load more recommends error', err)
-              this.recommendNextIds.unshift(...(requestIds as never[]))
-            }
-          )
-          .finally(() => {
-            this.recommendLoading = false
-          })
-      }
-    },
-    addBookmark() {
-      if (!userData) return console.log('需要登录才可以添加收藏')
-      if (!this.illust.isBookmarkable) return console.log('无法添加收藏。')
-      if (this.illust.bookmarkData) return console.log('已经收藏过啦。')
-
-      this.bookmarkLoading = true
-
-      axios({
-        url: `${API_BASE}/ajax/illusts/bookmarks/add`,
-        method: 'post',
-        data: {
-          illust_id: this.illust.id,
-          restrict: 0,
-          comment: '',
-          tags: [],
-        },
-      })
-        .then(
-          ({ data }) => {
-            if (data.last_bookmark_id) {
-              this.illust.bookmarkData = data
-              this.illust.bookmarkCount++
-            }
-          },
-          (err) => {
-            console.warn('添加收藏时出现问题', err)
-          }
-        )
-        .finally(() => {
-          this.bookmarkLoading = false
-        })
-    },
-  },
-  beforeRouteUpdate(to, from) {
-    this.init(to.params.id as string)
-  },
-  mounted() {
-    document.title = 'Artwork | PixivNow'
-    this.init(this.$route.params.id as string)
-  },
+  axios.get(`${API_BASE}/api/illust/${id}`, {
+    params: { full: 1 }
+  })
+    .then(({ data }: { data: any }) => {
+      document.title = `${data.illustTitle} | Artwork | PixivNow`
+      setCache(`illust.${id}`, data)
+      illust.value = data
+      getUser(data.userId)
+      getFirstRecommend(id)
+    })
+    .catch((err) => {
+      console.warn('illust fetch error', `#${id}`, err)
+      error.value =
+        err?.response?.data?.message || err.message || 'HTTP 请求超时'
+    })
+    .finally(() => loading.value = false)
 }
+
+function getUser(userId: string): void {
+  if (getCache(`user.${userId}`)) {
+    user.value = getCache(`user.${userId}`)
+    return
+  }
+
+  axios.get(`${API_BASE}/api/user/${userId}`)
+    .then(({ data }) => {
+      user.value = data
+      setCache(`user.${userId}`, data)
+    })
+    .catch((err) => {
+      console.warn('User fetch error', err)
+    })
+}
+
+function getFirstRecommend(id: string): void {
+  if (recommendLoading.value) return
+  recommendLoading.value = true
+  console.log('init recommend')
+  axios.get(`${API_BASE}/ajax/illust/${id}/recommend/init`, {
+    params: { limit: 18 }
+  })
+    .then(({ data }) => {
+      recommend.value = data.illusts
+      recommendNextIds.value = data.nextIds
+    })
+    .catch((err) => {
+      console.warn('recommend fetch error', err)
+    })
+    .finally(() => recommendLoading.value = false)
+}
+
+function getMoreRecommend(): void {
+  if (recommendLoading.value) return
+  recommendLoading.value = true
+  console.log('get more recommended')
+  if (!recommendNextIds.value.length) {
+    console.log('no more recommended')
+    return
+  }
+  const requestIds = recommendNextIds.value.splice(0, 18)
+
+  axios
+    .get(`${API_BASE}/ajax/illust/recommend/illusts`, {
+    params: { illust_ids: requestIds }
+  })
+    .then(({ data }) => {
+      recommend.value = recommend.value.concat(data.illusts)
+      recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
+    })
+    .catch((err) => {
+      console.warn('recommend fetch error', err)
+    })
+    .finally(() => recommendLoading.value = false)
+}
+
+function addBookmark(): void {
+  if (!userData) return console.log('需要登录才可以添加收藏')
+  if (illust.value.isBookmarkable) {
+    console.log('无法添加收藏。')
+    return
+  }
+  if (illust.value.bookmarkData) {
+    console.log('已经收藏过啦。')
+    return
+  }
+  if (bookmarkLoading.value) return
+  bookmarkLoading.value = true
+  axios.post(`${API_BASE}/ajax/illust/bookmarks/add`, {
+    illust_id: illust.value.illustId,
+    restrict: illust.value.restrict,
+    comment: '',
+    tags: [],
+  })
+    .then(({ data }) => {
+      if (data.last_bookmark_id) {
+        illust.value.bookmarkData = data
+        illust.value.bookmarkCount++
+      }
+    })
+    .catch((err) => {
+      console.warn('bookmark add error', err)
+    })
+    .finally(() => bookmarkLoading.value = false)
+}
+
+onBeforeRouteUpdate((to) => {
+  init(to.params.id as string)
+})
+
+onMounted(() => {
+  document.title = 'Artwork | PixivNow'
+  init(route.params.id as string)
+})
 </script>
 
 <style scoped lang="sass">

@@ -67,7 +67,6 @@ header.globalNavbar(:class='{ notAtTop, isHide }')
 
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
 import { userData, userLogout } from './userData'
@@ -82,7 +81,6 @@ const emit = defineEmits<{
 
 const isHide = ref(false)
 const notAtTop = ref(false)
-const router = useRouter()
 const sideNavShow = ref(false)
 const userDropdownShow = ref(false)
 
@@ -124,7 +122,6 @@ onMounted(() => {
     document.addEventListener('click', (e) => {
       if (userDropdownShow.value) userDropdownShow.value = false
     })
-    router.beforeEach(() => userDropdownShow.value = false)
 })
 </script>
 

@@ -1,12 +1,10 @@
-import { ref } from 'vue'
-
-export const _siteCacheData = ref()
-_siteCacheData.value = {}
-export function setCache(key: string, val: any) {
+export const _siteCacheData = new Map<string | number, any>()
+export function setCache(key: string | number, val: any) {
   console.log('setCache', key, val)
-  _siteCacheData.value[key] = val
+  _siteCacheData.set(key, val)
 }
-export function getCache(key: number | string) {
-  console.log('getCache', key, _siteCacheData.value[key])
-  return _siteCacheData.value[key] || null
+export function getCache(key: string | number) {
+  const val = _siteCacheData.get(key)
+  console.log('getCache', key, val)
+  return val
 }

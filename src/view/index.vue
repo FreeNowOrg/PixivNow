@@ -57,8 +57,9 @@
     //-   ArtworksList(:list="rankList")
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import axios from 'axios'
+import { onMounted, ref } from 'vue'
 import { API_BASE } from '../config'
 import { getCache, setCache } from './siteCache'
 
@@ -69,87 +70,67 @@ import SearchBox from '../components/SearchBox.vue'
 import Placeholder from '../components/Placeholder.vue'
 import LogoH from '../assets/LogoH.png'
 
-import { Artwork } from '../types'
+const showBgInfo = ref(false)
+const discoverList = ref([])
+const rankList = ref([])
+const randomBg = ref<{
+  url: string
+  info: any
+}>({
+  url: '',
+  info: {} as any
+})
 
-export default {
-  components: {
-    ArtworksList,
-    ArtworksMiniList,
-    Modal,
-    SearchBox,
-    Placeholder,
-  },
-  data() {
-    return {
-      rankList: [],
-      discoverList: [],
-      LogoH,
-      showBgInfo: false,
-      randomBg: {
-        url:
-          // 钟离我的钟离呜呜呜呜呜钟离！！！！！
-          // 'https://blog.wjghj.cn/_statics/images/background/2021BeneathTheLightOfJadeite/bg.jpg',
-          // 这个里面可能有色图
-          //     `https://cdn.jsdelivr.net/gh/Moe-Dog/Moe-Dog.github.io@0.4/statics/img/${parseInt(
-          //       '' + Math.random() * 20 + 1
-          //     )}.jpg`,
-          // 'https://api.daihan.top/api/acg',
-          '',
-        info: {} as Artwork,
-      },
-    }
-  },
-  methods: {
-    initRank() {
-      if (getCache('home.rankList')) {
-        this.rankList = getCache('home.rankList')
-        return
-      }
-      axios.get(`${API_BASE}/api/ranking`).then(({ data }) => {
-        this.rankList = data.contents
-        setCache('home.rankList', data.contents)
-      })
-    },
-    setRandomBg(noCache?: boolean) {
-      if (!noCache && getCache('home.randomBg')) {
-        this.randomBg = getCache('home.randomBg')
-        return
-      }
-      axios.get(`${API_BASE}/api/illust/random?max=1`).then(({ data }) => {
-        const info = data[0]
-        if (!info) {
-          this.randomBg.url = 'https://api.daihan.top/api/acg'
-          this.randomBg.info = {} as Artwork
-          return
-        }
-        const url = API_BASE + info.urls.regular
-        this.randomBg.info = info
-        this.randomBg.url = url
-        setCache('home.randomBg', { info, url })
-      })
-    },
-    setDiscovered(noCache?: boolean) {
-      if (!noCache && getCache('home.discoverList')) {
-        this.discoverList = getCache('home.discoverList')
-        return
-      }
-      this.discoverList = []
-      axios
-        .get(`${API_BASE}/api/illust/random?max=8&mode=all`)
-        .then(({ data }) => {
-          this.discoverList = data
-          setCache('home.discoverList', data)
-        })
-    },
-  },
-  mounted() {
-    document.title = 'PixivNow'
-
-    // this.initRank()
-    this.setRandomBg()
-    this.setDiscovered()
-  },
+function initRank(): void {
+  if (getCache('home.rankList')) {
+    rankList.value = getCache('home.rankList')
+    return
+  }
+  axios.get(`${API_BASE}/api/ranking`).then(({ data }) => {
+    rankList.value = data.contents
+    setCache('home.rankList', data.contents)
+  })
 }
+
+function setRandomBg(noCache?: boolean): void {
+  if (!noCache && getCache('home.randomBg')) {
+    randomBg.value = getCache('home.randomBg')
+    return
+  }
+  axios.get(`${API_BASE}/api/illust/random?max=1`).then(({ data }) => {
+    const info = data[0]
+    if (!info) {
+      randomBg.value.url = 'https://api.daihan.top/api/acg'
+      randomBg.value.info = {} as any
+      return
+    }
+    const url = API_BASE + info.urls.regular
+    randomBg.value.info = info
+    randomBg.value.url = url
+    setCache('home.randomBg', { info, url })
+  })
+}
+
+function setDiscovered(noCache?: boolean): void {
+  if (!noCache && getCache('home.discoverList')) {
+    discoverList.value = getCache('home.discoverList')
+    return
+  }
+  discoverList.value = []
+  axios
+    .get(`${API_BASE}/api/illust/random?max=8&mode=all`)
+    .then(({ data }) => {
+      discoverList.value = data
+      setCache('home.discoverList', data)
+    })
+}
+
+onMounted(() => {
+  document.title = 'Pixiv Now'
+  setRandomBg()
+  initRank()
+  setDiscovered(true)
+})
 </script>
 
 <style lang="sass">

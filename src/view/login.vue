@@ -24,7 +24,7 @@
     p 访问 <a href="https://www.pixiv.net" target="_blank">www.pixiv.net</a> 源站并登录，打开浏览器控制台(f12)，点击“存储(storage)”一栏，在 cookie 列表里找到“键(key)”为<code>PHPSESSID</code>的一栏，将它的“值(value)”复制后填写到这里。
     p
       | 它应该形如：
-      code(title="此处的令牌为随机生成，仅供演示使用" @click="randomToken") {{ example }}
+      code(title="此处的令牌为随机生成，仅供演示使用" @click="tokenExample") {{ example }}
       | 。
     h2 PixivNow 会窃取我的个人信息吗？
     p 我们<strong>不会</strong>存储或转让您的个人信息以及 cookie。
@@ -38,12 +38,14 @@ div.loginForm.isLogedIn(v-if="userData")
     fa(icon="angle-left")
     | &nbsp;返回
   h1 查看 Pixiv 令牌
-  input.token(readonly="readonly" :value="userData.PHPSESSID")
+  input.token(readonly :value="userData.PHPSESSID")
   .submit
     button(@click="remove") 移除令牌
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import {
   tokenExample,
   tokenValidator,
@@ -52,52 +54,45 @@ import {
   userLogout,
 } from '../components/userData'
 
-export default {
-  data() {
-    return {
-      userData,
-      example: tokenExample(),
-      tokenInput: '',
-      loading: false,
-      error: '',
-    }
-  },
-  methods: {
-    tokenValidator,
-    goBack() {
-      const back = this.$route.query.back
-      if (back) this.$router.push(back as string)
-    },
-    randomToken() {
-      this.example = tokenExample()
-    },
-    submit() {
-      if (!tokenValidator(this.tokenInput)) return console.warn('格式不正确')
-      this.loading = true
-      userLogin(this.tokenInput)
-        .then(
-          () => {
-            this.goBack()
-          },
-          (err) => {
-            this.error = err.message
-          }
-        )
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    remove() {
-      userLogout()
-    },
-  },
-  watch: {
-    tokenInput() {
-      this.error = ''
-    },
-  },
-  mounted() {},
+const example = ref(tokenExample())
+const tokenInput = ref('')
+const error = ref('')
+const loading = ref(false)
+const route = useRoute()
+const router = useRouter()
+
+function goBack(): void {
+  const back = route.query.back
+  if (back) {
+    router.push(back as string)
+  } else {
+    router.push('/')
+  }
 }
+
+function submit(): void {
+  if (!tokenValidator(tokenInput.value)) {
+    error.value = '哎呀，这个格式看上去不太对……'
+    console.warn(error.value)
+    return
+  }
+  loading.value = true
+  userLogin(tokenInput.value)
+    .then(() => {
+      error.value = ''
+      goBack()
+    })
+    .catch(e => {
+      error.value = e.message
+    })
+    .finally(() => loading.value = false)
+}
+
+function remove(): void {
+  userLogout()
+}
+
+watch(tokenInput, () => error.value = '' )
 </script>
 
 <style scoped lang="sass">

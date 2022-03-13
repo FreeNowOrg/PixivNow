@@ -25,9 +25,8 @@ li.commentBlock
 import { API_BASE } from '../../config'
 import stampList from './stampList.json'
 import { userData } from '../userData'
-import { Comments } from '../../types'
 
-const props = defineProps<{ comment: Comments }>()
+const props = defineProps<{ comment: any }>()
 
 function replaceStamps(str: string): string {
   for (const [stampName, stampUrl] of Object.entries(stampList)) {

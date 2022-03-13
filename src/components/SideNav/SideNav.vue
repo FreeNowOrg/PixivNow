@@ -38,14 +38,12 @@ aside.globalSideNav(:class='{ isHide: !show }')
 
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import { userData } from '../userData'
 
 import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
 
 const show = ref(false)
-const router = useRouter()
 
 defineExpose({
   show,
@@ -60,7 +58,6 @@ watch(show, (value) => {
 })
 
 onMounted(() => {
-  router.beforeEach(() => show.value = false)
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') show.value = false
   })

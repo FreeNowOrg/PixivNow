@@ -24,13 +24,12 @@
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
 import { API_BASE } from '../../config'
-import { Comments } from '../../types'
 
 import Comment from './Comment.vue'
 import Placeholder from '../Placeholder.vue'
 
 const loading = ref(false)
-const comments = ref<Comments[]>([])
+const comments = ref<any[]>([])
 const hasNext = ref(false)
 
 const props = defineProps<{
