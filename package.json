@@ -9,7 +9,7 @@
   "scripts": {
     "start": "vite",
     "serve": "vercel dev",
-    "build": "vuedx-typecheck ./src && vite build",
+    "build": "vite build",
     "preview": "vercel deploy",
     "bump": "bump --nopublish",
     "changelog": "conventional-changelog -p jquery -i CHANGELOG.md -s -r 0"
@@ -34,8 +34,6 @@
     "@types/js-cookie": "^2.2.7",
     "@types/nprogress": "^0.2.0",
     "@vercel/node": "^1.13.0",
-    "@vuedx/typecheck": "^0.7.4",
-    "@vuedx/typescript-plugin-vue": "^0.7.4",
     "cheerio": "^1.0.0-rc.10",
     "conventional-changelog-cli": "^2.2.2",
     "prettier": "^2.5.1",

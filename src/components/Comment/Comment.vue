@@ -23,23 +23,17 @@ li.commentBlock
 
 <script lang="ts" setup>
 import { API_BASE } from '../../config'
-import { stampList } from './stampList'
+import stampList from './stampList.json'
 import { userData } from '../userData'
 import { Comments } from '../../types'
 
 const props = defineProps<{ comment: Comments }>()
 
-function replaceStamps(str: string) {
-  const reg = new RegExp(
-    `(${Object.keys(stampList)
-      .map((i) => `\\(${i}\\)`)
-      .join('|')})`,
-    'g'
-  )
-  return str.replace(reg, (match) => {
-    const key = match.replace(/[\(\)]/g, '')
-    return `<img src="${API_BASE}${stampList[key]}" class="stamp">`
-  })
+function replaceStamps(str: string): string {
+  for (const [stampName, stampUrl] of Object.entries(stampList)) {
+    str = str.replaceAll(stampName, `<img src="${API_BASE}${stampUrl}" alt="表情包" lazyload>`)
+  }
+  return str
 }
 </script>
 

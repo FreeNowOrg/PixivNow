@@ -18,8 +18,8 @@ li
 const props = defineProps<{
   icon: string
   text: string
-  externalLink?: string | undefined
-  link?: string | undefined
+  externalLink?: string
+  link?: string
 }>()
 </script>
 

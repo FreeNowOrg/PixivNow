@@ -49,17 +49,22 @@ import { addBookmark, removeBookmark } from "../../utils/artworkActions"
 const props = defineProps<{
   list: {
     id: number
+    illustId: number
     title: string
     userName: string
     userId: string
     profileImageUrl: string
     profileImg: string
-    xRestrict: boolean
+    tags?: string[]
+    xRestrict: 0 | 1 | 2
     pageCount: number
+    rank: number
     isAdContainer: boolean
     url: string
-    bookmarkData: any
     alt: string
+    bookmarkData: {
+      id: number
+    }
   }[]
 }>()
 

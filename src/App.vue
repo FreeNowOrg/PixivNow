@@ -19,7 +19,7 @@ import NProgress from './components/NProgress.vue'
 import { userInit } from './components/userData'
 import { onMounted, ref } from 'vue'
 
-const globalSideNav = ref(null)
+const globalSideNav = ref<InstanceType<typeof SideNav> | null>(null)
 
 function toggleSideNav(showSideNav: boolean): void {
   if (globalSideNav.value) {

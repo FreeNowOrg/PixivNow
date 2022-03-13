@@ -62,9 +62,7 @@ watch(show, (value) => {
 onMounted(() => {
   router.beforeEach(() => show.value = false)
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      show.value = false
-    }
+    if (e.key === 'Escape') show.value = false
   })
 })
 </script>

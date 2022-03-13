@@ -45,15 +45,15 @@ import { API_BASE } from '../../config'
 
 const props = defineProps<{
   illust: {
-    id: string
-    illustId: string
+    id: `${number}`
+    illustId: `${number}`
     title: string
     userName: string
     userId: string
     profileImageUrl: string
     profileImg: string
     tags: string[]
-    xRestrict: boolean
+    xRestrict: 0 | 1 | 2
     pageCount: number
     rank: number
     isAdContainer: boolean

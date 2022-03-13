@@ -11,15 +11,15 @@ import ArtworkCard from './ArtworkCard.vue'
 
 const props = defineProps<{
   list: {
-    id: string
-    illustId: string
+    id: `${number}`
+    illustId: `${number}`
     title: string
     userName: string
     userId: string
     profileImageUrl: string
     profileImg: string
     tags: string[]
-    xRestrict: boolean
+    xRestrict: 0 | 1 | 2
     pageCount: number
     rank: number
     isAdContainer: boolean
