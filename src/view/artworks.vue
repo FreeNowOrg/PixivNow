@@ -132,14 +132,16 @@ import ShowMore from '../components/ShowMore.vue'
 import { getCache, setCache } from './siteCache'
 
 // Types
+import type { Artwork, User } from '../types'
+
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
 const loading = ref(true)
 const error = ref('')
-const illust = ref<any>({} as any)
-const user = ref<any>({})
-const recommend = ref<any[]>([])
+const illust = ref<Artwork>({} as Artwork)
+const user = ref<User>({} as User)
+const recommend = ref<Artwork[]>([])
 const recommendNextIds = ref<string[]>([])
 const recommendLoading = ref(false)
 const bookmarkLoading = ref(false)

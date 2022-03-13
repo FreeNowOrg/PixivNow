@@ -25,12 +25,13 @@ li.commentBlock
 import { API_BASE } from '../../config'
 import stampList from './stampList.json'
 import { userData } from '../userData'
+import type { Comments } from '../../types'
 
-const props = defineProps<{ comment: any }>()
+const props = defineProps<{ comment: Comments }>()
 
 function replaceStamps(str: string): string {
   for (const [stampName, stampUrl] of Object.entries(stampList)) {
-    str = str.replaceAll(stampName, `<img src="${API_BASE}${stampUrl}" alt="表情包" lazyload>`)
+    str = str.replaceAll(`(${stampName})`, `<img src="${API_BASE}${stampUrl}" alt="表情包" lazyload>`)
   }
   return str
 }

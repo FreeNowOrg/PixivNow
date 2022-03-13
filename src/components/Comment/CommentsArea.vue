@@ -27,9 +27,10 @@ import { API_BASE } from '../../config'
 
 import Comment from './Comment.vue'
 import Placeholder from '../Placeholder.vue'
+import type { Comments } from '../../types'
 
 const loading = ref(false)
-const comments = ref<any[]>([])
+const comments = ref<Comments[]>([])
 const hasNext = ref(false)
 
 const props = defineProps<{
@@ -53,7 +54,7 @@ async function init(id: string | number): Promise<void> {
       ({ data }) => {
         console.log('Comments', data)
         hasNext.value = data.hasNext
-        comments.value = [...comments.value, ...data.comments]
+        comments.value = comments.value.concat(data.comments)
       },
       (err) => console.warn('Comments fetch error', err)
     )
