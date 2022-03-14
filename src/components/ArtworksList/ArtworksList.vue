@@ -4,8 +4,6 @@ ul.artworks-list
     :key="item.id"
   )
     artwork-card(:item="item")
-  li
-    slot/
 </template>
 
 <script lang="ts" setup>
