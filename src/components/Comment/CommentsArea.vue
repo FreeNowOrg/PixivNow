@@ -1,12 +1,12 @@
 <template lang="pug">
-.commentsArea
+.comments-area
   //- CommentSubmit(:id="id" @push-comment="pushComment")
   em.stats
     | 共{{ count || comments.length || 0 }}条评论
   p(v-if="!comments.length && !loading") 还没有人发表评论呢~
-  ul.commentsList(v-if="comments.length")
+  ul.comments-list(v-if="comments.length")
     comment(v-for="item in comments" :comment="item")
-    .showMore.align-center
+    .show-more.align-center
       a.button(
         v-if="comments.length && hasNext"
         @click="init(id)"
@@ -74,7 +74,8 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="sass">
-.commentsList
+
+.comments-list
   list-style: none
   padding-left: 0
 </style>

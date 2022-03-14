@@ -1,16 +1,16 @@
 <template lang="pug">
 #home-view
-  .topSlider.align-center(
+  .top-slider.align-center(
     :style='{ "background-image": `url(${randomBg.url})` }'
   )
-    section.searchArea.flex-1
+    section.search-area.flex-1
       search-box.big.search
 
-    .siteLogo
+    .site-logo
       img(:src='LogoH')
     .description Pixiv Service Proxy
 
-    .bgInfo
+    .bg-info
       a.pointer(
         style='margin-right: 0.5em',
         title='换一个~',
@@ -24,11 +24,11 @@
       )
         fa(icon='question-circle')
 
-  modal.bgInfoModal(v-model:show='showBgInfo')
+  modal.bg-info-modal(v-model:show='showBgInfo')
     h3 背景图片：{{ randomBg.info.title }}
     .align-center
       router-link.thumb(:to='"/artworks/" + randomBg.info.id')
-        lazyload(:src='randomBg.url')
+        img(:src='randomBg.url' lazyload)
       .desc
         strong {{ randomBg.info.title }}
         | &nbsp;-&nbsp;
@@ -48,7 +48,7 @@
           )
       .align-center(v-if='!discoverList.length')
         placeholder
-      ArtworksMiniList(:list='discoverList')
+      artworks-list(:list='discoverList')
 
     //- section.ranking
     //-   h2 今日排行
@@ -64,7 +64,6 @@ import { API_BASE } from '../config'
 import { getCache, setCache } from './siteCache'
 
 import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
-import ArtworksMiniList from '../components/ArtworksList/ArtworksMiniList.vue'
 import Modal from '../components/Modal.vue'
 import SearchBox from '../components/SearchBox.vue'
 import Placeholder from '../components/Placeholder.vue'
@@ -134,8 +133,9 @@ onMounted(() => {
 </script>
 
 <style lang="sass">
+
 [data-route="home"]
-  .topSlider
+  .top-slider
     min-height: calc(100vh)
     margin-top: calc(-50px - 1rem)
     padding: 30px 10%
@@ -165,7 +165,7 @@ onMounted(() => {
       position: relative
       z-index: 1
 
-    .bgInfo
+    .bg-info
       position: absolute
       right: 1.5rem
       bottom: 1rem
@@ -173,7 +173,7 @@ onMounted(() => {
       a
         --color: #fff
 
-  .siteLogo
+  .site-logo
     img
       height: 4rem
       width: auto
@@ -181,37 +181,37 @@ onMounted(() => {
   .description
     font-size: 1.2rem
 
-  .searchArea
+  .search-area
     display: flex
     align-items: center
 
     > *
       width: 100%
 
-  .globalNavbar
-    background: none
-    .searchArea
-      opacity: 0
-      transition: opacity 0.4s ease
-      pointer-events: none
+.global-navbar
+  background: none
+  .search-area
+    opacity: 0
+    transition: opacity 0.4s ease
+    pointer-events: none
 
-    &.notAtTop
-      background-color: var(--theme-accent-color)
-      .searchArea
-        opacity: 1
-        pointer-events: all
-  .bgInfoModal
-    h3
-      margin-top: 0
-    .thumb
-      > *
-        width: auto
-        height: auto
-        max-width: 100%
-        max-height: 60vh
-        border-radius: 8px
-    .desc
-      margin-top: 1rem
-      font-size: 0.75rem
-      font-style: italic
+  &.not-at-top
+    background-color: var(--theme-accent-color)
+    .search-area
+      opacity: 1
+      pointer-events: all
+.bg-info-modal
+  h3
+    margin-top: 0
+  .thumb
+    > *
+      width: auto
+      height: auto
+      max-width: 100%
+      max-height: 60vh
+      border-radius: 8px
+  .desc
+    margin-top: 1rem
+    font-size: 0.75rem
+    font-style: italic
 </style>

@@ -1,5 +1,5 @@
 <template lang="pug">
-.showMoreBtn
+.show-more
   a(@click="method")
     | {{ text }}
     | 
@@ -22,7 +22,8 @@ const props = defineProps<{
 </script>
 
 <style scoped lang="sass">
-.showMoreBtn
+
+.show-more
   text-align: center
 
   a

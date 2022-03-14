@@ -1,49 +1,48 @@
 <template lang="pug">
-ul.artworksList
-  li(v-for="item in list")
-    artwork-card(v-if="item" :illust="item")
-  li 
+ul.artworks-list
+  li(v-for="(item) in artworks"
+    :key="item.id"
+  )
+    artwork-card(:item="item")
+  li
     slot/
 </template>
 
 <script lang="ts" setup>
 import ArtworkCard from './ArtworkCard.vue'
 
+import type { ArtworkReduced, ArtworkReducedOrAd } from "../../types"
+import { computed } from "vue"
+
 const props = defineProps<{
-  list: {
-    id: `${number}`
-    illustId: `${number}`
-    title: string
-    userName: string
-    userId: string
-    profileImageUrl: string
-    profileImg: string
-    tags: string[]
-    xRestrict: 0 | 1 | 2
-    pageCount: number
-    rank: number
-    isAdContainer: boolean
-    url: string
-  }[]
+  list: ArtworkReducedOrAd[]
 }>()
+
+const artworks = computed(() => {
+  return props.list.filter(item => Object.keys(item).includes('id')) as ArtworkReduced[]
+})
 </script>
 
 <style lang="sass">
-.artworksList
+
+.artworks-list
+  list-style: none
+  padding-left: 0
   display: flex
   flex-wrap: wrap
-  padding-left: 0
-  list-style: none
   gap: 1.5rem
   justify-content: center
 
   &.inline
-    padding: 1rem
-    flex-wrap: nowrap
     overflow-y: auto
-    justify-content: left
+    white-space: nowrap
+    display: block
 
-    .illustCard
-      height: 500px
-      // overflow-x: auto
+    li:not(:first-of-type)
+      margin-left: 0.75rem
+
+  li
+    width: 180px
+    max-width: calc(50vw - 2rem)
+    display: inline-block
 </style>

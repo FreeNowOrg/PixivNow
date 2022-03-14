@@ -1,9 +1,9 @@
 <template lang="pug">
-aside.globalSideNav(:class='{ isHide: !show }')
+aside.global-side-nav(:class='{ hidden: !show }')
   .backdrop(@click='show = false')
   .inner
     .group
-      .searchArea
+      .search-area
         search-box
 
     .list
@@ -18,12 +18,11 @@ aside.globalSideNav(:class='{ isHide: !show }')
       .group
         .title Pixiv 令牌
         ul
-          li
-            list-link(
-              icon='fingerprint',
-              link='/login',
-              :text='userData ? "查看令牌" : "设置令牌"'
-            )
+          list-link(
+            icon='fingerprint',
+            link='/login',
+            :text='userData ? "查看令牌" : "设置令牌"'
+          )
 
       .group
         .title PixivNow
@@ -43,6 +42,10 @@ import { userData } from '../userData'
 import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
 
+const emit = defineEmits<{
+  (e: 'updateShow', show: boolean): void
+}>()
+
 const show = ref(false)
 
 defineExpose({
@@ -50,6 +53,7 @@ defineExpose({
 })
 
 watch(show, (value) => {
+  emit('updateShow', value)
   if (value) {
     document.body.style.overflow = 'hidden'
   } else {
@@ -65,7 +69,8 @@ onMounted(() => {
 </script>
 
 <style scoped lang="sass">
-.globalSideNav
+
+.global-side-nav
   z-index: 90
 
 .backdrop
@@ -89,7 +94,7 @@ onMounted(() => {
   z-index: 95
   transition: all 0.5s
 
-.sideNavToggle
+.side-nav-toggle
   font-size: 1.2rem
   text-align: center
   margin: auto 0.5rem
@@ -136,20 +141,20 @@ onMounted(() => {
   height: 2.2rem
 
 // Hidden state
-.isHide
+.hidden
   .inner
     left: -300px
   .backdrop
     display: none
 
-.searchArea
+.search-area
   display: block
   padding: 0 1.6rem
-  .searchBox
+  .search-box
     box-shadow: 0 0 8px #ddd
     border-radius: 2em
 
 @media screen and (min-width: 450px)
-  .searchArea
+  .search-area
     display: none !important
 </style>

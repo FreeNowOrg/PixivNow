@@ -1,57 +1,61 @@
 <template lang="pug">
 .gallery
-  .centerImg(:class='showAll ? "showAll" : "showSingle"')
+  .center-img(:class='showAll ? "show-all" : "show-single"')
     div(v-for='(item, index) in pages', :data-pic-index='index')
-      a.imageContainer(
+      a.image-container(
         v-if='picShow === index',
         :href='API_BASE + item.urls.original',
         target='_blank',
         title='点击下载原图'
       )
-        lazyload.pic(
+        lazy-load.img(
           :src='API_BASE + item.urls.regular',
           :width='item.width',
           :height='item.height'
+          lazyload
         )
   //- .tips.align-center (这是预览图，点击下载原图)
   ul.pagenator(v-if='pages.length > 1')
     li(v-for='(item, index) in pages')
       a(
         @click='picShow = index',
-        :title='"第" + (index + 1) + "张 (共" + pages.length + "张)"',
-        :class='{ isActive: picShow === index }'
+        :title='"第" + (index + 1) + "张，共" + pages.length + "张"',
+        :class='{ active: picShow === index }'
       )
-        lazyload.pic(
-          :src='API_BASE + item.urls.thumb_mini',
-          :width='80',
-          :height='80'
-        )
+        .pic 
+          img(
+            :src='API_BASE + item.urls.thumb_mini',
+            :width='80',
+            :height='80'
+            lazyload
+          )
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { API_BASE } from '../config'
+import LazyLoad from './LazyLoad.vue'
 
 const props = defineProps<{
   pages: {
     urls: {
       original: string
+      small: string
       regular: string
       thumb_mini: string
     }
-    width: string
-    height: string
+    width: number
+    height: number
   }[]
 }>()
-const loading = ref(false)
-const error = ref('')
 const showAll = ref(false)
 const picShow = ref(0)
 </script>
 
 <style lang="sass">
+
 .gallery
-  .centerImg
+  .center-img
     width: 100%
     overflow: auto
     margin: 0.4rem auto
@@ -68,11 +72,11 @@ const picShow = ref(0)
   .flex-center
     gap: 1rem
 
-    .leftBtn,
-    .rightBtn
+    .left-btn,
+    .right-btn
       flex: 1
 
-    .leftBtn
+    .left-btn
       text-align: right
 
   .tips
@@ -87,7 +91,7 @@ const picShow = ref(0)
     &:hover
       box-shadow: var(--theme-box-shadow-hover)
 
-  .centerImg
+  .center-img
     display: block
     text-align: center
 

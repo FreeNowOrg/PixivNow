@@ -1,7 +1,7 @@
 <template lang="pug">
 #ranking-view
   //- 已登录
-  .isLoggedIn.body-inner
+  .logged-in.body-inner
     //- Error
     section(v-if='error')
       h1 排行榜加载失败
@@ -16,7 +16,7 @@
     //- Result
     section(v-if='list')
       h1 {{ list.date.toLocaleDateString('zh', { dateStyle: 'long' }) }}排行榜
-      artworks-list(:list='list.contents')
+      ranking-list(:list='list.contents')
 </template>
 
 <script lang="ts" setup>
@@ -24,31 +24,18 @@ import axios from 'axios'
 import { userData } from '../components/userData'
 import { API_BASE } from '../config'
 
-import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import RankingList from '../components/ArtworksList/RankingList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Placeholder from '../components/Placeholder.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import type { ArtworkRank } from '../types'
 
 const error = ref('')
 const loading = ref(true)
 const list = ref<{
   date: Date
-  contents: {
-    id: `${number}`
-    illustId: `${number}`
-    title: string
-    userName: string
-    userId: string
-    profileImageUrl: string
-    profileImg: string
-    tags: string[]
-    xRestrict: 0 | 1 | 2
-    pageCount: number
-    rank: number
-    isAdContainer: boolean
-    url: string
-  }[]
+  contents: ArtworkRank[]
 } | null>(null)
 const route = useRoute()
 
@@ -76,8 +63,7 @@ function init(): void {
     .catch((err) => {
       error.value =
         err?.response?.data?.error || err.message || '出现未知问题'
-      }
-    )
+    })
     .finally(() => loading.value = false)
 }
 
@@ -91,6 +77,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="sass">
+
 .loading
   text-align: center
 </style>

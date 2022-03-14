@@ -70,5 +70,3 @@ import { PROJECT_NAME, GITHUB_OWNER, GITHUB_REPO, GITHUB_URL } from '../config'
 
 onMounted(() => document.title = 'About | PixivNow')
 </script>
-
-<style scoped></style>

@@ -1,5 +1,5 @@
 <template lang="pug">
-Card.authorCard(title='')
+card.author-card(title='')
   .flex-center
     .left
       router-link(:to="'/users/' + user.userId")
@@ -13,45 +13,24 @@ Card.authorCard(title='')
           fa(icon="plus")
       p.description.pre {{ user.comment }}
 
-  ArtworksMiniList.inline.tiny(:list="user.illusts")
+  artworks-list.inline.tiny(:list="user.illusts")
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import ArtworksMiniList from '../components/ArtworksList/ArtworksMiniList.vue'
+import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
 import Card from './Card.vue'
 
+import type { User } from '../types'
+
 const props = defineProps<{
-  user: {
-    userId: string
-    imageBig: string
-    name: string
-    comment: string
-    illusts: {
-      id: number
-      illustId: number
-      title: string
-      userName: string
-      userId: string
-      profileImageUrl: string
-      profileImg: string
-      tags: string[]
-      xRestrict: 0 | 1 | 2
-      pageCount: number
-      rank: number
-      isAdContainer: boolean
-      url: string
-      alt: string
-      bookmarkData: {
-        id: number
-      }
-  }[]
-  }
+  user: User
 }>()
 const API = ref('https://pixiv.js.org')
 </script>
 
 <style scoped lang="sass">
+
 .left
   margin-right: 1rem
 
@@ -73,7 +52,7 @@ const API = ref('https://pixiv.js.org')
     color: var(--theme-text-color)
     padding: 0.2rem 1rem
     border-radius: 1rem
-    
+
 .description
   width: 100%
   max-height: 80px

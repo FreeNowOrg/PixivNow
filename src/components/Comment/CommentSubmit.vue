@@ -1,7 +1,7 @@
 <template lang="pug">
-.commentSubmit(:data-illust_id="id")
+.comment-submit(:data-illust_id="id")
   em 发表评论
-  .flex.isLoggedIn(v-if="userData")
+  .flex.logged-in(v-if="userData")
     .left
       .avatar
         img(:src="API_BASE + userData.profileImg")
@@ -9,7 +9,7 @@
       textarea(v-model="comment" :disabled="loading")
     .submit.align-right
     button(@click="submit" :disabled="loading") 发送
-  .flex.notLogIn(v-if="!userData")
+  .flex.not-logged-in(v-if="!userData")
     p 
       | 您需要
       router-link(:to="'/login?back=' + $route.path") 设置 Pixiv 令牌
@@ -73,12 +73,13 @@ function submit() {
 </script>
 
 <style scoped lang="sass">
+
 .right
   flex: 1
 
 textarea
   width: 100%
 
-.notLogIn
+.not-logged-in
   color: #888
 </style>

@@ -1,125 +1,158 @@
 <template lang="pug">
-.illustCard(v-if="illust.id || illust.illustId")
-  .top
-    router-link(:to="'/artworks/' + (illust.id || illust.illustId)")
-      .thumb
-        img(
-          :src="API_BASE + illust.url.replace('p0_master', 'p0_square')"
-          alt=""
-          lazyload="")
-      .xRestrict.tag(v-if="illust.xRestrict" title="R-18")
-        fa(icon="eye")
-      .pageCount(
-        v-if="illust.pageCount"
-        :title="'共 ' + illust.pageCount + ' 张'")
-        fa(icon="images")
-        | {{ illust.pageCount }}
-      .ranking(
-        v-if="illust.rank"
-        :class="{ gold: illust.rank === 1, silver: illust.rank === 2, brown: illust.rank === 3}"
-        ) {{ illust.rank }}
-  .bottom
-    h3.title(:title="illust.title")
-      router-link(:to="'/artworks/' + (illust.id || illust.illustId)") {{ illust.title }}
-    .author(:title="illust.userName")
-      router-link(:to="'/users/' + illust.userId")
-        img.avatar(
-          :src="API_BASE + (illust.profileImageUrl || illust.profileImg)"
-          lazyload=""
-          )
-        | {{ illust.userName }}
-    .tags
-      router-link.tag(v-for="tagName in illust.tags", :to="'/search/' + tagName") \#{{ tagName }}
-
-.illustCard.ad(v-if="illust.isAdContainer")
-  .top
-    div(:style="{width: '100%', paddingTop: '100%', backgroundColor: '#efefef'}")
-  .bottom
-    h3.title 广告
-    .author @Pixiv
-    div 这里是 Pixiv 源站上的广告位，我们才不帮他们显示广告呢（笑
+.thumb
+  .side-tags
+    .x-restrict(v-if="item.xRestrict" title="R-18")
+      fa(icon="eye")
+    .page-count(
+      v-if="item.pageCount > 1"
+      :title="'共 ' + item.pageCount + ' 张'"
+    )
+      fa(icon="images")
+      | {{ item.pageCount }}
+    .bookmark(
+      :class="{ bookmarked: item.bookmarkData }"
+      @click="toggleBookmark"
+    )
+      fa(icon="heart")
+  router-link(:to="'/artworks/' + item.id")
+    img(
+      :src="API_BASE + item.url"
+      :alt="item.alt"
+      :title="item.alt"
+      lazyload
+    )
+    .hover-title {{ item.title }}
+.info
+  .title
+    router-link(:to="'/artworks/' + item.id") {{ item.title }}
+  .author(:title="item.userName")
+    router-link(:to="'/users/' + item.userId")
+      img.avatar(
+        :src="API_BASE + (item.profileImageUrl)"
+        lazyload
+      )
+      | {{ item.userName }}
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from '../../config'
+import { API_BASE } from "../../config"
+import { addBookmark, removeBookmark } from "../../utils/artworkActions"
+
+import type { ArtworkReduced } from "../../types"
 
 const props = defineProps<{
-  illust: {
-    id: `${number}`
-    illustId: `${number}`
-    title: string
-    userName: string
-    userId: string
-    profileImageUrl: string
-    profileImg: string
-    tags: string[]
-    xRestrict: 0 | 1 | 2
-    pageCount: number
-    rank: number
-    isAdContainer: boolean
-    url: string
-  }
+  item: ArtworkReduced
 }>()
+
+function toggleBookmark(): void {
+  const item = props.item
+  if (item.bookmarkData) {
+    removeBookmark(+item.bookmarkData.id)
+  } else {
+    addBookmark(+item.id)
+  }
+}
 </script>
 
 <style lang="sass">
-h3
-  margin-bottom: .4rem
 
-.illustCard
-  display: inline-block
-  box-sizing: border-box
-  box-shadow: 0 0 4px #ccc
-  padding: .4rem
-  width: 240px
-  max-width: calc(50vw - 2rem)
-  background-color: var(--theme-background-color)
-  border-radius: 4px
-  transition: all .24s ease-in-out
-
-  &:hover
-    box-shadow: var(--theme-box-shadow-hover)
-
-.top
+.thumb
   position: relative
+  overflow: hidden
+  border-radius: 8px
+  width: 100%
+  height: 0
+  padding-top: 100%
+  animation: imgProgress 0.6s ease infinite alternate
 
   a
+    position: absolute
+    left: 0
+    top: 0
     display: block
 
-  .thumb
-    position: relative
-    width: 100%
-    height: 0
-    padding-top: 100%
-    animation: imgProgress 0.6s ease infinite alternate
-
-    img
+    &::before
+      content: ''
+      display: block
       position: absolute
+        // background-color: rgba(0, 0, 0, 0.05)
       top: 0
       left: 0
       width: 100%
       height: 100%
+      z-index: 1
+      pointer-events: none
+      transition: all 0.4s ease-in-out
 
-  .pageCount
+    img
+      position: relative
+      left: 0
+      top: 0
+      width: 100%
+      height: 100%
+      transition: all 0.4s ease-in-out
+
+  .bookmark
+    cursor: pointer
+
+  .hover-title
+    z-index: 10
+    color: #fff
     position: absolute
+    left: 50%
+    top: 50%
+    transform: translateX(-50%) translateY(-50%)
+    text-shadow: 0 0 4px #000
+    font-weight: 600
+    pointer-events: none
+    opacity: 0
+    transition: all 0.4s ease-in-out
+
+  &:hover a,
+  & a.router-link-active
+    &::before
+      background-color: rgba(0, 0, 0, 0.2)
+
+    img
+      transform: scale(1.1)
+
+    .hover-title
+      opacity: 1
+
+.thumb .router-link-active
+  cursor: default
+  box-shadow: 0 0 0 2px #aaa
+
+  & + .cover
+    background-color: rgba(100, 100, 100, 0.6) !important
+
+.side-tags > *
+  position: absolute
+  z-index: 10
+
+  [data-icon]
+    font-size: 1em
+
+.page-count
+  top: .4rem
+  right: .4rem
+  color: #fff
+  background-color: rgba(0, 0, 0, 0.6)
+  padding: .1rem .2rem
+  border-radius: 4px
+  font-size: 0.8rem
+
+  [data-icon]
+    margin-right: .2rem
+
+  .x-restrict
     top: .4rem
-    right: .4rem
+    left: .4rem
     color: #fff
-    background-color: rgba(0, 0, 0, 0.6)
-    padding: .2rem .6rem
-    border-radius: 1rem
-
-    [data-icon]
-      margin-right: .2rem
-
-  .xRestrict
-    position: absolute
-    top: .2rem
-    left: .2rem
-    color: #fff
+    font-size: 0.8rem
     background-color: rgb(255, 0, 0, 0.8)
-    width: 2rem
-    height: 2rem
+    width: 1.5rem
+    height: 1.5rem
     border-radius: 50%
     display: flex
     align-items: center
@@ -127,79 +160,35 @@ h3
     [data-icon]
       margin: 0 auto
 
-  .ranking
-    position: absolute
-    top: -1rem
-    left: -1rem
-    font-size: 1.4rem
-    color: #252525
-    background-color: #fff
-    border-radius: 50%
-    width: 2rem
-    height: 2rem
-    text-align: center
-    line-height: 1.4
-    box-shadow: 0 0 0 2px rgba(var(--theme-accent-color--rgb), 0.4) inset, 0 0 0 4px #fff
+  .bookmark
+    bottom: 0.4rem
+    right: 0.4rem
+    font-size: 1.2rem
+    color: #fff
 
-    &.gold
-      box-shadow: 0 0 0 2px gold inset, 0 0 0 4px #fff
-    &.silver
-      box-shadow: 0 0 0 2px silver inset, 0 0 0 4px #fff
-    &.brown
-      box-shadow: 0 0 0 2px brown inset, 0 0 0 4px #fff
+    &.bookmarked
+      color: var(--theme-bookmark-color)
 
-.bottom
-  // display: flex
-  // max-height: 300px
-  // flex-wrap: wrap
-
-.title a
-  display: inline
-.author a
-  display: inline-flex
-
-.title,
 .author
-  white-space: nowrap
-  text-overflow: ellipsis
-  overflow: hidden
-  width: 100%
-  padding-bottom: 2px
+  img
+    width: 1.5rem
+    height: 1.5rem
 
   a
-    align-items: center
+    font-size: 0.8rem
+    display: inline-flex
 
-    &.router-link-active
-      color: var(--theme-text-color)
-      font-weight: 600
-      font-style: normal
-      cursor: default
+.title
+  margin: 0.4rem 0
+  text-overflow: ellipsis
+  overflow: hidden
 
-      &::after
-        visibility: hidden
+  &.tiny
+    gap: 0.75rem
 
-    .avatar
-      display: inline-block
-      width: 2rem
-      height: 2rem
-      box-sizing: border-box
-      border: 2px solid #fff
-      border-radius: 50%
-      box-shadow: 0 0 4px #ccc
-      margin-right: .4rem
+    li
+      width: 100px
 
-.author
-  margin: .4rem 0
-  font-style: italic
-
-.tags
-  overflow: auto
-  max-height: 140px
-
-  .tag
-    display: inline-block
-    margin: 2px
-    padding: 2px 4px
-    background-color: #d6e4ff
-    border-radius: 4px
+    .info
+      display: none
 </style>

@@ -75,6 +75,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="sass">
+
 .error-page
   margin: 20vh auto
   height: 100%

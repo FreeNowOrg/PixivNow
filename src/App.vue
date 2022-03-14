@@ -1,32 +1,38 @@
 <template lang="pug">
-SideNav(ref="globalSideNav")
-Header(ref="globalHeader" @toggle-sidenav="toggleSideNav")
+side-nav(ref="globalSideNav" @update-show="updateShow")
+site-header(ref="globalHeader" @toggle-sidenav="toggleSideNav")
 
 main
   article
     router-view
 
-Footer(ref="globalFooter")
+site-footer(ref="globalFooter")
 
-NProgress
+n-progress
 </template>
 
 <script lang="ts" setup>
-import Header from './components/Header.vue'
-import Footer from './components/Footer.vue'
+import SiteHeader from './components/Header.vue'
+import SiteFooter from './components/Footer.vue'
 import SideNav from './components/SideNav/SideNav.vue'
 import NProgress from './components/NProgress.vue'
 import { userInit } from './components/userData'
 import { onMounted, ref } from 'vue'
 
 const globalSideNav = ref<InstanceType<typeof SideNav> | null>(null)
+const globalHeader = ref<InstanceType<typeof SiteHeader> | null>(null)
 
 function toggleSideNav(showSideNav: boolean): void {
   if (globalSideNav.value) {
     globalSideNav.value.show = showSideNav
   }
 }
-const name = ref('App')
+
+function updateShow(isShown: boolean): void {
+  if (globalHeader.value) {
+    globalHeader.value.sideNavShow = isShown
+  }
+}
 
 onMounted(userInit)
 </script>

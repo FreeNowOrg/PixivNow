@@ -1,5 +1,5 @@
 <template lang="pug">
-.searchBox
+.search-box
   input(v-model="keyword" @keyup.enter="makeSearch", placeholder="输入关键词搜索/输入 id:数字 查看作品")
   fa.icon(icon="search")
 </template>
@@ -27,7 +27,7 @@ function makeSearch(): void {
 <style lang="sass">
 
 // Search Box
-.searchBox
+.search-box
   display: flex
   position: relative
   align-items: center
@@ -71,6 +71,6 @@ function makeSearch(): void {
       height: 3rem
       border-width: 4px
 
-.globalNavbar .searchBox input
+.global-navbar .search-box input
   background-color: none
 </style>

@@ -1,5 +1,5 @@
 <template lang="pug">
-.loginForm.notLogedIn(v-if="!userData")
+#login-form.not-logged-in(v-if="!userData")
   router-link.button(
     v-if="$route.query.back"
     :to="$route.query.back"
@@ -17,7 +17,7 @@
     :class="tokenValidator(tokenInput) ? 'good' : 'bad'")
     | {{ tokenValidator(tokenInput) ? '格式正确，请点击保存！' : '哎呀，这个格式看上去不太对……' }}
   .status.bad(v-if="error") {{ error }}
-  .submit
+  #submit
     button.btn.btn-primary(@click="submit" :disabled="!!error || loading || !tokenValidator(tokenInput)") {{ loading ? '登录中……' : '保存令牌' }}
   .tips 
     h2 如何获取 Pixiv 令牌？
@@ -30,7 +30,7 @@
     p 我们<strong>不会</strong>存储或转让您的个人信息以及 cookie。
     p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
 
-div.loginForm.isLogedIn(v-if="userData")
+#login-form.logged-in(v-if="userData")
   router-link.button(
     v-if="$route.query.back"
     :to="$route.query.back"
@@ -39,7 +39,7 @@ div.loginForm.isLogedIn(v-if="userData")
     | &nbsp;返回
   h1 查看 Pixiv 令牌
   input.token(readonly :value="userData.PHPSESSID")
-  .submit
+  #submit
     button(@click="remove") 移除令牌
 </template>
 
@@ -92,11 +92,12 @@ function remove(): void {
   userLogout()
 }
 
-watch(tokenInput, () => error.value = '' )
+watch(tokenInput, () => error.value = '')
 </script>
 
 <style scoped lang="sass">
-.loginForm
+
+#login-form
   width: 400px
   margin: 0 auto
   padding: 1rem
@@ -110,7 +111,7 @@ watch(tokenInput, () => error.value = '' )
     box-shadow: var(--theme-box-shadow-hover)
 
 @media screen and(max-width: 500px)
-  .loginForm
+  #login-form
     width: 100%
 
 input
@@ -119,7 +120,7 @@ input
   padding: 4px 8px
   font-size: 1.2rem
 
-.submit
+#submit
   text-align: center
   margin: 1rem auto
 

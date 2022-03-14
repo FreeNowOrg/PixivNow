@@ -6,5 +6,3 @@
 <script lang="ts" setup>
 import ErrorPage from '../components/ErrorPage.vue'
 </script>
-
-<style scoped></style>

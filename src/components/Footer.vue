@@ -1,5 +1,5 @@
 <template lang="pug">
-footer.globalFooter
+footer.global-footer
   .top.flex.container
     section.flex-1
       h4 探索更多
@@ -38,7 +38,7 @@ footer.globalFooter
         {{ PROJECT_NAME }}
       | 
       em v{{ version }}
-    .devOnly(style="font-style: italic")
+    .dev-only(style="font-style: italic")
       | This is test site →&nbsp;
       a(
         :href="'https://pixiv.js.org' + $route.path"
@@ -51,12 +51,11 @@ import { ref } from 'vue'
 import { GITHUB_URL, PROJECT_NAME, GITHUB_OWNER } from '../config'
 import { version } from '../../package.json'
 
-const name = ref('comp-footer')
-const year = new Date().getFullYear()
-const yearStr = ref(year === 2021 ? '2021' : `(2021 - ${year})`)
+const yearStr = ref(`2021 - ${new Date().getFullYear()}`)
 </script>
 <style scoped lang="sass">
-.globalFooter
+
+.global-footer
   background-color: var(--theme-accent-color)
   font-size: 1rem
   color: var(--theme-accent-link-color)

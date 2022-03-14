@@ -11,37 +11,37 @@
 
   //- :)
   section.user(v-if='!loading && !error')
-    .userInfo
-      .bgArea
-        .bgContainer(
+    .user-info
+      .bg-area
+        .bg-container(
           :style='{ backgroundImage: "url(" + API_BASE + user?.background?.url + ")" }'
         )
           span(v-if='!user.background') 用户未设置封面~
-      .avatarArea
+      .avatar-area
         a.plain.pointer(@click='showUserMore = true')
           img(:src='API_BASE + user.imageBig')
-      .infoArea
+      .info-area
         .username {{ user.name }}
         .following
           | 关注了 <strong>{{ user.following }}</strong> 人
-        .gender(v-if='user.gender.name') 
+        .gender(v-if='user.gender?.name') 
           fa(icon='venus-mars')
           | {{ user.gender.name }}
-        .birthday(v-if='user.birthDay.name')
+        .birthday(v-if='user.birthDay?.name')
           fa(icon='birthday-cake')
-          | {{ user.birthDay.name }}
-        .region(v-if='user.region.name')
+          | {{ user.birthDay?.name }}
+        .region(v-if='user.region?.name')
           fa(icon='map-marker-alt')
-          | {{ user.region.name }}
+          | {{ user.region?.name }}
         .webpage(v-if='user.webpage')
           fa(icon='home')
           a(:href='user.webpage', target='_blank', rel='noopener noreferrer') {{ user.webpage }}
         .flex
           .comment.flex-1 {{ user.comment }}
-          .userMore
+          .user-more
             a(@click='userMore', href='javascript:;') 查看更多
 
-    modal.infoModal(v-model:show='showUserMore')
+    modal.info-modal(v-model:show='showUserMore')
       .top
         h3
           a.avatar(
@@ -50,97 +50,98 @@
             target='_blank'
           )
             img(:src='API_BASE + user.imageBig')
-            .premiumIcon(v-if='user.premium', title='该用户订阅了高级会员')
+            .premium-icon(v-if='user.premium', title='该用户订阅了高级会员')
               fa(icon='parking')
           .title {{ user.name }}
           .follow
             button 关注
 
       .bottom
-        section.userComment
+        section.user-comment
           h4 个人简介
           .comment.pre {{ user.comment || "-" }}
-        section.userWorkspace(v-if='user.workspace')
+        section.user-workspace(v-if='user.workspace')
           hr
           h4 工作环境
-          .flexList
-            .listItem(v-if='user.workspace.wsUrl')
+          .flex-list
+            .list-item(v-if='user.workspace.wsUrl')
               img(
                 :src='user.workspace.wsUrl',
                 style='width: 100%; height: auto',
                 alt='工作环境照片'
+                lazyload
               )
-            .listItem(v-if='user.workspace.userWorkspacePc')
+            .list-item(v-if='user.workspace.userWorkspacePc')
               .key 主机
               .value {{ user.workspace.userWorkspacePc }}
-            .listItem(v-if='user.workspace.userWorkspaceMonitor')
+            .list-item(v-if='user.workspace.userWorkspaceMonitor')
               .key 显示器
               .value {{ user.workspace.userWorkspaceMonitor }}
-            .listItem(v-if='user.workspace.userWorkspaceTool')
+            .list-item(v-if='user.workspace.userWorkspaceTool')
               .key 软件
               .value {{ user.workspace.userWorkspaceTool }}
-            .listItem(v-if='user.workspace.userWorkspaceScanner')
+            .list-item(v-if='user.workspace.userWorkspaceScanner')
               .key 扫描仪
               .value {{ user.workspace.userWorkspaceScanner }}
-            .listItem(v-if='user.workspace.userWorkspaceTablet')
+            .list-item(v-if='user.workspace.userWorkspaceTablet')
               .key 数码版
               .value {{ user.workspace.userWorkspaceTablet }}
-            .listItem(v-if='user.workspace.userWorkspacePrinter')
+            .list-item(v-if='user.workspace.userWorkspacePrinter')
               .key 打印机
               .value {{ user.workspace.userWorkspacePrinter }}
-            .listItem(v-if='user.workspace.userWorkspaceDesktop')
+            .list-item(v-if='user.workspace.userWorkspaceDesktop')
               .key 台面
               .value {{ user.workspace.userWorkspaceDesktop }}
-            .listItem(v-if='user.workspace.userWorkspaceMusic')
+            .list-item(v-if='user.workspace.userWorkspaceMusic')
               .key 音乐
               .value {{ user.workspace.userWorkspaceMusic }}
-            .listItem(v-if='user.workspace.userWorkspaceDesk')
+            .list-item(v-if='user.workspace.userWorkspaceDesk')
               .key 桌子
               .value {{ user.workspace.userWorkspaceDesk }}
-            .listItem(v-if='user.workspace.userWorkspaceChair')
+            .list-item(v-if='user.workspace.userWorkspaceChair')
               .key 椅子
               .value {{ user.workspace.userWorkspaceChair }}
-            .listItem(v-if='user.workspace.userWorkspaceComment')
+            .list-item(v-if='user.workspace.userWorkspaceComment')
               .key 说明
               .value {{ user.workspace.userWorkspaceComment }}
-        section.devOnly
+        section.dev-only
           hr
           h4 Debug Info
           details
             pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
 
-    .devOnly
+    .dev-only
       h2 Follow Test
       .align-center
-        button(@click='addFollow') addFollow
-        button(@click='removeFollow') removeFollow
+        button(@click='async () => await addFollow(+user.userId)') addFollow
+        button(@click='async () => await removeFollow(+user.userId)') removeFollow
 
     #user-artworks
       .tabber
-        ul.tabBtn
+        ul.tab-btn
           li(@click='tab = "illust"')
-            a(:class='{ tabActive: tab === "illust" }') 插画
+            a(:class='{ "tab-active": tab === "illust" }') 插画
           li(@click='tab = "manga"')
-            a(:class='{ tabActive: tab === "manga" }') 漫画
+            a(:class='{ "tab-active": tab === "manga" }') 漫画
           li(
             v-if='$route.params.id === userData?.id',
             @click='tab = "bookmarks"'
           )
-            a(:class='{ tabActive: tab === "bookmarks" }') 收藏
-        .tabContents
+            a(:class='{ "tab-active": tab === "bookmarks" }') 收藏
+        .tab-contents
           section(v-if='tab === "illust"')
             h2 插画
-            .noResult(v-if='user.illusts && !user.illusts.length') 
+            .no-result(v-if='user.illusts && !user.illusts.length') 
               div 用户没有插画作品 (｡•́︿•̀｡)
             artworks-list(:list='user.illusts')
           section(v-if='tab === "manga"')
             h2 漫画
-            .noResult(v-if='user.manga && !user.manga.length')
+            .no-result(v-if='user.manga && !user.manga.length')
               div 用户没有漫画作品 (*/ω＼*)
             artworks-list(:list='user.manga')
           section(v-if='tab === "bookmarks"')
             h2 收藏
-            .noResult(v-if='!loadingBookmarks && !bookmarks.length')
+            .no-result(v-if='!loadingBookmarks && !bookmarks.length')
               div 收藏夹是空的 Σ(⊙▽⊙"a
             artworks-list(:list='bookmarks')
             .more-btn.align-center
@@ -164,13 +165,13 @@ import Modal from '../components/Modal.vue'
 import Placeholder from '../components/Placeholder.vue'
 
 import { getCache, setCache } from './siteCache'
-import { Artwork, User } from '../types'
+import { ArtworkReduced, User } from '../types'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
 const loading = ref(true)
-const user = ref<User | null>(null)
-const bookmarks = ref<Artwork[]>([])
+const user = ref<User>({} as User)
+const bookmarks = ref<ArtworkReduced[]>([])
 const loadingBookmarks = ref(false)
 const tab = ref<'illust' | 'manga' | 'bookmarks'>('illust')
 const error = ref('')
@@ -197,14 +198,14 @@ function init(id: string | number): void {
 
         getBookmarks()
       })
-      .catch(
-        (err) => {
-          console.warn('user', err.response)
-          error.value =
-            err?.response?.data?.message || err.message || 'HTTP 请求超时'
-        }
-      )
-      .finally(() => loading.value = false)
+    .catch(
+      (err) => {
+        console.warn('user', err.response)
+        error.value =
+          err?.response?.data?.message || err.message || 'HTTP 请求超时'
+      }
+    )
+    .finally(() => loading.value = false)
 }
 
 function userMore(): void {
@@ -225,7 +226,7 @@ function getBookmarks(): void {
         rest: 'show',
       },
     })
-    .then(({ data }: { data: { works: Artwork[] } }) => {
+    .then(({ data }: { data: { works: ArtworkReduced[] } }) => {
       bookmarks.value = bookmarks.value.concat(data.works)
     })
     .finally(() => loadingBookmarks.value = false)
@@ -240,16 +241,17 @@ onMounted(() => {
 </script>
 
 <style scoped lang="sass">
+
 .loading
   text-align: center
 
-.userInfo
+.user-info
   position: relative
   // margin: -1rem -1rem 1rem -1rem
   // box-shadow: 0 4px 16px var(--theme-box-shadow-color)
 
-  .bgArea
-    .bgContainer
+  .bg-area
+    .bg-container
       position: relative
       width: 100%
       height: 45vh
@@ -272,7 +274,7 @@ onMounted(() => {
         top: 50%
         transform: translateX(-50%) translateY(-50%)
 
-  .infoArea
+  .info-area
     padding-left: calc(2rem + 100px + 2rem)
     padding-top: 1rem
     padding-right: 1rem
@@ -297,7 +299,7 @@ onMounted(() => {
     .userMore
       white-space: nowrap
 
-  .avatarArea
+  .avatar-area
     position: absolute
     top: calc(45vh - 50px)
     left: 2rem
@@ -313,7 +315,7 @@ onMounted(() => {
       box-shadow: 0 4px 8px #efefef
 
 .tabber
-  ul.tabBtn
+  ul.tab-btn
     list-style: none
     padding-left: 0
     margin: 0
@@ -324,7 +326,7 @@ onMounted(() => {
     position: sticky
     top: 50px
 
-    .globalNavbar_isHide &
+    .global-navbar_hidden &
       top: 0
 
     li
@@ -335,13 +337,13 @@ onMounted(() => {
         padding: 0.4rem 1rem
         cursor: pointer
 
-        &.tabActive
+        &.tab-active
           font-weight: bold
 
-  .tabContents
+  .tab-contents
     border-top: 1px solid var(--theme-link-color)
 
-.noResult
+.no-result
   height: 90vh
   display: flex
   align-items: center
@@ -350,7 +352,7 @@ onMounted(() => {
     text-align: center
     flex: 1
 
-.infoModal
+.info-modal
   position: relative
 
   hr
@@ -375,7 +377,7 @@ onMounted(() => {
         border-radius: 50%
         width: 80px
 
-      .premiumIcon
+      .premium-icon
         position: absolute
         bottom: 0
         right: 0

@@ -20,14 +20,14 @@ mixin pagenator()
       +pagenator()
 
       //- Loading
-      .loadingArea(v-if="loading")
+      .loading-area(v-if="loading")
         div(style="text-align: center")
           placeholder
 
-      .resultArea(v-if="!loading")
+      .result-area(v-if="!loading")
         artworks-list(:list="resultList")
 
-      .noMore(v-if="!loading && resultList.length < 60") 没有了，一滴都没有了……
+      .no-more(v-if="!loading && resultList.length < 60") 没有了，一滴都没有了……
 
       +pagenator()
 </template>
@@ -71,7 +71,7 @@ function makeSearch(params: {
       }
     })
     .then(
-      ({data}) => {
+      ({ data }) => {
         resultList.value = data?.illustManga?.data || []
         console.info(data?.illustManga?.data)
       }
@@ -87,8 +87,7 @@ function makeSearch(params: {
 watch(p, (value) => {
   p.value = value < 1 ? 1 : value
   router.push(
-    `/search/${keyword.value}/${p.value}${
-    route.query.mode ? '?mode=' + route.query.mode : ''
+    `/search/${keyword.value}/${p.value}${route.query.mode ? '?mode=' + route.query.mode : ''
     }`
   )
 })
@@ -115,6 +114,7 @@ onMounted(() => {
 </script>
 
 <style lang="sass" scoped>
+
 .pagenator
   text-align: center
 
@@ -123,13 +123,13 @@ onMounted(() => {
     text-align: center
     width: 3rem
 
-.noMore
+.no-more
   text-align: center
   padding: 1rem
   border-radius: 4px
   box-shadow: 0 0 4px #aaaaaa
 
-.searchBox
+.search-box
   margin: 2rem auto
   box-shadow: 0 0 8px #ddd
   border-radius: 2em

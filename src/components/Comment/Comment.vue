@@ -1,24 +1,24 @@
 <template lang="pug">
-li.commentBlock
+li.comment-block
   .left
     router-link.plain(:to="'/users/' + comment.userId")
       img.avatar(
         :src="API_BASE + comment.img"
-        :title="comment.userName+ ' (' + comment.userId + ')'"
+        :title="comment.userName + ' (' + comment.userId + ')'"
       )
   .right
     h4.user
-      span.commentAuthor
+      span.comment-author
         | {{ comment.userName }}
         .tag(v-if="userData && userData.id === comment.userId") 您
-      span.commentReply(v-if="comment.replyToUserId") &emsp;▶&emsp;{{ comment.replyToUserName }}
+      span.comment-reply(v-if="comment.replyToUserId") &emsp;▶&emsp;{{ comment.replyToUserName }}
     .content(v-if="!comment.stampId" v-html="replaceStamps(comment.comment)")
     .content(v-if="comment.stampId")
-        img.bigStamp(
-          :src="API_BASE + '/~/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'"
-          alt="表情包"
-          lazyload)
-    .commentDate {{ comment.commentDate }}
+      img.big-stamp(
+        :src="API_BASE + '/~/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'"
+        alt="表情包"
+        lazyload)
+    .comment-date {{ comment.commentDate }}
 </template>
 
 <script lang="ts" setup>
@@ -38,11 +38,12 @@ function replaceStamps(str: string): string {
 </script>
 
 <style lang="sass">
-.commentBlock
+
+.comment-block
   display: flex
   gap: .6rem
 
-  + .commentBlock
+  + .comment-block
     margin-top: 1rem
 
   .left
@@ -62,14 +63,14 @@ function replaceStamps(str: string): string {
       white-space: pre-wrap
       margin-bottom: .3em
 
-      .bigStamp
+      .big-stamp
         width: 3em
 
       .stamp
         height: 1.4rem
         width: auto
 
-    .commentDate
+    .comment-date
       font-size: .75em
       color: #aaa
 </style>
