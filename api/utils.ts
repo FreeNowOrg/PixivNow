@@ -1,5 +1,6 @@
 import { VercelResponse } from '@vercel/node'
 import axios, { AxiosRequestConfig, Method } from 'axios'
+import cookie from 'cookie'
 
 export function makeArtList(obj: any) {
   const list = []
@@ -31,48 +32,6 @@ export function replaceUrl(obj: any) {
   return obj
 }
 
-export function dateFormat(fmt: string, date?: Date) {
-  date = date || new Date()
-  const o: Record<string, number> = {
-    'M+': date.getMonth() + 1, //月份
-    'd+': date.getDate(), //日
-    'h+': date.getHours(), //小时
-    'm+': date.getMinutes(), //分
-    's+': date.getSeconds(), //秒
-    'q+': Math.floor((date.getMonth() + 3) / 3), //季度
-    S: date.getMilliseconds(), //毫秒
-  }
-  if (/(y+)/.test(fmt)) {
-    fmt = fmt.replace(
-      RegExp.$1,
-      (date.getFullYear() + '').substr(4 - RegExp.$1.length)
-    )
-  }
-  for (let k in o) {
-    if (new RegExp('(' + k + ')').test(fmt)) {
-      fmt = fmt.replace(
-        RegExp.$1,
-        RegExp.$1.length === 1
-          ? '' + o[k]
-          : ('00' + o[k]).substr(('' + o[k]).length)
-      )
-    }
-  }
-  return fmt
-}
-
-export function cookiesObj(cookies: string) {
-  let obj: Record<string, string> = {}
-  cookies?.split(';').forEach((i) => {
-    const s = i.split('=')
-    if (s.length < 2) return
-    const key = s[0].trim()
-    const val = s[1].trim()
-    obj[key] = val
-  })
-  return obj
-}
-
 export function handleError(err: any, res: VercelResponse) {
   return res
     .status(err?.response?.status || 500)
@@ -88,12 +47,12 @@ export async function request({
 }: {
   method?: Method
   path?: `/${string}`
-  params?: any
+  params?: Record<string, any>
   data?: string
   headers?: any
 }) {
   const url = `https://www.pixiv.net${path}`
-  const cookies = cookiesObj(headers.cookie)
+  const cookies = cookie.parse(headers.cookie)
 
   // 做一些转换防止抑郁
   // "foo[]": [] -> "foo": []
