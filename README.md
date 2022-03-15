@@ -2,7 +2,7 @@
 
 ![PixivNow Logo](src/assets/LogoH.png)
 
-Pixiv Service Proxy.
+Pixiv Service Proxy
 
 → https://pixiv.js.org ←
 
@@ -10,30 +10,36 @@ Pixiv Service Proxy.
 
 ## API
 
-### `/api/illust/:id`
+您可以使用以下方式传递用户 token 来鉴权：
 
-Get illust details by ID
+- Header 以`Authorization`传递
+- Cookie 以键名`PHPSESSID`传递
 
-### `/api/user/:id`
+请求路径 `/ajax/*` 的返回结果与 `https://pixiv.net/ajax/*` 的行为完全一致。
 
-Get user details by UID
+以下列举部分 PixivNow 的独特接口：
 
-### `/api/search/:word`
+### `/api/illust/random`
 
-Search illusts by keyword
+返回随机图片，其实是 `/ajax/illust/discovery` 的语法糖，也支持直接返回图片。
+
+- `max` `{number}` 返回图片的个数
+- `mode` `{'all' | 'safe' | 'r18'}` 其中 `r18` 只有在登录状态且参数设置允许时才会返回
+- `format` `{'image' | 'json'}` 返回的格式，如果 `Accept` 包含 `image` 则预设为 `image`
 
 ### `/api/ranking`
 
-Ranking
+是 `/ranking.php` 的重定向。
 
-### `/ajax/*`
+### `/user`
 
-AJAX
+通过传入的 token，以 json 格式返回源站 `<meta name="global-data">` 中的用户信息。
 
-## Image Proxy
+## 图片代理
 
-- `i.pximg.net` → `/-/*`
-- `s.pximg.net` → `/~/*`
+但是本站的图片使用 CloudFlare Workers 进行代理。
+
+由于遭遇了大量不明流量，暂时开启了防盗链，如果您喜欢本站，建议自行部署代理服务。
 
 ---
 
