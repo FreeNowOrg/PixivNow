@@ -157,7 +157,7 @@ function init(id: string): void {
     return
   }
 
-  axios.get(`${API_BASE}/api/illust/${id}`, {
+  axios.get(`${API_BASE}/ajax/illust/${id}`, {
     params: { full: 1 }
   })
     .then(({ data }: { data: any }) => {
