@@ -52,7 +52,7 @@ export async function request({
   headers?: any
 }) {
   const url = `https://www.pixiv.net${path}`
-  const cookies = cookie.parse(headers.cookie)
+  const cookies = cookie.parse(headers.cookie || '')
 
   // 做一些转换防止抑郁
   // "foo[]": [] -> "foo": []
