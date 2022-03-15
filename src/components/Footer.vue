@@ -5,7 +5,7 @@ footer.global-footer
       h4 探索更多
       ul
         li
-          external-link(href="/ajax/illust/random?format=image") 随机图片
+          external-link(href="/api/illust/random?format=image") 随机图片
         li
           router-link(to="/ranking") 今日排行
         li
