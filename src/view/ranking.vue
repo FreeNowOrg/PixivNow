@@ -42,7 +42,7 @@ const route = useRoute()
 function init(): void {
   const { p, mode, date } = route.params
   axios
-    .get(`${API_BASE}/api/ranking`, {
+    .get(`${API_BASE}/ajax/ranking`, {
       params: {
         p,
         mode,

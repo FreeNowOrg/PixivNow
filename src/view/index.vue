@@ -85,7 +85,7 @@ function initRank(): void {
     rankList.value = getCache('home.rankList')
     return
   }
-  axios.get(`${API_BASE}/api/ranking`).then(({ data }) => {
+  axios.get(`${API_BASE}/ajax/ranking`).then(({ data }) => {
     rankList.value = data.contents
     setCache('home.rankList', data.contents)
   })
@@ -96,7 +96,7 @@ function setRandomBg(noCache?: boolean): void {
     randomBg.value = getCache('home.randomBg')
     return
   }
-  axios.get(`${API_BASE}/api/illust/random?max=1`).then(({ data }) => {
+  axios.get(`${API_BASE}/ajax/illust/random?max=1`).then(({ data }) => {
     const info = data[0]
     if (!info) {
       randomBg.value.url = 'https://api.daihan.top/api/acg'
@@ -117,7 +117,7 @@ function setDiscovered(noCache?: boolean): void {
   }
   discoverList.value = []
   axios
-    .get(`${API_BASE}/api/illust/random?max=8&mode=all`)
+    .get(`${API_BASE}/ajax/illust/random?max=8&mode=all`)
     .then(({ data }) => {
       discoverList.value = data
       setCache('home.discoverList', data)

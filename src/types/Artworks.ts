@@ -21,7 +21,7 @@ interface ArtworkCommon {
   title: string
   description: string
   createDate: string
-  uploadDate: string
+  updateDate: string
   illustType: 0
   restrict: 0
   xRestrict: 0 | 1 | 2

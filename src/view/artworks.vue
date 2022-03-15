@@ -181,7 +181,7 @@ function getUser(userId: string): void {
     return
   }
 
-  axios.get(`${API_BASE}/api/user/${userId}`)
+  axios.get(`${API_BASE}/ajax/user/${userId}`)
     .then(({ data }) => {
       user.value = data
       setCache(`user.${userId}`, data)
