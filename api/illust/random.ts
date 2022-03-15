@@ -31,11 +31,10 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return handleError(err, res)
   }
 
-  const illust: ArtworkOrAd[] = data?.illusts || []
-  const list = illust.filter(
+  const illust = (data?.illusts || []).filter(
     (item) => Object.keys(item).length > 1
   ) as Artwork[]
-  list.map((item) => {
+  const list = illust.map((item) => {
     const middle = `img/${formatInTimeZone(
       item.updateDate,
       'Asia/Tokyo',
