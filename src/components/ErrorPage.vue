@@ -7,8 +7,8 @@ section.error-page
   //- SearchBox(class="big" :style="{margin: '3rem'}")
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue'
 import SearchBox from './SearchBox.vue'
 
 const msgList = [
@@ -55,32 +55,27 @@ const msgList = [
   '这像劲爆纵连一样没有人喜欢！',
 ]
 
-export default defineComponent({
-  components: { SearchBox },
-  props: ['title', 'description'],
-  data() {
-    return {
-      msg: '',
-    }
-  },
-  methods: {
-    randomMsg() {
-      const msg = msgList[Math.floor(Math.random() * msgList.length)]
-      if (msg === this.msg) {
-        this.randomMsg()
-      } else {
-        this.msg = msg
-      }
-    },
-  },
-  created() {
-    document.title = 'Error | PixivNow'
-    this.randomMsg()
-  },
+const props = defineProps<{
+  title: string
+  description: string
+}>()
+const msg = ref('')
+function randomMsg(): void {
+  const newValue = msgList[Math.floor(Math.random() * msgList.length)]
+  if (newValue !== msg.value) {
+    msg.value = newValue
+  } else {
+    randomMsg()
+  }
+}
+onMounted(() => {
+  document.title = 'Error | PixivNow'
+  randomMsg()
 })
 </script>
 
 <style scoped lang="sass">
+
 .error-page
   margin: 20vh auto
   height: 100%

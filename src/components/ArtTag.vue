@@ -2,20 +2,12 @@
 router-link.tag(:to="'/search/' + tag") \#{{ tag }}
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  props: ['tag'],
-  setup() {
-    return {
-      // key: '',
-    }
-  },
-})
+<script lang="ts" setup>
+const props = defineProps<{ tag: string }>()
 </script>
 
 <style lang="sass">
+
 .tag
   display: inline-block
   margin: 2px

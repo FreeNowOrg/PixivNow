@@ -1,25 +1,25 @@
 <template lang="pug">
-header.globalNavbar(:class='{ notAtTop, isHide }')
+header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
   .flex
-    a.sideNavToggle.plain(@click='sideNavShow = !sideNavShow')
+    a.side-nav-toggle.plain(@click='toggleSideNav')
       fa(icon='bars')
 
-    .logoArea
+    .logo-area
       router-link.plain(to='/')
-        img.siteLogo(:src='LogoH')
+        img.site-logo(:src='LogoH')
 
-    .flex.searchArea
-      .searchFull.align-right.flex-1
+    .flex.search-area
+      .search-full.align-right.flex-1
         search-box
-      .searchIcon.align-right.flex-1
+      .search-icon.align-right.flex-1
         button.pointer(@click='sideNavShow = true')
           fa(icon='search')
           | &nbsp;搜索
 
-    #globalNav__userArea.userArea
-      .userLink
-        a.dropdownBtn.plain.pointer(
-          :class='{ isShown: userDropdownShow }',
+    #global-nav__user-area.user-area
+      .user-link
+        a.dropdown-btn.plain.pointer(
+          :class='{ shown: userDropdownShow }',
           @click='userDropdownShow = !userDropdownShow'
         )
           img.avatar(
@@ -31,32 +31,32 @@ header.globalNavbar(:class='{ notAtTop, isHide }')
         transition(
           name='fade',
           mode='out-in',
-          enter-active-class='fadeInUp',
-          leave-active-class='fadeOutDown'
+          enter-active-class='fade-in-up',
+          leave-active-class='fade-out-down'
         )
-          .dropdownContent(v-show='userDropdownShow')
+          .dropdown-content(v-show='userDropdownShow')
             ul
               //- notLogIn
               li(v-if='!userData')
-                .navUserCard
+                .nav-user-card
                   .top
-                    .bannerBg
+                    .banner-bg
                     img.avatar(
                       :src='API_BASE + "/~/common/images/no_profile.png"'
                     )
                   .details
-                    a.userName 游客
+                    a.user-name 游客
                     .uid 绑定令牌，同步您的 Pixiv 信息！
 
               //- isLogedIn
               li(v-if='userData')
-                .navUserCard
+                .nav-user-card
                   .top
-                    .bannerBg
+                    .banner-bg
                     router-link.plain.name(:to='"/users/" + userData.id')
                       img.avatar(:src='API_BASE + userData.profileImgBig')
                   .details
-                    router-link.plain.userName(:to='"/users/" + userData.id') {{ userData.name }}
+                    router-link.plain.user-name(:to='"/users/" + userData.id') {{ userData.name }}
                     .uid @{{ userData.pixivId }}
 
               li(v-if='$route.path !== "/login"')
@@ -65,79 +65,70 @@ header.globalNavbar(:class='{ notAtTop, isHide }')
                 a.plain(@click='userLogout') 用户登出
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { ref, onMounted, watch } from 'vue'
 import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
 import { userData, userLogout } from './userData'
-import SideNavigation, { sideNavShow } from './SideNav/SideNav.vue'
 import LogoH from '../assets/LogoH.png'
 
-export default defineComponent({
-  name: 'com-header',
-  components: {
-    SearchBox,
-    SideNavigation,
-  },
-  data() {
-    return {
-      API_BASE,
-      notAtTop: false,
-      isHide: false,
-      userData,
-      sideNavShow,
-      userDropdownShow: false,
-      LogoH,
-    }
-  },
-  watch: {
-    isHide() {
-      if (this.isHide) {
-        document.body.classList.add('globalNavbar_isHide')
-      } else {
-        document.body.classList.remove('globalNavbar_isHide')
-      }
-    },
-  },
-  mounted() {
-    // Scroll state
-    let scrollTop = document.documentElement.scrollTop
-    window.addEventListener('scroll', () => {
-      const newTop = document.documentElement.scrollTop
-      // if (scrollTop > 600) {
-      //   this.isHide = newTop - scrollTop > 0
-      // } else {
-      //   this.isHide = false
-      // }
-      scrollTop = newTop
-      if (newTop > 50) {
-        this.notAtTop = true
-      } else {
-        this.notAtTop = false
-      }
-    })
+const emit = defineEmits<{
+  (
+    e: 'toggle-sidenav',
+    value: boolean
+  ): void
+}>()
 
-    // Outside close user dropdown
-    document
-      .getElementById('globalNav__userArea')
-      ?.addEventListener('click', (e) => {
-        e.stopPropagation()
-      })
-    document.addEventListener('click', (e) => {
-      if (this.userDropdownShow) this.userDropdownShow = false
-    })
-    this.$router.beforeEach(() => {
-      this.userDropdownShow = false
-    })
-  },
-  methods: {
-    userLogout,
-  },
+const hidden = ref(false)
+const notAtTop = ref(false)
+const sideNavShow = ref(false)
+const userDropdownShow = ref(false)
+
+defineExpose({
+  sideNavShow,
+})
+
+function toggleSideNav() {
+  sideNavShow.value = !sideNavShow.value
+  emit('toggle-sidenav', sideNavShow.value)
+}
+
+watch(hidden, (value) => {
+  if (value) {
+    document.body.classList.add('global-navbar_hidden')
+  } else {
+    document.body.classList.remove('global-navbar_hidden')
+  }
+})
+
+onMounted(() => {
+  window.addEventListener('scroll', () => {
+    const newTop = document.documentElement.scrollTop
+    // if (scrollTop > 600) {
+    //   this.isHide = newTop - scrollTop > 0
+    // } else {
+    //   this.isHide = false
+    // }
+    if (newTop > 50) {
+      notAtTop.value = true
+    } else {
+      notAtTop.value = false
+    }
+  })
+
+  // Outside close user dropdown
+  document
+    .getElementById('global-nav__user-area')
+    ?.addEventListener('click', (e) => e.stopPropagation())
+  document.addEventListener('click', () => {
+    if (userDropdownShow.value) userDropdownShow.value = false
+  })
 })
 </script>
 
 <style lang="sass">
-.globalNavbar
+
+.global-navbar
   background-color: var(--theme-accent-color)
   padding: 0.4rem 1rem
   color: var(--theme-background-color)
@@ -158,10 +149,10 @@ export default defineComponent({
     gap: 1rem
     align-items: center
 
-  &.notAtTop
+  &.not-at-top
     box-shadow: 0 0px 8px var(--theme-box-shadow-color)
 
-  .sideNavToggle
+  .side-nav-toggle
     font-size: 1.2rem
     text-align: center
     color: var(--theme-accent-link-color)
@@ -178,24 +169,24 @@ export default defineComponent({
     [data-icon]
       margin: 0 auto
 
-  .logoArea
-    .siteLogo
+  .logo-area
+    .site-logo
       height: 2.2rem
       width: auto
 
-  .searchArea
+  .search-area
     flex: 1
 
-  .userArea
+  .user-area
     .avatar
       height: 2rem
       width: 2rem
       border-radius: 50%
 
-    .userLink
+    .user-link
       position: relative
 
-      .dropdownBtn
+      .dropdown-btn
         list-style: none
         display: flex
         align-items: center
@@ -205,11 +196,11 @@ export default defineComponent({
         color: #fff
         transition: all 0.4s
 
-      .dropdownBtn.isShown
+      .dropdown-btn.shown
         [data-icon]
           transform: rotateZ(180deg)
 
-      .dropdownContent
+      .dropdown-content
         position: absolute
         top: 1.4rem
         right: 0
@@ -234,12 +225,11 @@ export default defineComponent({
             &:hover
               background-color: var(--theme-tag-color)
 
-
-  .navUserCard
+  .nav-user-card
     border-bottom: 1px solid
     position: relative
 
-    .bannerBg
+    .banner-bg
       position: absolute
       top: calc(-0.4rem - 6px)
       left: -12px
@@ -256,20 +246,20 @@ export default defineComponent({
       height: 68px
 
     .details
-      .userName
+      .user-name
         font-size: 1rem
 
       .uid
         font-size: 0.8rem
         color: #aaa
 
-  .searchIcon
+  .search-icon
     display: none
 
 @media screen and (max-width: 450px)
-  .globalNavbar
-    .searchFull
+  .global-navbar
+    .search-full
       display: none
-    .searchIcon
+    .search-icon
       display: block
 </style>

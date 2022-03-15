@@ -1,9 +1,9 @@
 <template lang="pug">
-aside.globalSideNav(:class='{ isHide: !show }')
+aside.global-side-nav(:class='{ hidden: !show }')
   .backdrop(@click='show = false')
   .inner
     .group
-      .searchArea
+      .search-area
         search-box
 
     .list
@@ -18,12 +18,11 @@ aside.globalSideNav(:class='{ isHide: !show }')
       .group
         .title Pixiv 令牌
         ul
-          li
-            list-link(
-              icon='fingerprint',
-              link='/login',
-              :text='userData ? "查看令牌" : "设置令牌"'
-            )
+          list-link(
+            icon='fingerprint',
+            link='/login',
+            :text='userData ? "查看令牌" : "设置令牌"'
+          )
 
       .group
         .title PixivNow
@@ -36,45 +35,42 @@ aside.globalSideNav(:class='{ isHide: !show }')
           list-link(icon='heart', link='/about', text='关于我们')
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
-export const sideNavShow = ref()
-sideNavShow.value = false
+<script lang="ts" setup>
+import { ref, onMounted, watch } from 'vue'
 import { userData } from '../userData'
 
 import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
 
-export default defineComponent({
-  components: { SearchBox, ListLink },
-  data() {
-    return {
-      show: sideNavShow,
-      userData,
-    }
-  },
-  watch: {
-    show() {
-      if (this.show) {
-        document.body.style.overflow = 'hidden'
-      } else {
-        document.body.style.overflow = 'visible'
-      }
-    },
-  },
-  mounted() {
-    this.$router.beforeEach(() => {
-      this.show = false
-    })
-    document.addEventListener('keydown', ({ key }) => {
-      if (key === 'Escape') this.show = false
-    })
-  },
+const emit = defineEmits<{
+  (e: 'updateShow', show: boolean): void
+}>()
+
+const show = ref(false)
+
+defineExpose({
+  show,
+})
+
+watch(show, (value) => {
+  emit('updateShow', value)
+  if (value) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = 'visible'
+  }
+})
+
+onMounted(() => {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') show.value = false
+  })
 })
 </script>
 
 <style scoped lang="sass">
-.globalSideNav
+
+.global-side-nav
   z-index: 90
 
 .backdrop
@@ -98,7 +94,7 @@ export default defineComponent({
   z-index: 95
   transition: all 0.5s
 
-.sideNavToggle
+.side-nav-toggle
   font-size: 1.2rem
   text-align: center
   margin: auto 0.5rem
@@ -145,20 +141,20 @@ export default defineComponent({
   height: 2.2rem
 
 // Hidden state
-.isHide
+.hidden
   .inner
     left: -300px
   .backdrop
     display: none
 
-.searchArea
+.search-area
   display: block
   padding: 0 1.6rem
-  .searchBox
+  .search-box
     box-shadow: 0 0 8px #ddd
     border-radius: 2em
 
 @media screen and (min-width: 450px)
-  .searchArea
+  .search-area
     display: none !important
 </style>

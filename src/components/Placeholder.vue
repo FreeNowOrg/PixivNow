@@ -19,22 +19,14 @@
   </svg>
 </template>
 
-<script>
-import { ref, defineComponent } from 'vue'
-
-export default defineComponent({
-  setup() {},
-})
-</script>
-
 <style scoped lang="sass">
+
 .svgspinner
   max-width: 100%
 
 .svgspinner .spincircle
   animation: loading-round 1.2s infinite linear, loading-dash 2s infinite linear alternate
   stroke-dasharray: 236
-
 
 @keyframes loading-round
   0%

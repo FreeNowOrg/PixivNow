@@ -1,72 +1,71 @@
 <template lang="pug">
-.modalContainer
-  .modalArea(v-if='show')
-    .modalBackdrop(@click='closeModal')
-    .modalWindow
-      a.plain.closeBtn(roll='button', @click='closeModal')
+.modal-container
+  .modal-area(v-if='show')
+    .modal-backdrop(@click='$emit("update:show", false)')
+    .modal-window
+      a.plain.close-btn(roll='button', @click='$emit("update:show", false)')
         fa(icon='times')
-      section.modalContent
+      section.modal-content
         div
           slot
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { onMounted, watch } from 'vue'
 
-export default defineComponent({
-  props: {
-    show: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  data() {
-    return {}
-  },
-  methods: {
-    showModal() {
-      this.$emit('update:show', true)
-    },
-    closeModal() {
-      this.$emit('update:show', false)
-    },
-  },
-  watch: {
-    show() {
-      if (this.show) {
-        document.body.style.overflow = 'hidden'
-      } else {
-        document.body.style.overflow = 'visible'
-      }
-    },
-  },
-  mounted() {
-    document.addEventListener('keydown', ({ code }) => {
-      if (code === 'Escape') this.closeModal()
-    })
-  },
+const props = defineProps<{
+  show: boolean
+}>()
+
+watch(props, () => {
+  if (props.show) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = 'visible'
+  }
+})
+
+const emit = defineEmits<{
+  (e: 'update:show', updateShow: boolean): void
+}>()
+
+function showModal() {
+  emit('update:show', true)
+}
+
+function closeModal() {
+  emit('update:show', false)
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal()
+    }
+  })
 })
 </script>
 
 <style scoped lang="sass">
-.modalArea
+
+.modal-area
   z-index: 120
   overflow: auto
   display: flex
 
-.modalArea,
-.modalBackdrop
+.modal-area,
+.modal-backdrop
   position: fixed
   top: 0px
   left: 0px
   width: 100vw
   height: 100vh
 
-.modalBackdrop
+.modal-backdrop
   background-color: rgba(0, 0, 0, 0.32)
   z-index: -1
 
-.modalWindow
+.modal-window
   -webkit-box-flex: 0
   -webkit-flex: none
   display: flex
@@ -78,7 +77,7 @@ export default defineComponent({
   max-width: 100%
   z-index: 1
 
-.modalContent
+.modal-content
   -moz-box-flex: 1
   flex-grow: 1
   border-radius: 1.5rem
@@ -87,7 +86,7 @@ export default defineComponent({
   overflow: hidden
   word-break: break-all
 
-.closeBtn
+.close-btn
   position: absolute
   right: 3.5rem
   top: 3.5rem

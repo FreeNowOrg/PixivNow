@@ -1,38 +1,48 @@
 <template lang="pug">
-ul.artworksList
-  li(v-for="item in list")
-    artwork-card(v-if="item" :illust="item")
-  li 
+ul.artworks-list
+  li(v-for="(item) in artworks"
+    :key="item.id"
+  )
+    artwork-card(:item="item")
+  li
     slot/
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import ArtworkCard from './ArtworkCard.vue'
 
-export default {
-  props: ['list'],
-  components: {
-    ArtworkCard,
-  },
-}
+import type { ArtworkReduced, ArtworkReducedOrAd } from "../../types"
+import { computed } from "vue"
+
+const props = defineProps<{
+  list: ArtworkReducedOrAd[]
+}>()
+
+const artworks = computed(() => {
+  return props.list.filter(item => Object.keys(item).includes('id')) as ArtworkReduced[]
+})
 </script>
 
 <style lang="sass">
-.artworksList
+
+.artworks-list
+  list-style: none
+  padding-left: 0
   display: flex
   flex-wrap: wrap
-  padding-left: 0
-  list-style: none
   gap: 1.5rem
   justify-content: center
 
   &.inline
-    padding: 1rem
-    flex-wrap: nowrap
     overflow-y: auto
-    justify-content: left
+    white-space: nowrap
+    display: block
 
-    .illustCard
-      height: 500px
-      // overflow-x: auto
+    li:not(:first-of-type)
+      margin-left: 0.75rem
+
+  li
+    width: 180px
+    max-width: calc(50vw - 2rem)
+    display: inline-block
 </style>

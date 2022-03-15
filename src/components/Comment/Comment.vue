@@ -1,85 +1,49 @@
 <template lang="pug">
-li.commentBlock
+li.comment-block
   .left
     router-link.plain(:to="'/users/' + comment.userId")
       img.avatar(
         :src="API_BASE + comment.img"
-        :title="comment.userName+ ' (' + comment.userId + ')'"
+        :title="comment.userName + ' (' + comment.userId + ')'"
       )
   .right
     h4.user
-      span.commentAuthor
+      span.comment-author
         | {{ comment.userName }}
         .tag(v-if="userData && userData.id === comment.userId") 您
-      span.commentReply(v-if="comment.replyToUserId") &emsp;▶&emsp;{{ comment.replyToUserName }}
+      span.comment-reply(v-if="comment.replyToUserId") &emsp;▶&emsp;{{ comment.replyToUserName }}
     .content(v-if="!comment.stampId" v-html="replaceStamps(comment.comment)")
     .content(v-if="comment.stampId")
-        img.bigStamp(
-          :src="API_BASE + '/~/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'"
-          alt="表情包"
-          lazyload)
-    .commentDate {{ comment.commentDate }}
+      img.big-stamp(
+        :src="API_BASE + '/~/common/images/stamp/generated-stamps/' + comment.stampId + '_s.jpg'"
+        alt="表情包"
+        lazyload)
+    .comment-date {{ comment.commentDate }}
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
 import { API_BASE } from '../../config'
-import { stampList } from './stampList'
+import stampList from './stampList.json'
 import { userData } from '../userData'
+import type { Comments } from '../../types'
 
-export interface Comment {
-  userId: `${number}`
-  userName: string
-  isDeletedUser: boolean
-  img: string
-  id: `${number}`
-  comment: string
-  stampId: number | null
-  stampLink: null
-  commentDate: string
-  commentRootId: string | null
-  commentParentId: string | null
-  commentUserId: `${number}`
-  replyToUserId: string | null
-  replyToUserName: string | null
-  editable: boolean
-  hasReplies: boolean
+const props = defineProps<{ comment: Comments }>()
+
+function replaceStamps(str: string): string {
+  for (const [stampName, stampUrl] of Object.entries(stampList)) {
+    str = str.replaceAll(`(${stampName})`, `<img class="stamp" src="${API_BASE}${stampUrl}" alt="表情包" lazyload>`)
+  }
+  return str
 }
-
-function replaceStamps(str: string) {
-  const reg = new RegExp(
-    `(${Object.keys(stampList)
-      .map((i) => `\\(${i}\\)`)
-      .join('|')})`,
-    'g'
-  )
-  return str.replace(reg, (match) => {
-    const key = match.replace(/[\(\)]/g, '')
-    return `<img src="${API_BASE}${stampList[key]}" class="stamp">`
-  })
-}
-
-export default defineComponent({
-  props: ['comment'],
-  methods: {
-    replaceStamps,
-  },
-  data() {
-    return {
-      API_BASE,
-      userData,
-    }
-  },
-  mounted() {},
-})
 </script>
 
 <style lang="sass">
-.commentBlock
+
+.comment-block
   display: flex
   gap: .6rem
 
-  + .commentBlock
+  + .comment-block
     margin-top: 1rem
 
   .left
@@ -99,14 +63,14 @@ export default defineComponent({
       white-space: pre-wrap
       margin-bottom: .3em
 
-      .bigStamp
+      .big-stamp
         width: 3em
 
       .stamp
         height: 1.4rem
         width: auto
 
-    .commentDate
+    .comment-date
       font-size: .75em
       color: #aaa
 </style>

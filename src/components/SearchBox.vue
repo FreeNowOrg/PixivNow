@@ -1,46 +1,33 @@
 <template lang="pug">
-.searchBox
+.search-box
   input(v-model="keyword" @keyup.enter="makeSearch", placeholder="输入关键词搜索/输入 id:数字 查看作品")
   fa.icon(icon="search")
 </template>
 
-<script lang="ts">
-import { router } from '../router'
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { useRoute, useRouter } from 'vue-router'
+import { ref } from 'vue'
 
-export default defineComponent({
-  data() {
-    return {
-      keyword: (this.$route.params.keyword as string) || '',
-    }
-  },
-  methods: {
-    makeSearch() {
-      if (!this.keyword) {
-        return
-      }
-      if (/^id:(\d+)$/.test(this.keyword)) {
-        router.push(`/artworks/${/^id:(\d+)$/.exec(this.keyword)?.[1]}`)
-        return
-      }
-      router.push(`/search/${encodeURIComponent(this.keyword)}/1`)
-    },
-  },
-  created() {
-    this.$watch(
-      () => this.$route.params,
-      () =>
-        this.$route.params.keyword
-          ? (this.keyword = this.$route.params.keyword as string)
-          : null
-    )
-  },
-})
+const route = useRoute()
+const router = useRouter()
+const keyword = ref(route.params.keyword as string || '')
+
+function makeSearch(): void {
+  if (!keyword.value) {
+    return
+  }
+  if (/^id:(\d+)$/.test(keyword.value)) {
+    router.push(`/artworks/${/^id:(\d+)$/.exec(keyword.value)?.[1]}`)
+    return
+  }
+  router.push(`/search/${encodeURIComponent(keyword.value)}/1`)
+}
 </script>
 
 <style lang="sass">
+
 // Search Box
-.searchBox
+.search-box
   display: flex
   position: relative
   align-items: center
@@ -84,6 +71,6 @@ export default defineComponent({
       height: 3rem
       border-width: 4px
 
-.globalNavbar .searchBox input
+.global-navbar .search-box input
   background-color: none
 </style>
