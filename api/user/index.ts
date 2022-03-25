@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
-import cheerio from 'cheerio'
+import { load } from 'cheerio'
 import { handleError, request } from '../utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
@@ -10,7 +10,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   request({ params: req.query, headers: req.headers })
     .then(async ({ data }) => {
-      const $ = cheerio.load(data)
+      const $ = load(data)
       const $meta = $('meta[name="global-data"]')
       if ($meta.length < 0 || !$meta.attr('content')) {
         return res.status(403).send({ message: '无效的用户密钥' })

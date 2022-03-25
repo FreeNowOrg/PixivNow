@@ -8,7 +8,7 @@
   //- Done
   section.illust-container(v-if='!error && !loading')
     #top-area
-      gallery(:pages='illust.pages')
+      gallery(:pages='gallery')
 
       .body-inner
         #meta-area
@@ -57,7 +57,7 @@
                 | {{ illust.viewCount }}
               span.count
                 fa(icon='images')
-                | {{ illust.pages.length }}张
+                | {{ gallery.length }}张
 
             p.create-date {{ new Date(illust.createDate).toLocaleString() }}
 
@@ -88,20 +88,17 @@
       .align-center.loading(v-if='!recommend.length')
         placeholder
       artworks-list(:list='recommend')
-        .illust-card.load-more(
-          v-if='recommendNextIds.length',
-          @click='getMoreRecommend',
-          :style='{ cursor: "pointer" }'
+        li.load-more(
+          v-if='recommendNextIds.length'
         )
-          .top
-            div(
-              :style='{ width: "100%", paddingTop: "28%", paddingBottom: "28%", backgroundColor: "#efefef", textAlign: "center" }'
-            )
-              fa(v-if='!recommendLoading', icon='ellipsis-h', size='5x')
-              fa(v-if='recommendLoading', spin, icon='spinner', size='5x')
-          .bottom
-            .title 推荐作品
-            .author(:style='{ fontSize: "small" }') 点击这里，发现更多相关作品！
+          a.plain(@click='getMoreRecommend' href="")
+            .top
+              .inner
+                fa(v-if='!recommendLoading', icon='plus', size='5x')
+                fa(v-if='recommendLoading', spin, icon='spinner', size='5x')
+            .bottom
+              .title 推荐作品
+              .author 点击这里，发现更多相关作品！
       show-more(
         v-if='recommendNextIds.length',
         :text='recommendLoading ? "加载中" : "加载更多"',
@@ -131,7 +128,7 @@ import ShowMore from '../components/ShowMore.vue'
 import { getCache, setCache } from './siteCache'
 
 // Types
-import type { Artwork, ArtworkReduced, User } from '../types'
+import type { Artwork, ArtworkReduced, ArtworkUrls, User } from '../types'
 
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
@@ -139,6 +136,11 @@ import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 const loading = ref(true)
 const error = ref('')
 const illust = ref<Artwork>({} as Artwork)
+const gallery = ref<{
+  urls: ArtworkUrls
+  width: number
+  height: number
+}[]>([])
 const user = ref<User>({} as User)
 const recommend = ref<ArtworkReduced[]>([])
 const recommendNextIds = ref<string[]>([])
@@ -157,14 +159,18 @@ function init(id: string): void {
     return
   }
 
-  axios.get(`${API_BASE}/api/illust/${id}`, {
-    params: { full: 1 }
-  })
-    .then(({ data }: { data: any }) => {
-      document.title = `${data.illustTitle} | Artwork | PixivNow`
-      setCache(`illust.${id}`, data)
-      illust.value = data
-      getUser(data.userId)
+  Promise.all([
+    axios.get(`${API_BASE}/ajax/illust/${id}`, {
+      params: { full: 1 }
+    }),
+    axios.get(`${API_BASE}/ajax/illust/${id}/pages`)
+  ])
+    .then(([{ data: illustData }, { data: illustPage }]: { data: any }[]) => {
+      document.title = `${illustData.illustTitle} | Artwork | PixivNow`
+      setCache(`illust.${id}`, illustData)
+      illust.value = illustData
+      gallery.value = illustPage
+      getUser(illustData.userId)
       getFirstRecommend(id)
     })
     .catch((err) => {
@@ -181,10 +187,21 @@ function getUser(userId: string): void {
     return
   }
 
-  axios.get(`${API_BASE}/api/user/${userId}`)
-    .then(({ data }) => {
-      user.value = data
-      setCache(`user.${userId}`, data)
+  Promise.all([
+    axios.get(`${API_BASE}/ajax/user/${userId}`, {
+      params: {
+        full: 1
+      }
+    }),
+    axios.get(`${API_BASE}/ajax/user/${userId}/profile/top`)
+  ])
+    .then(([{ data: userData }, { data: profileData }]: { data: any }[]) => {
+      const { illusts }: { illusts: Record<string, ArtworkReduced> } = profileData
+      user.value = {
+        ...userData,
+        illusts: Object.values(illusts).sort((a, b) => +b.id - +a.id)
+      }
+      setCache(`user.${userId}`, userData)
     })
     .catch((err) => {
       console.warn('User fetch error', err)
@@ -329,4 +346,18 @@ h1
     margin-left: -1rem
     margin-right: -1rem
     background-color: var(--theme-background-color)
+
+.load-more
+  a.plain
+    color: var(--theme-text-color)
+
+  .top .inner
+    border-radius: 8px
+    width: 100%
+    padding: 28% 0
+    background-color: var(--theme-box-shadow-color)
+    text-align: center
+
+  .bottom .author
+    font-size: 0.8rem
 </style>

@@ -1,32 +1,32 @@
 <template lang="pug">
 .ranking-card
   .top
-    router-link(:to="'/artworks/' + illust.illustId")
+    router-link(:to="'/artworks/' + illust.illust_id")
       .thumb
         img(
           :src="API_BASE + illust.url.replace('p0_master', 'p0_square')"
           :alt="illust.title"
           lazyload)
-      .x-restrict.tag(v-if="illust.xRestrict" title="R-18")
+      .x-restrict.tag(v-if="illust.illust_content_type.sexual === 2" title="R-18")
         fa(icon="eye")
       .page-count(
-        v-if="+illust.illustPageCount > 1"
-        :title="'共 ' + illust.illustPageCount + ' 张'")
+        v-if="+illust.illust_page_count > 1"
+        :title="'共 ' + illust.illust_page_count + ' 张'")
         fa(icon="images")
-        | {{ illust.illustPageCount }}
+        | {{ illust.illust_page_count }}
       .ranking(
         :class="{ gold: illust.rank === 1, silver: illust.rank === 2, brown: illust.rank === 3 }"
         ) {{ illust.rank }}
   .bottom
     h3.title(:title="illust.title")
-      router-link(:to="'/artworks/' + illust.illustId") {{ illust.title }}
-    .author(:title="illust.userName")
-      router-link(:to="'/users/' + illust.userId")
+      router-link(:to="'/artworks/' + illust.illust_id") {{ illust.title }}
+    .author(:title="illust.user_name")
+      router-link(:to="'/users/' + illust.user_id")
         img.avatar(
-          :src="API_BASE + illust.profileImg"
+          :src="API_BASE + illust.profile_img"
           lazyload
           )
-        | {{ illust.userName }}
+        | {{ illust.user_name }}
     .tags
       router-link.tag(v-for="tagName in illust.tags", :to="'/search/' + tagName") \#{{ tagName }}
 </template>
@@ -132,27 +132,27 @@ h3
   // max-height: 300px
   // flex-wrap: wrap
 
-  .title a
-    display: inline
-  .author a
-    display: inline-flex
+.title a
+  display: inline
+.author a
+  display: inline-flex
 
-  .title,
-  .author
-    white-space: nowrap
-    text-overflow: ellipsis
-    overflow: hidden
-    width: 100%
-    padding-bottom: 2px
+.title,
+.author
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+  width: 100%
+  padding-bottom: 2px
 
-    a
-      align-items: center
+  a
+    align-items: center
 
-      &.router-link-active
-        color: var(--theme-text-color)
-        font-weight: 600
-        font-style: normal
-        cursor: default
+    &.router-link-active
+      color: var(--theme-text-color)
+      font-weight: 600
+      font-style: normal
+      cursor: default
 
       &::after
         visibility: hidden
@@ -167,8 +167,8 @@ h3
       box-shadow: 0 0 4px #ccc
       margin-right: .4rem
 
-  .author
-    margin: .4rem 0
+.author
+  margin: .4rem 0
 
   .tags
     overflow: auto

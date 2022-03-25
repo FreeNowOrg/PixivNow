@@ -38,7 +38,7 @@ const props = defineProps<{
   count: number
 }>()
 
-async function init(id: string | number): Promise<void> {
+function init(id: string | number): void {
   if (loading.value) return
   loading.value = true
 
@@ -66,10 +66,10 @@ function pushComment(data: any) {
   comments.value.unshift(data)
 }
 
-onMounted(async () => {
+onMounted(() => {
   if (!props.id)
     return console.info('Component CommentsArea missing param: id')
-  await init(props.id)
+  init(props.id)
 })
 </script>
 

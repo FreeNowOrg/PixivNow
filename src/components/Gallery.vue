@@ -22,28 +22,23 @@
         :title='"第" + (index + 1) + "张，共" + pages.length + "张"',
         :class='{ active: picShow === index }'
       )
-        .pic 
-          img(
-            :src='API_BASE + item.urls.thumb_mini',
-            :width='80',
-            :height='80'
-            lazyload
-          )
+        lazyload.pic(
+          :src='API_BASE + item.urls.mini',
+          :width='80',
+          :height='80'
+          lazyload
+        )
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { API_BASE } from '../config'
+import type { ArtworkUrls } from '../types'
 import LazyLoad from './LazyLoad.vue'
 
 const props = defineProps<{
   pages: {
-    urls: {
-      original: string
-      small: string
-      regular: string
-      thumb_mini: string
-    }
+    urls: ArtworkUrls
     width: number
     height: number
   }[]

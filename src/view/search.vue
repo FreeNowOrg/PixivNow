@@ -64,7 +64,7 @@ function makeSearch(params: {
   document.title = `${params.keyword} (第${params.p}页) | Search | PixivNow`
 
   axios
-    .get(`${API_BASE}/api/search/${encodeURIComponent(params.keyword)}`, {
+    .get(`${API_BASE}/ajax/search/${encodeURIComponent(params.keyword)}`, {
       params: {
         p: params.p,
         mode: params.mode || 'all'

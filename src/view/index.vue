@@ -49,17 +49,12 @@
       .align-center(v-if='!discoverList.length')
         placeholder
       artworks-list(:list='discoverList')
-
-    //- section.ranking
-    //-   h2 今日排行
-    //-   .align-center(v-if="rankList.length < 1")
-    //-     placeholder
-    //-   ArtworksList(:list="rankList")
 </template>
 
 <script lang="ts" setup>
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
+import { formatInTimeZone } from 'date-fns-tz'
 import { API_BASE } from '../config'
 import { getCache, setCache } from './siteCache'
 
@@ -68,46 +63,45 @@ import Modal from '../components/Modal.vue'
 import SearchBox from '../components/SearchBox.vue'
 import Placeholder from '../components/Placeholder.vue'
 import LogoH from '../assets/LogoH.png'
+import type { ArtworkReduced } from '../types'
 
 const showBgInfo = ref(false)
 const discoverList = ref([])
-const rankList = ref([])
 const randomBg = ref<{
   url: string
-  info: any
+  info: ArtworkReduced
 }>({
   url: '',
-  info: {} as any
+  info: {} as ArtworkReduced
 })
-
-function initRank(): void {
-  if (getCache('home.rankList')) {
-    rankList.value = getCache('home.rankList')
-    return
-  }
-  axios.get(`${API_BASE}/api/ranking`).then(({ data }) => {
-    rankList.value = data.contents
-    setCache('home.rankList', data.contents)
-  })
-}
 
 function setRandomBg(noCache?: boolean): void {
   if (!noCache && getCache('home.randomBg')) {
     randomBg.value = getCache('home.randomBg')
     return
   }
-  axios.get(`${API_BASE}/api/illust/random?max=1`).then(({ data }) => {
-    const info = data[0]
-    if (!info) {
+  axios
+    .get(`${API_BASE}/ajax/illust/discovery`, {
+      params: {
+        mode: 'safe',
+        max: 1,
+      }
+    })
+    .then(({ data }: { data: { illusts: ArtworkReduced[] } }): void => {
+      const info = data.illusts.find((item) => item.id) as ArtworkReduced
+      const middle = `img/${formatInTimeZone(
+        info.updateDate,
+        'Asia/Tokyo',
+        'yyyy/MM/dd/HH/mm/ss'
+      )}/${info.id}`
+      const url = `${API_BASE}/-/img-master/${middle}_p0_master1200.jpg`
+      randomBg.value.info = info
+      randomBg.value.url = url
+      setCache('home.randomBg', { info, url })
+    })
+    .catch(() => {
       randomBg.value.url = 'https://api.daihan.top/api/acg'
-      randomBg.value.info = {} as any
-      return
-    }
-    const url = API_BASE + info.urls.regular
-    randomBg.value.info = info
-    randomBg.value.url = url
-    setCache('home.randomBg', { info, url })
-  })
+    })
 }
 
 function setDiscovered(noCache?: boolean): void {
@@ -117,17 +111,24 @@ function setDiscovered(noCache?: boolean): void {
   }
   discoverList.value = []
   axios
-    .get(`${API_BASE}/api/illust/random?max=8&mode=all`)
+    .get(`${API_BASE}/ajax/illust/discovery`, {
+      params: {
+        mode: 'all',
+        max: 8,
+      }
+    })
     .then(({ data }) => {
-      discoverList.value = data
+      discoverList.value = data.illusts
       setCache('home.discoverList', data)
+    })
+    .catch(() => {
+      console.error('获取探索发现失败')
     })
 }
 
 onMounted(() => {
   document.title = 'Pixiv Now'
   setRandomBg()
-  initRank()
   setDiscovered(true)
 })
 </script>

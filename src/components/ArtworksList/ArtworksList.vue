@@ -4,6 +4,7 @@ ul.artworks-list
     :key="item.id"
   )
     artwork-card(:item="item")
+  slot/
 </template>
 
 <script lang="ts" setup>
@@ -43,4 +44,13 @@ const artworks = computed(() => {
     width: 180px
     max-width: calc(50vw - 2rem)
     display: inline-block
+
+.tiny
+  gap: 0.75rem
+
+  li
+    width: 100px
+
+  .info
+    display: none
 </style>

@@ -2,21 +2,20 @@ import { VercelResponse } from '@vercel/node'
 import axios, { AxiosRequestConfig, Method } from 'axios'
 import cookie from 'cookie'
 
-export function makeArtList(obj: any) {
-  const list = []
-  for (const item in obj) {
-    list.push(obj[item])
-  }
-  list.sort((a, b) => b.id - a.id)
-  return list
+export function makeArtList(
+  obj: Record<string, { id: number }>
+): { id: number }[] {
+  return Object.values(obj).sort((a, b) => b.id - a.id)
 }
 
-export function replaceUrl(obj: any) {
-  const replace = (str: string) =>
-    str
+export function replaceUrl(
+  obj: Record<string, any> | string
+): Record<string, any> | string {
+  function replace(str: string): string {
+    return str
       .replace(/https:\/\/i\.pximg\.net\//g, '/-/')
       .replace(/https:\/\/s\.pximg\.net\//g, '/~/')
-
+  }
   if (typeof obj === 'string') return replace(obj)
 
   for (const key in obj) {

@@ -62,13 +62,27 @@ export interface ArtworkRank {
   date: string
   tags: string[]
   url: string
-  illustType: '0' | '1' | '2'
-  illustBookStyle: '0'
-  illustPageCount: `${number}`
-  userName: string
-  profileImg: string
-  illustContentType: Record<string, boolean | 0>
-  illustSeries:
+  illust_type: '0' | '1' | '2'
+  illust_book_style: '0'
+  illust_page_count: `${number}`
+  user_name: string
+  profile_img: string
+  illust_content_type: {
+    sexual: 0 | 1 | 2
+    lo: boolean
+    grotesque: boolean
+    violent: boolean
+    homosexual: boolean
+    drug: boolean
+    thoughts: boolean
+    antisocial: boolean
+    religional: boolean
+    original: boolean
+    furry: boolean
+    bl: boolean
+    yuri: boolean
+  }
+  illust_series:
     | {
         illustSeriesId: `${number}`
         illustSeriesUserId: `${number}`
@@ -81,17 +95,16 @@ export interface ArtworkRank {
         pageUrl: string
       }
     | false
-  illustId: number
+  illust_id: number
   width: number
   height: number
-  userId: number
+  user_id: number
   rank: number
-  yesRank: number
-  ratingCount: number
-  viewCount: number
-  illustUploadTimestamp: number
+  yes_rank: number
+  rating_count: number
+  view_count: number
+  illust_upload_timestamp: number
   attr: string
-  xRestrict: 0 | 1 | 2
 }
 
 export interface Artwork extends ArtworkCommon {

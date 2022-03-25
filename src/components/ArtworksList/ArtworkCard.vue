@@ -15,7 +15,7 @@
     )
       fa(icon="heart")
   router-link(:to="'/artworks/' + item.id")
-    img(
+    lazy-load.img(
       :src="API_BASE + item.url"
       :alt="item.alt"
       :title="item.alt"
@@ -36,6 +36,7 @@
 
 <script lang="ts" setup>
 import { API_BASE } from "../../config"
+import LazyLoad from "../LazyLoad.vue"
 import { addBookmark, removeBookmark } from "../../utils/artworkActions"
 
 import type { ArtworkReduced } from "../../types"
@@ -84,13 +85,13 @@ function toggleBookmark(): void {
       pointer-events: none
       transition: all 0.4s ease-in-out
 
-    img
-      position: relative
-      left: 0
-      top: 0
-      width: 100%
-      height: 100%
-      transition: all 0.4s ease-in-out
+  .img
+    position: relative
+    left: 0
+    top: 0
+    width: 100%
+    height: 100%
+    transition: all 0.4s ease-in-out
 
   .bookmark
     cursor: pointer
@@ -119,7 +120,49 @@ function toggleBookmark(): void {
     .hover-title
       opacity: 1
 
-.thumb .router-link-active
+.title,
+.author
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+  width: 100%
+  padding-bottom: 2px
+
+  a
+    align-items: center
+
+    &.router-link-active
+      color: var(--theme-text-color)
+      font-weight: 600
+      font-style: normal
+      cursor: default
+
+      &::after
+        visibility: hidden
+
+.title
+  margin: 0.4rem 0
+
+  a
+    display: inline
+    font-weight: 600
+
+.author
+  .avatar
+    display: inline-block
+    width: 1.5rem
+    height: 1.5rem
+    border: 2px solid #fff
+    border-radius: 50%
+    box-shadow: 0 0 4px #ccc
+    margin-right: .4rem
+
+  a
+    font-size: 0.8rem
+    font-style: italic
+    display: inline-flex
+
+.router-link-active
   cursor: default
   box-shadow: 0 0 0 2px #aaa
 
@@ -145,50 +188,27 @@ function toggleBookmark(): void {
   [data-icon]
     margin-right: .2rem
 
-  .x-restrict
-    top: .4rem
-    left: .4rem
-    color: #fff
-    font-size: 0.8rem
-    background-color: rgb(255, 0, 0, 0.8)
-    width: 1.5rem
-    height: 1.5rem
-    border-radius: 50%
-    display: flex
-    align-items: center
+.x-restrict
+  top: .4rem
+  left: .4rem
+  color: #fff
+  font-size: 0.8rem
+  background-color: rgb(255, 0, 0, 0.8)
+  width: 1.5rem
+  height: 1.5rem
+  border-radius: 50%
+  display: flex
+  align-items: center
 
-    [data-icon]
-      margin: 0 auto
+  [data-icon]
+    margin: 0 auto
 
-  .bookmark
-    bottom: 0.4rem
-    right: 0.4rem
-    font-size: 1.2rem
-    color: #fff
+.bookmark
+  bottom: 0.4rem
+  right: 0.4rem
+  font-size: 1.2rem
+  color: #fff
 
-    &.bookmarked
-      color: var(--theme-bookmark-color)
-
-.author
-  img
-    width: 1.5rem
-    height: 1.5rem
-
-  a
-    font-size: 0.8rem
-    display: inline-flex
-
-.title
-  margin: 0.4rem 0
-  text-overflow: ellipsis
-  overflow: hidden
-
-  &.tiny
-    gap: 0.75rem
-
-    li
-      width: 100px
-
-    .info
-      display: none
+  &.bookmarked
+    color: var(--theme-bookmark-color)
 </style>

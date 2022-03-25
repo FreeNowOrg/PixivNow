@@ -189,7 +189,7 @@ function init(id: string | number): void {
     return
   }
 
-  axios.get(`${API_BASE}/api/user/${id}`)
+  axios.get(`${API_BASE}/ajax/user/${id}`)
     .then(
       ({ data }: { data: User }) => {
         user.value = data

@@ -1,7 +1,6 @@
 <template lang="pug">
 #ranking-view
-  //- 已登录
-  .logged-in.body-inner
+  .body-inner
     //- Error
     section(v-if='error')
       h1 排行榜加载失败
@@ -21,10 +20,9 @@
 
 <script lang="ts" setup>
 import axios from 'axios'
-import { userData } from '../components/userData'
 import { API_BASE } from '../config'
 
-import RankingList from '../components/ArtworksList/RankingList.vue'
+import RankingList from '../components/RankingList/RankingList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Placeholder from '../components/Placeholder.vue'
 import { onMounted, ref } from 'vue'
@@ -42,11 +40,12 @@ const route = useRoute()
 function init(): void {
   const { p, mode, date } = route.params
   axios
-    .get(`${API_BASE}/api/ranking`, {
+    .get(`${API_BASE}/ranking.php`, {
       params: {
         p,
         mode,
         date,
+        format: 'json',
       },
     })
     .then(({ data }) => {
@@ -68,9 +67,6 @@ function init(): void {
 }
 
 onMounted(() => {
-  if (!userData.value) {
-    console.log('或许需要绑定令牌？')
-  }
   document.title = 'Ranking | PixvNow'
   init()
 })
