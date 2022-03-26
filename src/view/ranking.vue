@@ -68,7 +68,7 @@ async function init(): Promise<void> {
     if (err instanceof Error) {
       error.value = err.message
     } else {
-      error.value = '未知错误'
+      error.value = '哎呀，出错了！'
     }
   } finally {
     loading.value = false

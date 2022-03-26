@@ -45,29 +45,39 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 
 const error = ref('')
 const loading = ref(true)
-const keyword = ref('')
+const searchKeyword = ref('')
 const resultList = ref([])
-const p = ref(1)
+const page = ref(1)
 const route = useRoute()
 const router = useRouter()
 
-async function makeSearch(params: {
-  keyword: string
-  p?: `${number}`
-  mode?: string
-}): Promise<void> {
-  keyword.value = params.keyword
-  p.value = parseInt(params.p || '1')
-  if (!keyword.value) return
+async function makeSearch(
+  {
+    keyword,
+    p,
+    mode,
+  }: {
+    keyword: string
+    p?: `${number}`
+    mode?: string
+  } = {
+    keyword: '',
+    p: '1',
+    mode: 'text',
+  }
+): Promise<void> {
+  searchKeyword.value = keyword
+  page.value = parseInt(p || '1')
+  if (!searchKeyword.value) return
   try {
     loading.value = true
-    document.title = `${params.keyword} (第${params.p}页) | Search | PixivNow`
+    document.title = `${keyword} (第${p}页) | Search | PixivNow`
     const { data } = await axios.get(
-      `${API_BASE}/ajax/search/${encodeURIComponent(params.keyword)}`,
+      `${API_BASE}/ajax/search/${encodeURIComponent(keyword)}`,
       {
         params: {
-          p: params.p,
-          mode: params.mode || 'all',
+          p,
+          mode,
         },
       }
     )
@@ -77,17 +87,17 @@ async function makeSearch(params: {
     if (err instanceof Error) {
       error.value = err.message
     } else {
-      error.value = 'HTTP 请求超时'
+      error.value = '哎呀，出错了！'
     }
   } finally {
     loading.value = false
   }
 }
 
-watch(p, (value) => {
-  p.value = value < 1 ? 1 : value
+watch(page, (value) => {
+  page.value = value < 1 ? 1 : value
   router.push(
-    `/search/${keyword.value}/${p.value}${
+    `/search/${searchKeyword.value}/${page.value}${
       route.query.mode ? '?mode=' + route.query.mode : ''
     }`
   )

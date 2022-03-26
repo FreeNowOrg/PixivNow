@@ -185,7 +185,7 @@ async function init(id: string | number): Promise<void> {
     user.value = cache
     document.title = `${cache.name} | User | PixivNow`
     // Extra
-    getBookmarks()
+    await getBookmarks()
     return
   }
   try {
@@ -194,7 +194,7 @@ async function init(id: string | number): Promise<void> {
     user.value = data
     setCache(`users.${id}`, data)
     document.title = `${data.name} | User | PixivNow`
-    getBookmarks()
+    await getBookmarks()
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
@@ -239,11 +239,11 @@ async function getBookmarks(): Promise<void> {
   }
 }
 
-onBeforeRouteUpdate((to) => init(to.params.id as string))
+onBeforeRouteUpdate(async (to) => await init(to.params.id as string))
 
-onMounted(() => {
+onMounted(async () => {
   document.title = `User | PixivNow`
-  init(route.params.id as string)
+  await init(route.params.id as string)
 })
 </script>
 

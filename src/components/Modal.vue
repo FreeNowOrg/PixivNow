@@ -1,9 +1,9 @@
 <template lang="pug">
 .modal-container
   .modal-area(v-if='show')
-    .modal-backdrop(@click='$emit("update:show", false)')
+    .modal-backdrop(@click='closeModal')
     .modal-window
-      a.plain.close-btn(roll='button', @click='$emit("update:show", false)')
+      a.plain.close-btn(roll='button', @click='closeModal')
         fa(icon='times')
       section.modal-content
         div
@@ -39,9 +39,7 @@ function closeModal() {
 
 onMounted(() => {
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeModal()
-    }
+    if (e.key === 'Escape') closeModal()
   })
 })
 </script>

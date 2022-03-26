@@ -38,7 +38,7 @@
               //- 未收藏/不可收藏
               span.bookmark-count(
                 v-if='!illust.bookmarkData',
-                @click='addBookmark',
+                @click='async () => await addBookmark()',
                 :title='userData ? "添加收藏" : "收藏"'
               )
                 fa(icon='heart')
@@ -91,7 +91,7 @@
         li.load-more(
           v-if='recommendNextIds.length'
         )
-          a.plain(@click='getMoreRecommend' href="")
+          a.plain(@click='async () => await getMoreRecommend()' href="")
             .top
               .inner
                 fa(v-if='!recommendLoading', icon='plus', size='5x')
@@ -102,7 +102,7 @@
       show-more(
         v-if='recommendNextIds.length',
         :text='recommendLoading ? "加载中" : "加载更多"',
-        :method='getMoreRecommend',
+        :method='async () => await getMoreRecommend()',
         :loading='recommendLoading'
       )
 
@@ -161,8 +161,8 @@ async function init(id: string): Promise<void> {
     gallery.value = pageCache
     loading.value = false
     document.title = `${dataCache.illustTitle} | Artwork | PixivNow`
-    getUser(dataCache.userId)
-    getFirstRecommend(id)
+    await getUser(dataCache.userId)
+    await getFirstRecommend(id)
     return
   }
 
@@ -178,8 +178,8 @@ async function init(id: string): Promise<void> {
     setCache(`illust.${id}.page`, illustPage)
     illust.value = illustData
     gallery.value = illustPage
-    getUser(illustData.userId)
-    getFirstRecommend(id)
+    await getUser(illustData.userId)
+    await getFirstRecommend(id)
   } catch (err) {
     console.warn('illust fetch error', `#${id}`, err)
     if (err instanceof Error) {

@@ -14,7 +14,7 @@
       a.pointer(
         style='margin-right: 0.5em',
         title='换一个~',
-        @click='setRandomBg(true)'
+        @click='async () => await setRandomBg(true)'
       )
         fa(icon='random')
       a.pointer(
@@ -39,7 +39,7 @@
     section.discover
       h2 探索发现
       .align-center
-        a.button(@click='discoverList.length ? setDiscovered() : void 0')
+        a.button(@click='discoverList.length ? async () => await setDiscovered() : void 0')
           | {{ discoverList.length ? "换一批" : "加载中" }}
           |
           fa(

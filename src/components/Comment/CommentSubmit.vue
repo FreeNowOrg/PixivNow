@@ -8,7 +8,7 @@
     .right
       textarea(v-model="comment" :disabled="loading")
     .submit.align-right
-    button(@click="submit" :disabled="loading") 发送
+    button(@click="async () => await submit()" :disabled="loading") 发送
   .flex.not-logged-in(v-if="!userData")
     p 
       | 您需要

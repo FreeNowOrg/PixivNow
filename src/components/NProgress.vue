@@ -12,8 +12,6 @@ import axios from 'axios'
 const router = useRouter()
 
 onMounted(() => {
-  window.nprogress = nprogress
-
   // 介入路由事件
   router.beforeEach(() => void nprogress.start())
 

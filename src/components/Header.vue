@@ -71,13 +71,11 @@ import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
 import { userData, userLogout } from './userData'
 import LogoH from '../assets/LogoH.png'
-import { useRouter } from 'vue-router'
 import { showSideNav } from './states'
 
 const hidden = ref(false)
 const notAtTop = ref(false)
 const showUserDropdown = ref(false)
-const router = useRouter()
 
 watch(hidden, (value) => {
   if (value) {

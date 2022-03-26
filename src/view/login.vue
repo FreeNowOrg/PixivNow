@@ -18,7 +18,7 @@
     | {{ tokenValidator(tokenInput) ? '格式正确，请点击保存！' : '哎呀，这个格式看上去不太对……' }}
   .status.bad(v-if="error") {{ error }}
   #submit
-    button.btn.btn-primary(@click="submit" :disabled="!!error || loading || !tokenValidator(tokenInput)") {{ loading ? '登录中……' : '保存令牌' }}
+    button.btn.btn-primary(@click="async () => await submit()" :disabled="!!error || loading || !tokenValidator(tokenInput)") {{ loading ? '登录中……' : '保存令牌' }}
   .tips 
     h2 如何获取 Pixiv 令牌？
     p 访问 <a href="https://www.pixiv.net" target="_blank">www.pixiv.net</a> 源站并登录，打开浏览器控制台(f12)，点击“存储(storage)”一栏，在 cookie 列表里找到“键(key)”为<code>PHPSESSID</code>的一栏，将它的“值(value)”复制后填写到这里。
@@ -78,7 +78,7 @@ async function submit(): Promise<void> {
   }
   try {
     loading.value = true
-    userLogin(tokenInput.value)
+    await userLogin(tokenInput.value)
     error.value = ''
     goBack()
   } catch (err) {
