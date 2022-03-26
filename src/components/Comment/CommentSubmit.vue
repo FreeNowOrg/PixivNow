@@ -38,37 +38,35 @@ const emit = defineEmits<{
   ): void
 }>()
 
-function submit() {
+async function submit(): Promise<void> {
   if (loading.value) return
-  loading.value = true
-  axios({
-    method: 'post',
-    url: `${API_BASE}/ajax/illusts/comments/post`,
-    headers: {
-      'X-CSRF-TOKEN': Cookies.get('csrf_token'),
-    },
-    data: {
-      type: 'comment',
-      illust_id: props.id,
-      author_user_id: userData.value?.id,
-      comment,
-    },
-  })
-    .then(
-      ({ data }) => {
-        comment.value = ''
-        emit('push-comment', {
-          img: userData.value?.profileImg,
-          commentDate: new Date().toLocaleString(),
-          ...data,
-        })
+  try {
+    loading.value = true
+    const { data } = await axios.post(
+      `${API_BASE}/ajax/illusts/comments/post`,
+      {
+        type: 'comment',
+        illust_id: props.id,
+        author_user_id: userData.value?.id,
+        comment,
       },
-      (err) => {
-        console.error('Submit comment error', err)
-        alert(`出大问题：${err.message}`)
+      {
+        headers: {
+          'X-CSRF-TOKEN': Cookies.get('csrf_token'),
+        },
       }
     )
-    .finally(() => loading.value = false)
+    comment.value = ''
+    emit('push-comment', {
+      img: userData.value?.profileImg,
+      commentDate: new Date().toLocaleString(),
+      ...data,
+    })
+  } catch (err) {
+    console.warn('Comment submit error', err)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 

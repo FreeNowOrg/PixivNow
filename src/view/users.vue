@@ -178,7 +178,7 @@ const error = ref('')
 const showUserMore = ref(false)
 const route = useRoute()
 
-function init(id: string | number): void {
+async function init(id: string | number): Promise<void> {
   const cache = getCache(`users.${id}`)
   if (cache) {
     loading.value = false
@@ -188,48 +188,55 @@ function init(id: string | number): void {
     getBookmarks()
     return
   }
-
-  axios.get(`${API_BASE}/ajax/user/${id}`)
-    .then(
-      ({ data }: { data: User }) => {
-        user.value = data
-        setCache(`users.${id}`, data)
-        document.title = `${data.name} | User | PixivNow`
-
-        getBookmarks()
-      })
-    .catch(
-      (err) => {
-        console.warn('user', err.response)
-        error.value =
-          err?.response?.data?.message || err.message || 'HTTP 请求超时'
-      }
-    )
-    .finally(() => loading.value = false)
+  try {
+    loading.value = true
+    const { data } = await axios.get(`${API_BASE}/ajax/user/${id}`)
+    user.value = data
+    setCache(`users.${id}`, data)
+    document.title = `${data.name} | User | PixivNow`
+    getBookmarks()
+  } catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = '未知错误'
+    }
+  } finally {
+    loading.value = false
+  }
 }
 
 function userMore(): void {
   showUserMore.value = true
 }
 
-function getBookmarks(): void {
+async function getBookmarks(): Promise<void> {
   if (userData.value?.id !== route.params.id) return
   if (loadingBookmarks.value) return
-  loadingBookmarks.value = true
 
-  axios
-    .get(`${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`, {
-      params: {
-        offset: bookmarks.value.length ?? 0,
-        tag: '',
-        limits: 48,
-        rest: 'show',
-      },
-    })
-    .then(({ data }: { data: { works: ArtworkReduced[] } }) => {
-      bookmarks.value = bookmarks.value.concat(data.works)
-    })
-    .finally(() => loadingBookmarks.value = false)
+  try {
+    loadingBookmarks.value = true
+    const { data }: { data: { works: ArtworkReduced[] } } = await axios.get(
+      `${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`,
+      {
+        params: {
+          offset: bookmarks.value.length ?? 0,
+          tag: '',
+          limits: 48,
+          rest: 'show',
+        },
+      }
+    )
+    bookmarks.value = bookmarks.value.concat(data.works)
+  } catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = '未知错误'
+    }
+  } finally {
+    loadingBookmarks.value = false
+  }
 }
 
 onBeforeRouteUpdate((to) => init(to.params.id as string))

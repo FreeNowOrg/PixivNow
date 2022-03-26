@@ -96,7 +96,7 @@ function remove(): void {
   userLogout()
 }
 
-watch(tokenInput, () => error.value = '')
+watch(tokenInput, () => (error.value = ''))
 </script>
 
 <style scoped lang="sass">

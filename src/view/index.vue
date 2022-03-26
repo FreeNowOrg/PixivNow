@@ -72,7 +72,7 @@ const randomBg = ref<{
   info: ArtworkReduced
 }>({
   url: '',
-  info: {} as ArtworkReduced
+  info: {} as ArtworkReduced,
 })
 
 async function setRandomBg(noCache?: boolean): Promise<void> {
@@ -87,7 +87,7 @@ async function setRandomBg(noCache?: boolean): Promise<void> {
         params: {
           mode: 'safe',
           max: 1,
-        }
+        },
       }
     )
     const info = data.illusts.find((item) => item.id) as ArtworkReduced
@@ -113,7 +113,7 @@ async function setDiscovered(): Promise<void> {
       params: {
         mode: 'all',
         max: 8,
-      }
+      },
     })
     discoverList.value = data.illusts
     setCache('home.discoverList', data.illusts)

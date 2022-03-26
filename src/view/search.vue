@@ -67,8 +67,8 @@ async function makeSearch(params: {
       {
         params: {
           p: params.p,
-          mode: params.mode || 'all'
-        }
+          mode: params.mode || 'all',
+        },
       }
     )
     resultList.value = data?.illustManga?.data || []
@@ -87,7 +87,8 @@ async function makeSearch(params: {
 watch(p, (value) => {
   p.value = value < 1 ? 1 : value
   router.push(
-    `/search/${keyword.value}/${p.value}${route.query.mode ? '?mode=' + route.query.mode : ''
+    `/search/${keyword.value}/${p.value}${
+      route.query.mode ? '?mode=' + route.query.mode : ''
     }`
   )
 })

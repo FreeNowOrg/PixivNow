@@ -35,11 +35,11 @@
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from "../../config"
-import LazyLoad from "../LazyLoad.vue"
-import { addBookmark, removeBookmark } from "../../utils/artworkActions"
+import { API_BASE } from '../../config'
+import LazyLoad from '../LazyLoad.vue'
+import { addBookmark, removeBookmark } from '../../utils/artworkActions'
 
-import type { ArtworkReduced } from "../../types"
+import type { ArtworkReduced } from '../../types'
 
 const props = defineProps<{
   item: ArtworkReduced

@@ -45,7 +45,7 @@ import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
 
 const router = useRouter()
-router.afterEach(() => showSideNav.value = false)
+router.afterEach(() => (showSideNav.value = false))
 
 watch(showSideNav, (value) => {
   if (value) {

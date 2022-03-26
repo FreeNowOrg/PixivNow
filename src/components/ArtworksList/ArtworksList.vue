@@ -10,15 +10,17 @@ ul.artworks-list
 <script lang="ts" setup>
 import ArtworkCard from './ArtworkCard.vue'
 
-import type { ArtworkReduced, ArtworkReducedOrAd } from "../../types"
-import { computed } from "vue"
+import type { ArtworkReduced, ArtworkReducedOrAd } from '../../types'
+import { computed } from 'vue'
 
 const props = defineProps<{
   list: ArtworkReducedOrAd[]
 }>()
 
 const artworks = computed(() => {
-  return props.list.filter(item => Object.keys(item).includes('id')) as ArtworkReduced[]
+  return props.list.filter((item) =>
+    Object.keys(item).includes('id')
+  ) as ArtworkReduced[]
 })
 </script>
 

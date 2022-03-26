@@ -64,16 +64,13 @@ async function init(): Promise<void> {
     )
     list.value = data
     setCache('ranking.rankingList', data)
-  }
-  catch (err) {
+  } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
-    }
-    else {
+    } else {
       error.value = '未知错误'
     }
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
