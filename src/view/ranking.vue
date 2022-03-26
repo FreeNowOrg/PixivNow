@@ -28,6 +28,7 @@ import Placeholder from '../components/Placeholder.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { ArtworkRank } from '../types'
+import { getCache, setCache } from './siteCache'
 
 const error = ref('')
 const loading = ref(true)
@@ -37,10 +38,16 @@ const list = ref<{
 } | null>(null)
 const route = useRoute()
 
-function init(): void {
-  const { p, mode, date } = route.params
-  axios
-    .get(`${API_BASE}/ranking.php`, {
+async function init(): Promise<void> {
+  loading.value = true
+  list.value = getCache('ranking.rankingList')
+  if (list.value) {
+    loading.value = false
+    return
+  }
+  try {
+    const { p, mode, date } = route.params
+    const { data } = await axios.get(`${API_BASE}/ranking.php`, {
       params: {
         p,
         mode,
@@ -48,27 +55,32 @@ function init(): void {
         format: 'json',
       },
     })
-    .then(({ data }) => {
-      // Date
-      const date: string = data.date
-      data.date = new Date(
-        +date.substring(0, 4),
-        +date.substring(4, 6) - 1,
-        +date.substring(6, 8)
-      )
-      list.value = data
-      console.log(data.contents)
-    })
-    .catch((err) => {
-      error.value =
-        err?.response?.data?.error || err.message || '出现未知问题'
-    })
-    .finally(() => loading.value = false)
+    // Date
+    const temp: string = data.date
+    data.date = new Date(
+      +temp.substring(0, 4),
+      +temp.substring(4, 6) - 1,
+      +temp.substring(6, 8)
+    )
+    list.value = data
+    setCache('ranking.rankingList', data)
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    }
+    else {
+      error.value = '未知错误'
+    }
+  }
+  finally {
+    loading.value = false
+  }
 }
 
-onMounted(() => {
+onMounted(async () => {
   document.title = 'Ranking | PixvNow'
-  init()
+  await init()
 })
 </script>
 

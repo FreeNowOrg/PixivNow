@@ -137,7 +137,9 @@ const loading = ref(true)
 const error = ref('')
 const illust = ref<Artwork>({} as Artwork)
 const gallery = ref<{
-  urls: ArtworkUrls
+  urls: ArtworkUrls & {
+    thumb_mini: string
+  }
   width: number
   height: number
 }[]>([])
@@ -148,108 +150,123 @@ const recommendLoading = ref(false)
 const bookmarkLoading = ref(false)
 const route = useRoute()
 
-function init(id: string): void {
-  const cache = getCache(`illust.${id}`)
-  if (cache) {
-    illust.value = cache
+async function init(id: string): Promise<void> {
+  loading.value = true
+  const dataCache = getCache(`illust.${id}`)
+  const pageCache = getCache(`illust.${id}.page`)
+  if (dataCache && pageCache) {
+    illust.value = dataCache
+    gallery.value = pageCache
     loading.value = false
-    document.title = `${cache.illustTitle} | Artwork | PixivNow`
-    getUser(cache.userId)
+    document.title = `${dataCache.illustTitle} | Artwork | PixivNow`
+    getUser(dataCache.userId)
     getFirstRecommend(id)
     return
   }
 
-  Promise.all([
-    axios.get(`${API_BASE}/ajax/illust/${id}`, {
-      params: { full: 1 }
-    }),
-    axios.get(`${API_BASE}/ajax/illust/${id}/pages`)
-  ])
-    .then(([{ data: illustData }, { data: illustPage }]: { data: any }[]) => {
-      document.title = `${illustData.illustTitle} | Artwork | PixivNow`
-      setCache(`illust.${id}`, illustData)
-      illust.value = illustData
-      gallery.value = illustPage
-      getUser(illustData.userId)
-      getFirstRecommend(id)
-    })
-    .catch((err) => {
-      console.warn('illust fetch error', `#${id}`, err)
-      error.value =
-        err?.response?.data?.message || err.message || 'HTTP 请求超时'
-    })
-    .finally(() => loading.value = false)
+  try {
+    const [{ data: illustData }, { data: illustPage }] = await Promise.all([
+      axios.get(`${API_BASE}/ajax/illust/${id}`, {
+        params: { full: 1 }
+      }),
+      axios.get(`${API_BASE}/ajax/illust/${id}/pages`)
+    ])
+    document.title = `${illustData.illustTitle} | Artwork | PixivNow`
+    setCache(`illust.${id}`, illustData)
+    setCache(`illust.${id}.page`, illustPage)
+    illust.value = illustData
+    gallery.value = illustPage
+    getUser(illustData.userId)
+    getFirstRecommend(id)
+  } catch (err) {
+    console.warn('illust fetch error', `#${id}`, err)
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = '未知错误'
+    }
+  } finally {
+    loading.value = false
+  }
 }
 
-function getUser(userId: string): void {
-  if (getCache(`user.${userId}`)) {
-    user.value = getCache(`user.${userId}`)
+async function getUser(userId: string): Promise<void> {
+  const value = getCache(`user.${userId}`)
+  if (value) {
+    user.value = value
     return
   }
 
-  Promise.all([
-    axios.get(`${API_BASE}/ajax/user/${userId}`, {
-      params: {
-        full: 1
-      }
-    }),
-    axios.get(`${API_BASE}/ajax/user/${userId}/profile/top`)
-  ])
-    .then(([{ data: userData }, { data: profileData }]: { data: any }[]) => {
-      const { illusts }: { illusts: Record<string, ArtworkReduced> } = profileData
-      user.value = {
-        ...userData,
-        illusts: Object.values(illusts).sort((a, b) => +b.id - +a.id)
-      }
-      setCache(`user.${userId}`, userData)
-    })
-    .catch((err) => {
-      console.warn('User fetch error', err)
-    })
+  try {
+    const [{ data: userData }, { data: profileData }] = await Promise.all([
+      axios.get(`${API_BASE}/ajax/user/${userId}`, {
+        params: {
+          full: 1
+        }
+      }),
+      axios.get(`${API_BASE}/ajax/user/${userId}/profile/top`)
+    ])
+    const { illusts }: { illusts: Record<string, ArtworkReduced> } = profileData
+    user.value = {
+      ...userData,
+      illusts: Object.values(illusts).sort((a, b) => +b.id - +a.id)
+    }
+    setCache(`user.${userId}`, user.value)
+  }
+  catch (err) {
+    console.warn('User fetch error', err)
+  }
 }
 
-function getFirstRecommend(id: string): void {
+async function getFirstRecommend(id: string): Promise<void> {
   if (recommendLoading.value) return
-  recommendLoading.value = true
-  console.log('init recommend')
-  axios.get(`${API_BASE}/ajax/illust/${id}/recommend/init`, {
-    params: { limit: 17 }
-  })
-    .then(({ data }) => {
-      recommend.value = data.illusts
-      recommendNextIds.value = data.nextIds
-    })
-    .catch((err) => {
-      console.warn('recommend fetch error', err)
-    })
-    .finally(() => recommendLoading.value = false)
+  try {
+    recommendLoading.value = true
+    console.log('init recommend')
+    const { data } = await axios.get(
+      `${API_BASE}/ajax/illust/${id}/recommend/init`,
+      {
+        params: { limit: 17 }
+      }
+    )
+    recommend.value = data.illusts
+    recommendNextIds.value = data.nextIds
+  } catch (err) {
+    console.warn('recommend fetch error', err)
+  } finally {
+    recommendLoading.value = false
+  }
 }
 
-function getMoreRecommend(): void {
+async function getMoreRecommend(): Promise<void> {
   if (recommendLoading.value) return
-  recommendLoading.value = true
-  console.log('get more recommended')
   if (!recommendNextIds.value.length) {
-    console.log('no more recommended')
+    console.log('no more recommend')
     return
   }
-  const requestIds = recommendNextIds.value.splice(0, 18)
 
-  axios
-    .get(`${API_BASE}/ajax/illust/recommend/illusts`, {
-      params: { illust_ids: requestIds }
-    })
-    .then(({ data }) => {
-      recommend.value = recommend.value.concat(data.illusts)
-      recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
-    })
-    .catch((err) => {
-      console.warn('recommend fetch error', err)
-    })
-    .finally(() => recommendLoading.value = false)
+  try {
+    recommendLoading.value = true
+    console.log('get more recommend')
+    const requestIds = recommendNextIds.value.splice(0, 18)
+    const { data } = await axios.get(
+      `${API_BASE}/ajax/illust/recommend/illusts`,
+      {
+        params: { illust_ids: requestIds }
+      }
+    )
+    recommend.value = recommend.value.concat(data.illusts)
+    recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
+  }
+  catch (err) {
+    console.warn('recommend fetch error', err)
+  }
+  finally {
+    recommendLoading.value = false
+  }
 }
 
-function addBookmark(): void {
+async function addBookmark(): Promise<void> {
   if (!userData) return console.log('需要登录才可以添加收藏')
   if (illust.value.isBookmarkable) {
     console.log('无法添加收藏。')
@@ -260,32 +277,36 @@ function addBookmark(): void {
     return
   }
   if (bookmarkLoading.value) return
-  bookmarkLoading.value = true
-  axios.post(`${API_BASE}/ajax/illust/bookmarks/add`, {
-    illust_id: illust.value.illustId,
-    restrict: illust.value.restrict,
-    comment: '',
-    tags: [],
-  })
-    .then(({ data }) => {
-      if (data.last_bookmark_id) {
-        illust.value.bookmarkData = data
-        illust.value.bookmarkCount++
-      }
-    })
-    .catch((err) => {
-      console.warn('bookmark add error', err)
-    })
-    .finally(() => bookmarkLoading.value = false)
+  try {
+    bookmarkLoading.value = true
+    const { data } = await axios.post(
+      `${API_BASE}/ajax/illust/bookmarks/add`,
+      {
+        illust_id: illust.value.illustId,
+        restrict: illust.value.restrict,
+        comment: '',
+        tags: [],
+      })
+    if (data.last_bookmark_id) {
+      illust.value.bookmarkData = data
+      illust.value.bookmarkCount++
+    }
+  }
+  catch (err) {
+    console.warn('bookmark add error', err)
+  }
+  finally {
+    bookmarkLoading.value = false
+  }
 }
 
-onBeforeRouteUpdate((to) => {
-  init(to.params.id as string)
+onBeforeRouteUpdate(async (to) => {
+  await init(to.params.id as string)
 })
 
-onMounted(() => {
+onMounted(async () => {
   document.title = 'Artwork | PixivNow'
-  init(route.params.id as string)
+  await init(route.params.id as string)
 })
 </script>
 

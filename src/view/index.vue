@@ -39,7 +39,7 @@
     section.discover
       h2 探索发现
       .align-center
-        a.button(@click='discoverList.length ? setDiscovered(true) : void 0')
+        a.button(@click='discoverList.length ? setDiscovered() : void 0')
           | {{ discoverList.length ? "换一批" : "加载中" }}
           |
           fa(
@@ -75,61 +75,57 @@ const randomBg = ref<{
   info: {} as ArtworkReduced
 })
 
-function setRandomBg(noCache?: boolean): void {
+async function setRandomBg(noCache?: boolean): Promise<void> {
   if (!noCache && getCache('home.randomBg')) {
     randomBg.value = getCache('home.randomBg')
     return
   }
-  axios
-    .get(`${API_BASE}/ajax/illust/discovery`, {
-      params: {
-        mode: 'safe',
-        max: 1,
+  try {
+    const { data }: { data: { illusts: ArtworkReduced[] } } = await axios.get(
+      `${API_BASE}/ajax/illust/discovery`,
+      {
+        params: {
+          mode: 'safe',
+          max: 1,
+        }
       }
-    })
-    .then(({ data }: { data: { illusts: ArtworkReduced[] } }): void => {
-      const info = data.illusts.find((item) => item.id) as ArtworkReduced
-      const middle = `img/${formatInTimeZone(
-        info.updateDate,
-        'Asia/Tokyo',
-        'yyyy/MM/dd/HH/mm/ss'
-      )}/${info.id}`
-      const url = `${API_BASE}/-/img-master/${middle}_p0_master1200.jpg`
-      randomBg.value.info = info
-      randomBg.value.url = url
-      setCache('home.randomBg', { info, url })
-    })
-    .catch(() => {
-      randomBg.value.url = 'https://api.daihan.top/api/acg'
-    })
+    )
+    const info = data.illusts.find((item) => item.id) as ArtworkReduced
+    const middle = `img/${formatInTimeZone(
+      info.updateDate,
+      'Asia/Tokyo',
+      'yyyy/MM/dd/HH/mm/ss'
+    )}/${info.id}`
+    const url = `${API_BASE}/-/img-master/${middle}_p0_master1200.jpg`
+    randomBg.value.info = info
+    randomBg.value.url = url
+    setCache('home.randomBg', { info, url })
+  } catch (err) {
+    randomBg.value.url = 'https://api.daihan.top/api/acg'
+  }
 }
 
-function setDiscovered(noCache?: boolean): void {
-  if (!noCache && getCache('home.discoverList')) {
-    discoverList.value = getCache('home.discoverList')
-    return
-  }
-  discoverList.value = []
-  axios
-    .get(`${API_BASE}/ajax/illust/discovery`, {
+async function setDiscovered(): Promise<void> {
+  discoverList.value = getCache('home.discoverList') || []
+  if (discoverList.value.length) return
+  try {
+    const { data } = await axios.get(`${API_BASE}/ajax/illust/discovery`, {
       params: {
         mode: 'all',
         max: 8,
       }
     })
-    .then(({ data }) => {
-      discoverList.value = data.illusts
-      setCache('home.discoverList', data)
-    })
-    .catch(() => {
-      console.error('获取探索发现失败')
-    })
+    discoverList.value = data.illusts
+    setCache('home.discoverList', data.illusts)
+  } catch (err) {
+    console.error('获取探索发现失败')
+  }
 }
 
-onMounted(() => {
+onMounted(async () => {
   document.title = 'Pixiv Now'
-  setRandomBg()
-  setDiscovered(true)
+  await setRandomBg()
+  await setDiscovered()
 })
 </script>
 
@@ -189,30 +185,31 @@ onMounted(() => {
     > *
       width: 100%
 
-.global-navbar
-  background: none
-  .search-area
-    opacity: 0
-    transition: opacity 0.4s ease
-    pointer-events: none
-
-  &.not-at-top
-    background-color: var(--theme-accent-color)
+  .global-navbar
+    background: none
     .search-area
-      opacity: 1
-      pointer-events: all
-.bg-info-modal
-  h3
-    margin-top: 0
-  .thumb
-    > *
-      width: auto
-      height: auto
-      max-width: 100%
-      max-height: 60vh
-      border-radius: 8px
-  .desc
-    margin-top: 1rem
-    font-size: 0.75rem
-    font-style: italic
+      opacity: 0
+      transition: opacity 0.4s ease
+      pointer-events: none
+
+    &.not-at-top
+      background-color: var(--theme-accent-color)
+      .search-area
+        opacity: 1
+        pointer-events: all
+
+  .bg-info-modal
+    h3
+      margin-top: 0
+    .thumb
+      > *
+        width: auto
+        height: auto
+        max-width: 100%
+        max-height: 60vh
+        border-radius: 8px
+    .desc
+      margin-top: 1rem
+      font-size: 0.75rem
+      font-style: italic
 </style>

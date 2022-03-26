@@ -19,11 +19,11 @@
     li(v-for='(item, index) in pages')
       a(
         @click='picShow = index',
-        :title='"第" + (index + 1) + "张，共" + pages.length + "张"',
-        :class='{ active: picShow === index }'
+        :title='`第${index + 1}张，共${pages.length}张`',
+        :class='{ "is-active": picShow === index }'
       )
-        lazyload.pic(
-          :src='API_BASE + item.urls.mini',
+        lazy-load.pic(
+          :src='API_BASE + item.urls.thumb_mini',
           :width='80',
           :height='80'
           lazyload
@@ -38,7 +38,9 @@ import LazyLoad from './LazyLoad.vue'
 
 const props = defineProps<{
   pages: {
-    urls: ArtworkUrls
+    urls: ArtworkUrls & {
+      thumb_mini: string
+    }
     width: number
     height: number
   }[]

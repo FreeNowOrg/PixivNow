@@ -1,6 +1,6 @@
 <template lang="pug">
-aside.global-side-nav(:class='{ hidden: !show }')
-  .backdrop(@click='show = false')
+aside.global-side-nav(:class='{ hidden: !showSideNav }')
+  .backdrop(@click='showSideNav = false')
   .inner
     .group
       .search-area
@@ -36,24 +36,18 @@ aside.global-side-nav(:class='{ hidden: !show }')
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watch } from 'vue'
+import { onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { userData } from '../userData'
+import { showSideNav } from '../states'
 
 import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
 
-const emit = defineEmits<{
-  (e: 'updateShow', show: boolean): void
-}>()
+const router = useRouter()
+router.afterEach(() => showSideNav.value = false)
 
-const show = ref(false)
-
-defineExpose({
-  show,
-})
-
-watch(show, (value) => {
-  emit('updateShow', value)
+watch(showSideNav, (value) => {
   if (value) {
     document.body.style.overflow = 'hidden'
   } else {
@@ -63,7 +57,7 @@ watch(show, (value) => {
 
 onMounted(() => {
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') show.value = false
+    if (e.key === 'Escape') showSideNav.value = false
   })
 })
 </script>

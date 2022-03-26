@@ -70,22 +70,26 @@ function goBack(): void {
   }
 }
 
-function submit(): void {
+async function submit(): Promise<void> {
   if (!tokenValidator(tokenInput.value)) {
     error.value = '哎呀，这个格式看上去不太对……'
     console.warn(error.value)
     return
   }
-  loading.value = true
-  userLogin(tokenInput.value)
-    .then(() => {
-      error.value = ''
-      goBack()
-    })
-    .catch(e => {
-      error.value = e.message
-    })
-    .finally(() => loading.value = false)
+  try {
+    loading.value = true
+    userLogin(tokenInput.value)
+    error.value = ''
+    goBack()
+  } catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = '哎呀，出错了，请重试！'
+    }
+  } finally {
+    loading.value = false
+  }
 }
 
 function remove(): void {

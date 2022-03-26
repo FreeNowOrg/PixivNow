@@ -51,37 +51,37 @@ const p = ref(1)
 const route = useRoute()
 const router = useRouter()
 
-function makeSearch(params: {
+async function makeSearch(params: {
   keyword: string
   p?: `${number}`
   mode?: string
-}): void {
-  loading.value = true
+}): Promise<void> {
   keyword.value = params.keyword
   p.value = parseInt(params.p || '1')
   if (!keyword.value) return
-
-  document.title = `${params.keyword} (第${params.p}页) | Search | PixivNow`
-
-  axios
-    .get(`${API_BASE}/ajax/search/${encodeURIComponent(params.keyword)}`, {
-      params: {
-        p: params.p,
-        mode: params.mode || 'all'
-      }
-    })
-    .then(
-      ({ data }) => {
-        resultList.value = data?.illustManga?.data || []
-        console.info(data?.illustManga?.data)
+  try {
+    loading.value = true
+    document.title = `${params.keyword} (第${params.p}页) | Search | PixivNow`
+    const { data } = await axios.get(
+      `${API_BASE}/ajax/search/${encodeURIComponent(params.keyword)}`,
+      {
+        params: {
+          p: params.p,
+          mode: params.mode || 'all'
+        }
       }
     )
-    .catch(
-      (err) => {
-        error.value = err?.response?.data?.message || err.message || 'HTTP 请求超时'
-      }
-    )
-    .finally(() => loading.value = false)
+    resultList.value = data?.illustManga?.data || []
+    console.info(data?.illustManga?.data)
+  } catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = 'HTTP 请求超时'
+    }
+  } finally {
+    loading.value = false
+  }
 }
 
 watch(p, (value) => {
@@ -92,24 +92,24 @@ watch(p, (value) => {
   )
 })
 
-onBeforeRouteUpdate((to, from) => {
+onBeforeRouteUpdate(async (to, from) => {
   const params = to.params as {
     keyword: string
     p?: `${number}`
     mode?: string
   }
   if (params.keyword !== from.params.keyword) {
-    makeSearch(params)
+    await makeSearch(params)
   }
 })
 
-onMounted(() => {
+onMounted(async () => {
   const params = route.params as {
     keyword: string
     p?: `${number}`
     mode?: string
   }
-  makeSearch(params)
+  await makeSearch(params)
 })
 </script>
 
