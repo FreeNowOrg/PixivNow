@@ -14,8 +14,8 @@ import { onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{
   src: string
-  width: number
-  height: number
+  width?: number
+  height?: number
 }>()
 
 const loaded = ref(false)

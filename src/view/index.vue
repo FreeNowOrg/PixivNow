@@ -14,7 +14,7 @@
       a.pointer(
         style='margin-right: 0.5em',
         title='换一个~',
-        @click='setRandomBg(true)'
+        @click='async () => await setRandomBgNoCache()'
       )
         fa(icon='random')
       a.pointer(
@@ -39,27 +39,22 @@
     section.discover
       h2 探索发现
       .align-center
-        a.button(@click='discoverList.length ? setDiscovered(true) : void 0')
-          | {{ discoverList.length ? "换一批" : "加载中" }}
+        a.button(@click='discoveryList.length ? (async () => await setDiscoveryNoCache())() : void 0')
+          | {{ discoveryList.length ? "换一批" : "加载中" }}
           |
           fa(
-            :icon='discoverList.length ? "random" : "spinner"',
-            :spin='!discoverList.length'
+            :icon='discoveryList.length ? "random" : "spinner"',
+            :spin='!discoveryList.length'
           )
-      .align-center(v-if='!discoverList.length')
+      .align-center(v-if='!discoveryList.length')
         placeholder
-      artworks-list(:list='discoverList')
-
-    //- section.ranking
-    //-   h2 今日排行
-    //-   .align-center(v-if="rankList.length < 1")
-    //-     placeholder
-    //-   ArtworksList(:list="rankList")
+      artworks-list(:list='discoveryList')
 </template>
 
 <script lang="ts" setup>
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
+import { formatInTimeZone } from 'date-fns-tz'
 import { API_BASE } from '../config'
 import { getCache, setCache } from './siteCache'
 
@@ -68,67 +63,85 @@ import Modal from '../components/Modal.vue'
 import SearchBox from '../components/SearchBox.vue'
 import Placeholder from '../components/Placeholder.vue'
 import LogoH from '../assets/LogoH.png'
+import type { ArtworkReduced, ArtworkReducedOrAd } from '../types'
 
 const showBgInfo = ref(false)
-const discoverList = ref([])
-const rankList = ref([])
+const discoveryList = ref<ArtworkReduced[]>([])
 const randomBg = ref<{
   url: string
-  info: any
+  info: ArtworkReduced
 }>({
   url: '',
-  info: {} as any
+  info: {} as ArtworkReduced,
 })
 
-function initRank(): void {
-  if (getCache('home.rankList')) {
-    rankList.value = getCache('home.rankList')
-    return
-  }
-  axios.get(`${API_BASE}/api/ranking`).then(({ data }) => {
-    rankList.value = data.contents
-    setCache('home.rankList', data.contents)
-  })
-}
-
-function setRandomBg(noCache?: boolean): void {
-  if (!noCache && getCache('home.randomBg')) {
-    randomBg.value = getCache('home.randomBg')
-    return
-  }
-  axios.get(`${API_BASE}/api/illust/random?max=1`).then(({ data }) => {
-    const info = data[0]
-    if (!info) {
-      randomBg.value.url = 'https://api.daihan.top/api/acg'
-      randomBg.value.info = {} as any
-      return
-    }
-    const url = API_BASE + info.urls.regular
+async function setRandomBgNoCache(): Promise<void> {
+  try {
+    const { data }: { data: { illusts: ArtworkReduced[] } } = await axios.get(
+      `${API_BASE}/ajax/illust/discovery`,
+      {
+        params: {
+          mode: 'safe',
+          max: 1,
+        },
+      }
+    )
+    const info = data.illusts.find((item) => item.id) as ArtworkReduced
+    const middle = `img/${formatInTimeZone(
+      info.updateDate,
+      'Asia/Tokyo',
+      'yyyy/MM/dd/HH/mm/ss'
+    )}/${info.id}`
+    const url = `${API_BASE}/-/img-master/${middle}_p0_master1200.jpg`
     randomBg.value.info = info
     randomBg.value.url = url
     setCache('home.randomBg', { info, url })
-  })
-}
-
-function setDiscovered(noCache?: boolean): void {
-  if (!noCache && getCache('home.discoverList')) {
-    discoverList.value = getCache('home.discoverList')
-    return
+  } catch (err) {
+    randomBg.value.url = 'https://api.daihan.top/api/acg'
   }
-  discoverList.value = []
-  axios
-    .get(`${API_BASE}/api/illust/random?max=8&mode=all`)
-    .then(({ data }) => {
-      discoverList.value = data
-      setCache('home.discoverList', data)
-    })
 }
 
-onMounted(() => {
+async function setRandomBgFromCache(): Promise<void> {
+  const cache = getCache('home.randomBg')
+  if (cache) {
+    randomBg.value = cache
+  } else {
+    await setRandomBgNoCache()
+  }
+}
+
+async function setDiscoveryNoCache(): Promise<void> {
+  try {
+    const { data }: { data: { illusts: ArtworkReducedOrAd[] } } =
+      await axios.get(`${API_BASE}/ajax/illust/discovery`, {
+        params: {
+          mode: 'all',
+          max: 8,
+        },
+      })
+    const illusts = data.illusts.filter(
+      (item) => Object.keys(item).length > 1
+    ) as ArtworkReduced[]
+    discoveryList.value = illusts
+    setCache('home.discoveryList', illusts)
+  } catch (err) {
+    console.error('获取探索发现失败')
+  }
+}
+
+async function setDiscoveryFromCache(): Promise<void> {
+  const cache = getCache('home.discoveryList')
+  if (cache) {
+    discoveryList.value = cache
+  } else {
+    await setDiscoveryNoCache()
+  }
+}
+
+onMounted(async () => {
   document.title = 'Pixiv Now'
-  setRandomBg()
-  initRank()
-  setDiscovered(true)
+  await setRandomBgFromCache()
+  await setDiscoveryFromCache()
 })
 </script>
 
@@ -188,30 +201,31 @@ onMounted(() => {
     > *
       width: 100%
 
-.global-navbar
-  background: none
-  .search-area
-    opacity: 0
-    transition: opacity 0.4s ease
-    pointer-events: none
-
-  &.not-at-top
-    background-color: var(--theme-accent-color)
+  .global-navbar
+    background: none
     .search-area
-      opacity: 1
-      pointer-events: all
-.bg-info-modal
-  h3
-    margin-top: 0
-  .thumb
-    > *
-      width: auto
-      height: auto
-      max-width: 100%
-      max-height: 60vh
-      border-radius: 8px
-  .desc
-    margin-top: 1rem
-    font-size: 0.75rem
-    font-style: italic
+      opacity: 0
+      transition: opacity 0.4s ease
+      pointer-events: none
+
+    &.not-at-top
+      background-color: var(--theme-accent-color)
+      .search-area
+        opacity: 1
+        pointer-events: all
+
+  .bg-info-modal
+    h3
+      margin-top: 0
+    .thumb
+      > *
+        width: auto
+        height: auto
+        max-width: 100%
+        max-height: 60vh
+        border-radius: 8px
+    .desc
+      margin-top: 1rem
+      font-size: 0.75rem
+      font-style: italic
 </style>

@@ -11,7 +11,6 @@ import type { ArtworkRank } from '../../types'
 const props = defineProps<{
   list: ArtworkRank[]
 }>()
-
 </script>
 
 <style lang="sass">

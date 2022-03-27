@@ -64,9 +64,9 @@ mixin repoLink
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
 import Card from '../components/Card.vue'
 import { PROJECT_NAME, GITHUB_OWNER, GITHUB_REPO, GITHUB_URL } from '../config'
 
-onMounted(() => document.title = 'About | PixivNow')
+onMounted(() => (document.title = 'About | PixivNow'))
 </script>

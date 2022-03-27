@@ -8,7 +8,7 @@
   //- Done
   section.illust-container(v-if='!error && !loading')
     #top-area
-      gallery(:pages='illust.pages')
+      gallery(:pages='gallery')
 
       .body-inner
         #meta-area
@@ -38,7 +38,7 @@
               //- 未收藏/不可收藏
               span.bookmark-count(
                 v-if='!illust.bookmarkData',
-                @click='addBookmark',
+                @click='async () => await addBookmark()',
                 :title='userData ? "添加收藏" : "收藏"'
               )
                 fa(icon='heart')
@@ -57,7 +57,7 @@
                 | {{ illust.viewCount }}
               span.count
                 fa(icon='images')
-                | {{ illust.pages.length }}张
+                | {{ gallery.length }}张
 
             p.create-date {{ new Date(illust.createDate).toLocaleString() }}
 
@@ -88,24 +88,21 @@
       .align-center.loading(v-if='!recommend.length')
         placeholder
       artworks-list(:list='recommend')
-        .illust-card.load-more(
-          v-if='recommendNextIds.length',
-          @click='getMoreRecommend',
-          :style='{ cursor: "pointer" }'
+        li.load-more(
+          v-if='recommendNextIds.length'
         )
-          .top
-            div(
-              :style='{ width: "100%", paddingTop: "28%", paddingBottom: "28%", backgroundColor: "#efefef", textAlign: "center" }'
-            )
-              fa(v-if='!recommendLoading', icon='ellipsis-h', size='5x')
-              fa(v-if='recommendLoading', spin, icon='spinner', size='5x')
-          .bottom
-            .title 推荐作品
-            .author(:style='{ fontSize: "small" }') 点击这里，发现更多相关作品！
+          a.plain(@click='async () => await getMoreRecommend()')
+            .top
+              .inner
+                fa(v-if='!recommendLoading', icon='plus', size='5x')
+                fa(v-if='recommendLoading', spin, icon='spinner', size='5x')
+            .bottom
+              .title 推荐作品
+              .author 点击这里，发现更多相关作品！
       show-more(
         v-if='recommendNextIds.length',
         :text='recommendLoading ? "加载中" : "加载更多"',
-        :method='getMoreRecommend',
+        :method='async () => await getMoreRecommend()',
         :loading='recommendLoading'
       )
 
@@ -131,7 +128,7 @@ import ShowMore from '../components/ShowMore.vue'
 import { getCache, setCache } from './siteCache'
 
 // Types
-import type { Artwork, ArtworkReduced, User } from '../types'
+import type { Artwork, ArtworkReduced, ArtworkUrls, User } from '../types'
 
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
@@ -139,6 +136,15 @@ import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 const loading = ref(true)
 const error = ref('')
 const illust = ref<Artwork>({} as Artwork)
+const gallery = ref<
+  {
+    urls: ArtworkUrls & {
+      thumb_mini: string
+    }
+    width: number
+    height: number
+  }[]
+>([])
 const user = ref<User>({} as User)
 const recommend = ref<ArtworkReduced[]>([])
 const recommendNextIds = ref<string[]>([])
@@ -146,93 +152,120 @@ const recommendLoading = ref(false)
 const bookmarkLoading = ref(false)
 const route = useRoute()
 
-function init(id: string): void {
-  const cache = getCache(`illust.${id}`)
-  if (cache) {
-    illust.value = cache
+async function init(id: string): Promise<void> {
+  loading.value = true
+  const dataCache = getCache(`illust.${id}`)
+  const pageCache = getCache(`illust.${id}.page`)
+  if (dataCache && pageCache) {
+    illust.value = dataCache
+    gallery.value = pageCache
     loading.value = false
-    document.title = `${cache.illustTitle} | Artwork | PixivNow`
-    getUser(cache.userId)
-    getFirstRecommend(id)
+    document.title = `${dataCache.illustTitle} | Artwork | PixivNow`
+    await getUser(dataCache.userId)
+    await getFirstRecommend(id)
     return
   }
 
-  axios.get(`${API_BASE}/api/illust/${id}`, {
-    params: { full: 1 }
-  })
-    .then(({ data }: { data: any }) => {
-      document.title = `${data.illustTitle} | Artwork | PixivNow`
-      setCache(`illust.${id}`, data)
-      illust.value = data
-      getUser(data.userId)
-      getFirstRecommend(id)
-    })
-    .catch((err) => {
-      console.warn('illust fetch error', `#${id}`, err)
-      error.value =
-        err?.response?.data?.message || err.message || 'HTTP 请求超时'
-    })
-    .finally(() => loading.value = false)
+  try {
+    const [{ data: illustData }, { data: illustPage }] = await Promise.all([
+      axios.get(`${API_BASE}/ajax/illust/${id}`, {
+        params: { full: 1 },
+      }),
+      axios.get(`${API_BASE}/ajax/illust/${id}/pages`),
+    ])
+    document.title = `${illustData.illustTitle} | Artwork | PixivNow`
+    setCache(`illust.${id}`, illustData)
+    setCache(`illust.${id}.page`, illustPage)
+    illust.value = illustData
+    gallery.value = illustPage
+    await getUser(illustData.userId)
+    await getFirstRecommend(id)
+  } catch (err) {
+    console.warn('illust fetch error', `#${id}`, err)
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = '未知错误'
+    }
+  } finally {
+    loading.value = false
+  }
 }
 
-function getUser(userId: string): void {
-  if (getCache(`user.${userId}`)) {
-    user.value = getCache(`user.${userId}`)
+async function getUser(userId: string): Promise<void> {
+  const value = getCache(`user.${userId}`)
+  if (value) {
+    user.value = value
     return
   }
 
-  axios.get(`${API_BASE}/api/user/${userId}`)
-    .then(({ data }) => {
-      user.value = data
-      setCache(`user.${userId}`, data)
-    })
-    .catch((err) => {
-      console.warn('User fetch error', err)
-    })
+  try {
+    const [{ data: userData }, { data: profileData }] = await Promise.all([
+      axios.get(`${API_BASE}/ajax/user/${userId}`, {
+        params: {
+          full: 1,
+        },
+      }),
+      axios.get(`${API_BASE}/ajax/user/${userId}/profile/top`),
+    ])
+    const { illusts }: { illusts: Record<string, ArtworkReduced> } = profileData
+    user.value = {
+      ...userData,
+      illusts: Object.values(illusts).sort((a, b) => +b.id - +a.id),
+    }
+    setCache(`user.${userId}`, user.value)
+  } catch (err) {
+    console.warn('User fetch error', err)
+  }
 }
 
-function getFirstRecommend(id: string): void {
+async function getFirstRecommend(id: string): Promise<void> {
   if (recommendLoading.value) return
-  recommendLoading.value = true
-  console.log('init recommend')
-  axios.get(`${API_BASE}/ajax/illust/${id}/recommend/init`, {
-    params: { limit: 17 }
-  })
-    .then(({ data }) => {
-      recommend.value = data.illusts
-      recommendNextIds.value = data.nextIds
-    })
-    .catch((err) => {
-      console.warn('recommend fetch error', err)
-    })
-    .finally(() => recommendLoading.value = false)
+  try {
+    recommendLoading.value = true
+    console.log('init recommend')
+    const { data } = await axios.get(
+      `${API_BASE}/ajax/illust/${id}/recommend/init`,
+      {
+        params: { limit: 17 },
+      }
+    )
+    recommend.value = data.illusts
+    recommendNextIds.value = data.nextIds
+  } catch (err) {
+    console.error('recommend fetch error', err)
+  } finally {
+    recommendLoading.value = false
+  }
 }
 
-function getMoreRecommend(): void {
+async function getMoreRecommend(): Promise<void> {
   if (recommendLoading.value) return
-  recommendLoading.value = true
-  console.log('get more recommended')
   if (!recommendNextIds.value.length) {
-    console.log('no more recommended')
+    console.log('no more recommend')
     return
   }
-  const requestIds = recommendNextIds.value.splice(0, 18)
 
-  axios
-    .get(`${API_BASE}/ajax/illust/recommend/illusts`, {
-      params: { illust_ids: requestIds }
-    })
-    .then(({ data }) => {
-      recommend.value = recommend.value.concat(data.illusts)
-      recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
-    })
-    .catch((err) => {
-      console.warn('recommend fetch error', err)
-    })
-    .finally(() => recommendLoading.value = false)
+  try {
+    recommendLoading.value = true
+    console.log('get more recommend')
+    const requestIds = recommendNextIds.value.splice(0, 18)
+    const { data } = await axios.get(
+      `${API_BASE}/ajax/illust/recommend/illusts`,
+      {
+        params: { illust_ids: requestIds },
+      }
+    )
+    recommend.value = recommend.value.concat(data.illusts)
+    recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
+  } catch (err) {
+    console.error('recommend fetch error', err)
+  } finally {
+    recommendLoading.value = false
+  }
 }
 
-function addBookmark(): void {
+async function addBookmark(): Promise<void> {
   if (!userData) return console.log('需要登录才可以添加收藏')
   if (illust.value.isBookmarkable) {
     console.log('无法添加收藏。')
@@ -243,32 +276,32 @@ function addBookmark(): void {
     return
   }
   if (bookmarkLoading.value) return
-  bookmarkLoading.value = true
-  axios.post(`${API_BASE}/ajax/illust/bookmarks/add`, {
-    illust_id: illust.value.illustId,
-    restrict: illust.value.restrict,
-    comment: '',
-    tags: [],
-  })
-    .then(({ data }) => {
-      if (data.last_bookmark_id) {
-        illust.value.bookmarkData = data
-        illust.value.bookmarkCount++
-      }
+  try {
+    bookmarkLoading.value = true
+    const { data } = await axios.post(`${API_BASE}/ajax/illust/bookmarks/add`, {
+      illust_id: illust.value.illustId,
+      restrict: illust.value.restrict,
+      comment: '',
+      tags: [],
     })
-    .catch((err) => {
-      console.warn('bookmark add error', err)
-    })
-    .finally(() => bookmarkLoading.value = false)
+    if (data.last_bookmark_id) {
+      illust.value.bookmarkData = data
+      illust.value.bookmarkCount++
+    }
+  } catch (err) {
+    console.warn('bookmark add error', err)
+  } finally {
+    bookmarkLoading.value = false
+  }
 }
 
-onBeforeRouteUpdate((to) => {
-  init(to.params.id as string)
+onBeforeRouteUpdate(async (to) => {
+  await init(to.params.id as string)
 })
 
-onMounted(() => {
+onMounted(async () => {
   document.title = 'Artwork | PixivNow'
-  init(route.params.id as string)
+  await init(route.params.id as string)
 })
 </script>
 
@@ -329,4 +362,19 @@ h1
     margin-left: -1rem
     margin-right: -1rem
     background-color: var(--theme-background-color)
+
+.load-more
+  a.plain
+    color: var(--theme-text-color)
+    cursor: pointer
+
+  .top .inner
+    border-radius: 8px
+    width: 100%
+    padding: 28% 0
+    background-color: var(--theme-box-shadow-color)
+    text-align: center
+
+  .bottom .author
+    font-size: 0.8rem
 </style>

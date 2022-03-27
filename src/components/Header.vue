@@ -1,7 +1,7 @@
 <template lang="pug">
 header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
   .flex
-    a.side-nav-toggle.plain(@click='toggleSideNav')
+    a.side-nav-toggle.plain(@click='showSideNav = !showSideNav')
       fa(icon='bars')
 
     .logo-area
@@ -12,15 +12,15 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
       .search-full.align-right.flex-1
         search-box
       .search-icon.align-right.flex-1
-        button.pointer(@click='sideNavShow = true')
+        button.pointer(@click='showSideNav = true')
           fa(icon='search')
           | &nbsp;搜索
 
     #global-nav__user-area.user-area
       .user-link
         a.dropdown-btn.plain.pointer(
-          :class='{ shown: userDropdownShow }',
-          @click='userDropdownShow = !userDropdownShow'
+          :class='{ "show-user": showUserDropdown }',
+          @click='showUserDropdown = !showUserDropdown'
         )
           img.avatar(
             :src='userData ? userData.profileImg : API_BASE + "/~/common/images/no_profile.png"',
@@ -34,7 +34,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
           enter-active-class='fade-in-up',
           leave-active-class='fade-out-down'
         )
-          .dropdown-content(v-show='userDropdownShow')
+          .dropdown-content(v-show='showUserDropdown')
             ul
               //- notLogIn
               li(v-if='!userData')
@@ -71,27 +71,11 @@ import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
 import { userData, userLogout } from './userData'
 import LogoH from '../assets/LogoH.png'
-
-const emit = defineEmits<{
-  (
-    e: 'toggle-sidenav',
-    value: boolean
-  ): void
-}>()
+import { showSideNav } from './states'
 
 const hidden = ref(false)
 const notAtTop = ref(false)
-const sideNavShow = ref(false)
-const userDropdownShow = ref(false)
-
-defineExpose({
-  sideNavShow,
-})
-
-function toggleSideNav() {
-  sideNavShow.value = !sideNavShow.value
-  emit('toggle-sidenav', sideNavShow.value)
-}
+const showUserDropdown = ref(false)
 
 watch(hidden, (value) => {
   if (value) {
@@ -121,7 +105,7 @@ onMounted(() => {
     .getElementById('global-nav__user-area')
     ?.addEventListener('click', (e) => e.stopPropagation())
   document.addEventListener('click', () => {
-    if (userDropdownShow.value) userDropdownShow.value = false
+    if (showUserDropdown.value) showUserDropdown.value = false
   })
 })
 </script>
@@ -196,7 +180,7 @@ onMounted(() => {
         color: #fff
         transition: all 0.4s
 
-      .dropdown-btn.shown
+      .dropdown-btn.show-user
         [data-icon]
           transform: rotateZ(180deg)
 
@@ -229,17 +213,20 @@ onMounted(() => {
     border-bottom: 1px solid
     position: relative
 
-    .banner-bg
-      position: absolute
-      top: calc(-0.4rem - 6px)
-      left: -12px
-      height: 56px
-      width: calc(100% + 24px)
-      background-color: rgba(var(--theme-accent-color--rgb), 0.1)
-      z-index: 0
+    .top
+      position: relative
 
-    a
-      display: inline !important
+      .banner-bg
+        position: absolute
+        top: calc(-0.4rem - 6px)
+        left: -12px
+        height: 56px
+        width: calc(100% + 24px)
+        background-color: rgba(var(--theme-accent-color--rgb), 0.1)
+        z-index: 0
+
+      a
+        display: inline !important
 
     .avatar
       width: 68px

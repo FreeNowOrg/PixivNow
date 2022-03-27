@@ -15,7 +15,7 @@
     )
       fa(icon="heart")
   router-link(:to="'/artworks/' + item.id")
-    img(
+    lazy-load.img(
       :src="API_BASE + item.url"
       :alt="item.alt"
       :title="item.alt"
@@ -35,10 +35,11 @@
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from "../../config"
-import { addBookmark, removeBookmark } from "../../utils/artworkActions"
+import { API_BASE } from '../../config'
+import LazyLoad from '../LazyLoad.vue'
+import { addBookmark, removeBookmark } from '../../utils/artworkActions'
 
-import type { ArtworkReduced } from "../../types"
+import type { ArtworkReduced } from '../../types'
 
 const props = defineProps<{
   item: ArtworkReduced
@@ -84,13 +85,13 @@ function toggleBookmark(): void {
       pointer-events: none
       transition: all 0.4s ease-in-out
 
-    img
-      position: relative
-      left: 0
-      top: 0
-      width: 100%
-      height: 100%
-      transition: all 0.4s ease-in-out
+  .img
+    position: relative
+    left: 0
+    top: 0
+    width: 100%
+    height: 100%
+    transition: all 0.4s ease-in-out
 
   .bookmark
     cursor: pointer
@@ -119,28 +120,28 @@ function toggleBookmark(): void {
     .hover-title
       opacity: 1
 
-.thumb .router-link-active
-  cursor: default
-  box-shadow: 0 0 0 2px #aaa
+  .router-link-active
+    cursor: default
+    box-shadow: 0 0 0 2px #aaa
 
-  & + .cover
-    background-color: rgba(100, 100, 100, 0.6) !important
+    & + .cover
+      background-color: rgba(100, 100, 100, 0.6) !important
 
-.side-tags > *
-  position: absolute
-  z-index: 10
+  .side-tags > *
+    position: absolute
+    z-index: 10
 
   [data-icon]
     font-size: 1em
 
-.page-count
-  top: .4rem
-  right: .4rem
-  color: #fff
-  background-color: rgba(0, 0, 0, 0.6)
-  padding: .1rem .2rem
-  border-radius: 4px
-  font-size: 0.8rem
+  .page-count
+    top: .4rem
+    right: .4rem
+    color: #fff
+    background-color: rgba(0, 0, 0, 0.6)
+    padding: .1rem .2rem
+    border-radius: 4px
+    font-size: 0.8rem
 
   [data-icon]
     margin-right: .2rem
@@ -157,8 +158,8 @@ function toggleBookmark(): void {
     display: flex
     align-items: center
 
-    [data-icon]
-      margin: 0 auto
+  [data-icon]
+    margin: 0 auto
 
   .bookmark
     bottom: 0.4rem
@@ -169,26 +170,46 @@ function toggleBookmark(): void {
     &.bookmarked
       color: var(--theme-bookmark-color)
 
-.author
-  img
-    width: 1.5rem
-    height: 1.5rem
+.info
+  .title,
+  .author
+    white-space: nowrap
+    text-overflow: ellipsis
+    overflow: hidden
+    width: 100%
+    padding-bottom: 2px
 
-  a
-    font-size: 0.8rem
-    display: inline-flex
+    a
+      align-items: center
 
-.title
-  margin: 0.4rem 0
-  text-overflow: ellipsis
-  overflow: hidden
+      &.router-link-active
+        color: var(--theme-text-color)
+        font-weight: 600
+        font-style: normal
+        cursor: default
 
-  &.tiny
-    gap: 0.75rem
+        &::after
+          visibility: hidden
 
-    li
-      width: 100px
+  .title
+    margin: 0.4rem 0
 
-    .info
-      display: none
+    a
+      display: inline
+      font-weight: 600
+
+  .author
+    .avatar
+      display: inline-block
+      width: 1.5rem
+      height: 1.5rem
+      border: 2px solid #fff
+      border-radius: 50%
+      box-shadow: 0 0 4px #ccc
+      margin-right: .4rem
+
+    a
+      font-size: 0.8rem
+      font-style: italic
+      display: inline-flex
 </style>

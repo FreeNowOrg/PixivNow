@@ -13,7 +13,6 @@
 </template>
 
 <script lang="ts" setup>
-
 const props = defineProps<{
   text: string
   method: () => void

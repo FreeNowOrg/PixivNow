@@ -6,7 +6,6 @@
 </template>
 
 <script lang="ts" setup>
-
 const props = defineProps<{ title: string | undefined }>()
 </script>
 

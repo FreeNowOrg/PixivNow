@@ -4,22 +4,23 @@ ul.artworks-list
     :key="item.id"
   )
     artwork-card(:item="item")
-  li
-    slot/
+  slot/
 </template>
 
 <script lang="ts" setup>
 import ArtworkCard from './ArtworkCard.vue'
 
-import type { ArtworkReduced, ArtworkReducedOrAd } from "../../types"
-import { computed } from "vue"
+import type { ArtworkReduced, ArtworkReducedOrAd } from '../../types'
+import { computed } from 'vue'
 
 const props = defineProps<{
   list: ArtworkReducedOrAd[]
 }>()
 
 const artworks = computed(() => {
-  return props.list.filter(item => Object.keys(item).includes('id')) as ArtworkReduced[]
+  return props.list.filter((item) =>
+    Object.keys(item).includes('id')
+  ) as ArtworkReduced[]
 })
 </script>
 
@@ -45,4 +46,13 @@ const artworks = computed(() => {
     width: 180px
     max-width: calc(50vw - 2rem)
     display: inline-block
+
+.tiny
+  gap: 0.75rem
+
+  li
+    width: 100px
+
+  .info
+    display: none
 </style>

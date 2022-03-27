@@ -5,7 +5,6 @@ a(:href="href" target="_blank" rel="nofollow")
 </template>
 
 <script lang="ts" setup>
-
 const props = defineProps<{ href: string }>()
 </script>
 

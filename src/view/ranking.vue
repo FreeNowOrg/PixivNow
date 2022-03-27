@@ -1,7 +1,6 @@
 <template lang="pug">
 #ranking-view
-  //- 已登录
-  .logged-in.body-inner
+  .body-inner
     //- Error
     section(v-if='error')
       h1 排行榜加载失败
@@ -21,15 +20,15 @@
 
 <script lang="ts" setup>
 import axios from 'axios'
-import { userData } from '../components/userData'
 import { API_BASE } from '../config'
 
-import RankingList from '../components/ArtworksList/RankingList.vue'
+import RankingList from '../components/RankingList/RankingList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Placeholder from '../components/Placeholder.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { ArtworkRank } from '../types'
+import { getCache, setCache } from './siteCache'
 
 const error = ref('')
 const loading = ref(true)
@@ -39,40 +38,46 @@ const list = ref<{
 } | null>(null)
 const route = useRoute()
 
-function init(): void {
-  const { p, mode, date } = route.params
-  axios
-    .get(`${API_BASE}/api/ranking`, {
+async function init(): Promise<void> {
+  loading.value = true
+  list.value = getCache('ranking.rankingList')
+  if (list.value) {
+    loading.value = false
+    return
+  }
+  try {
+    const { p, mode, date } = route.params
+    const { data } = await axios.get(`${API_BASE}/ranking.php`, {
       params: {
         p,
         mode,
         date,
+        format: 'json',
       },
     })
-    .then(({ data }) => {
-      // Date
-      const date: string = data.date
-      data.date = new Date(
-        +date.substring(0, 4),
-        +date.substring(4, 6) - 1,
-        +date.substring(6, 8)
-      )
-      list.value = data
-      console.log(data.contents)
-    })
-    .catch((err) => {
-      error.value =
-        err?.response?.data?.error || err.message || '出现未知问题'
-    })
-    .finally(() => loading.value = false)
+    // Date
+    const temp: string = data.date
+    data.date = new Date(
+      +temp.substring(0, 4),
+      +temp.substring(4, 6) - 1,
+      +temp.substring(6, 8)
+    )
+    list.value = data
+    setCache('ranking.rankingList', data)
+  } catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = '哎呀，出错了！'
+    }
+  } finally {
+    loading.value = false
+  }
 }
 
-onMounted(() => {
-  if (!userData.value) {
-    console.log('或许需要绑定令牌？')
-  }
+onMounted(async () => {
   document.title = 'Ranking | PixvNow'
-  init()
+  await init()
 })
 </script>
 

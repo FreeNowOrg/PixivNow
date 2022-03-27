@@ -9,7 +9,7 @@
     .show-more.align-center
       a.button(
         v-if="comments.length && hasNext"
-        @click="init(id)"
+        @click="async () => await init(id)"
       )
         | {{ loading ? '正在加载' : '查看更多' }}
         | &nbsp;
@@ -40,25 +40,26 @@ const props = defineProps<{
 
 async function init(id: string | number): Promise<void> {
   if (loading.value) return
-  loading.value = true
 
-  axios
-    .get(`${API_BASE}/ajax/illusts/comments/roots`, {
-      params: {
-        illust_id: id,
-        limit: comments.value.length ? 30 : 3,
-        offset: comments.value.length,
-      },
-    })
-    .then(
-      ({ data }) => {
-        console.log('Comments', data)
-        hasNext.value = data.hasNext
-        comments.value = comments.value.concat(data.comments)
-      },
-      (err) => console.warn('Comments fetch error', err)
+  try {
+    loading.value = true
+    const { data } = await axios.get(
+      `${API_BASE}/ajax/illusts/comments/roots`,
+      {
+        params: {
+          illust_id: id,
+          limit: comments.value.length ? 30 : 3,
+          offset: comments.value.length,
+        },
+      }
     )
-    .finally(() => loading.value = false)
+    hasNext.value = data.hasNext
+    comments.value = comments.value.concat(data.comments)
+  } catch (err) {
+    console.warn('Comments fetch error', err)
+  } finally {
+    loading.value = false
+  }
 }
 
 function pushComment(data: any) {
@@ -67,8 +68,7 @@ function pushComment(data: any) {
 }
 
 onMounted(async () => {
-  if (!props.id)
-    return console.info('Component CommentsArea missing param: id')
+  if (!props.id) return console.info('Component CommentsArea missing param: id')
   await init(props.id)
 })
 </script>

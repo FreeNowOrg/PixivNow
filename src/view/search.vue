@@ -45,71 +45,82 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 
 const error = ref('')
 const loading = ref(true)
-const keyword = ref('')
+const searchKeyword = ref('')
 const resultList = ref([])
-const p = ref(1)
+const page = ref(1)
 const route = useRoute()
 const router = useRouter()
 
-function makeSearch(params: {
-  keyword: string
-  p?: `${number}`
-  mode?: string
-}): void {
-  loading.value = true
-  keyword.value = params.keyword
-  p.value = parseInt(params.p || '1')
-  if (!keyword.value) return
-
-  document.title = `${params.keyword} (第${params.p}页) | Search | PixivNow`
-
-  axios
-    .get(`${API_BASE}/api/search/${encodeURIComponent(params.keyword)}`, {
-      params: {
-        p: params.p,
-        mode: params.mode || 'all'
-      }
-    })
-    .then(
-      ({ data }) => {
-        resultList.value = data?.illustManga?.data || []
-        console.info(data?.illustManga?.data)
+async function makeSearch(
+  {
+    keyword,
+    p,
+    mode,
+  }: {
+    keyword: string
+    p?: `${number}`
+    mode?: string
+  } = {
+    keyword: '',
+    p: '1',
+    mode: 'text',
+  }
+): Promise<void> {
+  searchKeyword.value = keyword
+  page.value = parseInt(p || '1')
+  if (!searchKeyword.value) return
+  try {
+    loading.value = true
+    document.title = `${keyword} (第${p}页) | Search | PixivNow`
+    const { data } = await axios.get(
+      `${API_BASE}/ajax/search/${encodeURIComponent(keyword)}`,
+      {
+        params: {
+          p,
+          mode,
+        },
       }
     )
-    .catch(
-      (err) => {
-        error.value = err?.response?.data?.message || err.message || 'HTTP 请求超时'
-      }
-    )
-    .finally(() => loading.value = false)
+    resultList.value = data?.illustManga?.data || []
+    console.info(data?.illustManga?.data)
+  } catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = '哎呀，出错了！'
+    }
+  } finally {
+    loading.value = false
+  }
 }
 
-watch(p, (value) => {
-  p.value = value < 1 ? 1 : value
+watch(page, (value) => {
+  page.value = value < 1 ? 1 : value
   router.push(
-    `/search/${keyword.value}/${p.value}${route.query.mode ? '?mode=' + route.query.mode : ''
+    `/search/${searchKeyword.value}/${page.value}${
+      route.query.mode ? '?mode=' + route.query.mode : ''
     }`
   )
 })
 
-onBeforeRouteUpdate((to, from) => {
+onBeforeRouteUpdate(async (to, from) => {
   const params = to.params as {
     keyword: string
     p?: `${number}`
     mode?: string
   }
   if (params.keyword !== from.params.keyword) {
-    makeSearch(params)
+    await makeSearch(params)
   }
 })
 
-onMounted(() => {
+onMounted(async () => {
   const params = route.params as {
     keyword: string
     p?: `${number}`
     mode?: string
   }
-  makeSearch(params)
+  await makeSearch(params)
 })
 </script>
 

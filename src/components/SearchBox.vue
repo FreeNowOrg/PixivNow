@@ -10,7 +10,7 @@ import { ref } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
-const keyword = ref(route.params.keyword as string || '')
+const keyword = ref((route.params.keyword as string) || '')
 
 function makeSearch(): void {
   if (!keyword.value) {
