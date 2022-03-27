@@ -15,7 +15,7 @@
         fa(icon="images")
         | {{ illust.illust_page_count }}
       .ranking(
-        :class="{ gold: illust.rank === 1, silver: illust.rank === 2, brown: illust.rank === 3 }"
+        :class="{ gold: illust.rank === 1, silver: illust.rank === 2, bronze: illust.rank === 3 }"
         ) {{ illust.rank }}
   .bottom
     h3.title(:title="illust.title")
@@ -123,9 +123,9 @@ h3
     &.gold
       box-shadow: 0 0 0 2px gold inset, 0 0 0 4px #fff
     &.silver
-      box-shadow: 0 0 0 2px silver inset, 0 0 0 4px #fff
-    &.brown
-      box-shadow: 0 0 0 2px brown inset, 0 0 0 4px #fff
+      box-shadow: 0 0 0 2px darkgray inset, 0 0 0 4px #fff
+    &.bronze
+      box-shadow: 0 0 0 2px #b87333 inset, 0 0 0 4px #fff
 
 .bottom
   // display: flex

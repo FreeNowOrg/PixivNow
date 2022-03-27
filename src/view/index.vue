@@ -14,7 +14,7 @@
       a.pointer(
         style='margin-right: 0.5em',
         title='换一个~',
-        @click='async () => await setRandomBg(true)'
+        @click='async () => await setRandomBgNoCache()'
       )
         fa(icon='random')
       a.pointer(
@@ -39,16 +39,16 @@
     section.discover
       h2 探索发现
       .align-center
-        a.button(@click='discoverList.length ? async () => await setDiscovered() : void 0')
-          | {{ discoverList.length ? "换一批" : "加载中" }}
+        a.button(@click='discoveryList.length ? (async () => await setDiscoveryNoCache())() : void 0')
+          | {{ discoveryList.length ? "换一批" : "加载中" }}
           |
           fa(
-            :icon='discoverList.length ? "random" : "spinner"',
-            :spin='!discoverList.length'
+            :icon='discoveryList.length ? "random" : "spinner"',
+            :spin='!discoveryList.length'
           )
-      .align-center(v-if='!discoverList.length')
+      .align-center(v-if='!discoveryList.length')
         placeholder
-      artworks-list(:list='discoverList')
+      artworks-list(:list='discoveryList')
 </template>
 
 <script lang="ts" setup>
@@ -63,10 +63,10 @@ import Modal from '../components/Modal.vue'
 import SearchBox from '../components/SearchBox.vue'
 import Placeholder from '../components/Placeholder.vue'
 import LogoH from '../assets/LogoH.png'
-import type { ArtworkReduced } from '../types'
+import type { ArtworkReduced, ArtworkReducedOrAd } from '../types'
 
 const showBgInfo = ref(false)
-const discoverList = ref([])
+const discoveryList = ref<ArtworkReduced[]>([])
 const randomBg = ref<{
   url: string
   info: ArtworkReduced
@@ -75,11 +75,7 @@ const randomBg = ref<{
   info: {} as ArtworkReduced,
 })
 
-async function setRandomBg(noCache?: boolean): Promise<void> {
-  if (!noCache && getCache('home.randomBg')) {
-    randomBg.value = getCache('home.randomBg')
-    return
-  }
+async function setRandomBgNoCache(): Promise<void> {
   try {
     const { data }: { data: { illusts: ArtworkReduced[] } } = await axios.get(
       `${API_BASE}/ajax/illust/discovery`,
@@ -105,27 +101,47 @@ async function setRandomBg(noCache?: boolean): Promise<void> {
   }
 }
 
-async function setDiscovered(): Promise<void> {
-  discoverList.value = getCache('home.discoverList') || []
-  if (discoverList.value.length) return
+async function setRandomBgFromCache(): Promise<void> {
+  const cache = getCache('home.randomBg')
+  if (cache) {
+    randomBg.value = cache
+  } else {
+    await setRandomBgNoCache()
+  }
+}
+
+async function setDiscoveryNoCache(): Promise<void> {
   try {
-    const { data } = await axios.get(`${API_BASE}/ajax/illust/discovery`, {
-      params: {
-        mode: 'all',
-        max: 8,
-      },
-    })
-    discoverList.value = data.illusts
-    setCache('home.discoverList', data.illusts)
+    const { data }: { data: { illusts: ArtworkReducedOrAd[] } } =
+      await axios.get(`${API_BASE}/ajax/illust/discovery`, {
+        params: {
+          mode: 'all',
+          max: 8,
+        },
+      })
+    const illusts = data.illusts.filter(
+      (item) => Object.keys(item).length > 1
+    ) as ArtworkReduced[]
+    discoveryList.value = illusts
+    setCache('home.discoveryList', illusts)
   } catch (err) {
     console.error('获取探索发现失败')
   }
 }
 
+async function setDiscoveryFromCache(): Promise<void> {
+  const cache = getCache('home.discoveryList')
+  if (cache) {
+    discoveryList.value = cache
+  } else {
+    await setDiscoveryNoCache()
+  }
+}
+
 onMounted(async () => {
   document.title = 'Pixiv Now'
-  await setRandomBg()
-  await setDiscovered()
+  await setRandomBgFromCache()
+  await setDiscoveryFromCache()
 })
 </script>
 

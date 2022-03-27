@@ -11,11 +11,11 @@
     input(
       v-model="tokenInput"
       :class="tokenValidator(tokenInput) ? 'good' : 'bad'"
-      )
-  .status(
-    v-if="!error"
-    :class="tokenValidator(tokenInput) ? 'good' : 'bad'")
-    | {{ tokenValidator(tokenInput) ? '格式正确，请点击保存！' : '哎呀，这个格式看上去不太对……' }}
+    )
+  .status.good(v-if="tokenInput && tokenValidator(tokenInput) && !error")
+    | 格式正确，请点击保存！
+  .status.bad(v-if="tokenInput && !tokenValidator(tokenInput) && !error")
+    | 哎呀，这个格式看上去不太对……
   .status.bad(v-if="error") {{ error }}
   #submit
     button.btn.btn-primary(@click="async () => await submit()" :disabled="!!error || loading || !tokenValidator(tokenInput)") {{ loading ? '登录中……' : '保存令牌' }}

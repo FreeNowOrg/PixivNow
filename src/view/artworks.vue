@@ -91,7 +91,7 @@
         li.load-more(
           v-if='recommendNextIds.length'
         )
-          a.plain(@click='async () => await getMoreRecommend()' href="")
+          a.plain(@click='async () => await getMoreRecommend()')
             .top
               .inner
                 fa(v-if='!recommendLoading', icon='plus', size='5x')
@@ -233,7 +233,7 @@ async function getFirstRecommend(id: string): Promise<void> {
     recommend.value = data.illusts
     recommendNextIds.value = data.nextIds
   } catch (err) {
-    console.warn('recommend fetch error', err)
+    console.error('recommend fetch error', err)
   } finally {
     recommendLoading.value = false
   }
@@ -259,7 +259,7 @@ async function getMoreRecommend(): Promise<void> {
     recommend.value = recommend.value.concat(data.illusts)
     recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
   } catch (err) {
-    console.warn('recommend fetch error', err)
+    console.error('recommend fetch error', err)
   } finally {
     recommendLoading.value = false
   }
@@ -366,6 +366,7 @@ h1
 .load-more
   a.plain
     color: var(--theme-text-color)
+    cursor: pointer
 
   .top .inner
     border-radius: 8px
