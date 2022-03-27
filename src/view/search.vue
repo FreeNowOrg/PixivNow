@@ -61,10 +61,10 @@ async function makeSearch(
     p?: `${number}`
     mode?: string
   } = {
-    keyword: '',
-    p: '1',
-    mode: 'text',
-  }
+      keyword: '',
+      p: '1',
+      mode: 'text',
+    }
 ): Promise<void> {
   searchKeyword.value = keyword
   page.value = parseInt(p || '1')
@@ -73,7 +73,7 @@ async function makeSearch(
     loading.value = true
     document.title = `${keyword} (第${p}页) | Search | PixivNow`
     const { data } = await axios.get(
-      `${API_BASE}/ajax/search/${encodeURIComponent(keyword)}`,
+      `${API_BASE}/ajax/search/artworks/${encodeURIComponent(keyword)}`,
       {
         params: {
           p,
@@ -97,8 +97,7 @@ async function makeSearch(
 watch(page, (value) => {
   page.value = value < 1 ? 1 : value
   router.push(
-    `/search/${searchKeyword.value}/${page.value}${
-      route.query.mode ? '?mode=' + route.query.mode : ''
+    `/search/${searchKeyword.value}/${page.value}${route.query.mode ? '?mode=' + route.query.mode : ''
     }`
   )
 })
