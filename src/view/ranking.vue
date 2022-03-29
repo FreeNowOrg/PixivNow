@@ -15,14 +15,14 @@
     //- Result
     section(v-if='list')
       h1 {{ list.date.toLocaleDateString('zh', { dateStyle: 'long' }) }}排行榜
-      ranking-list(:list='list.contents')
+      artwork-large-list(:rank-list='list.contents')
 </template>
 
 <script lang="ts" setup>
 import axios from 'axios'
 import { API_BASE } from '../config'
 
-import RankingList from '../components/RankingList/RankingList.vue'
+import ArtworkLargeList from '../components/ArtworksList/ArtworkLargeList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Placeholder from '../components/Placeholder.vue'
 import { onMounted, ref } from 'vue'

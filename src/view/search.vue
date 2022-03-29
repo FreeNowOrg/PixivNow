@@ -1,10 +1,10 @@
 <template lang="pug">
 mixin pagenator()
   .pagenator(v-if="resultList.length >= 60")
-    button.prev(v-if="p === 1" disabled) 上一页
-    button.prev(v-if="p !== 1" @click="p--") 上一页
-    span.page {{ p }}
-    button.next(@click="p++") 下一页
+    button.prev(v-if="page === 1" disabled) 上一页
+    button.prev(v-if="page !== 1" @click="page--") 上一页
+    span.page {{ page }}
+    button.next(@click="page++") 下一页
 
 
 #search-view
@@ -21,11 +21,11 @@ mixin pagenator()
 
       //- Loading
       .loading-area(v-if="loading")
-        div(style="text-align: center")
+        div.align-center
           placeholder
 
       .result-area(v-if="!loading")
-        artworks-list(:list="resultList")
+        artwork-large-list(:artwork-list="resultList")
 
       .no-more(v-if="!loading && resultList.length < 60") 没有了，一滴都没有了……
 
@@ -36,17 +36,18 @@ mixin pagenator()
 import axios from 'axios'
 import { API_BASE } from '../config'
 
-import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworkLargeList from '../components/ArtworksList/ArtworkLargeList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Placeholder from '../components/Placeholder.vue'
 import SearchBox from '../components/SearchBox.vue'
 import { onMounted, ref, watch } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import type { ArtworkInfo } from '../types'
 
 const error = ref('')
 const loading = ref(true)
 const searchKeyword = ref('')
-const resultList = ref([])
+const resultList = ref<ArtworkInfo[]>([])
 const page = ref(1)
 const route = useRoute()
 const router = useRouter()
@@ -68,6 +69,7 @@ async function makeSearch(
 ): Promise<void> {
   searchKeyword.value = keyword
   page.value = parseInt(p || '1')
+  error.value = ''
   if (!searchKeyword.value) return
   try {
     loading.value = true
@@ -102,15 +104,13 @@ watch(page, (value) => {
   )
 })
 
-onBeforeRouteUpdate(async (to, from) => {
+onBeforeRouteUpdate(async (to) => {
   const params = to.params as {
     keyword: string
     p?: `${number}`
     mode?: string
   }
-  if (params.keyword !== from.params.keyword) {
-    await makeSearch(params)
-  }
+  await makeSearch(params)
 })
 
 onMounted(async () => {

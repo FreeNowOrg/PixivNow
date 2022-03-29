@@ -44,15 +44,15 @@ interface ArtworkCommon {
   isUnlisted: boolean
 }
 
-export interface ArtworkReduced extends ArtworkCommon {
+export interface ArtworkInfo extends ArtworkCommon {
   url: string
   tags: string[]
   profileImageUrl: string
   type: 'illust' | 'novel'
 }
 
-export type ArtworkReducedOrAd =
-  | ArtworkReduced
+export type ArtworkInfoOrAd =
+  | ArtworkInfo
   | {
       isAdContainer: true
     }
@@ -120,7 +120,7 @@ export interface Artwork extends ArtworkCommon {
   }
   storableTags: string[]
   userAccount: string
-  userIllusts: Record<`${number}`, ArtworkReduced | null>
+  userIllusts: Record<`${number}`, ArtworkInfo | null>
   likeData: boolean
   bookmarkCount: number
   likeCount: number
@@ -173,7 +173,7 @@ export interface Artwork extends ArtworkCommon {
         zh?: string
       }
     }
-    zengoIdWorks: ArtworkReduced[]
+    zengoIdWorks: ArtworkInfo[]
     zengoWorkData: {
       nextWork: {
         id: `${number}`

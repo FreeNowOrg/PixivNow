@@ -87,7 +87,7 @@
       h2 相关推荐
       .align-center.loading(v-if='!recommend.length')
         placeholder
-      artworks-list(:list='recommend')
+      artwork-list(:list='recommend')
         li.load-more(
           v-if='recommendNextIds.length'
         )
@@ -118,7 +118,7 @@ import { userData } from '../components/userData'
 
 import AuthorCard from '../components/AuthorCard.vue'
 import ArtTag from '../components/ArtTag.vue'
-import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
 import Card from '../components/Card.vue'
 import CommentsArea from '../components/Comment/CommentsArea.vue'
 import ErrorPage from '../components/ErrorPage.vue'
@@ -128,7 +128,7 @@ import ShowMore from '../components/ShowMore.vue'
 import { getCache, setCache } from './siteCache'
 
 // Types
-import type { Artwork, ArtworkReduced, ArtworkUrls, User } from '../types'
+import type { Artwork, ArtworkInfo, ArtworkUrls, User } from '../types'
 
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
@@ -146,7 +146,7 @@ const gallery = ref<
   }[]
 >([])
 const user = ref<User>({} as User)
-const recommend = ref<ArtworkReduced[]>([])
+const recommend = ref<ArtworkInfo[]>([])
 const recommendNextIds = ref<string[]>([])
 const recommendLoading = ref(false)
 const bookmarkLoading = ref(false)
@@ -208,7 +208,7 @@ async function getUser(userId: string): Promise<void> {
       }),
       axios.get(`${API_BASE}/ajax/user/${userId}/profile/top`),
     ])
-    const { illusts }: { illusts: Record<string, ArtworkReduced> } = profileData
+    const { illusts }: { illusts: Record<string, ArtworkInfo> } = profileData
     user.value = {
       ...userData,
       illusts: Object.values(illusts).sort((a, b) => +b.id - +a.id),

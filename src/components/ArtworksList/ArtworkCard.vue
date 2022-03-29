@@ -39,10 +39,10 @@ import { API_BASE } from '../../config'
 import LazyLoad from '../LazyLoad.vue'
 import { addBookmark, removeBookmark } from '../../utils/artworkActions'
 
-import type { ArtworkReduced } from '../../types'
+import type { ArtworkInfo } from '../../types'
 
 const props = defineProps<{
-  item: ArtworkReduced
+  item: ArtworkInfo
 }>()
 
 function toggleBookmark(): void {

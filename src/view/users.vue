@@ -133,17 +133,17 @@
             h2 插画
             .no-result(v-if='user.illusts && !user.illusts.length') 
               div 用户没有插画作品 (｡•́︿•̀｡)
-            artworks-list(:list='user.illusts')
+            artwork-list(:list='user.illusts' :show-tags="false")
           section(v-if='tab === "manga"')
             h2 漫画
             .no-result(v-if='user.manga && !user.manga.length')
               div 用户没有漫画作品 (*/ω＼*)
-            artworks-list(:list='user.manga')
+            artwork-list(:list='user.manga' :show-tags="false")
           section(v-if='tab === "bookmarks"')
             h2 收藏
             .no-result(v-if='!loadingBookmarks && !bookmarks.length')
               div 收藏夹是空的 Σ(⊙▽⊙"a
-            artworks-list(:list='bookmarks')
+            artwork-list(:list='bookmarks' :show-tags="false")
             .more-btn.align-center
               a.button(@click='getBookmarks')
                 fa(
@@ -159,19 +159,19 @@ import { API_BASE } from '../config'
 import { userData } from '../components/userData'
 import { addFollow, removeFollow } from '../utils/userActions'
 
-import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Modal from '../components/Modal.vue'
 import Placeholder from '../components/Placeholder.vue'
 
 import { getCache, setCache } from './siteCache'
-import { ArtworkReduced, User } from '../types'
+import { ArtworkInfo, User } from '../types'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
 const loading = ref(true)
 const user = ref<User>({} as User)
-const bookmarks = ref<ArtworkReduced[]>([])
+const bookmarks = ref<ArtworkInfo[]>([])
 const loadingBookmarks = ref(false)
 const tab = ref<'illust' | 'manga' | 'bookmarks'>('illust')
 const error = ref('')
@@ -216,7 +216,7 @@ async function getBookmarks(): Promise<void> {
 
   try {
     loadingBookmarks.value = true
-    const { data }: { data: { works: ArtworkReduced[] } } = await axios.get(
+    const { data }: { data: { works: ArtworkInfo[] } } = await axios.get(
       `${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`,
       {
         params: {

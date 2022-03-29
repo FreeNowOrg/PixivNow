@@ -1,4 +1,4 @@
-import { Artwork, ArtworkReduced } from './Artworks'
+import { Artwork, ArtworkInfo } from './Artworks'
 
 export type UserPrivacyLevel = '0' | '1' | '2'
 
@@ -71,7 +71,7 @@ export interface User {
   }
   official: boolean
   group: null
-  illusts: ArtworkReduced[]
-  manga: ArtworkReduced[]
-  novels: ArtworkReduced[]
+  illusts: ArtworkInfo[]
+  manga: ArtworkInfo[]
+  novels: ArtworkInfo[]
 }
