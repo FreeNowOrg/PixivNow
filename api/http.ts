@@ -5,7 +5,7 @@ import { request } from './utils'
 export default async (req: VercelRequest, res: VercelResponse) => {
   try {
     const { __PREFIX, __PATH } = req.query
-    const data = await request({
+    const { data } = await request({
       method: req.method as Method,
       path: `/${encodeURI(`${__PREFIX}${__PATH ? '/' + __PATH : ''}`)}`,
       params: req.query,
