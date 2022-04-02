@@ -1,7 +1,6 @@
 <template lang="pug">
 #ranking-view
-  //- 已登录
-  .isLoggedIn.body-inner
+  .body-inner
     //- Error
     section(v-if='error')
       h1 排行榜加载失败
@@ -15,84 +14,75 @@
 
     //- Result
     section(v-if='list')
-      h1 {{ list.date.getFullYear() }}年{{ list.date.getMonth() + 1 }}月{{ list.date.getDate() }}日 排行榜
-      artworks-list(:list='list.contents')
+      h1 {{ list.date.toLocaleDateString('zh', { dateStyle: 'long' }) }}排行榜
+      artwork-large-list(:rank-list='list.contents')
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import axios from 'axios'
-// import { router } from '../router'
-import { userData } from '../components/userData'
 import { API_BASE } from '../config'
 
-import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworkLargeList from '../components/ArtworksList/ArtworkLargeList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Placeholder from '../components/Placeholder.vue'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import type { ArtworkRank } from '../types'
+import { getCache, setCache } from './siteCache'
 
-export default {
-  components: {
-    ArtworksList,
-    ErrorPage,
-    Placeholder,
-  },
-  methods: {
-    init() {
-      this.error = ''
-      this.loading = true
-      this.list = null
+const error = ref('')
+const loading = ref(true)
+const list = ref<{
+  date: Date
+  contents: ArtworkRank[]
+} | null>(null)
+const route = useRoute()
 
-      const { p, mode, date } = this.$route.params
-      axios
-        .get(`${API_BASE}/api/ranking`, {
-          params: {
-            p,
-            mode,
-            date,
-          },
-        })
-        .then(
-          ({ data }) => {
-            // Date
-            let date: string = data.date
-            date =
-              date.substr(0, 4) +
-              '-' +
-              date.substr(4, 2) +
-              '-' +
-              date.substr(6, 2)
-            data.date = new Date(date)
-
-            this.list = data
-            console.log(data.contents)
-          },
-          (err) => {
-            this.error =
-              err?.response?.data?.error || err.message || '出现未知问题'
-          }
-        )
-        .finally(() => {
-          this.loading = false
-        })
-    },
-  },
-  mounted() {
-    if (!userData) return console.log('需要绑定令牌')
-    this.init()
-
-    document.title = 'Ranking | PixvNow'
-  },
-  data() {
-    return {
-      loading: true,
-      error: '',
-      list: null,
-      userData,
+async function init(): Promise<void> {
+  loading.value = true
+  list.value = getCache('ranking.rankingList')
+  if (list.value) {
+    loading.value = false
+    return
+  }
+  try {
+    const { p, mode, date } = route.params
+    const { data } = await axios.get(`${API_BASE}/ranking.php`, {
+      params: {
+        p,
+        mode,
+        date,
+        format: 'json',
+      },
+    })
+    // Date
+    const temp: string = data.date
+    data.date = new Date(
+      +temp.substring(0, 4),
+      +temp.substring(4, 6) - 1,
+      +temp.substring(6, 8)
+    )
+    list.value = data
+    setCache('ranking.rankingList', data)
+  } catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = '哎呀，出错了！'
     }
-  },
+  } finally {
+    loading.value = false
+  }
 }
+
+onMounted(async () => {
+  document.title = 'Ranking | PixvNow'
+  await init()
+})
 </script>
 
 <style scoped lang="sass">
+
 .loading
   text-align: center
 </style>

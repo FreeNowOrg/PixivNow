@@ -1,10 +1,10 @@
 <template lang="pug">
 mixin pagenator()
   .pagenator(v-if="resultList.length >= 60")
-    button.prev(v-if="p === 1" disabled) 上一页
-    button.prev(v-if="p !== 1" @click="prevPage") 上一页
-    span.page {{ p }}
-    button.next(@click="nextPage") 下一页
+    button.prev(v-if="page === 1" disabled) 上一页
+    button.prev(v-if="page !== 1" @click="page--") 上一页
+    span.page {{ page }}
+    button.next(@click="page++") 下一页
 
 
 #search-view
@@ -20,104 +20,112 @@ mixin pagenator()
       +pagenator()
 
       //- Loading
-      .loadingArea(v-if="loading")
-        div(style={'text-align': 'center'})
+      .loading-area(v-if="loading")
+        div.align-center
           placeholder
 
-      .resultArea(v-if="!loading")
-        artworks-list(:list="resultList")
+      .result-area(v-if="!loading")
+        artwork-large-list(:artwork-list="resultList")
 
-      .noMore(v-if="!loading && resultList.length < 60") 没有了，一滴都没有了……
+      .no-more(v-if="!loading && resultList.length < 60") 没有了，一滴都没有了……
 
       +pagenator()
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import axios from 'axios'
-import { router } from '../router'
 import { API_BASE } from '../config'
 
-import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworkLargeList from '../components/ArtworksList/ArtworkLargeList.vue'
 import ErrorPage from '../components/ErrorPage.vue'
 import Placeholder from '../components/Placeholder.vue'
 import SearchBox from '../components/SearchBox.vue'
+import { onMounted, ref, watch } from 'vue'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import type { ArtworkInfo } from '../types'
 
-export default {
-  components: {
-    ArtworksList,
-    ErrorPage,
-    Placeholder,
-    SearchBox,
-  },
-  methods: {
-    makeSearch(params: any) {
-      this.loading = true
+const error = ref('')
+const loading = ref(true)
+const searchKeyword = ref('')
+const resultList = ref<ArtworkInfo[]>([])
+const page = ref(1)
+const route = useRoute()
+const router = useRouter()
 
-      this.keyword = params.keyword
-      this.p = parseInt(params.p)
-
-      if (!this.keyword) return
-
-      document.title = `${params.keyword} (第${params.p}页) | Search | PixivNow`
-
-      axios
-        .get(`${API_BASE}/api/search/${encodeURIComponent(params.keyword)}`, {
-          params: {
-            p: params.p || 1,
-            mode: params.mode || 'all',
-          },
-        })
-        .then(
-          ({ data }) => {
-            this.resultList = data?.illustManga?.data || []
-            console.info(data?.illustManga?.data)
-          },
-          (err) => {
-            this.error =
-              err?.response?.data?.message || err.message || 'HTTP 请求超时'
-          }
-        )
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    prevPage() {
-      this.p--
-    },
-    nextPage() {
-      this.p++
-    },
-  },
-  data() {
-    return {
-      keyword: '',
-      p: 1,
-      loading: true,
-      error: '',
-      resultList: [],
+async function makeSearch(
+  {
+    keyword,
+    p,
+    mode,
+  }: {
+    keyword: string
+    p?: `${number}`
+    mode?: string
+  } = {
+    keyword: '',
+    p: '1',
+    mode: 'text',
+  }
+): Promise<void> {
+  searchKeyword.value = keyword
+  page.value = parseInt(p || '1')
+  error.value = ''
+  if (!searchKeyword.value) return
+  try {
+    loading.value = true
+    document.title = `${keyword} (第${p}页) | Search | PixivNow`
+    const { data } = await axios.get(
+      `${API_BASE}/ajax/search/artworks/${encodeURIComponent(keyword)}`,
+      {
+        params: {
+          p,
+          mode,
+        },
+      }
+    )
+    resultList.value = data?.illustManga?.data || []
+    console.info(data?.illustManga?.data)
+  } catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = '哎呀，出错了！'
     }
-  },
-  watch: {
-    p(val) {
-      val = parseInt(val)
-      if (isNaN(val) || val < 1) this.p = 1
-      router.push(
-        `/search/${this.keyword}/${this.p}${
-          this.$route.query.mode ? '?mode=' + this.$route.query.mode : ''
-        }`
-      )
-    },
-  },
-  beforeRouteUpdate(to, from) {
-    this.makeSearch(to.params)
-  },
-  mounted() {
-    this.makeSearch(this.$route.params)
-  },
+  } finally {
+    loading.value = false
+  }
 }
+
+watch(page, (value) => {
+  page.value = value < 1 ? 1 : value
+  router.push(
+    `/search/${searchKeyword.value}/${page.value}${
+      route.query.mode ? '?mode=' + route.query.mode : ''
+    }`
+  )
+})
+
+onBeforeRouteUpdate(async (to) => {
+  const params = to.params as {
+    keyword: string
+    p?: `${number}`
+    mode?: string
+  }
+  await makeSearch(params)
+})
+
+onMounted(async () => {
+  const params = route.params as {
+    keyword: string
+    p?: `${number}`
+    mode?: string
+  }
+  await makeSearch(params)
+})
 </script>
 
 <style lang="sass" scoped>
+
 .pagenator
   text-align: center
 
@@ -126,13 +134,13 @@ export default {
     text-align: center
     width: 3rem
 
-.noMore
+.no-more
   text-align: center
   padding: 1rem
   border-radius: 4px
   box-shadow: 0 0 4px #aaaaaa
 
-.searchBox
+.search-box
   margin: 2rem auto
   box-shadow: 0 0 8px #ddd
   border-radius: 2em

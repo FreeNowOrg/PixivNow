@@ -13,12 +13,13 @@ li
 
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  props: ['icon', 'text', 'link', 'externalLink'],
-})
+<script lang="ts" setup>
+const props = defineProps<{
+  icon: string
+  text: string
+  externalLink?: string
+  link?: string
+}>()
 </script>
 
 <style scoped lang="sass">

@@ -1,55 +1,58 @@
 <template lang="pug">
 .gallery
-  .centerImg(:class='showAll ? "showAll" : "showSingle"')
+  .center-img(:class='showAll ? "show-all" : "show-single"')
     div(v-for='(item, index) in pages', :data-pic-index='index')
-      a.imageContainer(
+      a.image-container(
         v-if='picShow === index',
         :href='API_BASE + item.urls.original',
         target='_blank',
         title='点击下载原图'
       )
-        lazyload.pic(
+        lazy-load.img(
           :src='API_BASE + item.urls.regular',
           :width='item.width',
           :height='item.height'
+          lazyload
         )
   //- .tips.align-center (这是预览图，点击下载原图)
   ul.pagenator(v-if='pages.length > 1')
     li(v-for='(item, index) in pages')
       a(
         @click='picShow = index',
-        :title='"第" + (index + 1) + "张 (共" + pages.length + "张)"',
-        :class='{ isActive: picShow === index }'
+        :title='`第${index + 1}张，共${pages.length}张`',
+        :class='{ "is-active": picShow === index }'
       )
-        lazyload.pic(
+        lazy-load.pic(
           :src='API_BASE + item.urls.thumb_mini',
           :width='80',
           :height='80'
+          lazyload
         )
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { ref } from 'vue'
 import { API_BASE } from '../config'
+import type { ArtworkUrls } from '../types'
+import LazyLoad from './LazyLoad.vue'
 
-export default defineComponent({
-  components: {},
-  props: ['pages'],
-  data() {
-    return {
-      API_BASE,
-      loading: false,
-      error: '',
-      showAll: false,
-      picShow: 0,
+const props = defineProps<{
+  pages: {
+    urls: ArtworkUrls & {
+      thumb_mini: string
     }
-  },
-})
+    width: number
+    height: number
+  }[]
+}>()
+const showAll = ref(false)
+const picShow = ref(0)
 </script>
 
 <style lang="sass">
+
 .gallery
-  .centerImg
+  .center-img
     width: 100%
     overflow: auto
     margin: 0.4rem auto
@@ -66,11 +69,11 @@ export default defineComponent({
   .flex-center
     gap: 1rem
 
-    .leftBtn,
-    .rightBtn
+    .left-btn,
+    .right-btn
       flex: 1
 
-    .leftBtn
+    .left-btn
       text-align: right
 
   .tips
@@ -85,7 +88,7 @@ export default defineComponent({
     &:hover
       box-shadow: var(--theme-box-shadow-hover)
 
-  .centerImg
+  .center-img
     display: block
     text-align: center
 

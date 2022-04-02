@@ -9,43 +9,38 @@ component(
 )
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { onMounted, ref, watch } from 'vue'
 
-export default defineComponent({
-  props: ['src', 'width', 'height'],
-  data() {
-    return {
-      loaded: false,
-      error: false,
-    }
-  },
-  methods: {
-    init() {
-      this.loaded = false
-      this.error = false
-      const img = new Image()
-      img.src = this.src
-      img.onload = () => {
-        this.loaded = true
-      }
-      img.onerror = () => {
-        this.error = true
-      }
-    },
-  },
-  watch: {
-    src() {
-      this.init
-    },
-  },
-  mounted() {
-    this.init()
-  },
-})
+const props = defineProps<{
+  src: string
+  width?: number
+  height?: number
+}>()
+
+const loaded = ref(false)
+const error = ref(false)
+
+function init() {
+  const img = new Image()
+  img.src = props.src
+  img.onload = () => {
+    loaded.value = true
+    error.value = false
+  }
+  img.onerror = () => {
+    loaded.value = false
+    error.value = true
+  }
+}
+
+watch(props, init)
+
+onMounted(init)
 </script>
 
 <style scoped lang="sass">
+
 .isLoading
   animation: imgProgress 0.6s ease infinite alternate
 </style>

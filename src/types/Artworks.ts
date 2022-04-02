@@ -15,36 +15,113 @@ export interface ArtworkTag {
   }
   userName: string
 }
-export interface Artwork {
-  illustId?: `${number}`
-  illustTitle?: string
-  illustComment?: string
+
+interface ArtworkCommon {
   id: `${number}`
   title: string
-  illustType: 0
-  xRestrict: 0 | 1 | 2
-  restrict: 0
-  sl: 2
-  url: string
-  urls?: ArtworkUrls
-  pages?: { urls: ArtworkUrls; width: number; height: number }[]
   description: string
-  tags:
-    | {
-        authorId: `${number}`
-        isLocked: boolean
-        tags: ArtworkTag[]
-      }
-    | string[]
-  storableTags?: string[]
+  createDate: string
+  updateDate: string
+  illustType: 0
+  restrict: 0
+  xRestrict: 0 | 1 | 2
+  sl: number
   userId: `${number}`
   userName: string
-  userAccount?: string
-  userIllusts: Record<string, Artwork | null>
-  likeData: boolean
+  alt: string
   width: number
   height: number
   pageCount: number
+  isBookmarkable: boolean
+  bookmarkData: {
+    id: `${number}`
+    private: boolean
+  } | null
+  titleCaptionTranslation: {
+    workTitle: string | null
+    workCaption: string | null
+  }
+  isUnlisted: boolean
+}
+
+export interface ArtworkInfo extends ArtworkCommon {
+  url: string
+  tags: string[]
+  profileImageUrl: string
+  type: 'illust' | 'novel'
+}
+
+export type ArtworkInfoOrAd =
+  | ArtworkInfo
+  | {
+      isAdContainer: true
+    }
+
+export interface ArtworkRank {
+  title: string
+  date: string
+  tags: string[]
+  url: string
+  illust_type: '0' | '1' | '2'
+  illust_book_style: '0'
+  illust_page_count: `${number}`
+  user_name: string
+  profile_img: string
+  illust_content_type: {
+    sexual: 0 | 1 | 2
+    lo: boolean
+    grotesque: boolean
+    violent: boolean
+    homosexual: boolean
+    drug: boolean
+    thoughts: boolean
+    antisocial: boolean
+    religional: boolean
+    original: boolean
+    furry: boolean
+    bl: boolean
+    yuri: boolean
+  }
+  illust_series:
+    | {
+        illustSeriesId: `${number}`
+        illustSeriesUserId: `${number}`
+        illustSeriesTitle: string
+        illustSeriesCaption: string
+        illustSeriesContentCount: `${number}`
+        illustSeriesCreateDatetime: string
+        illustSeriesContentIllustId: `${number}`
+        illustSeriesContentOrder: `${number}`
+        pageUrl: string
+      }
+    | false
+  illust_id: number
+  width: number
+  height: number
+  user_id: number
+  rank: number
+  yes_rank: number
+  rating_count: number
+  view_count: number
+  illust_upload_timestamp: number
+  attr: string
+}
+
+export interface Artwork extends ArtworkCommon {
+  illustId: `${number}`
+  illustTitle: string
+  illustComment: string
+  urls: ArtworkUrls
+  tags: {
+    authorId: `${number}`
+    isLocked: boolean
+    tags: ArtworkTag[]
+    writable: boolean
+  }
+  storableTags: string[]
+  userAccount: string
+  userIllusts: Record<`${number}`, ArtworkInfo | null>
+  likeData: boolean
   bookmarkCount: number
   likeCount: number
   commentCount: number
@@ -62,23 +139,8 @@ export interface Artwork {
   comicPromotion: any
   fanboxPromotion: any
   contestBanners: any[]
-  isBookmarkable: boolean
   contestData: any
-  bookmarkData?: {
-    id: `${number}`
-    private: boolean
-  } | null
-  alt: string
-  titleCaptionTranslation: {
-    workTitle: string
-    workCaption: string
-  }
-  createDate: string
-  updateDate: string
-  isUnlisted: boolean
-  isMasked: boolean
   profileImageUrl: string
-  type: 'illust' | 'novel'
   zoneConfig?: any
   extraData?: {
     meta: {
@@ -111,7 +173,7 @@ export interface Artwork {
         zh?: string
       }
     }
-    zengoIdWorks: Artwork[]
+    zengoIdWorks: ArtworkInfo[]
     zengoWorkData: {
       nextWork: {
         id: `${number}`
@@ -123,4 +185,14 @@ export interface Artwork {
       }
     }
   }
+  pages: {
+    width: number
+    height: number
+    urls: {
+      original: string
+      small: string
+      regular: string
+      thumb_mini: string
+    }
+  }[]
 }

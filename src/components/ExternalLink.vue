@@ -1,25 +1,16 @@
 <template lang="pug">
 a(:href="href" target="_blank" rel="nofollow")
   slot
-  fa.externalIcon(icon="external-link-alt")
+  fa.external-icon(icon="external-link-alt")
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  components: {},
-  props: ['href'],
-  data() {
-    return {}
-  },
-  methods: {},
-  mounted() {},
-})
+<script lang="ts" setup>
+const props = defineProps<{ href: string }>()
 </script>
 
 <style scoped lang="sass">
-.externalIcon
+
+.external-icon
   margin-left: 0.4em
   font-size: 0.7em
   vertical-align: 0

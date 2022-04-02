@@ -23,17 +23,17 @@ body
 
 // Env specific
 [data-env="production"]
-  .devOnly, .devTest
+  .dev-only, .dev-test
     display: none !important
 [data-env="development"]
-  .prodOnly
+  .prod-only
     display: none !important
 
 .container
   margin-left: 10%
   margin-right: 10%
 
-.narrowOnly
+.narrow-only
   display: none
 
 .isAdContainer
@@ -43,7 +43,7 @@ body
   .container
     margin-left: 2rem
     margin-right: 2rem
-  .narrowOnly
+  .narrow-only
     display: inherit
-  .wideOnly
+  .wide-only
     display: none

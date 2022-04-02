@@ -1,5 +1,5 @@
 <template lang="pug">
-.showMoreBtn
+.show-more
   a(@click="method")
     | {{ text }}
     | 
@@ -12,17 +12,17 @@
       icon="spinner")
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'show-more',
-  props: ['method', 'text', 'loading'],
-})
+<script lang="ts" setup>
+const props = defineProps<{
+  text: string
+  method: () => void
+  loading: boolean
+}>()
 </script>
 
 <style scoped lang="sass">
-.showMoreBtn
+
+.show-more
   text-align: center
 
   a

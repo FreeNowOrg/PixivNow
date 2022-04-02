@@ -1,4 +1,4 @@
-import * as Cookies from 'js-cookie'
+import Cookies from 'js-cookie'
 import axios from 'axios'
 import { API_BASE } from '../config'
 import { Ref, ref } from 'vue'
@@ -19,14 +19,15 @@ export interface PixivUser {
 }
 
 // userData
-export const userData: Ref<PixivUser | null | undefined> = ref()
+export const userData: Ref<PixivUser | null> = ref(null)
 
 export async function userInit(): Promise<PixivUser | null> {
   const token = Cookies.get('PHPSESSID')
   if (!token) {
     Cookies.remove('CSRFTOKEN')
     userData.value = null
-    throw { message: '令牌已丢失！' }
+    console.warn('令牌已丢失！')
+    return null
   }
   try {
     const { data } = await axios.get(`${API_BASE}/api/user`, {
@@ -41,12 +42,16 @@ export async function userInit(): Promise<PixivUser | null> {
   } catch (err) {
     userData.value = null
     Cookies.remove('CSRFTOKEN')
-    throw { message: '访问令牌可能失效' }
+    console.warn('访问令牌可能失效')
+    return null
   }
 }
 
-export function userLogin(token: string) {
-  if (!tokenValidator(token)) throw console.error('访问令牌格式错误')
+export function userLogin(token: string): Promise<PixivUser | null> {
+  if (!tokenValidator(token)) {
+    console.error('访问令牌格式错误')
+    return Promise.reject('访问令牌格式错误')
+  }
   Cookies.set('PHPSESSID', token, {
     expires: 180,
     path: '/',
@@ -55,7 +60,7 @@ export function userLogin(token: string) {
   return userInit()
 }
 
-export function userLogout() {
+export function userLogout(): void {
   const token = Cookies.get('PHPSESSID')
   if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
     Cookies.remove('PHPSESSID')
@@ -64,21 +69,21 @@ export function userLogout() {
   }
 }
 
-export function tokenValidator(token: string) {
-  return /^\d{2,10}_.{32}$/.test(token)
+export function tokenValidator(token: string): boolean {
+  return /^\d{2,10}_[0-9A-Za-z]{32}$/.test(token)
 }
 
-export function tokenExample() {
-  const uid = (99999999 * Math.random()).toFixed(0)
+export function tokenExample(): string {
+  const uid = Math.floor(100000000 * Math.random())
   const secret = (() => {
     const strSet =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'
-    let final = ''
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    const final = []
     for (let i = 0; i < 32; i++) {
       const charIndex = Math.floor(Math.random() * strSet.length)
-      final += strSet[charIndex]
+      final.push(strSet[charIndex])
     }
-    return final
+    return final.join('')
   })()
   return `${uid}_${secret}`
 }

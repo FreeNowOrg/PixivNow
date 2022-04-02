@@ -78,4 +78,6 @@ router.afterEach(({ name }) => {
   document.body.style.overflow = 'visible'
 })
 
+router.onError((error, to, from) => console.log(error, to, from))
+
 export { router }

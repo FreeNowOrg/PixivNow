@@ -1,20 +1,20 @@
 <template lang="pug">
 #home-view
-  .topSlider.align-center(
+  .top-slider.align-center(
     :style='{ "background-image": `url(${randomBg.url})` }'
   )
-    section.searchArea.flex-1
+    section.search-area.flex-1
       search-box.big.search
 
-    .siteLogo
+    .site-logo
       img(:src='LogoH')
     .description Pixiv Service Proxy
 
-    .bgInfo
+    .bg-info
       a.pointer(
         style='margin-right: 0.5em',
         title='换一个~',
-        @click='setRandomBg(true)'
+        @click='async () => await setRandomBgNoCache()'
       )
         fa(icon='random')
       a.pointer(
@@ -24,14 +24,14 @@
       )
         fa(icon='question-circle')
 
-  modal.bgInfoModal(v-model:show='showBgInfo')
+  modal.bg-info-modal(v-model:show='showBgInfo')
     h3 背景图片：{{ randomBg.info.title }}
     .align-center
       router-link.thumb(:to='"/artworks/" + randomBg.info.id')
-        lazyload(:src='randomBg.url')
+        img(:src='randomBg.url' lazyload)
       .desc
         strong {{ randomBg.info.title }}
-        | &nbsp;-&nbsp;
+        | &ensp;&mdash;&ensp;
         router-link(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
         | 的作品 (ID: {{ randomBg.info.id }})
 
@@ -39,122 +39,119 @@
     section.discover
       h2 探索发现
       .align-center
-        a.button(@click='discoverList.length ? setDiscovered(true) : void 0')
-          | {{ discoverList.length ? "换一批" : "加载中" }}
+        a.button(@click='discoveryList.length ? (async () => await setDiscoveryNoCache())() : void 0')
+          | {{ discoveryList.length ? "换一批" : "加载中" }}
           |
           fa(
-            :icon='discoverList.length ? "random" : "spinner"',
-            :spin='!discoverList.length'
+            :icon='discoveryList.length ? "random" : "spinner"',
+            :spin='!discoveryList.length'
           )
-      .align-center(v-if='!discoverList.length')
+      .align-center(v-if='!discoveryList.length')
         placeholder
-      ArtworksMiniList(:list='discoverList')
-
-    //- section.ranking
-    //-   h2 今日排行
-    //-   .align-center(v-if="rankList.length < 1")
-    //-     placeholder
-    //-   ArtworksList(:list="rankList")
+      artwork-list(:list='discoveryList')
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import axios from 'axios'
+import { onMounted, ref } from 'vue'
+import { formatInTimeZone } from 'date-fns-tz'
 import { API_BASE } from '../config'
 import { getCache, setCache } from './siteCache'
 
-import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
-import ArtworksMiniList from '../components/ArtworksList/ArtworksMiniList.vue'
+import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
 import Modal from '../components/Modal.vue'
 import SearchBox from '../components/SearchBox.vue'
 import Placeholder from '../components/Placeholder.vue'
 import LogoH from '../assets/LogoH.png'
+import type { ArtworkInfo, ArtworkInfoOrAd } from '../types'
 
-import { Artwork } from '../types'
+const showBgInfo = ref(false)
+const discoveryList = ref<ArtworkInfo[]>([])
+const randomBg = ref<{
+  url: string
+  info: ArtworkInfo
+}>({
+  url: '',
+  info: {} as ArtworkInfo,
+})
 
-export default {
-  components: {
-    ArtworksList,
-    ArtworksMiniList,
-    Modal,
-    SearchBox,
-    Placeholder,
-  },
-  data() {
-    return {
-      rankList: [],
-      discoverList: [],
-      LogoH,
-      showBgInfo: false,
-      randomBg: {
-        url:
-          // 钟离我的钟离呜呜呜呜呜钟离！！！！！
-          // 'https://blog.wjghj.cn/_statics/images/background/2021BeneathTheLightOfJadeite/bg.jpg',
-          // 这个里面可能有色图
-          //     `https://cdn.jsdelivr.net/gh/Moe-Dog/Moe-Dog.github.io@0.4/statics/img/${parseInt(
-          //       '' + Math.random() * 20 + 1
-          //     )}.jpg`,
-          // 'https://api.daihan.top/api/acg',
-          '',
-        info: {} as Artwork,
-      },
-    }
-  },
-  methods: {
-    initRank() {
-      if (getCache('home.rankList')) {
-        this.rankList = getCache('home.rankList')
-        return
+async function setRandomBgNoCache(): Promise<void> {
+  try {
+    const { data }: { data: { illusts: ArtworkInfo[] } } = await axios.get(
+      `${API_BASE}/ajax/illust/discovery`,
+      {
+        params: {
+          mode: 'safe',
+          max: 1,
+        },
       }
-      axios.get(`${API_BASE}/api/ranking`).then(({ data }) => {
-        this.rankList = data.contents
-        setCache('home.rankList', data.contents)
-      })
-    },
-    setRandomBg(noCache?: boolean) {
-      if (!noCache && getCache('home.randomBg')) {
-        this.randomBg = getCache('home.randomBg')
-        return
-      }
-      axios.get(`${API_BASE}/api/illust/random?max=1`).then(({ data }) => {
-        const info = data[0]
-        if (!info) {
-          this.randomBg.url = 'https://api.daihan.top/api/acg'
-          this.randomBg.info = {} as Artwork
-          return
-        }
-        const url = API_BASE + info.urls.regular
-        this.randomBg.info = info
-        this.randomBg.url = url
-        setCache('home.randomBg', { info, url })
-      })
-    },
-    setDiscovered(noCache?: boolean) {
-      if (!noCache && getCache('home.discoverList')) {
-        this.discoverList = getCache('home.discoverList')
-        return
-      }
-      this.discoverList = []
-      axios
-        .get(`${API_BASE}/api/illust/random?max=8&mode=all`)
-        .then(({ data }) => {
-          this.discoverList = data
-          setCache('home.discoverList', data)
-        })
-    },
-  },
-  mounted() {
-    document.title = 'PixivNow'
-
-    // this.initRank()
-    this.setRandomBg()
-    this.setDiscovered()
-  },
+    )
+    const info = data.illusts.find((item) => item.id) as ArtworkInfo
+    const middle = `img/${formatInTimeZone(
+      info.updateDate,
+      'Asia/Tokyo',
+      'yyyy/MM/dd/HH/mm/ss'
+    )}/${info.id}`
+    const url = `${API_BASE}/-/img-master/${middle}_p0_master1200.jpg`
+    randomBg.value.info = info
+    randomBg.value.url = url
+    setCache('home.randomBg', { info, url })
+  } catch (err) {
+    randomBg.value.url = 'https://api.daihan.top/api/acg'
+  }
 }
+
+async function setRandomBgFromCache(): Promise<void> {
+  const cache = getCache('home.randomBg')
+  if (cache) {
+    randomBg.value = cache
+  } else {
+    await setRandomBgNoCache()
+  }
+}
+
+async function setDiscoveryNoCache(): Promise<void> {
+  try {
+    discoveryList.value = []
+    const { data }: { data: { illusts: ArtworkInfoOrAd[] } } = await axios.get(
+      `${API_BASE}/ajax/illust/discovery`,
+      {
+        params: {
+          mode: 'all',
+          max: 8,
+        },
+      }
+    )
+    const illusts = data.illusts.filter((item) =>
+      Object.keys(item).includes('id')
+    ) as ArtworkInfo[]
+    discoveryList.value = illusts
+    setCache('home.discoveryList', illusts)
+  } catch (err) {
+    console.error('获取探索发现失败')
+  }
+}
+
+async function setDiscoveryFromCache(): Promise<void> {
+  const cache = getCache('home.discoveryList')
+  if (cache) {
+    discoveryList.value = cache
+  } else {
+    await setDiscoveryNoCache()
+  }
+}
+
+onMounted(async () => {
+  document.title = 'Pixiv Now'
+  await setRandomBgFromCache()
+  await setDiscoveryFromCache()
+})
 </script>
 
 <style lang="sass">
+
 [data-route="home"]
-  .topSlider
+  .top-slider
     min-height: calc(100vh)
     margin-top: calc(-50px - 1rem)
     padding: 30px 10%
@@ -184,7 +181,7 @@ export default {
       position: relative
       z-index: 1
 
-    .bgInfo
+    .bg-info
       position: absolute
       right: 1.5rem
       bottom: 1rem
@@ -192,7 +189,7 @@ export default {
       a
         --color: #fff
 
-  .siteLogo
+  .site-logo
     img
       height: 4rem
       width: auto
@@ -200,26 +197,27 @@ export default {
   .description
     font-size: 1.2rem
 
-  .searchArea
+  .search-area
     display: flex
     align-items: center
 
     > *
       width: 100%
 
-  .globalNavbar
+  .global-navbar
     background: none
-    .searchArea
+    .search-area
       opacity: 0
       transition: opacity 0.4s ease
       pointer-events: none
 
-    &.notAtTop
+    &.not-at-top
       background-color: var(--theme-accent-color)
-      .searchArea
+      .search-area
         opacity: 1
         pointer-events: all
-  .bgInfoModal
+
+  .bg-info-modal
     h3
       margin-top: 0
     .thumb

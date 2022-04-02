@@ -1,4 +1,4 @@
-import { Artwork } from './Artworks'
+import { Artwork, ArtworkInfo } from './Artworks'
 
 export type UserPrivacyLevel = '0' | '1' | '2'
 
@@ -11,7 +11,12 @@ export interface User {
   isFollowed: boolean
   isMypixiv: boolean
   isBlocking: boolean
-  background: {} | null
+  background: {
+    url: string | null
+    color: string | null
+    repeat: string | null
+    isPrivate: boolean
+  } | null
   sketchLiveId: {} | null
   partial: number
   acceptRequest: boolean
@@ -21,7 +26,18 @@ export interface User {
   comment: string
   commentHtml: string
   webpage: string | null
-  social: any[]
+  social: {
+    twitter?: {
+      url: string
+    }
+    facebook?: {
+      url: string
+    }
+    instagram?: {
+      url: string
+    }
+    [key: string]: any
+  }
   region: {
     name: string
     privacyLevel: UserPrivacyLevel
@@ -39,20 +55,23 @@ export interface User {
     privacyLevel: UserPrivacyLevel
   } | null
   workspace: {
-    userWorkspacePc: string
-    userWorkspaceMonitor: string
-    userWorkspaceTool: string
-    userWorkspaceScanner: string
-    userWorkspaceTablet: string
-    userWorkspaceMouse: string
-    userWorkspacePrinter: string
-    userWorkspaceDesktop: string
-    userWorkspaceMusic: string
-    userWorkspaceDesk: string
-    userWorkspaceChair: string
+    userWorkspacePc?: string
+    userWorkspaceMonitor?: string
+    userWorkspaceTool?: string
+    userWorkspaceScanner?: string
+    userWorkspaceTablet?: string
+    userWorkspaceMouse?: string
+    userWorkspacePrinter?: string
+    userWorkspaceDesktop?: string
+    userWorkspaceMusic?: string
+    userWorkspaceDesk?: string
+    userWorkspaceChair?: string
+    userWorkspaceComment?: string
+    wsUrl?: string
   }
   official: boolean
   group: null
-  illusts: Artwork[]
-  novels: Artwork[]
+  illusts: ArtworkInfo[]
+  manga: ArtworkInfo[]
+  novels: ArtworkInfo[]
 }
