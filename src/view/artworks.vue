@@ -88,17 +88,6 @@
       .align-center.loading(v-if='!recommend.length')
         placeholder
       artwork-list(:list='recommend')
-        li.load-more(
-          v-if='recommendNextIds.length'
-        )
-          a.plain(@click='async () => await getMoreRecommend()')
-            .top
-              .inner
-                fa(v-if='!recommendLoading', icon='plus', size='5x')
-                fa(v-if='recommendLoading', spin, icon='spinner', size='5x')
-            .bottom
-              .title 推荐作品
-              .author 点击这里，发现更多相关作品！
       show-more(
         v-if='recommendNextIds.length',
         :text='recommendLoading ? "加载中" : "加载更多"',
@@ -227,7 +216,7 @@ async function getFirstRecommend(id: string): Promise<void> {
     const { data } = await axios.get(
       `${API_BASE}/ajax/illust/${id}/recommend/init`,
       {
-        params: { limit: 17 },
+        params: { limit: 18 },
       }
     )
     recommend.value = data.illusts

@@ -112,6 +112,7 @@ async function setRandomBgFromCache(): Promise<void> {
 
 async function setDiscoveryNoCache(): Promise<void> {
   try {
+    discoveryList.value = []
     const { data }: { data: { illusts: ArtworkInfoOrAd[] } } = await axios.get(
       `${API_BASE}/ajax/illust/discovery`,
       {
@@ -121,8 +122,8 @@ async function setDiscoveryNoCache(): Promise<void> {
         },
       }
     )
-    const illusts = data.illusts.filter(
-      (item) => Object.keys(item).length > 1
+    const illusts = data.illusts.filter((item) =>
+      Object.keys(item).includes('id')
     ) as ArtworkInfo[]
     discoveryList.value = illusts
     setCache('home.discoveryList', illusts)

@@ -62,10 +62,10 @@ async function makeSearch(
     p?: `${number}`
     mode?: string
   } = {
-      keyword: '',
-      p: '1',
-      mode: 'text',
-    }
+    keyword: '',
+    p: '1',
+    mode: 'text',
+  }
 ): Promise<void> {
   searchKeyword.value = keyword
   page.value = parseInt(p || '1')
@@ -99,7 +99,8 @@ async function makeSearch(
 watch(page, (value) => {
   page.value = value < 1 ? 1 : value
   router.push(
-    `/search/${searchKeyword.value}/${page.value}${route.query.mode ? '?mode=' + route.query.mode : ''
+    `/search/${searchKeyword.value}/${page.value}${
+      route.query.mode ? '?mode=' + route.query.mode : ''
     }`
   )
 })

@@ -16,10 +16,12 @@ const props = defineProps<{
 const artworks = computed(() => {
   if (props.rankList) {
     return convertRankToInfo(props.rankList)
-  } else {
-    return props.artworkList?.map((item) => {
+  } else if (props.artworkList) {
+    return props.artworkList.map((item) => {
       return [item, 0] as [ArtworkInfo, number]
     })
+  } else {
+    return []
   }
 })
 
@@ -76,7 +78,7 @@ function convertRankToInfo(rankInfo: ArtworkRank[]): [ArtworkInfo, number][] {
     overflow-y: auto
     justify-content: left
 
-    .ranking-card
+    .artwork-large-card
       height: 500px
       // overflow-x: auto
 </style>
