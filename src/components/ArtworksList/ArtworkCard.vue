@@ -1,5 +1,5 @@
 <template lang="pug">
-.thumb
+.artwork-card
   .side-tags
     .x-restrict(v-if="item.xRestrict" title="R-18")
       fa(icon="eye")
@@ -57,7 +57,7 @@ function toggleBookmark(): void {
 
 <style lang="sass">
 
-.thumb
+.artwork-card
   position: relative
   overflow: hidden
   border-radius: 8px

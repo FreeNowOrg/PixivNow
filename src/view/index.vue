@@ -31,7 +31,7 @@
         img(:src='randomBg.url' lazyload)
       .desc
         strong {{ randomBg.info.title }}
-        | &nbsp;-&nbsp;
+        | &ensp;&mdash;&ensp;
         router-link(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
         | 的作品 (ID: {{ randomBg.info.id }})
 
