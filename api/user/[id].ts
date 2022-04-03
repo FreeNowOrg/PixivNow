@@ -13,7 +13,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   Promise.all([
     request({
       path: `/ajax/user/${id}`,
-      params: { full: 1, ...req.query },
+      params: { full: '1', ...req.query },
       headers: req.headers,
     }),
     request({

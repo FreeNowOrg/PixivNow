@@ -46,11 +46,11 @@ export async function request({
 }: {
   method?: Method
   path?: `/${string}`
-  params?: Record<string, any>
+  params?: Record<string, string | string[]>
   data?: string
   headers?: any
 }) {
-  const url = `https://www.pixiv.net${path}`
+  const url = new URL(path, 'https://www.pixiv.net')
   const cookies = cookie.parse(headers.cookie || '')
 
   // 做一些转换防止抑郁
@@ -63,7 +63,7 @@ export async function request({
   }
 
   const config: AxiosRequestConfig = {
-    url,
+    url: url.href,
     method,
     params,
     data,

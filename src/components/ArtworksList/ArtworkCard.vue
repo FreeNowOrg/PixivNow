@@ -1,5 +1,5 @@
 <template lang="pug">
-.thumb
+.artwork-card
   .side-tags
     .x-restrict(v-if="item.xRestrict" title="R-18")
       fa(icon="eye")
@@ -39,10 +39,10 @@ import { API_BASE } from '../../config'
 import LazyLoad from '../LazyLoad.vue'
 import { addBookmark, removeBookmark } from '../../utils/artworkActions'
 
-import type { ArtworkReduced } from '../../types'
+import type { ArtworkInfo } from '../../types'
 
 const props = defineProps<{
-  item: ArtworkReduced
+  item: ArtworkInfo
 }>()
 
 function toggleBookmark(): void {
@@ -57,7 +57,7 @@ function toggleBookmark(): void {
 
 <style lang="sass">
 
-.thumb
+.artwork-card
   position: relative
   overflow: hidden
   border-radius: 8px

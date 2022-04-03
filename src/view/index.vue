@@ -31,7 +31,7 @@
         img(:src='randomBg.url' lazyload)
       .desc
         strong {{ randomBg.info.title }}
-        | &nbsp;-&nbsp;
+        | &ensp;&mdash;&ensp;
         router-link(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
         | 的作品 (ID: {{ randomBg.info.id }})
 
@@ -48,7 +48,7 @@
           )
       .align-center(v-if='!discoveryList.length')
         placeholder
-      artworks-list(:list='discoveryList')
+      artwork-list(:list='discoveryList')
 </template>
 
 <script lang="ts" setup>
@@ -58,26 +58,26 @@ import { formatInTimeZone } from 'date-fns-tz'
 import { API_BASE } from '../config'
 import { getCache, setCache } from './siteCache'
 
-import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
 import Modal from '../components/Modal.vue'
 import SearchBox from '../components/SearchBox.vue'
 import Placeholder from '../components/Placeholder.vue'
 import LogoH from '../assets/LogoH.png'
-import type { ArtworkReduced, ArtworkReducedOrAd } from '../types'
+import type { ArtworkInfo, ArtworkInfoOrAd } from '../types'
 
 const showBgInfo = ref(false)
-const discoveryList = ref<ArtworkReduced[]>([])
+const discoveryList = ref<ArtworkInfo[]>([])
 const randomBg = ref<{
   url: string
-  info: ArtworkReduced
+  info: ArtworkInfo
 }>({
   url: '',
-  info: {} as ArtworkReduced,
+  info: {} as ArtworkInfo,
 })
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const { data }: { data: { illusts: ArtworkReduced[] } } = await axios.get(
+    const { data }: { data: { illusts: ArtworkInfo[] } } = await axios.get(
       `${API_BASE}/ajax/illust/discovery`,
       {
         params: {
@@ -86,7 +86,7 @@ async function setRandomBgNoCache(): Promise<void> {
         },
       }
     )
-    const info = data.illusts.find((item) => item.id) as ArtworkReduced
+    const info = data.illusts.find((item) => item.id) as ArtworkInfo
     const middle = `img/${formatInTimeZone(
       info.updateDate,
       'Asia/Tokyo',
@@ -112,16 +112,19 @@ async function setRandomBgFromCache(): Promise<void> {
 
 async function setDiscoveryNoCache(): Promise<void> {
   try {
-    const { data }: { data: { illusts: ArtworkReducedOrAd[] } } =
-      await axios.get(`${API_BASE}/ajax/illust/discovery`, {
+    discoveryList.value = []
+    const { data }: { data: { illusts: ArtworkInfoOrAd[] } } = await axios.get(
+      `${API_BASE}/ajax/illust/discovery`,
+      {
         params: {
           mode: 'all',
           max: 8,
         },
-      })
-    const illusts = data.illusts.filter(
-      (item) => Object.keys(item).length > 1
-    ) as ArtworkReduced[]
+      }
+    )
+    const illusts = data.illusts.filter((item) =>
+      Object.keys(item).includes('id')
+    ) as ArtworkInfo[]
     discoveryList.value = illusts
     setCache('home.discoveryList', illusts)
   } catch (err) {

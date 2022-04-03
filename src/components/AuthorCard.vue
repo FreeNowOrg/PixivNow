@@ -13,12 +13,12 @@ card.author-card(title='')
           fa(icon="plus")
       p.description.pre {{ user.comment }}
 
-  artworks-list.inline.tiny(:list="user.illusts")
+  artwork-list.inline.tiny(:list="user.illusts")
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import ArtworksList from '../components/ArtworksList/ArtworksList.vue'
+import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
 import Card from './Card.vue'
 
 import type { User } from '../types'

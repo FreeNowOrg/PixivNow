@@ -1,42 +1,44 @@
 <template lang="pug">
-.ranking-card
+.artwork-large-card
   .top
-    router-link(:to="'/artworks/' + illust.illust_id")
+    router-link(:to="'/artworks/' + illust.id")
       .thumb
         img(
           :src="API_BASE + illust.url.replace('p0_master', 'p0_square')"
           :alt="illust.title"
           lazyload)
-      .x-restrict.tag(v-if="illust.illust_content_type.sexual === 2" title="R-18")
+      .x-restrict.tag(v-if="illust.xRestrict === 2" title="R-18")
         fa(icon="eye")
       .page-count(
-        v-if="+illust.illust_page_count > 1"
-        :title="'共 ' + illust.illust_page_count + ' 张'")
+        v-if="+illust.pageCount > 1"
+        :title="'共 ' + illust.pageCount + ' 张'")
         fa(icon="images")
-        | {{ illust.illust_page_count }}
+        | {{ illust.pageCount }}
       .ranking(
-        :class="{ gold: illust.rank === 1, silver: illust.rank === 2, bronze: illust.rank === 3 }"
-        ) {{ illust.rank }}
+        v-if="rank !== 0"
+        :class="{ gold: rank === 1, silver: rank === 2, bronze: rank === 3 }"
+        ) {{ rank }}
   .bottom
     h3.title(:title="illust.title")
-      router-link(:to="'/artworks/' + illust.illust_id") {{ illust.title }}
-    .author(:title="illust.user_name")
-      router-link(:to="'/users/' + illust.user_id")
+      router-link(:to="'/artworks/' + illust.id") {{ illust.title }}
+    .author(:title="illust.userName")
+      router-link(:to="'/users/' + illust.id")
         img.avatar(
-          :src="API_BASE + illust.profile_img"
+          :src="API_BASE + illust.profileImageUrl"
           lazyload
           )
-        | {{ illust.user_name }}
+        | {{ illust.userName }}
     .tags
       router-link.tag(v-for="tagName in illust.tags", :to="'/search/' + tagName") \#{{ tagName }}
 </template>
 
 <script lang="ts" setup>
 import { API_BASE } from '../../config'
-import type { ArtworkRank } from '../../types'
+import type { ArtworkInfo } from '../../types'
 
 const props = defineProps<{
-  illust: ArtworkRank
+  illust: ArtworkInfo
+  rank: number
 }>()
 </script>
 
@@ -45,7 +47,7 @@ const props = defineProps<{
 h3
   margin-bottom: .4rem
 
-.ranking-card
+.artwork-large-card
   display: inline-block
   box-sizing: border-box
   box-shadow: 0 0 4px #ccc
@@ -128,47 +130,44 @@ h3
       box-shadow: 0 0 0 2px #b87333 inset, 0 0 0 4px #fff
 
 .bottom
-  // display: flex
-  // max-height: 300px
-  // flex-wrap: wrap
 
-.title a
-  display: inline
-.author a
-  display: inline-flex
+  .title a
+    display: inline
+  .author a
+    display: inline-flex
 
-.title,
-.author
-  white-space: nowrap
-  text-overflow: ellipsis
-  overflow: hidden
-  width: 100%
-  padding-bottom: 2px
+  .title,
+  .author
+    white-space: nowrap
+    text-overflow: ellipsis
+    overflow: hidden
+    width: 100%
+    padding-bottom: 2px
 
-  a
-    align-items: center
+    a
+      align-items: center
 
-    &.router-link-active
-      color: var(--theme-text-color)
-      font-weight: 600
-      font-style: normal
-      cursor: default
+      &.router-link-active
+        color: var(--theme-text-color)
+        font-weight: 600
+        font-style: normal
+        cursor: default
 
-      &::after
-        visibility: hidden
+        &::after
+          visibility: hidden
 
-    .avatar
-      display: inline-block
-      width: 2rem
-      height: 2rem
-      box-sizing: border-box
-      border: 2px solid #fff
-      border-radius: 50%
-      box-shadow: 0 0 4px #ccc
-      margin-right: .4rem
+      .avatar
+        display: inline-block
+        width: 2rem
+        height: 2rem
+        box-sizing: border-box
+        border: 2px solid #fff
+        border-radius: 50%
+        box-shadow: 0 0 4px #ccc
+        margin-right: .4rem
 
-.author
-  margin: .4rem 0
+  .author
+    margin: .4rem 0
 
   .tags
     overflow: auto
