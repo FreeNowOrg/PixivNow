@@ -222,7 +222,7 @@ async function getBookmarks(): Promise<void> {
         params: {
           offset: bookmarks.value.length ?? 0,
           tag: '',
-          limits: 48,
+          limit: 48,
           rest: 'show',
         },
       }
