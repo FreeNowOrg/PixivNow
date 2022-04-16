@@ -178,6 +178,10 @@ const error = ref('')
 const showUserMore = ref(false)
 const route = useRoute()
 
+function makeArtList<T>(obj: Record<string, T & { id: number }>): T[] {
+  return Object.values(obj).sort((a, b) => b.id - a.id)
+}
+
 async function init(id: string | number): Promise<void> {
   const cache = getCache(`users.${id}`)
   if (cache) {
@@ -190,8 +194,20 @@ async function init(id: string | number): Promise<void> {
   }
   try {
     loading.value = true
-    const { data } = await axios.get(`${API_BASE}/ajax/user/${id}`)
-    user.value = data
+    const { data } = await axios.get(`${API_BASE}/ajax/user/${id}`, {
+      params: {
+        full: 1,
+      },
+    })
+    const { data: profileData } = await axios.get(
+      `${API_BASE}/ajax/user/${id}/profile/top`
+    )
+    user.value = {
+      ...data,
+      illusts: makeArtList(profileData.illusts),
+      manga: makeArtList(profileData.manga),
+      novels: makeArtList(profileData.novels),
+    }
     setCache(`users.${id}`, data)
     document.title = `${data.name} | User | PixivNow`
     await getBookmarks()
