@@ -19,7 +19,6 @@
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
 import { API_BASE } from '../config'
 
 import ArtworkLargeList from '../components/ArtworksList/ArtworkLargeList.vue'
@@ -29,6 +28,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { ArtworkRank } from '../types'
 import { getCache, setCache } from './siteCache'
+import { fetchJSON } from '../utils/fetch'
 
 const error = ref('')
 const loading = ref(true)
@@ -47,14 +47,14 @@ async function init(): Promise<void> {
   }
   try {
     const { p, mode, date } = route.params
-    const { data } = await axios.get(`${API_BASE}/ranking.php`, {
-      params: {
-        p,
-        mode,
-        date,
-        format: 'json',
-      },
-    })
+    const requestURL = new URL(`${API_BASE}/ranking.php`)
+    if (p && typeof p === 'string') requestURL.searchParams.append('p', p)
+    if (mode && typeof mode === 'string')
+      requestURL.searchParams.append('mode', mode)
+    if (date && typeof date === 'string')
+      requestURL.searchParams.append('date', date)
+    requestURL.searchParams.append('format', 'json')
+    const data = await fetchJSON(requestURL.toString())
     // Date
     const temp: string = data.date
     data.date = new Date(

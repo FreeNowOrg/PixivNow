@@ -154,7 +154,6 @@
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
 import { API_BASE } from '../config'
 import { userData } from '../components/userData'
 import { addFollow, removeFollow } from '../utils/userActions'
@@ -168,6 +167,7 @@ import { getCache, setCache } from './siteCache'
 import { ArtworkInfo, User } from '../types'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { fetchJSON } from '../utils/fetch'
 
 const loading = ref(true)
 const user = ref<User>({} as User)
@@ -194,14 +194,10 @@ async function init(id: string | number): Promise<void> {
   }
   try {
     loading.value = true
-    const { data } = await axios.get(`${API_BASE}/ajax/user/${id}`, {
-      params: {
-        full: 1,
-      },
-    })
-    const { data: profileData } = await axios.get(
-      `${API_BASE}/ajax/user/${id}/profile/top`
-    )
+    const [data, profileData] = await Promise.all([
+      fetchJSON(`${API_BASE}/ajax/user/${id}?full=1`),
+      fetchJSON(`${API_BASE}/ajax/user/${id}/profile/top`),
+    ])
     user.value = {
       ...data,
       illusts: makeArtList(profileData.illusts),
@@ -232,16 +228,14 @@ async function getBookmarks(): Promise<void> {
 
   try {
     loadingBookmarks.value = true
-    const { data }: { data: { works: ArtworkInfo[] } } = await axios.get(
-      `${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`,
-      {
-        params: {
-          offset: bookmarks.value.length ?? 0,
-          tag: '',
-          limit: 48,
-          rest: 'show',
-        },
-      }
+    const requestURL = new URL(
+      `${API_BASE}/ajax/user/${userData.value.id}/bookmarks`
+    )
+    requestURL.searchParams.append('offset', String(bookmarks.value.length))
+    requestURL.searchParams.append('limit', '48')
+    requestURL.searchParams.append('rest', 'show')
+    const { data }: { data: { works: ArtworkInfo[] } } = await fetchJSON(
+      requestURL.toString()
     )
     bookmarks.value = bookmarks.value.concat(data.works)
   } catch (err) {
