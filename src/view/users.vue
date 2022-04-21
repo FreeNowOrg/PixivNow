@@ -234,7 +234,7 @@ async function getBookmarks(): Promise<void> {
     requestURL.searchParams.append('offset', String(bookmarks.value.length))
     requestURL.searchParams.append('limit', '48')
     requestURL.searchParams.append('rest', 'show')
-    const { data }: { data: { works: ArtworkInfo[] } } = await fetchJSON(
+    const data: { works: ArtworkInfo[] } = await fetchJSON(
       requestURL.toString()
     )
     bookmarks.value = bookmarks.value.concat(data.works)
