@@ -228,15 +228,8 @@ async function getBookmarks(): Promise<void> {
 
   try {
     loadingBookmarks.value = true
-    const requestURL = new URL(
-      `${API_BASE}/ajax/user/${userData.value.id}/bookmarks`
-    )
-    requestURL.searchParams.append('offset', String(bookmarks.value.length))
-    requestURL.searchParams.append('limit', '48')
-    requestURL.searchParams.append('rest', 'show')
-    const data: { works: ArtworkInfo[] } = await fetchJSON(
-      requestURL.toString()
-    )
+    const requestURL = `${API_BASE}/ajax/user/${userData.value.id}/bookmarks?offset=${bookmarks.value.length}&limit=48&rest=show`
+    const data: { works: ArtworkInfo[] } = await fetchJSON(requestURL)
     bookmarks.value = bookmarks.value.concat(data.works)
   } catch (err) {
     if (err instanceof Error) {
