@@ -1,5 +1,5 @@
 <template lang="pug">
-aside.global-side-nav(:class='{ hidden: store.isOpen }')
+aside.global-side-nav(:class='{ hidden: !store.isOpen }')
   .backdrop(@click='closeSideNav')
   .inner
     .group
@@ -49,7 +49,7 @@ const router = useRouter()
 router.afterEach(() => (store.open = false))
 
 store.$subscribe((_mutation, state): void => {
-  if (state) {
+  if (state.open) {
     document.body.style.overflow = 'hidden'
   } else {
     document.body.style.overflow = 'visible'
