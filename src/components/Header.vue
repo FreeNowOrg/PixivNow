@@ -1,7 +1,7 @@
 <template lang="pug">
 header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
   .flex
-    a.side-nav-toggle.plain(@click='showSideNav = !showSideNav')
+    a.side-nav-toggle.plain(@click='toggleSideNav')
       fa(icon='bars')
 
     .logo-area
@@ -12,7 +12,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
       .search-full.align-right.flex-1
         search-box
       .search-icon.align-right.flex-1
-        button.pointer(@click='showSideNav = true')
+        button.pointer(@click='openSideNav')
           fa(icon='search')
           | &nbsp;搜索
 
@@ -71,11 +71,20 @@ import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
 import { userData, userLogout } from './userData'
 import LogoH from '../assets/LogoH.png'
-import { showSideNav } from './states'
+import { useStore } from '../states'
 
 const hidden = ref(false)
 const notAtTop = ref(false)
 const showUserDropdown = ref(false)
+const store = useStore()
+
+function toggleSideNav() {
+  store.open = !store.open
+}
+
+function openSideNav() {
+  store.open = true
+}
 
 watch(hidden, (value) => {
   if (value) {

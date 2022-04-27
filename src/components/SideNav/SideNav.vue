@@ -1,6 +1,6 @@
 <template lang="pug">
-aside.global-side-nav(:class='{ hidden: !showSideNav }')
-  .backdrop(@click='showSideNav = false')
+aside.global-side-nav(:class='{ hidden: store.isOpen }')
+  .backdrop(@click='closeSideNav')
   .inner
     .group
       .search-area
@@ -36,28 +36,33 @@ aside.global-side-nav(:class='{ hidden: !showSideNav }')
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { userData } from '../userData'
-import { showSideNav } from '../states'
+import { useStore } from '../../states'
 
 import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
 
+const store = useStore()
 const router = useRouter()
-router.afterEach(() => (showSideNav.value = false))
+router.afterEach(() => (store.open = false))
 
-watch(showSideNav, (value) => {
-  if (value) {
+store.$subscribe((_mutation, state): void => {
+  if (state) {
     document.body.style.overflow = 'hidden'
   } else {
     document.body.style.overflow = 'visible'
   }
 })
 
+function closeSideNav() {
+  store.open = false
+}
+
 onMounted(() => {
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') showSideNav.value = false
+    if (e.key === 'Escape') closeSideNav()
   })
 })
 </script>

@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import { SITE_ENV } from './config'
 
 // Create App
@@ -8,6 +9,8 @@ const app = createApp(App)
 // Router
 import { router } from './router'
 app.use(router)
+
+app.use(createPinia())
 
 // Global components
 import ExternalLink from './components/ExternalLink.vue'
