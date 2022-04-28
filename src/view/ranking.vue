@@ -28,7 +28,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { ArtworkRank } from '../types'
 import { getCache, setCache } from './siteCache'
-import { fetchJSON } from '../utils/fetch'
+import { getJSON } from '../utils/fetch'
 
 const error = ref('')
 const loading = ref(true)
@@ -54,7 +54,7 @@ async function init(): Promise<void> {
     if (date && typeof date === 'string')
       requestURL.searchParams.append('date', date)
     requestURL.searchParams.append('format', 'json')
-    const data = await fetchJSON(requestURL.toString())
+    const data = await getJSON(requestURL.toString())
     // Date
     const temp: string = data.date
     data.date = new Date(

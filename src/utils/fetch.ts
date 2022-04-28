@@ -1,4 +1,4 @@
-export async function fetchJSON(
+export async function getJSON(
   input: RequestInfo,
   init?: RequestInit
 ): Promise<any> {
@@ -6,7 +6,10 @@ export async function fetchJSON(
   return response.json()
 }
 
-export async function postJSON(input: RequestInfo, init?: RequestInit) {
+export async function postJSON(
+  input: RequestInfo,
+  init?: RequestInit
+): Promise<any> {
   if (!init) init = {}
   init.method = 'POST'
   const response = await fetch(input, init)

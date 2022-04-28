@@ -63,7 +63,7 @@ import SearchBox from '../components/SearchBox.vue'
 import Placeholder from '../components/Placeholder.vue'
 import LogoH from '../assets/LogoH.png'
 import type { ArtworkInfo, ArtworkInfoOrAd } from '../types'
-import { fetchJSON } from '../utils/fetch'
+import { getJSON } from '../utils/fetch'
 
 const showBgInfo = ref(false)
 const discoveryList = ref<ArtworkInfo[]>([])
@@ -77,7 +77,7 @@ const randomBg = ref<{
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const data: { illusts: ArtworkInfo[] } = await fetchJSON(
+    const data: { illusts: ArtworkInfo[] } = await getJSON(
       `${API_BASE}/ajax/illust/discovery?mode=safe&max=1`
     )
     const info = data.illusts.find((item) => item.id) as ArtworkInfo
@@ -107,7 +107,7 @@ async function setRandomBgFromCache(): Promise<void> {
 async function setDiscoveryNoCache(): Promise<void> {
   try {
     discoveryList.value = []
-    const data: { illusts: ArtworkInfoOrAd[] } = await fetchJSON(
+    const data: { illusts: ArtworkInfoOrAd[] } = await getJSON(
       `${API_BASE}/ajax/illust/discovery?mode=all&max=8`
     )
     const illusts = data.illusts.filter((item) =>

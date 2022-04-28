@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
-import axios from 'axios'
 import { API_BASE } from '../config'
 import { Ref, ref } from 'vue'
+import { getJSON } from '../utils/fetch'
 
 export interface PixivUser {
   id: string
@@ -30,7 +30,7 @@ export async function userInit(): Promise<PixivUser | null> {
     return null
   }
   try {
-    const { data } = await axios.get(`${API_BASE}/api/user`, {
+    const { data } = await getJSON(`${API_BASE}/api/user`, {
       headers: {
         'cache-control': 'no-store',
       },

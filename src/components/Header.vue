@@ -62,7 +62,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
               li(v-if='$route.path !== "/login"')
                 router-link.plain(:to='"/login?back=" + $route.path') {{ userData ? "查看令牌" : "用户登入" }}
               li(v-if='userData')
-                a.plain(@click='userLogout') 用户登出
+                a.plain(@click='logout') 用户登出
 </template>
 
 <script lang="ts" setup>
@@ -72,10 +72,12 @@ import { API_BASE } from '../config'
 import { userData, userLogout } from './userData'
 import LogoH from '../assets/LogoH.png'
 import { useStore } from '../states'
+import { useRouter } from 'vue-router'
 
 const hidden = ref(false)
 const notAtTop = ref(false)
 const showUserDropdown = ref(false)
+const router = useRouter()
 const store = useStore()
 
 function toggleSideNav() {
@@ -84,6 +86,11 @@ function toggleSideNav() {
 
 function openSideNav() {
   store.open = true
+}
+
+function logout() {
+  userLogout()
+  router.push('/')
 }
 
 watch(hidden, (value) => {
@@ -97,11 +104,6 @@ watch(hidden, (value) => {
 onMounted(() => {
   window.addEventListener('scroll', () => {
     const newTop = document.documentElement.scrollTop
-    // if (scrollTop > 600) {
-    //   this.isHide = newTop - scrollTop > 0
-    // } else {
-    //   this.isHide = false
-    // }
     if (newTop > 50) {
       notAtTop.value = true
     } else {

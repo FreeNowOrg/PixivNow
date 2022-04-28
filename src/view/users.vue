@@ -167,7 +167,7 @@ import { getCache, setCache } from './siteCache'
 import { ArtworkInfo, User } from '../types'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { fetchJSON } from '../utils/fetch'
+import { getJSON } from '../utils/fetch'
 
 const loading = ref(true)
 const user = ref<User>({} as User)
@@ -195,8 +195,8 @@ async function init(id: string | number): Promise<void> {
   try {
     loading.value = true
     const [data, profileData] = await Promise.all([
-      fetchJSON(`${API_BASE}/ajax/user/${id}?full=1`),
-      fetchJSON(`${API_BASE}/ajax/user/${id}/profile/top`),
+      getJSON(`${API_BASE}/ajax/user/${id}?full=1`),
+      getJSON(`${API_BASE}/ajax/user/${id}/profile/top`),
     ])
     user.value = {
       ...data,
@@ -230,7 +230,7 @@ async function getBookmarks(): Promise<void> {
     loadingBookmarks.value = true
     const requestURL = `${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`
     const searchParams = `tag=&offset=${bookmarks.value.length}&limit=48&rest=show`
-    const data: { works: ArtworkInfo[] } = await fetchJSON(`${requestURL}?${searchParams}`)
+    const data: { works: ArtworkInfo[] } = await getJSON(`${requestURL}?${searchParams}`)
     bookmarks.value = bookmarks.value.concat(data.works)
   } catch (err) {
     if (err instanceof Error) {

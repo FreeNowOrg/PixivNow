@@ -1,25 +1,27 @@
-import axios from 'axios'
+import { postJSON } from './fetch'
 
-export function addBookmark(illust_id: number) {
-  return axios({
-    method: 'post',
-    url: `/ajax/illusts/bookmarks/add`,
-    data: {
+export async function addBookmark(illust_id: number): Promise<any> {
+  return postJSON(`/ajax/illusts/bookmarks/add`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
       illust_id,
       restrict: 0,
       comment: '',
       tags: [],
-    },
+    }),
   })
 }
 
-export function removeBookmark(bookmark_id: number) {
-  return axios({
-    method: 'post',
-    url: `/rpc/index.php`,
-    data: {
+export async function removeBookmark(bookmark_id: number): Promise<any> {
+  return postJSON('/rpc/index.php', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
       mode: 'delete_illust_bookmark',
       bookmark_id,
-    },
+    }),
   })
 }

@@ -120,7 +120,7 @@ import type { Artwork, ArtworkInfo, ArtworkUrls, User } from '../types'
 
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { fetchJSON, postJSON } from '../utils/fetch'
+import { getJSON, postJSON } from '../utils/fetch'
 
 const loading = ref(true)
 const error = ref('')
@@ -157,8 +157,8 @@ async function init(id: string): Promise<void> {
 
   try {
     const [illustData, illustPage] = await Promise.all([
-      fetchJSON(`${API_BASE}/ajax/illust/${id}?full=1`),
-      fetchJSON(`${API_BASE}/ajax/illust/${id}/pages`),
+      getJSON(`${API_BASE}/ajax/illust/${id}?full=1`),
+      getJSON(`${API_BASE}/ajax/illust/${id}/pages`),
     ])
     document.title = `${illustData.illustTitle} | Artwork | PixivNow`
     setCache(`illust.${id}`, illustData)
@@ -188,8 +188,8 @@ async function getUser(userId: string): Promise<void> {
 
   try {
     const [userData, profileData] = await Promise.all([
-      fetchJSON(`${API_BASE}/ajax/user/${userId}?full=1`),
-      fetchJSON(`${API_BASE}/ajax/user/${userId}/profile/top`),
+      getJSON(`${API_BASE}/ajax/user/${userId}?full=1`),
+      getJSON(`${API_BASE}/ajax/user/${userId}/profile/top`),
     ])
     const { illusts }: { illusts: Record<string, ArtworkInfo> } = profileData
     user.value = {
@@ -207,7 +207,7 @@ async function getFirstRecommend(id: string): Promise<void> {
   try {
     recommendLoading.value = true
     console.log('init recommend')
-    const data = await fetchJSON(
+    const data = await getJSON(
       `${API_BASE}/ajax/illust/${id}/recommend/init?limit=18`
     )
     recommend.value = data.illusts
@@ -234,7 +234,7 @@ async function getMoreRecommend(): Promise<void> {
     for (const id of requestIds) {
       requestURL.searchParams.append('illust_ids', id)
     }
-    const data = await fetchJSON(requestURL.toString())
+    const data = await getJSON(requestURL.toString())
     recommend.value = recommend.value.concat(data.illusts)
     recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
   } catch (err) {
@@ -257,10 +257,7 @@ async function addBookmark(): Promise<void> {
   if (bookmarkLoading.value) return
   try {
     bookmarkLoading.value = true
-    const requestURL = new URL(`${API_BASE}/ajax/illust/bookmark/add`)
-    requestURL.searchParams.append('illust_id', illust.value.id)
-    requestURL.searchParams.append('restrict', '0')
-    const { data } = await postJSON(requestURL.toString())
+    const { data } = await postJSON(`/ajax/illust/bookmark/add?illust_id=${illust.value.id}&restrict=0`)
     if (data.last_bookmark_id) {
       illust.value.bookmarkData = data
       illust.value.bookmarkCount++

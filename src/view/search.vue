@@ -42,7 +42,7 @@ import SearchBox from '../components/SearchBox.vue'
 import { onMounted, ref, watch } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import type { ArtworkInfo } from '../types'
-import { fetchJSON } from '../utils/fetch'
+import { getJSON } from '../utils/fetch'
 
 const error = ref('')
 const loading = ref(true)
@@ -74,7 +74,7 @@ async function makeSearch(
   try {
     loading.value = true
     document.title = `${keyword} (第${p}页) | Search | PixivNow`
-    const data = await fetchJSON(
+    const data = await getJSON(
       `${API_BASE}/ajax/search/artworks/${encodeURIComponent(
         keyword
       )}?p=${p}&mode=${mode}`
