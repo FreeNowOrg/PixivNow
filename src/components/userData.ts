@@ -30,7 +30,7 @@ export async function userInit(): Promise<PixivUser | null> {
     return null
   }
   try {
-    const { data } = await getJSON(`${API_BASE}/api/user`, {
+    const data = await getJSON(`${API_BASE}/api/user`, {
       headers: {
         'cache-control': 'no-store',
       },
