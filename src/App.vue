@@ -17,9 +17,15 @@ import SiteFooter from './components/Footer.vue'
 import SideNav from './components/SideNav/SideNav.vue'
 import NProgress from './components/NProgress.vue'
 import { userInit } from './components/userData'
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
+import { useUserStore } from './states'
 
-onMounted(userInit)
+const userStore = useUserStore()
+
+onMounted(async () => {
+  const userData = await userInit()
+  userStore.login(userData)
+})
 </script>
 
 <style scoped lang="sass">

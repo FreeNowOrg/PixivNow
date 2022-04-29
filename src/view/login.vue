@@ -79,7 +79,8 @@ async function submit(): Promise<void> {
   }
   try {
     loading.value = true
-    await userLogin(tokenInput.value)
+    const userData = await userLogin(tokenInput.value)
+    userStore.login(userData)
     error.value = ''
     goBack()
   } catch (err) {
@@ -95,6 +96,7 @@ async function submit(): Promise<void> {
 
 function remove(): void {
   userLogout()
+  userStore.logout()
 }
 
 watch(tokenInput, () => (error.value = ''))
