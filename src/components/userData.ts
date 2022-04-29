@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie'
 import { API_BASE } from '../config'
-import { Ref, ref } from 'vue'
 import { getJSON } from '../utils/fetch'
 
 export interface PixivUser {
@@ -25,11 +24,14 @@ export async function userInit(): Promise<PixivUser | null> {
     console.warn('令牌已丢失！')
   }
   try {
-    const data = await getJSON(`${API_BASE}/api/user`, {
-      headers: {
-        'cache-control': 'no-store',
-      },
-    })
+    const data = await getJSON<{ userData: PixivUser; token: string }>(
+      `${API_BASE}/api/user`,
+      {
+        headers: {
+          'cache-control': 'no-store',
+        },
+      }
+    )
     console.log('访问令牌认证成功', data)
     const res = { ...data.userData, PHPSESSID: token, CSRFTOKEN: data.token }
     return res as PixivUser

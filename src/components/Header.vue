@@ -81,7 +81,6 @@ const router = useRouter()
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()
 
-
 function toggleSideNav() {
   sideNavStore.open = !sideNavStore.open
 }

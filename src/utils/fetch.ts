@@ -1,15 +1,15 @@
-export async function getJSON(
+export async function getJSON<T>(
   input: RequestInfo,
   init?: RequestInit
-): Promise<any> {
+): Promise<T> {
   const response = await fetch(input, init)
   return response.json()
 }
 
-export async function postJSON(
+export async function postJSON<T>(
   input: RequestInfo,
   init?: RequestInit
-): Promise<any> {
+): Promise<T> {
   if (!init) init = {}
   init.method = 'POST'
   const response = await fetch(input, init)

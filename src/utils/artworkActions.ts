@@ -1,5 +1,11 @@
 import { postJSON } from './fetch'
 
+export function sortArtList<T>(
+  obj: Record<string, T & { id: number | `${number}` }>
+): T[] {
+  return Object.values(obj).sort((a, b) => +b.id - +a.id)
+}
+
 export async function addBookmark(illust_id: number): Promise<any> {
   return postJSON(`/ajax/illusts/bookmarks/add`, {
     headers: {

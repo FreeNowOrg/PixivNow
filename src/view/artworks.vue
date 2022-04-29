@@ -121,19 +121,20 @@ import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { getJSON, postJSON } from '../utils/fetch'
 import { useUserStore } from '../states'
+import { sortArtList } from '../utils/artworkActions'
+
+type Gallery = {
+  urls: ArtworkUrls & {
+    thumb_mini: string
+  }
+  width: number
+  height: number
+}
 
 const loading = ref(true)
 const error = ref('')
 const illust = ref<Artwork>({} as Artwork)
-const gallery = ref<
-  {
-    urls: ArtworkUrls & {
-      thumb_mini: string
-    }
-    width: number
-    height: number
-  }[]
->([])
+const gallery = ref<Gallery[]>([])
 const user = ref<User>({} as User)
 const recommend = ref<ArtworkInfo[]>([])
 const recommendNextIds = ref<string[]>([])
@@ -158,8 +159,8 @@ async function init(id: string): Promise<void> {
 
   try {
     const [illustData, illustPage] = await Promise.all([
-      getJSON(`${API_BASE}/ajax/illust/${id}?full=1`),
-      getJSON(`${API_BASE}/ajax/illust/${id}/pages`),
+      getJSON<Artwork>(`${API_BASE}/ajax/illust/${id}?full=1`),
+      getJSON<Gallery[]>(`${API_BASE}/ajax/illust/${id}/pages`),
     ])
     document.title = `${illustData.illustTitle} | Artwork | PixivNow`
     setCache(`illust.${id}`, illustData)
@@ -189,13 +190,15 @@ async function getUser(userId: string): Promise<void> {
 
   try {
     const [userData, profileData] = await Promise.all([
-      getJSON(`${API_BASE}/ajax/user/${userId}?full=1`),
-      getJSON(`${API_BASE}/ajax/user/${userId}/profile/top`),
+      getJSON<User>(`${API_BASE}/ajax/user/${userId}?full=1`),
+      getJSON<{ illusts: Record<string, ArtworkInfo> }>(
+        `${API_BASE}/ajax/user/${userId}/profile/top`
+      ),
     ])
-    const { illusts }: { illusts: Record<string, ArtworkInfo> } = profileData
+    const { illusts } = profileData
     user.value = {
       ...userData,
-      illusts: Object.values(illusts).sort((a, b) => +b.id - +a.id),
+      illusts: sortArtList(illusts),
     }
     setCache(`user.${userId}`, user.value)
   } catch (err) {
@@ -208,7 +211,7 @@ async function getFirstRecommend(id: string): Promise<void> {
   try {
     recommendLoading.value = true
     console.log('init recommend')
-    const data = await getJSON(
+    const data = await getJSON<{ illusts: ArtworkInfo[]; nextIds: string[] }>(
       `${API_BASE}/ajax/illust/${id}/recommend/init?limit=18`
     )
     recommend.value = data.illusts
@@ -235,7 +238,9 @@ async function getMoreRecommend(): Promise<void> {
     for (const id of requestIds) {
       requestURL.searchParams.append('illust_ids', id)
     }
-    const data = await getJSON(requestURL.toString())
+    const data = await getJSON<{ illusts: ArtworkInfo[]; nextIds: string[] }>(
+      requestURL.toString()
+    )
     recommend.value = recommend.value.concat(data.illusts)
     recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
   } catch (err) {
@@ -258,7 +263,9 @@ async function addBookmark(): Promise<void> {
   if (bookmarkLoading.value) return
   try {
     bookmarkLoading.value = true
-    const { data } = await postJSON(`/ajax/illust/bookmark/add?illust_id=${illust.value.id}&restrict=0`)
+    const { data } = await postJSON(
+      `/ajax/illust/bookmark/add?illust_id=${illust.value.id}&restrict=0`
+    )
     if (data.last_bookmark_id) {
       illust.value.bookmarkData = data
       illust.value.bookmarkCount++

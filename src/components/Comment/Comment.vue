@@ -25,7 +25,7 @@ li.comment-block
 import { API_BASE } from '../../config'
 import stampList from './stampList.json'
 import type { Comments } from '../../types'
-import { useUserStore } from '../../states';
+import { useUserStore } from '../../states'
 
 const props = defineProps<{ comment: Comments }>()
 const store = useUserStore()

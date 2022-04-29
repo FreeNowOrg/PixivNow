@@ -167,6 +167,7 @@ import { ArtworkInfo, User } from '../types'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { getJSON } from '../utils/fetch'
+import { sortArtList } from '../utils/artworkActions'
 import { useUserStore } from '../states'
 
 const loading = ref(true)
@@ -178,10 +179,6 @@ const error = ref('')
 const showUserMore = ref(false)
 const route = useRoute()
 const userStore = useUserStore()
-
-function makeArtList<T>(obj: Record<string, T & { id: number }>): T[] {
-  return Object.values(obj).sort((a, b) => b.id - a.id)
-}
 
 async function init(id: string | number): Promise<void> {
   const cache = getCache(`users.${id}`)
@@ -196,14 +193,18 @@ async function init(id: string | number): Promise<void> {
   try {
     loading.value = true
     const [data, profileData] = await Promise.all([
-      getJSON(`${API_BASE}/ajax/user/${id}?full=1`),
-      getJSON(`${API_BASE}/ajax/user/${id}/profile/top`),
+      getJSON<User>(`${API_BASE}/ajax/user/${id}?full=1`),
+      getJSON<{
+        illusts: Record<string, ArtworkInfo>
+        manga: Record<string, ArtworkInfo>
+        novels: Record<string, ArtworkInfo>
+      }>(`${API_BASE}/ajax/user/${id}/profile/top`),
     ])
     user.value = {
       ...data,
-      illusts: makeArtList(profileData.illusts),
-      manga: makeArtList(profileData.manga),
-      novels: makeArtList(profileData.novels),
+      illusts: sortArtList(profileData.illusts),
+      manga: sortArtList(profileData.manga),
+      novels: sortArtList(profileData.novels),
     }
     setCache(`users.${id}`, data)
     document.title = `${data.name} | User | PixivNow`
@@ -231,7 +232,9 @@ async function getBookmarks(): Promise<void> {
     loadingBookmarks.value = true
     const requestURL = `${API_BASE}/ajax/user/${userStore.userId}/illusts/bookmarks`
     const searchParams = `tag=&offset=${bookmarks.value.length}&limit=48&rest=show`
-    const data: { works: ArtworkInfo[] } = await getJSON(`${requestURL}?${searchParams}`)
+    const data: { works: ArtworkInfo[] } = await getJSON(
+      `${requestURL}?${searchParams}`
+    )
     bookmarks.value = bookmarks.value.concat(data.works)
   } catch (err) {
     if (err instanceof Error) {

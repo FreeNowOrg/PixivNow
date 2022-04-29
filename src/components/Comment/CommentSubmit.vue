@@ -21,7 +21,7 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import { ref } from 'vue'
 import { API_BASE } from '../../config'
-import { useUserStore } from '../../states';
+import { useUserStore } from '../../states'
 
 const store = useUserStore()
 
