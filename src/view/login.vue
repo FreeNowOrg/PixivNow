@@ -1,5 +1,5 @@
 <template lang="pug">
-#login-form.not-logged-in(v-if="!userData")
+#login-form.not-logged-in(v-if="!userStore.isLoggedIn")
   router-link.button(
     v-if="$route.query.back"
     :to="$route.query.back"
@@ -30,7 +30,7 @@
     p 我们<strong>不会</strong>存储或转让您的个人信息以及 cookie。
     p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
 
-#login-form.logged-in(v-if="userData")
+#login-form.logged-in(v-if="userStore.isLoggedIn")
   router-link.button(
     v-if="$route.query.back"
     :to="$route.query.back"
@@ -38,7 +38,7 @@
     fa(icon="angle-left")
     | &nbsp;返回
   h1 查看 Pixiv 令牌
-  input.token(readonly :value="userData.PHPSESSID")
+  input.token(readonly :value="userStore.userSessionId")
   #submit
     button(@click="remove") 移除令牌
 </template>
@@ -49,10 +49,10 @@ import { useRoute, useRouter } from 'vue-router'
 import {
   tokenExample,
   tokenValidator,
-  userData,
   userLogin,
   userLogout,
 } from '../components/userData'
+import { useUserStore } from '../states'
 
 const example = ref(tokenExample())
 const tokenInput = ref('')
@@ -60,6 +60,7 @@ const error = ref('')
 const loading = ref(false)
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
 
 function goBack(): void {
   const back = route.query.back

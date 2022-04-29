@@ -10,7 +10,7 @@ li.comment-block
     h4.user
       span.comment-author
         | {{ comment.userName }}
-        .tag(v-if="userData && userData.id === comment.userId") 您
+        .tag(v-if="store.userId === comment.userId") 您
       span.comment-reply(v-if="comment.replyToUserId") &emsp;▶&emsp;{{ comment.replyToUserName }}
     .content(v-if="!comment.stampId" v-html="replaceStamps(comment.comment)")
     .content(v-if="comment.stampId")
@@ -24,10 +24,11 @@ li.comment-block
 <script lang="ts" setup>
 import { API_BASE } from '../../config'
 import stampList from './stampList.json'
-import { userData } from '../userData'
 import type { Comments } from '../../types'
+import { useUserStore } from '../../states';
 
 const props = defineProps<{ comment: Comments }>()
+const store = useUserStore()
 
 function replaceStamps(str: string): string {
   for (const [stampName, stampUrl] of Object.entries(stampList)) {

@@ -39,14 +39,14 @@
               span.bookmark-count(
                 v-if='!illust.bookmarkData',
                 @click='async () => await addBookmark()',
-                :title='userData ? "添加收藏" : "收藏"'
+                :title='store.isLoggedIn ? "添加收藏" : "收藏"'
               )
                 fa(icon='heart')
                 | {{ illust.bookmarkCount }}
               //- 已收藏
               router-link.bookmark-count.bookmarked(
                 v-if='illust.bookmarkData',
-                :to='"/users/" + userData?.id',
+                :to='"/users/" + store.userId',
                 title='查看收藏'
               )
                 fa(icon='heart')
@@ -102,7 +102,6 @@
 
 <script lang="ts" setup>
 import { API_BASE } from '../config'
-import { userData } from '../components/userData'
 
 import AuthorCard from '../components/AuthorCard.vue'
 import ArtTag from '../components/ArtTag.vue'
@@ -121,6 +120,7 @@ import type { Artwork, ArtworkInfo, ArtworkUrls, User } from '../types'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { getJSON, postJSON } from '../utils/fetch'
+import { useUserStore } from '../states'
 
 const loading = ref(true)
 const error = ref('')
@@ -140,6 +140,7 @@ const recommendNextIds = ref<string[]>([])
 const recommendLoading = ref(false)
 const bookmarkLoading = ref(false)
 const route = useRoute()
+const store = useUserStore()
 
 async function init(id: string): Promise<void> {
   loading.value = true
@@ -245,7 +246,7 @@ async function getMoreRecommend(): Promise<void> {
 }
 
 async function addBookmark(): Promise<void> {
-  if (!userData) return console.log('需要登录才可以添加收藏')
+  if (!store.isLoggedIn) return console.log('需要登录才可以添加收藏')
   if (illust.value.isBookmarkable) {
     console.log('无法添加收藏。')
     return

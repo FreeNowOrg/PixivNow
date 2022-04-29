@@ -124,7 +124,7 @@
           li(@click='tab = "manga"')
             a(:class='{ "tab-active": tab === "manga" }') 漫画
           li(
-            v-if='$route.params.id === userData?.id',
+            v-if='$route.params.id === userStore.userId',
             @click='tab = "bookmarks"'
           )
             a(:class='{ "tab-active": tab === "bookmarks" }') 收藏
@@ -155,7 +155,6 @@
 
 <script lang="ts" setup>
 import { API_BASE } from '../config'
-import { userData } from '../components/userData'
 import { addFollow, removeFollow } from '../utils/userActions'
 
 import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
@@ -168,6 +167,7 @@ import { ArtworkInfo, User } from '../types'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { getJSON } from '../utils/fetch'
+import { useUserStore } from '../states'
 
 const loading = ref(true)
 const user = ref<User>({} as User)
@@ -177,6 +177,7 @@ const tab = ref<'illust' | 'manga' | 'bookmarks'>('illust')
 const error = ref('')
 const showUserMore = ref(false)
 const route = useRoute()
+const userStore = useUserStore()
 
 function makeArtList<T>(obj: Record<string, T & { id: number }>): T[] {
   return Object.values(obj).sort((a, b) => b.id - a.id)
@@ -223,12 +224,12 @@ function userMore(): void {
 }
 
 async function getBookmarks(): Promise<void> {
-  if (userData.value?.id !== route.params.id) return
+  if (userStore.userId !== route.params.id) return
   if (loadingBookmarks.value) return
 
   try {
     loadingBookmarks.value = true
-    const requestURL = `${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`
+    const requestURL = `${API_BASE}/ajax/user/${userStore.userId}/illusts/bookmarks`
     const searchParams = `tag=&offset=${bookmarks.value.length}&limit=48&rest=show`
     const data: { works: ArtworkInfo[] } = await getJSON(`${requestURL}?${searchParams}`)
     bookmarks.value = bookmarks.value.concat(data.works)

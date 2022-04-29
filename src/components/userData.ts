@@ -18,16 +18,11 @@ export interface PixivUser {
   PHPSESSID: string
 }
 
-// userData
-export const userData: Ref<PixivUser | null> = ref(null)
-
 export async function userInit(): Promise<PixivUser | null> {
   const token = Cookies.get('PHPSESSID')
   if (!token) {
     Cookies.remove('CSRFTOKEN')
-    userData.value = null
     console.warn('令牌已丢失！')
-    return null
   }
   try {
     const data = await getJSON(`${API_BASE}/api/user`, {
@@ -37,10 +32,8 @@ export async function userInit(): Promise<PixivUser | null> {
     })
     console.log('访问令牌认证成功', data)
     const res = { ...data.userData, PHPSESSID: token, CSRFTOKEN: data.token }
-    userData.value = res
     return res as PixivUser
   } catch (err) {
-    userData.value = null
     Cookies.remove('CSRFTOKEN')
     console.warn('访问令牌可能失效')
     return null
@@ -65,7 +58,6 @@ export function userLogout(): void {
   if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
     Cookies.remove('PHPSESSID')
     Cookies.remove('CSRFTOKEN')
-    userData.value = null
   }
 }
 

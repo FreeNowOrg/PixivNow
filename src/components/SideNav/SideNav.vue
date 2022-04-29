@@ -1,5 +1,5 @@
 <template lang="pug">
-aside.global-side-nav(:class='{ hidden: !store.isOpen }')
+aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpen }')
   .backdrop(@click='closeSideNav')
   .inner
     .group
@@ -21,7 +21,7 @@ aside.global-side-nav(:class='{ hidden: !store.isOpen }')
           list-link(
             icon='fingerprint',
             link='/login',
-            :text='userData ? "查看令牌" : "设置令牌"'
+            :text='userStore.isLoggedIn ? "查看令牌" : "设置令牌"'
           )
 
       .group
@@ -38,17 +38,17 @@ aside.global-side-nav(:class='{ hidden: !store.isOpen }')
 <script lang="ts" setup>
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { userData } from '../userData'
-import { useStore } from '../../states'
+import { useSideNavStore, useUserStore } from '../../states'
 
 import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
 
-const store = useStore()
+const sideNavStore = useSideNavStore()
+const userStore = useUserStore()
 const router = useRouter()
-router.afterEach(() => (store.open = false))
+router.afterEach(() => (sideNavStore.open = false))
 
-store.$subscribe((_mutation, state): void => {
+sideNavStore.$subscribe((_mutation, state): void => {
   if (state.open) {
     document.body.style.overflow = 'hidden'
   } else {
@@ -57,7 +57,7 @@ store.$subscribe((_mutation, state): void => {
 })
 
 function closeSideNav() {
-  store.open = false
+  sideNavStore.open = false
 }
 
 onMounted(() => {
