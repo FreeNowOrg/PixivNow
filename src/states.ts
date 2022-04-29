@@ -38,8 +38,11 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
-    async login(userData: PixivUser) {
+    login(userData: PixivUser) {
       this.user = userData
+    },
+    logout() {
+      this.user = null
     },
   },
 })

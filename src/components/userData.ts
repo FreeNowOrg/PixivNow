@@ -1,6 +1,9 @@
 import Cookies from 'js-cookie'
 import { API_BASE } from '../config'
 import { getJSON } from '../utils/fetch'
+import { useUserStore } from '../states'
+
+const userStore = useUserStore()
 
 export interface PixivUser {
   id: string
@@ -15,6 +18,7 @@ export interface PixivUser {
   illustCreator: boolean
   novelCreator: boolean
   PHPSESSID: string
+  CSRFTOKEN?: string
 }
 
 export async function userInit(): Promise<PixivUser | null> {
@@ -33,8 +37,13 @@ export async function userInit(): Promise<PixivUser | null> {
       }
     )
     console.log('访问令牌认证成功', data)
-    const res = { ...data.userData, PHPSESSID: token, CSRFTOKEN: data.token }
-    return res as PixivUser
+    const res: PixivUser = {
+      ...data.userData,
+      PHPSESSID: token ?? '',
+      CSRFTOKEN: data.token,
+    }
+    userStore.login(res)
+    return res
   } catch (err) {
     Cookies.remove('CSRFTOKEN')
     console.warn('访问令牌可能失效')
@@ -60,6 +69,7 @@ export function userLogout(): void {
   if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
     Cookies.remove('PHPSESSID')
     Cookies.remove('CSRFTOKEN')
+    userStore.logout()
   }
 }
 
