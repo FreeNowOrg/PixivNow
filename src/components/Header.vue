@@ -91,7 +91,8 @@ function openSideNav() {
 
 function logout() {
   userLogout()
-  router.push('/')
+  userStore.logout()
+  location.reload()
 }
 
 watch(hidden, (value) => {

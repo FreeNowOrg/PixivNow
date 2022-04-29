@@ -97,6 +97,7 @@ async function submit(): Promise<void> {
 function remove(): void {
   userLogout()
   userStore.logout()
+  location.reload()
 }
 
 watch(tokenInput, () => (error.value = ''))
