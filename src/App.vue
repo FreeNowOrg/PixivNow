@@ -16,13 +16,18 @@ import SiteHeader from './components/Header.vue'
 import SiteFooter from './components/Footer.vue'
 import SideNav from './components/SideNav/SideNav.vue'
 import NProgress from './components/NProgress.vue'
-import { userInit } from './components/userData'
+import { checkSessionId, userInit } from './components/userData'
 import { onMounted } from 'vue'
 import { useUserStore } from './states'
 
 const userStore = useUserStore()
 
 onMounted(async () => {
+  if (!checkSessionId()) {
+    console.log('No session id found. Maybe you are not logged in?')
+    userStore.logout()
+    return
+  }
   try {
     const userData = await userInit()
     userStore.login(userData)

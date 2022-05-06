@@ -18,12 +18,18 @@ export interface PixivUser {
   CSRFTOKEN?: string
 }
 
-export async function userInit(): Promise<PixivUser> {
-  const token = Cookies.get('PHPSESSID')
-  if (!token) {
+export function checkSessionId(): boolean {
+  const sessionId = Cookies.get('PHPSESSID')
+  if (!sessionId) {
     Cookies.remove('CSRFTOKEN')
-    console.warn('令牌已丢失！')
+    return false
+  } else {
+    return true
   }
+}
+
+export async function userInit(): Promise<PixivUser> {
+  const sessionId = Cookies.get('PHPSESSID')
   try {
     const data = await getJSON<{ userData: PixivUser; token: string }>(
       `${API_BASE}/api/user`,
@@ -34,18 +40,17 @@ export async function userInit(): Promise<PixivUser> {
       }
     )
     if (!data.token) {
-      throw new Error('未正确配置令牌')
+      Cookies.remove('CSRFTOKEN')
+      return Promise.reject('无效的session ID')
     }
-    console.log('访问令牌认证成功', data)
+    console.log('session ID认证成功', data)
     const res: PixivUser = {
       ...data.userData,
-      PHPSESSID: token ?? '',
+      PHPSESSID: sessionId ?? '',
       CSRFTOKEN: data.token,
     }
     return res
   } catch (err) {
-    Cookies.remove('CSRFTOKEN')
-    console.warn('访问令牌可能失效')
     throw err
   }
 }
