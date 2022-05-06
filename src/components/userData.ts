@@ -14,22 +14,19 @@ export interface PixivUser {
   safeMode: boolean
   illustCreator: boolean
   novelCreator: boolean
-  PHPSESSID: string
-  CSRFTOKEN?: string
 }
 
-export function checkSessionId(): boolean {
+export function existsSessionId(): boolean {
   const sessionId = Cookies.get('PHPSESSID')
-  if (!sessionId) {
+  if (sessionId) {
+    return true
+  } else {
     Cookies.remove('CSRFTOKEN')
     return false
-  } else {
-    return true
   }
 }
 
-export async function userInit(): Promise<PixivUser> {
-  const sessionId = Cookies.get('PHPSESSID')
+export async function initUser(): Promise<PixivUser> {
   try {
     const data = await getJSON<{ userData: PixivUser; token: string }>(
       `${API_BASE}/api/user`,
@@ -39,24 +36,23 @@ export async function userInit(): Promise<PixivUser> {
         },
       }
     )
-    if (!data.token) {
+    if (data.token) {
+      console.log('session ID认证成功', data)
+      Cookies.set('CSRFTOKEN', data.token)
+      const res = data.userData
+      return res
+    } else {
       Cookies.remove('CSRFTOKEN')
       return Promise.reject('无效的session ID')
     }
-    console.log('session ID认证成功', data)
-    const res: PixivUser = {
-      ...data.userData,
-      PHPSESSID: sessionId ?? '',
-      CSRFTOKEN: data.token,
-    }
-    return res
   } catch (err) {
-    throw err
+    Cookies.remove('CSRFTOKEN')
+    return Promise.reject(err)
   }
 }
 
-export function userLogin(token: string): Promise<PixivUser> {
-  if (!tokenValidator(token)) {
+export function login(token: string): Promise<PixivUser> {
+  if (!validateSessionId(token)) {
     console.error('访问令牌格式错误')
     return Promise.reject('访问令牌格式错误')
   }
@@ -65,10 +61,10 @@ export function userLogin(token: string): Promise<PixivUser> {
     path: '/',
     secure: true,
   })
-  return userInit()
+  return initUser()
 }
 
-export function userLogout(): void {
+export function logout(): void {
   const token = Cookies.get('PHPSESSID')
   if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
     Cookies.remove('PHPSESSID')
@@ -76,11 +72,11 @@ export function userLogout(): void {
   }
 }
 
-export function tokenValidator(token: string): boolean {
+export function validateSessionId(token: string): boolean {
   return /^\d{2,10}_[0-9A-Za-z]{32}$/.test(token)
 }
 
-export function tokenExample(): string {
+export function exampleSessionId(): string {
   const uid = Math.floor(100000000 * Math.random())
   const secret = (() => {
     const strSet =

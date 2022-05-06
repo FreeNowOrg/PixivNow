@@ -33,9 +33,6 @@ export const useUserStore = defineStore('user', {
     userProfileImgBig(state) {
       return state.user?.profileImgBig
     },
-    userSessionId(state) {
-      return state.user?.PHPSESSID
-    },
   },
   actions: {
     login(userData: PixivUser) {

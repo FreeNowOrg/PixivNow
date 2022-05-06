@@ -69,7 +69,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 import { ref, onMounted, watch } from 'vue'
 import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
-import { userLogout } from './userData'
+import { logout } from './userData'
 import LogoH from '../assets/LogoH.png'
 import { useSideNavStore, useUserStore } from '../states'
 import { useRouter } from 'vue-router'
@@ -90,7 +90,7 @@ function openSideNav() {
 }
 
 function logout() {
-  userLogout()
+  logout()
   userStore.logout()
   location.reload()
 }
