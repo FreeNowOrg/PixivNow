@@ -33,6 +33,9 @@ export async function userInit(): Promise<PixivUser> {
         },
       }
     )
+    if (!data.token) {
+      throw new Error('未正确配置令牌')
+    }
     console.log('访问令牌认证成功', data)
     const res: PixivUser = {
       ...data.userData,

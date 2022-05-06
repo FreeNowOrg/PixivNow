@@ -27,7 +27,7 @@ onMounted(async () => {
     const userData = await userInit()
     userStore.login(userData)
   } catch (err) {
-    console.log('User init failed:', err)
+    console.error('User init failed:', err)
     userStore.logout()
   }
 })
