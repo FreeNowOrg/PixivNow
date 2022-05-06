@@ -59,8 +59,8 @@ async function init(): Promise<void> {
       contents: ArtworkRank[]
     } = await getJSON(`${API_BASE}/ranking.php?${searchParams.toString()}`)
     // Date
-    const rankingDate: string = data.date
-    list.value = {
+    const rankingDate = data.date
+    const listValue = {
       date: new Date(
         +rankingDate.substring(0, 4),
         +rankingDate.substring(4, 6) - 1,
@@ -68,7 +68,8 @@ async function init(): Promise<void> {
       ),
       contents: data.contents
     }
-    setCache('ranking.rankingList', list.value)
+    list.value = listValue
+    setCache('ranking.rankingList', listValue)
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
