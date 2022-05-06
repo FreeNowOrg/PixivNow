@@ -68,7 +68,7 @@ async function init(): Promise<void> {
       ),
       contents: data.contents
     }
-    setCache('ranking.rankingList', data)
+    setCache('ranking.rankingList', list.value)
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
