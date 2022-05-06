@@ -23,8 +23,13 @@ import { useUserStore } from './states'
 const userStore = useUserStore()
 
 onMounted(async () => {
-  const userData = await userInit()
-  userStore.login(userData)
+  try {
+    const userData = await userInit()
+    userStore.login(userData)
+  } catch (err) {
+    console.log('User init failed:', err)
+    userStore.logout()
+  }
 })
 </script>
 

@@ -234,12 +234,12 @@ async function getMoreRecommend(): Promise<void> {
     recommendLoading.value = true
     console.log('get more recommend')
     const requestIds = recommendNextIds.value.splice(0, 18)
-    const requestURL = new URL(`${API_BASE}/ajax/illust/recommend/illusts`)
+    const searchParams = new URLSearchParams()
     for (const id of requestIds) {
-      requestURL.searchParams.append('illust_ids', id)
+      searchParams.append('illust_ids', id)
     }
     const data = await getJSON<{ illusts: ArtworkInfo[]; nextIds: string[] }>(
-      requestURL.toString()
+      `${API_BASE}/ajax/illust/recommend/illusts?${searchParams.toString()}`
     )
     recommend.value = recommend.value.concat(data.illusts)
     recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
