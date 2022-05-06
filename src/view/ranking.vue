@@ -47,22 +47,27 @@ async function init(): Promise<void> {
   }
   try {
     const { p, mode, date } = route.params
-    const requestURL = new URL(`${API_BASE}/ranking.php`)
-    if (p && typeof p === 'string') requestURL.searchParams.append('p', p)
+    const searchParams = new URLSearchParams()
+    if (p && typeof p === 'string') searchParams.append('p', p)
     if (mode && typeof mode === 'string')
-      requestURL.searchParams.append('mode', mode)
+      searchParams.append('mode', mode)
     if (date && typeof date === 'string')
-      requestURL.searchParams.append('date', date)
-    requestURL.searchParams.append('format', 'json')
-    const data = await getJSON(requestURL.toString())
+      searchParams.append('date', date)
+    searchParams.append('format', 'json')
+    const data: {
+      date: string
+      contents: ArtworkRank[]
+    } = await getJSON(`${API_BASE}/ranking.php?${searchParams.toString()}`)
     // Date
-    const temp: string = data.date
-    data.date = new Date(
-      +temp.substring(0, 4),
-      +temp.substring(4, 6) - 1,
-      +temp.substring(6, 8)
-    )
-    list.value = data
+    const rankingDate: string = data.date
+    list.value = {
+      date: new Date(
+        +rankingDate.substring(0, 4),
+        +rankingDate.substring(4, 6) - 1,
+        +rankingDate.substring(6, 8)
+      ),
+      contents: data.contents
+    }
     setCache('ranking.rankingList', data)
   } catch (err) {
     if (err instanceof Error) {

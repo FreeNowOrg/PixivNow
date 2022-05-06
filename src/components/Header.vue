@@ -62,7 +62,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
               li(v-if='$route.path !== "/login"')
                 router-link.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? "查看令牌" : "用户登入" }}
               li(v-if='userStore.isLoggedIn')
-                a.plain(@click='logout') 用户登出
+                a.plain(@click='logoutUser') 用户登出
 </template>
 
 <script lang="ts" setup>
@@ -89,7 +89,7 @@ function openSideNav() {
   sideNavStore.open = true
 }
 
-function logout() {
+function logoutUser() {
   logout()
   userStore.logout()
   location.reload()
