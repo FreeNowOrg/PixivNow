@@ -119,7 +119,7 @@ import type { Artwork, ArtworkInfo, ArtworkUrls, User } from '../types'
 
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { getJSON, postJSON } from '../utils/fetch'
+import { getJSON } from '../utils/fetch'
 import { useUserStore } from '../states'
 import { addBookmark, sortArtList } from '../utils/artworkActions'
 
@@ -267,7 +267,7 @@ async function addArtworkBookmark(): Promise<void> {
   if (bookmarkLoading.value) return
   try {
     bookmarkLoading.value = true
-    const { data } = await addBookmark(illust.value.illustId)
+    const data = await addBookmark(illust.value.illustId)
     if (data.last_bookmark_id) {
       illust.value.bookmarkData = data
       illust.value.bookmarkCount++
