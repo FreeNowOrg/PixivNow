@@ -196,11 +196,12 @@ async function getUser(userId: string): Promise<void> {
       ),
     ])
     const { illusts } = profileData
-    user.value = {
+    const userValue = {
       ...userData,
       illusts: sortArtList(illusts),
     }
-    setCache(`user.${userId}`, user.value)
+    user.value = userValue
+    setCache(`user.${userId}`, userValue)
   } catch (err) {
     console.warn('User fetch error', err)
   }
@@ -251,13 +252,16 @@ async function getMoreRecommend(): Promise<void> {
 }
 
 async function addBookmark(): Promise<void> {
-  if (!store.isLoggedIn) return console.log('需要登录才可以添加收藏')
-  if (illust.value.isBookmarkable) {
-    console.log('无法添加收藏。')
+  if (!store.isLoggedIn) {
+    console.log('需要登录才可以添加收藏')
+    return
+  }
+  if (!illust.value.isBookmarkable) {
+    console.log('无法添加收藏')
     return
   }
   if (illust.value.bookmarkData) {
-    console.log('已经收藏过啦。')
+    console.log('已经收藏过啦')
     return
   }
   if (bookmarkLoading.value) return
@@ -271,7 +275,7 @@ async function addBookmark(): Promise<void> {
       illust.value.bookmarkCount++
     }
   } catch (err) {
-    console.warn('bookmark add error', err)
+    console.error('bookmark add error:', err)
   } finally {
     bookmarkLoading.value = false
   }
