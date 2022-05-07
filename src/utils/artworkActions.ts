@@ -1,3 +1,4 @@
+import { API_BASE } from '../config'
 import { postJSON } from './fetch'
 
 export function sortArtList<T>(
@@ -6,8 +7,10 @@ export function sortArtList<T>(
   return Object.values(obj).sort((a, b) => +b.id - +a.id)
 }
 
-export async function addBookmark(illust_id: number): Promise<any> {
-  return postJSON(`/ajax/illusts/bookmarks/add`, {
+export async function addBookmark(
+  illust_id: number | `${number}`
+): Promise<any> {
+  return postJSON(`${API_BASE}/ajax/illusts/bookmarks/add`, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -20,8 +23,10 @@ export async function addBookmark(illust_id: number): Promise<any> {
   })
 }
 
-export async function removeBookmark(bookmark_id: number): Promise<any> {
-  return postJSON('/rpc/index.php', {
+export async function removeBookmark(
+  bookmark_id: number | `${number}`
+): Promise<any> {
+  return postJSON(`${API_BASE}/rpc/index.php`, {
     headers: {
       'Content-Type': 'application/json',
     },

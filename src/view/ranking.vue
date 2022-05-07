@@ -49,10 +49,8 @@ async function init(): Promise<void> {
     const { p, mode, date } = route.params
     const searchParams = new URLSearchParams()
     if (p && typeof p === 'string') searchParams.append('p', p)
-    if (mode && typeof mode === 'string')
-      searchParams.append('mode', mode)
-    if (date && typeof date === 'string')
-      searchParams.append('date', date)
+    if (mode && typeof mode === 'string') searchParams.append('mode', mode)
+    if (date && typeof date === 'string') searchParams.append('date', date)
     searchParams.append('format', 'json')
     const data: {
       date: string
@@ -66,7 +64,7 @@ async function init(): Promise<void> {
         +rankingDate.substring(4, 6) - 1,
         +rankingDate.substring(6, 8)
       ),
-      contents: data.contents
+      contents: data.contents,
     }
     list.value = listValue
     setCache('ranking.rankingList', listValue)

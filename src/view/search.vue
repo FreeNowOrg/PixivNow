@@ -74,7 +74,7 @@ async function makeSearch(
   try {
     loading.value = true
     document.title = `${keyword} (第${p}页) | Search | PixivNow`
-    const data = await getJSON(
+    const data: { illustManga: { data: ArtworkInfo[] } } = await getJSON(
       `${API_BASE}/ajax/search/artworks/${encodeURIComponent(
         keyword
       )}?p=${p}&mode=${mode}`

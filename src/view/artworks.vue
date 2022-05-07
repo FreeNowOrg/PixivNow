@@ -38,7 +38,7 @@
               //- 未收藏/不可收藏
               span.bookmark-count(
                 v-if='!illust.bookmarkData',
-                @click='async () => await addBookmark()',
+                @click='async () => await addArtworkBookmark()',
                 :title='store.isLoggedIn ? "添加收藏" : "收藏"'
               )
                 fa(icon='heart')
@@ -121,7 +121,7 @@ import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { getJSON, postJSON } from '../utils/fetch'
 import { useUserStore } from '../states'
-import { sortArtList } from '../utils/artworkActions'
+import { addBookmark, sortArtList } from '../utils/artworkActions'
 
 type Gallery = {
   urls: ArtworkUrls & {
@@ -251,7 +251,7 @@ async function getMoreRecommend(): Promise<void> {
   }
 }
 
-async function addBookmark(): Promise<void> {
+async function addArtworkBookmark(): Promise<void> {
   if (!store.isLoggedIn) {
     console.log('需要登录才可以添加收藏')
     return
@@ -267,9 +267,7 @@ async function addBookmark(): Promise<void> {
   if (bookmarkLoading.value) return
   try {
     bookmarkLoading.value = true
-    const { data } = await postJSON(
-      `/ajax/illust/bookmark/add?illust_id=${illust.value.id}&restrict=0`
-    )
+    const { data } = await addBookmark(illust.value.illustId)
     if (data.last_bookmark_id) {
       illust.value.bookmarkData = data
       illust.value.bookmarkCount++
