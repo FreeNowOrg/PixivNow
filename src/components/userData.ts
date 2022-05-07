@@ -1,7 +1,6 @@
 import Cookies from 'js-cookie'
-import axios from 'axios'
 import { API_BASE } from '../config'
-import { Ref, ref } from 'vue'
+import { getJSON } from '../utils/fetch'
 
 export interface PixivUser {
   id: string
@@ -15,40 +14,45 @@ export interface PixivUser {
   safeMode: boolean
   illustCreator: boolean
   novelCreator: boolean
-  PHPSESSID: string
 }
 
-// userData
-export const userData: Ref<PixivUser | null> = ref(null)
-
-export async function userInit(): Promise<PixivUser | null> {
-  const token = Cookies.get('PHPSESSID')
-  if (!token) {
+export function existsSessionId(): boolean {
+  const sessionId = Cookies.get('PHPSESSID')
+  if (sessionId) {
+    return true
+  } else {
     Cookies.remove('CSRFTOKEN')
-    userData.value = null
-    console.warn('令牌已丢失！')
-    return null
+    return false
   }
+}
+
+export async function initUser(): Promise<PixivUser> {
   try {
-    const { data } = await axios.get(`${API_BASE}/api/user`, {
-      headers: {
-        'cache-control': 'no-store',
-      },
-    })
-    console.log('访问令牌认证成功', data)
-    const res = { ...data.userData, PHPSESSID: token, CSRFTOKEN: data.token }
-    userData.value = res
-    return res as PixivUser
+    const data = await getJSON<{ userData: PixivUser; token: string }>(
+      `${API_BASE}/api/user`,
+      {
+        headers: {
+          'cache-control': 'no-store',
+        },
+      }
+    )
+    if (data.token) {
+      console.log('session ID认证成功', data)
+      Cookies.set('CSRFTOKEN', data.token)
+      const res = data.userData
+      return res
+    } else {
+      Cookies.remove('CSRFTOKEN')
+      return Promise.reject('无效的session ID')
+    }
   } catch (err) {
-    userData.value = null
     Cookies.remove('CSRFTOKEN')
-    console.warn('访问令牌可能失效')
-    return null
+    return Promise.reject(err)
   }
 }
 
-export function userLogin(token: string): Promise<PixivUser | null> {
-  if (!tokenValidator(token)) {
+export function login(token: string): Promise<PixivUser> {
+  if (!validateSessionId(token)) {
     console.error('访问令牌格式错误')
     return Promise.reject('访问令牌格式错误')
   }
@@ -57,23 +61,22 @@ export function userLogin(token: string): Promise<PixivUser | null> {
     path: '/',
     secure: true,
   })
-  return userInit()
+  return initUser()
 }
 
-export function userLogout(): void {
+export function logout(): void {
   const token = Cookies.get('PHPSESSID')
   if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
     Cookies.remove('PHPSESSID')
     Cookies.remove('CSRFTOKEN')
-    userData.value = null
   }
 }
 
-export function tokenValidator(token: string): boolean {
+export function validateSessionId(token: string): boolean {
   return /^\d{2,10}_[0-9A-Za-z]{32}$/.test(token)
 }
 
-export function tokenExample(): string {
+export function exampleSessionId(): string {
   const uid = Math.floor(100000000 * Math.random())
   const secret = (() => {
     const strSet =

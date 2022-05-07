@@ -1,7 +1,7 @@
 <template lang="pug">
 header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
   .flex
-    a.side-nav-toggle.plain(@click='showSideNav = !showSideNav')
+    a.side-nav-toggle.plain(@click='toggleSideNav')
       fa(icon='bars')
 
     .logo-area
@@ -12,7 +12,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
       .search-full.align-right.flex-1
         search-box
       .search-icon.align-right.flex-1
-        button.pointer(@click='showSideNav = true')
+        button.pointer(@click='openSideNav')
           fa(icon='search')
           | &nbsp;搜索
 
@@ -23,8 +23,8 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
           @click='showUserDropdown = !showUserDropdown'
         )
           img.avatar(
-            :src='userData ? userData.profileImg : API_BASE + "/~/common/images/no_profile.png"',
-            :title='userData ? userData.name + " (" + userData.pixivId + ")" : "未登入"'
+            :src='userStore.isLoggedIn ? userStore.userProfileImg : API_BASE + "/~/common/images/no_profile.png"',
+            :title='userStore.isLoggedIn ? userStore.userId + " (" + userStore.userPixivId + ")" : "未登入"'
           )
           fa(icon='angle-down')
 
@@ -37,7 +37,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
           .dropdown-content(v-show='showUserDropdown')
             ul
               //- notLogIn
-              li(v-if='!userData')
+              li(v-if='!userStore.isLoggedIn')
                 .nav-user-card
                   .top
                     .banner-bg
@@ -49,33 +49,51 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                     .uid 绑定令牌，同步您的 Pixiv 信息！
 
               //- isLogedIn
-              li(v-if='userData')
+              li(v-if='userStore.isLoggedIn')
                 .nav-user-card
                   .top
                     .banner-bg
-                    router-link.plain.name(:to='"/users/" + userData.id')
-                      img.avatar(:src='API_BASE + userData.profileImgBig')
+                    router-link.plain.name(:to='"/users/" + userStore.userId')
+                      img.avatar(:src='API_BASE + userStore.userProfileImgBig')
                   .details
-                    router-link.plain.user-name(:to='"/users/" + userData.id') {{ userData.name }}
-                    .uid @{{ userData.pixivId }}
+                    router-link.plain.user-name(:to='"/users/" + userStore.userId') {{ userStore.userName }}
+                    .uid @{{ userStore.userPixivId }}
 
               li(v-if='$route.path !== "/login"')
-                router-link.plain(:to='"/login?back=" + $route.path') {{ userData ? "查看令牌" : "用户登入" }}
-              li(v-if='userData')
-                a.plain(@click='userLogout') 用户登出
+                router-link.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? "查看令牌" : "用户登入" }}
+              li(v-if='userStore.isLoggedIn')
+                a.plain(@click='logoutUser') 用户登出
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue'
 import SearchBox from './SearchBox.vue'
 import { API_BASE } from '../config'
-import { userData, userLogout } from './userData'
+import { logout } from './userData'
 import LogoH from '../assets/LogoH.png'
-import { showSideNav } from './states'
+import { useSideNavStore, useUserStore } from '../states'
+import { useRouter } from 'vue-router'
 
 const hidden = ref(false)
 const notAtTop = ref(false)
 const showUserDropdown = ref(false)
+const router = useRouter()
+const sideNavStore = useSideNavStore()
+const userStore = useUserStore()
+
+function toggleSideNav() {
+  sideNavStore.open = !sideNavStore.open
+}
+
+function openSideNav() {
+  sideNavStore.open = true
+}
+
+function logoutUser() {
+  logout()
+  userStore.logout()
+  location.reload()
+}
 
 watch(hidden, (value) => {
   if (value) {
@@ -88,11 +106,6 @@ watch(hidden, (value) => {
 onMounted(() => {
   window.addEventListener('scroll', () => {
     const newTop = document.documentElement.scrollTop
-    // if (scrollTop > 600) {
-    //   this.isHide = newTop - scrollTop > 0
-    // } else {
-    //   this.isHide = false
-    // }
     if (newTop > 50) {
       notAtTop.value = true
     } else {

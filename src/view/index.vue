@@ -52,7 +52,6 @@
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
 import { onMounted, ref } from 'vue'
 import { formatInTimeZone } from 'date-fns-tz'
 import { API_BASE } from '../config'
@@ -64,6 +63,7 @@ import SearchBox from '../components/SearchBox.vue'
 import Placeholder from '../components/Placeholder.vue'
 import LogoH from '../assets/LogoH.png'
 import type { ArtworkInfo, ArtworkInfoOrAd } from '../types'
+import { getJSON } from '../utils/fetch'
 
 const showBgInfo = ref(false)
 const discoveryList = ref<ArtworkInfo[]>([])
@@ -77,14 +77,8 @@ const randomBg = ref<{
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const { data }: { data: { illusts: ArtworkInfo[] } } = await axios.get(
-      `${API_BASE}/ajax/illust/discovery`,
-      {
-        params: {
-          mode: 'safe',
-          max: 1,
-        },
-      }
+    const data: { illusts: ArtworkInfo[] } = await getJSON(
+      `${API_BASE}/ajax/illust/discovery?mode=safe&max=1`
     )
     const info = data.illusts.find((item) => item.id) as ArtworkInfo
     const middle = `img/${formatInTimeZone(
@@ -113,14 +107,8 @@ async function setRandomBgFromCache(): Promise<void> {
 async function setDiscoveryNoCache(): Promise<void> {
   try {
     discoveryList.value = []
-    const { data }: { data: { illusts: ArtworkInfoOrAd[] } } = await axios.get(
-      `${API_BASE}/ajax/illust/discovery`,
-      {
-        params: {
-          mode: 'all',
-          max: 8,
-        },
-      }
+    const data: { illusts: ArtworkInfoOrAd[] } = await getJSON(
+      `${API_BASE}/ajax/illust/discovery?mode=all&max=8`
     )
     const illusts = data.illusts.filter((item) =>
       Object.keys(item).includes('id')

@@ -19,7 +19,6 @@
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
 import { API_BASE } from '../config'
 
 import ArtworkLargeList from '../components/ArtworksList/ArtworkLargeList.vue'
@@ -29,6 +28,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { ArtworkRank } from '../types'
 import { getCache, setCache } from './siteCache'
+import { getJSON } from '../utils/fetch'
 
 const error = ref('')
 const loading = ref(true)
@@ -47,23 +47,27 @@ async function init(): Promise<void> {
   }
   try {
     const { p, mode, date } = route.params
-    const { data } = await axios.get(`${API_BASE}/ranking.php`, {
-      params: {
-        p,
-        mode,
-        date,
-        format: 'json',
-      },
-    })
+    const searchParams = new URLSearchParams()
+    if (p && typeof p === 'string') searchParams.append('p', p)
+    if (mode && typeof mode === 'string') searchParams.append('mode', mode)
+    if (date && typeof date === 'string') searchParams.append('date', date)
+    searchParams.append('format', 'json')
+    const data: {
+      date: string
+      contents: ArtworkRank[]
+    } = await getJSON(`${API_BASE}/ranking.php?${searchParams.toString()}`)
     // Date
-    const temp: string = data.date
-    data.date = new Date(
-      +temp.substring(0, 4),
-      +temp.substring(4, 6) - 1,
-      +temp.substring(6, 8)
-    )
-    list.value = data
-    setCache('ranking.rankingList', data)
+    const rankingDate = data.date
+    const listValue = {
+      date: new Date(
+        +rankingDate.substring(0, 4),
+        +rankingDate.substring(4, 6) - 1,
+        +rankingDate.substring(6, 8)
+      ),
+      contents: data.contents,
+    }
+    list.value = listValue
+    setCache('ranking.rankingList', listValue)
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message

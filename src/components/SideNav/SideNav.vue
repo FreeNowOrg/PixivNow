@@ -1,6 +1,6 @@
 <template lang="pug">
-aside.global-side-nav(:class='{ hidden: !showSideNav }')
-  .backdrop(@click='showSideNav = false')
+aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpen }')
+  .backdrop(@click='closeSideNav')
   .inner
     .group
       .search-area
@@ -21,7 +21,7 @@ aside.global-side-nav(:class='{ hidden: !showSideNav }')
           list-link(
             icon='fingerprint',
             link='/login',
-            :text='userData ? "查看令牌" : "设置令牌"'
+            :text='userStore.isLoggedIn ? "查看令牌" : "设置令牌"'
           )
 
       .group
@@ -36,28 +36,33 @@ aside.global-side-nav(:class='{ hidden: !showSideNav }')
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { userData } from '../userData'
-import { showSideNav } from '../states'
+import { useSideNavStore, useUserStore } from '../../states'
 
 import SearchBox from '../SearchBox.vue'
 import ListLink from './ListLink.vue'
 
+const sideNavStore = useSideNavStore()
+const userStore = useUserStore()
 const router = useRouter()
-router.afterEach(() => (showSideNav.value = false))
+router.afterEach(() => (sideNavStore.open = false))
 
-watch(showSideNav, (value) => {
-  if (value) {
+sideNavStore.$subscribe((_mutation, state): void => {
+  if (state.open) {
     document.body.style.overflow = 'hidden'
   } else {
     document.body.style.overflow = 'visible'
   }
 })
 
+function closeSideNav() {
+  sideNavStore.open = false
+}
+
 onMounted(() => {
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') showSideNav.value = false
+    if (e.key === 'Escape') closeSideNav()
   })
 })
 </script>

@@ -38,15 +38,15 @@
               //- 未收藏/不可收藏
               span.bookmark-count(
                 v-if='!illust.bookmarkData',
-                @click='async () => await addBookmark()',
-                :title='userData ? "添加收藏" : "收藏"'
+                @click='async () => await addArtworkBookmark()',
+                :title='store.isLoggedIn ? "添加收藏" : "收藏"'
               )
                 fa(icon='heart')
                 | {{ illust.bookmarkCount }}
               //- 已收藏
               router-link.bookmark-count.bookmarked(
                 v-if='illust.bookmarkData',
-                :to='"/users/" + userData?.id',
+                :to='"/users/" + store.userId',
                 title='查看收藏'
               )
                 fa(icon='heart')
@@ -101,9 +101,7 @@
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
 import { API_BASE } from '../config'
-import { userData } from '../components/userData'
 
 import AuthorCard from '../components/AuthorCard.vue'
 import ArtTag from '../components/ArtTag.vue'
@@ -121,25 +119,29 @@ import type { Artwork, ArtworkInfo, ArtworkUrls, User } from '../types'
 
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { getJSON } from '../utils/fetch'
+import { useUserStore } from '../states'
+import { addBookmark, sortArtList } from '../utils/artworkActions'
+
+type Gallery = {
+  urls: ArtworkUrls & {
+    thumb_mini: string
+  }
+  width: number
+  height: number
+}
 
 const loading = ref(true)
 const error = ref('')
 const illust = ref<Artwork>({} as Artwork)
-const gallery = ref<
-  {
-    urls: ArtworkUrls & {
-      thumb_mini: string
-    }
-    width: number
-    height: number
-  }[]
->([])
+const gallery = ref<Gallery[]>([])
 const user = ref<User>({} as User)
 const recommend = ref<ArtworkInfo[]>([])
 const recommendNextIds = ref<string[]>([])
 const recommendLoading = ref(false)
 const bookmarkLoading = ref(false)
 const route = useRoute()
+const store = useUserStore()
 
 async function init(id: string): Promise<void> {
   loading.value = true
@@ -156,11 +158,9 @@ async function init(id: string): Promise<void> {
   }
 
   try {
-    const [{ data: illustData }, { data: illustPage }] = await Promise.all([
-      axios.get(`${API_BASE}/ajax/illust/${id}`, {
-        params: { full: 1 },
-      }),
-      axios.get(`${API_BASE}/ajax/illust/${id}/pages`),
+    const [illustData, illustPage] = await Promise.all([
+      getJSON<Artwork>(`${API_BASE}/ajax/illust/${id}?full=1`),
+      getJSON<Gallery[]>(`${API_BASE}/ajax/illust/${id}/pages`),
     ])
     document.title = `${illustData.illustTitle} | Artwork | PixivNow`
     setCache(`illust.${id}`, illustData)
@@ -189,20 +189,19 @@ async function getUser(userId: string): Promise<void> {
   }
 
   try {
-    const [{ data: userData }, { data: profileData }] = await Promise.all([
-      axios.get(`${API_BASE}/ajax/user/${userId}`, {
-        params: {
-          full: 1,
-        },
-      }),
-      axios.get(`${API_BASE}/ajax/user/${userId}/profile/top`),
+    const [userData, profileData] = await Promise.all([
+      getJSON<User>(`${API_BASE}/ajax/user/${userId}?full=1`),
+      getJSON<{ illusts: Record<string, ArtworkInfo> }>(
+        `${API_BASE}/ajax/user/${userId}/profile/top`
+      ),
     ])
-    const { illusts }: { illusts: Record<string, ArtworkInfo> } = profileData
-    user.value = {
+    const { illusts } = profileData
+    const userValue = {
       ...userData,
-      illusts: Object.values(illusts).sort((a, b) => +b.id - +a.id),
+      illusts: sortArtList(illusts),
     }
-    setCache(`user.${userId}`, user.value)
+    user.value = userValue
+    setCache(`user.${userId}`, userValue)
   } catch (err) {
     console.warn('User fetch error', err)
   }
@@ -213,11 +212,8 @@ async function getFirstRecommend(id: string): Promise<void> {
   try {
     recommendLoading.value = true
     console.log('init recommend')
-    const { data } = await axios.get(
-      `${API_BASE}/ajax/illust/${id}/recommend/init`,
-      {
-        params: { limit: 18 },
-      }
+    const data = await getJSON<{ illusts: ArtworkInfo[]; nextIds: string[] }>(
+      `${API_BASE}/ajax/illust/${id}/recommend/init?limit=18`
     )
     recommend.value = data.illusts
     recommendNextIds.value = data.nextIds
@@ -239,11 +235,12 @@ async function getMoreRecommend(): Promise<void> {
     recommendLoading.value = true
     console.log('get more recommend')
     const requestIds = recommendNextIds.value.splice(0, 18)
-    const { data } = await axios.get(
-      `${API_BASE}/ajax/illust/recommend/illusts`,
-      {
-        params: { illust_ids: requestIds },
-      }
+    const searchParams = new URLSearchParams()
+    for (const id of requestIds) {
+      searchParams.append('illust_ids', id)
+    }
+    const data = await getJSON<{ illusts: ArtworkInfo[]; nextIds: string[] }>(
+      `${API_BASE}/ajax/illust/recommend/illusts?${searchParams.toString()}`
     )
     recommend.value = recommend.value.concat(data.illusts)
     recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
@@ -254,31 +251,29 @@ async function getMoreRecommend(): Promise<void> {
   }
 }
 
-async function addBookmark(): Promise<void> {
-  if (!userData) return console.log('需要登录才可以添加收藏')
-  if (illust.value.isBookmarkable) {
-    console.log('无法添加收藏。')
+async function addArtworkBookmark(): Promise<void> {
+  if (!store.isLoggedIn) {
+    console.log('需要登录才可以添加收藏')
+    return
+  }
+  if (!illust.value.isBookmarkable) {
+    console.log('无法添加收藏')
     return
   }
   if (illust.value.bookmarkData) {
-    console.log('已经收藏过啦。')
+    console.log('已经收藏过啦')
     return
   }
   if (bookmarkLoading.value) return
   try {
     bookmarkLoading.value = true
-    const { data } = await axios.post(`${API_BASE}/ajax/illust/bookmarks/add`, {
-      illust_id: illust.value.illustId,
-      restrict: illust.value.restrict,
-      comment: '',
-      tags: [],
-    })
+    const data = await addBookmark(illust.value.illustId)
     if (data.last_bookmark_id) {
       illust.value.bookmarkData = data
       illust.value.bookmarkCount++
     }
   } catch (err) {
-    console.warn('bookmark add error', err)
+    console.error('bookmark add error:', err)
   } finally {
     bookmarkLoading.value = false
   }

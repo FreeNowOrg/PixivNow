@@ -1,15 +1,15 @@
 <template lang="pug">
 .comment-submit(:data-illust_id="id")
   em 发表评论
-  .flex.logged-in(v-if="userData")
+  .flex.logged-in(v-if="store.isLoggedIn")
     .left
       .avatar
-        img(:src="API_BASE + userData.profileImg")
+        img(:src="API_BASE + store.userProfileImg")
     .right
       textarea(v-model="comment" :disabled="loading")
     .submit.align-right
     button(@click="async () => await submit()" :disabled="loading") 发送
-  .flex.not-logged-in(v-if="!userData")
+  .flex.not-logged-in(v-if="!store.isLoggedIn")
     p 
       | 您需要
       router-link(:to="'/login?back=' + $route.path") 设置 Pixiv 令牌
@@ -21,7 +21,9 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import { ref } from 'vue'
 import { API_BASE } from '../../config'
-import { userData } from '../userData'
+import { useUserStore } from '../../states'
+
+const store = useUserStore()
 
 const loading = ref(false)
 const comment = ref('')
@@ -47,7 +49,7 @@ async function submit(): Promise<void> {
       {
         type: 'comment',
         illust_id: props.id,
-        author_user_id: userData.value?.id,
+        author_user_id: store.userId,
         comment,
       },
       {
@@ -58,7 +60,7 @@ async function submit(): Promise<void> {
     )
     comment.value = ''
     emit('push-comment', {
-      img: userData.value?.profileImg,
+      img: store.userProfileImg,
       commentDate: new Date().toLocaleString(),
       ...data,
     })

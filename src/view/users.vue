@@ -124,7 +124,7 @@
           li(@click='tab = "manga"')
             a(:class='{ "tab-active": tab === "manga" }') 漫画
           li(
-            v-if='$route.params.id === userData?.id',
+            v-if='$route.params.id === userStore.userId',
             @click='tab = "bookmarks"'
           )
             a(:class='{ "tab-active": tab === "bookmarks" }') 收藏
@@ -154,9 +154,7 @@
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
 import { API_BASE } from '../config'
-import { userData } from '../components/userData'
 import { addFollow, removeFollow } from '../utils/userActions'
 
 import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
@@ -168,6 +166,9 @@ import { getCache, setCache } from './siteCache'
 import { ArtworkInfo, User } from '../types'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { getJSON } from '../utils/fetch'
+import { sortArtList } from '../utils/artworkActions'
+import { useUserStore } from '../states'
 
 const loading = ref(true)
 const user = ref<User>({} as User)
@@ -177,6 +178,7 @@ const tab = ref<'illust' | 'manga' | 'bookmarks'>('illust')
 const error = ref('')
 const showUserMore = ref(false)
 const route = useRoute()
+const userStore = useUserStore()
 
 async function init(id: string | number): Promise<void> {
   const cache = getCache(`users.${id}`)
@@ -190,8 +192,20 @@ async function init(id: string | number): Promise<void> {
   }
   try {
     loading.value = true
-    const { data } = await axios.get(`${API_BASE}/ajax/user/${id}`)
-    user.value = data
+    const [data, profileData] = await Promise.all([
+      getJSON<User>(`${API_BASE}/ajax/user/${id}?full=1`),
+      getJSON<{
+        illusts: Record<string, ArtworkInfo>
+        manga: Record<string, ArtworkInfo>
+        novels: Record<string, ArtworkInfo>
+      }>(`${API_BASE}/ajax/user/${id}/profile/top`),
+    ])
+    user.value = {
+      ...data,
+      illusts: sortArtList(profileData.illusts),
+      manga: sortArtList(profileData.manga),
+      novels: sortArtList(profileData.novels),
+    }
     setCache(`users.${id}`, data)
     document.title = `${data.name} | User | PixivNow`
     await getBookmarks()
@@ -211,21 +225,20 @@ function userMore(): void {
 }
 
 async function getBookmarks(): Promise<void> {
-  if (userData.value?.id !== route.params.id) return
+  if (userStore.userId !== route.params.id) return
   if (loadingBookmarks.value) return
 
   try {
     loadingBookmarks.value = true
-    const { data }: { data: { works: ArtworkInfo[] } } = await axios.get(
-      `${API_BASE}/ajax/user/${userData.value.id}/illusts/bookmarks`,
-      {
-        params: {
-          offset: bookmarks.value.length ?? 0,
-          tag: '',
-          limits: 48,
-          rest: 'show',
-        },
-      }
+    const searchParams = new URLSearchParams()
+    searchParams.append('tag', '')
+    searchParams.append('offset', bookmarks.value.length.toString())
+    searchParams.append('limit', '48')
+    searchParams.append('rest', 'show')
+    const data: { works: ArtworkInfo[] } = await getJSON(
+      `${API_BASE}/ajax/user/${
+        userStore.userId
+      }/illusts/bookmarks?${searchParams.toString()}`
     )
     bookmarks.value = bookmarks.value.concat(data.works)
   } catch (err) {

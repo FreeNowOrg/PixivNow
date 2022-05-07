@@ -1,5 +1,5 @@
 <template lang="pug">
-#login-form.not-logged-in(v-if="!userData")
+#login-form.not-logged-in(v-if="!userStore.isLoggedIn")
   router-link.button(
     v-if="$route.query.back"
     :to="$route.query.back"
@@ -9,28 +9,28 @@
   label
     h1.title 设置 Pixiv 令牌
     input(
-      v-model="tokenInput"
-      :class="tokenValidator(tokenInput) ? 'good' : 'bad'"
+      v-model="sessionIdInput"
+      :class="validateSessionId(sessionIdInput) ? 'valid' : 'invalid'"
     )
-  .status.good(v-if="tokenInput && tokenValidator(tokenInput) && !error")
+  .status.invalid(v-if="error") {{ error }}
+  .status.valid(v-else-if="sessionIdInput && validateSessionId(sessionIdInput)")
     | 格式正确，请点击保存！
-  .status.bad(v-if="tokenInput && !tokenValidator(tokenInput) && !error")
+  .status.invalid(v-else-if="sessionIdInput && !validateSessionId(sessionIdInput)")
     | 哎呀，这个格式看上去不太对……
-  .status.bad(v-if="error") {{ error }}
   #submit
-    button.btn.btn-primary(@click="async () => await submit()" :disabled="!!error || loading || !tokenValidator(tokenInput)") {{ loading ? '登录中……' : '保存令牌' }}
+    button.btn.btn-primary(@click="async () => await submit()" :disabled="!!error || loading || !validateSessionId(sessionIdInput)") {{ loading ? '登录中……' : '保存令牌' }}
   .tips 
     h2 如何获取 Pixiv 令牌？
     p 访问 <a href="https://www.pixiv.net" target="_blank">www.pixiv.net</a> 源站并登录，打开浏览器控制台(f12)，点击“存储(storage)”一栏，在 cookie 列表里找到“键(key)”为<code>PHPSESSID</code>的一栏，将它的“值(value)”复制后填写到这里。
     p
       | 它应该形如：
-      code(title="此处的令牌为随机生成，仅供演示使用" @click="tokenExample") {{ example }}
+      code(title="此处的令牌为随机生成，仅供演示使用" @click="exampleSessionId") {{ example }}
       | 。
     h2 PixivNow 会窃取我的个人信息吗？
     p 我们<strong>不会</strong>存储或转让您的个人信息以及 cookie。
     p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
 
-#login-form.logged-in(v-if="userData")
+#login-form.logged-in(v-if="userStore.isLoggedIn")
   router-link.button(
     v-if="$route.query.back"
     :to="$route.query.back"
@@ -38,28 +38,30 @@
     fa(icon="angle-left")
     | &nbsp;返回
   h1 查看 Pixiv 令牌
-  input.token(readonly :value="userData.PHPSESSID")
+  input.token(readonly :value="Cookies.get('PHPSESSID')")
   #submit
     button(@click="remove") 移除令牌
 </template>
 
 <script lang="ts" setup>
+import Cookies from 'js-cookie'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
-  tokenExample,
-  tokenValidator,
-  userData,
-  userLogin,
-  userLogout,
+  exampleSessionId,
+  validateSessionId,
+  login,
+  logout,
 } from '../components/userData'
+import { useUserStore } from '../states'
 
-const example = ref(tokenExample())
-const tokenInput = ref('')
+const example = ref(exampleSessionId())
+const sessionIdInput = ref('')
 const error = ref('')
 const loading = ref(false)
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
 
 function goBack(): void {
   const back = route.query.back
@@ -71,14 +73,15 @@ function goBack(): void {
 }
 
 async function submit(): Promise<void> {
-  if (!tokenValidator(tokenInput.value)) {
+  if (!validateSessionId(sessionIdInput.value)) {
     error.value = '哎呀，这个格式看上去不太对……'
     console.warn(error.value)
     return
   }
   try {
     loading.value = true
-    await userLogin(tokenInput.value)
+    const userData = await login(sessionIdInput.value)
+    userStore.login(userData)
     error.value = ''
     goBack()
   } catch (err) {
@@ -93,10 +96,12 @@ async function submit(): Promise<void> {
 }
 
 function remove(): void {
-  userLogout()
+  logout()
+  userStore.logout()
+  location.reload()
 }
 
-watch(tokenInput, () => (error.value = ''))
+watch(sessionIdInput, () => (error.value = ''))
 </script>
 
 <style scoped lang="sass">
@@ -140,9 +145,9 @@ code
   padding: 4px
   color: #fff
 
-  &.good
+  &.valid
     background-color: green
 
-  &.bad
+  &.invalid
     background-color: #a00
 </style>
