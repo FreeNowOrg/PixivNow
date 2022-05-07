@@ -48,9 +48,9 @@ const props = defineProps<{
 function toggleBookmark(): void {
   const item = props.item
   if (item.bookmarkData) {
-    removeBookmark(+item.bookmarkData.id)
+    removeBookmark(item.bookmarkData.id)
   } else {
-    addBookmark(+item.id)
+    addBookmark(item.id)
   }
 }
 </script>
