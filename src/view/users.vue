@@ -281,7 +281,7 @@ onMounted(async () => {
       background-size: cover
       background-attachment: fixed
 
-      @media screen and(max-width: 800px)
+      @media screen and (max-width: 800px)
         &
           background-size: auto 55vh
 

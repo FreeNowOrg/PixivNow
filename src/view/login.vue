@@ -119,7 +119,7 @@ watch(sessionIdInput, () => (error.value = ''))
   &:hover
     box-shadow: var(--theme-box-shadow-hover)
 
-@media screen and(max-width: 500px)
+@media screen and (max-width: 500px)
   #login-form
     width: 100%
 
