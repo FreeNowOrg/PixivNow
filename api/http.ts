@@ -1,8 +1,11 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { Method } from 'axios'
-import { request } from './utils'
+import { isAccepted, request } from './utils'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
+  if (!isAccepted(req)) {
+    return res.status(403).send('403')
+  }
   try {
     const { __PREFIX, __PATH } = req.query
     const { data } = await request({
