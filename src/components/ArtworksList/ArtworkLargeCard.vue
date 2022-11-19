@@ -22,7 +22,7 @@
     h3.title(:title="illust.title")
       router-link(:to="'/artworks/' + illust.id") {{ illust.title }}
     .author(:title="illust.userName")
-      router-link(:to="'/users/' + illust.id")
+      router-link(:to="'/users/' + illust.userId")
         img.avatar(
           :src="API_BASE + illust.profileImageUrl"
           lazyload
