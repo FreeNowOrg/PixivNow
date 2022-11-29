@@ -163,7 +163,7 @@ import Modal from '../components/Modal.vue'
 import Placeholder from '../components/Placeholder.vue'
 
 import { getCache, setCache } from './siteCache'
-import { ArtworkInfo, User } from '../types'
+import type { ArtworkInfo, User } from '../types'
 import { onMounted, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { getJSON } from '../utils/fetch'
@@ -200,13 +200,14 @@ async function init(id: string | number): Promise<void> {
         novels: Record<string, ArtworkInfo>
       }>(`${API_BASE}/ajax/user/${id}/profile/top`),
     ])
-    user.value = {
+    const userValue = {
       ...data,
       illusts: sortArtList(profileData.illusts),
       manga: sortArtList(profileData.manga),
       novels: sortArtList(profileData.novels),
     }
-    setCache(`users.${id}`, data)
+    user.value = userValue
+    setCache(`users.${id}`, userValue)
     document.title = `${data.name} | User | PixivNow`
     await getBookmarks()
   } catch (err) {
