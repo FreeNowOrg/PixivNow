@@ -22,7 +22,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         path: '/ajax/illust/discovery',
         params: {
           mode: req.query.mode || 'safe',
-          max: isImage ? 1 : req.query.max || 18,
+          max: isImage ? '1' : req.query.max || '18',
         },
         headers: req.headers,
       })
