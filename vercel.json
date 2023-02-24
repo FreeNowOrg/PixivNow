@@ -12,18 +12,8 @@
   "redirects": [
     {
       "source": "/-/:__PATH*",
-      "destination": "https://pximg.wjghj.workers.dev/:__PATH"
+      "destination": "https://pximg.wjghj.cn/:__PATH"
     }
   ],
-  "headers": [
-    {
-      "source": "/(api|ajax|rpc|.+\\.php)(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    }
-  ]
+  "headers": []
 }

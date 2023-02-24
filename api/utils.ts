@@ -1,4 +1,4 @@
-import { VercelResponse } from '@vercel/node'
+import { VercelRequest, VercelResponse } from '@vercel/node'
 import axios, { AxiosRequestConfig, Method } from 'axios'
 import cookie from 'cookie'
 
@@ -94,5 +94,20 @@ export async function request({
   } catch (err) {
     console.error('[AxiosError]', err)
     throw err
+  }
+}
+
+export function isAccepted(req: VercelRequest) {
+  const { UA_BLACKLIST = '[]' } = process.env
+  try {
+    const list: string[] = JSON.parse(UA_BLACKLIST)
+    const ua = req.headers['user-agent'] || ''
+    return (
+      ua &&
+      Array.isArray(list) &&
+      !new RegExp(`(${list.join('|')})`, 'gi').test(ua)
+    )
+  } catch (e) {
+    return false
   }
 }

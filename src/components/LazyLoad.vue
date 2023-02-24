@@ -5,12 +5,13 @@ component(
   :height='height',
   :src='src',
   :class='{ lazyload: true, isLoading: !loaded && !error, isLoaded: loaded, isError: error }',
-  role='img'
+  role='img',
+  ref='imgRef'
 )
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const props = defineProps<{
   src: string
@@ -20,6 +21,7 @@ const props = defineProps<{
 
 const loaded = ref(false)
 const error = ref(false)
+const imgRef = ref<HTMLImageElement>()
 
 function init() {
   const img = new Image()
@@ -34,9 +36,23 @@ function init() {
   }
 }
 
-watch(props, init)
-
-onMounted(init)
+let observer: IntersectionObserver
+onMounted(async () => {
+  await nextTick()
+  const img = imgRef.value
+  if (!img) return
+  observer = new IntersectionObserver((entries) => {
+    const [entry] = entries
+    if (entry.isIntersecting) {
+      init()
+      observer.disconnect()
+    }
+  })
+  observer.observe(img)
+})
+onBeforeUnmount(() => {
+  observer && observer.disconnect()
+})
 </script>
 
 <style scoped lang="sass">
