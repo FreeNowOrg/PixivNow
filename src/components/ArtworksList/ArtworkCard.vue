@@ -1,45 +1,42 @@
 <template lang="pug">
 .artwork-card
   .side-tags
-    .x-restrict(v-if="item.xRestrict" title="R-18")
-      fa(icon="eye")
+    .x-restrict(title='R-18' v-if='item.xRestrict')
+      fa(icon='eye')
     .page-count(
-      v-if="item.pageCount > 1"
-      :title="'共 ' + item.pageCount + ' 张'"
+      :title='"共 " + item.pageCount + " 张"'
+      v-if='item.pageCount > 1'
     )
-      fa(icon="images")
+      fa(icon='images')
       | {{ item.pageCount }}
     .bookmark(
-      :class="{ bookmarked: item.bookmarkData }"
-      @click="toggleBookmark"
+      :class='{ bookmarked: item.bookmarkData }'
+      @click='toggleBookmark'
     )
-      fa(icon="heart")
-  router-link(:to="'/artworks/' + item.id")
+      fa(icon='heart')
+  router-link(:to='"/artworks/" + item.id')
     lazy-load.img(
-      :src="API_BASE + item.url"
-      :alt="item.alt"
-      :title="item.alt"
+      :alt='item.alt',
+      :src='API_BASE + item.url',
+      :title='item.alt'
       lazyload
     )
     .hover-title {{ item.title }}
 .info
   .title
-    router-link(:to="'/artworks/' + item.id") {{ item.title }}
-  .author(:title="item.userName")
-    router-link(:to="'/users/' + item.userId")
-      img.avatar(
-        :src="API_BASE + (item.profileImageUrl)"
-        lazyload
-      )
+    router-link(:to='"/artworks/" + item.id') {{ item.title }}
+  .author(:title='item.userName')
+    router-link(:to='"/users/" + item.userId')
+      img.avatar(:src='API_BASE + item.profileImageUrl' lazyload)
       | {{ item.userName }}
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from '../../config'
-import LazyLoad from '../LazyLoad.vue'
-import { addBookmark, removeBookmark } from '../../utils/artworkActions'
+import { API_BASE } from '@/config'
+import LazyLoad from '@/components/LazyLoad.vue'
+import { addBookmark, removeBookmark } from '@/utils/artworkActions'
 
-import type { ArtworkInfo } from '../../types'
+import type { ArtworkInfo } from '@/types'
 
 const props = defineProps<{
   item: ArtworkInfo

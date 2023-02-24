@@ -1,25 +1,20 @@
 <template lang="pug">
 ul.artworks-list
-  li(v-for="(item) in artworks"
-    :key="item.id"
-  )
-    artwork-card(:item="item")
+  li(:key='item.id' v-for='item in artworks')
+    artwork-card(:item='item')
 </template>
 
 <script lang="ts" setup>
 import ArtworkCard from './ArtworkCard.vue'
-
-import type { ArtworkInfo, ArtworkInfoOrAd } from '../../types'
-import { computed } from 'vue'
+import { isArtwork } from '@/utils'
+import type { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
 
 const props = defineProps<{
   list: ArtworkInfoOrAd[]
 }>()
 
 const artworks = computed(() => {
-  return props.list.filter((item) =>
-    Object.keys(item).includes('id')
-  ) as ArtworkInfo[]
+  return props.list.filter((item): item is ArtworkInfo => isArtwork(item))
 })
 </script>
 

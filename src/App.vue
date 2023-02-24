@@ -1,24 +1,23 @@
 <template lang="pug">
-side-nav(ref="globalSideNav")
-site-header(ref="globalHeader")
+side-nav(ref='globalSideNav')
+site-header(ref='globalHeader')
 
 main
   article
     router-view
 
-site-footer(ref="globalFooter")
+site-footer(ref='globalFooter')
 
 n-progress
 </template>
 
 <script lang="ts" setup>
-import SiteHeader from './components/Header.vue'
-import SiteFooter from './components/Footer.vue'
-import SideNav from './components/SideNav/SideNav.vue'
-import NProgress from './components/NProgress.vue'
-import { existsSessionId, initUser } from './components/userData'
-import { onMounted } from 'vue'
-import { useUserStore } from './states'
+import SiteHeader from '@/components/Header.vue'
+import SiteFooter from '@/components/Footer.vue'
+import SideNav from '@/components/SideNav/SideNav.vue'
+import NProgress from '@/components/NProgress.vue'
+import { existsSessionId, initUser } from '@/components/userData'
+import { useUserStore } from '@/plugins'
 
 const userStore = useUserStore()
 

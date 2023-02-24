@@ -1,19 +1,14 @@
 <template lang="pug">
 .show-more
-  a(@click="method")
+  a(@click='method')
     | {{ text }}
-    | 
-    fa(
-      v-if="!loading"
-      icon="plus")
-    fa(
-      v-if="loading"
-      spin
-      icon="spinner")
+    | &nbsp;
+    fa(icon='plus' v-if='!loading')
+    fa(icon='spinner' spin v-if='loading')
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+defineProps<{
   text: string
   method: () => void
   loading: boolean

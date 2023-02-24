@@ -3,7 +3,7 @@
   .modal-area(v-if='show')
     .modal-backdrop(@click='closeModal')
     .modal-window
-      a.plain.close-btn(roll='button', @click='closeModal')
+      a.plain.close-btn(@click='closeModal' roll='button')
         fa(icon='times')
       section.modal-content
         div
@@ -11,8 +11,6 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch } from 'vue'
-
 const props = defineProps<{
   show: boolean
 }>()

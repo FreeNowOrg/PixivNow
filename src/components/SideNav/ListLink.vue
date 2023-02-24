@@ -1,20 +1,19 @@
 <template lang="pug">
-mixin content()
-  fa(:icon="icon")
+mixin content
+  fa(:icon='icon')
   | {{ text }}
 
 li
-  router-link.plain(v-if="link" :to="link")
-    +content()
-  a.plain(v-else-if="externalLink" :href="externalLink" target="_blank")
-    +content()
+  router-link.plain(:to='link' v-if='link')
+    +content
+  a.plain(:href='externalLink' target='_blank' v-else-if='externalLink')
+    +content
   a.plain.not-allowed(v-else)
-    +content()
-
+    +content
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+defineProps<{
   icon: string
   text: string
   externalLink?: string

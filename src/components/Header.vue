@@ -19,7 +19,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
     #global-nav__user-area.user-area
       .user-link
         a.dropdown-btn.plain.pointer(
-          :class='{ "show-user": showUserDropdown }',
+          :class='{ "show-user": showUserDropdown }'
           @click='showUserDropdown = !showUserDropdown'
         )
           img.avatar(
@@ -29,10 +29,10 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
           fa(icon='angle-down')
 
         transition(
-          name='fade',
-          mode='out-in',
-          enter-active-class='fade-in-up',
+          enter-active-class='fade-in-up'
           leave-active-class='fade-out-down'
+          mode='out-in'
+          name='fade'
         )
           .dropdown-content(v-show='showUserDropdown')
             ul
@@ -56,37 +56,36 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                     router-link.plain.name(:to='"/users/" + userStore.userId')
                       img.avatar(:src='API_BASE + userStore.userProfileImgBig')
                   .details
-                    router-link.plain.user-name(:to='"/users/" + userStore.userId') {{ userStore.userName }}
+                    router-link.plain.user-name(
+                      :to='"/users/" + userStore.userId'
+                    ) {{ userStore.userName }}
                     .uid @{{ userStore.userPixivId }}
 
               li(v-if='$route.path !== "/login"')
-                router-link.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? "查看令牌" : "用户登入" }}
+                router-link.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
               li(v-if='userStore.isLoggedIn')
                 a.plain(@click='logoutUser') 用户登出
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watch } from 'vue'
 import SearchBox from './SearchBox.vue'
-import { API_BASE } from '../config'
+import { API_BASE } from '@/config'
 import { logout } from './userData'
-import LogoH from '../assets/LogoH.png'
-import { useSideNavStore, useUserStore } from '../states'
-import { useRouter } from 'vue-router'
+import LogoH from '@/assets/LogoH.png'
+import { useSideNavStore, useUserStore } from '@/plugins'
 
 const hidden = ref(false)
 const notAtTop = ref(false)
 const showUserDropdown = ref(false)
-const router = useRouter()
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()
 
 function toggleSideNav() {
-  sideNavStore.open = !sideNavStore.open
+  sideNavStore.toggle()
 }
 
 function openSideNav() {
-  sideNavStore.open = true
+  sideNavStore.open()
 }
 
 function logoutUser() {

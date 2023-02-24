@@ -5,10 +5,6 @@ export const SITE_ENV =
     ? 'development'
     : 'production'
 
-// Default front-end AJAX timeout
-import axios from 'axios'
-axios.defaults.timeout = 60 * 1000
-
 // API endpoint
 export const API_BASE =
   process.env.NODE_ENV === 'development'

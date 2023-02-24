@@ -3,7 +3,7 @@
   //- Loading
   section.align-center(v-if='loading')
     placeholder
-    p {{ "正在读取作品 #" + $route.params.id }}
+    p {{ '正在读取作品 #' + $route.params.id }}
 
   //- Done
   section.illust-container(v-if='!error && !loading')
@@ -16,14 +16,14 @@
             h1(:class='illust.xRestrict ? "danger" : ""') {{ illust.illustTitle }}
             p.description.pre(v-html='illust.description')
             p.description.no-desc(
-              v-if='!illust.description',
               :style='{ color: "#aaa" }'
+              v-if='!illust.description'
             ) (无简介)
             p.canonical-link
               a.button(
-                :href='illust?.extraData?.meta?.canonical || "#"',
-                target='_blank',
+                :href='illust?.extraData?.meta?.canonical || "#"'
                 rel='noopener noreferrer'
+                target='_blank'
               ) 在 Pixiv 上查看 →
 
             p.stats
@@ -37,17 +37,17 @@
               //- 收藏
               //- 未收藏/不可收藏
               span.bookmark-count(
-                v-if='!illust.bookmarkData',
-                @click='async () => await addArtworkBookmark()',
                 :title='store.isLoggedIn ? "添加收藏" : "收藏"'
+                @click='async () => await addArtworkBookmark()'
+                v-if='!illust.bookmarkData'
               )
                 fa(icon='heart')
                 | {{ illust.bookmarkCount }}
               //- 已收藏
               router-link.bookmark-count.bookmarked(
-                v-if='illust.bookmarkData',
-                :to='"/users/" + store.userId',
+                :to='"/users/" + store.userId'
                 title='查看收藏'
+                v-if='illust.bookmarkData'
               )
                 fa(icon='heart')
                 | {{ illust.bookmarkCount }}
@@ -62,11 +62,11 @@
             p.create-date {{ new Date(illust.createDate).toLocaleString() }}
 
           .artwork-tags
-            span.x-restrict(v-if='illust.xRestrict', title='R-18') R-18
+            span.x-restrict(title='R-18' v-if='illust.xRestrict') R-18
             art-tag(
               :key='_',
-              v-for='(item, _) in illust.tags.tags',
               :tag='item.tag'
+              v-for='(item, _) in illust.tags.tags'
             )
 
         aside#author-area
@@ -74,12 +74,12 @@
             h2 作者
             .align-center(v-if='!user.userId')
               placeholder
-            author-card(:user='user', v-if='user.userId')
+            author-card(:user='user' v-if='user.userId')
 
         card.comments(title='评论')
           comments-area(
-            :id='illust.id || illust.illustId',
-            :count='illust.commentCount'
+            :count='illust.commentCount',
+            :id='illust.id || illust.illustId'
           )
 
     //- 相关推荐
@@ -89,39 +89,34 @@
         placeholder
       artwork-list(:list='recommend')
       show-more(
-        v-if='recommendNextIds.length',
-        :text='recommendLoading ? "加载中" : "加载更多"',
+        :loading='recommendLoading',
         :method='async () => await getMoreRecommend()',
-        :loading='recommendLoading'
+        :text='recommendLoading ? "加载中" : "加载更多"'
+        v-if='recommendNextIds.length'
       )
 
   //- Error
   section.error(v-if='error')
-    error-page(title='出大问题', :description='error')
+    error-page(:description='error' title='出大问题')
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from '../config'
-
-import AuthorCard from '../components/AuthorCard.vue'
-import ArtTag from '../components/ArtTag.vue'
-import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
-import Card from '../components/Card.vue'
-import CommentsArea from '../components/Comment/CommentsArea.vue'
-import ErrorPage from '../components/ErrorPage.vue'
-import Gallery from '../components/Gallery.vue'
-import Placeholder from '../components/Placeholder.vue'
-import ShowMore from '../components/ShowMore.vue'
+import AuthorCard from '@/components/AuthorCard.vue'
+import ArtTag from '@/components/ArtTag.vue'
+import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
+import Card from '@/components/Card.vue'
+import CommentsArea from '@/components/Comment/CommentsArea.vue'
+import ErrorPage from '@/components/ErrorPage.vue'
+import Gallery from '@/components/Gallery.vue'
+import Placeholder from '@/components/Placeholder.vue'
+import ShowMore from '@/components/ShowMore.vue'
 import { getCache, setCache } from './siteCache'
 
 // Types
-import type { Artwork, ArtworkInfo, ArtworkUrls, User } from '../types'
+import type { Artwork, ArtworkInfo, ArtworkUrls, User } from '@/types'
 
-import { onMounted, ref } from 'vue'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { getJSON } from '../utils/fetch'
-import { useUserStore } from '../states'
-import { addBookmark, sortArtList } from '../utils/artworkActions'
+import { useUserStore } from '@/plugins'
+import { addBookmark, sortArtList } from '@/utils/artworkActions'
 
 type Gallery = {
   urls: ArtworkUrls & {
@@ -158,9 +153,9 @@ async function init(id: string): Promise<void> {
   }
 
   try {
-    const [illustData, illustPage] = await Promise.all([
-      getJSON<Artwork>(`${API_BASE}/ajax/illust/${id}?full=1`),
-      getJSON<Gallery[]>(`${API_BASE}/ajax/illust/${id}/pages`),
+    const [{ data: illustData }, { data: illustPage }] = await Promise.all([
+      axios.get<Artwork>(`/ajax/illust/${id}?full=1`),
+      axios.get<Gallery[]>(`/ajax/illust/${id}/pages`),
     ])
     document.title = `${illustData.illustTitle} | Artwork | PixivNow`
     setCache(`illust.${id}`, illustData)
@@ -189,10 +184,10 @@ async function getUser(userId: string): Promise<void> {
   }
 
   try {
-    const [userData, profileData] = await Promise.all([
-      getJSON<User>(`${API_BASE}/ajax/user/${userId}?full=1`),
-      getJSON<{ illusts: Record<string, ArtworkInfo> }>(
-        `${API_BASE}/ajax/user/${userId}/profile/top`
+    const [{ data: userData }, { data: profileData }] = await Promise.all([
+      axios.get<User>(`/ajax/user/${userId}?full=1`),
+      axios.get<{ illusts: Record<string, ArtworkInfo> }>(
+        `/ajax/user/${userId}/profile/top`
       ),
     ])
     const { illusts } = profileData
@@ -212,9 +207,10 @@ async function getFirstRecommend(id: string): Promise<void> {
   try {
     recommendLoading.value = true
     console.log('init recommend')
-    const data = await getJSON<{ illusts: ArtworkInfo[]; nextIds: string[] }>(
-      `${API_BASE}/ajax/illust/${id}/recommend/init?limit=18`
-    )
+    const { data } = await axios.get<{
+      illusts: ArtworkInfo[]
+      nextIds: string[]
+    }>(`/ajax/illust/${id}/recommend/init?limit=18`)
     recommend.value = data.illusts
     recommendNextIds.value = data.nextIds
   } catch (err) {
@@ -239,9 +235,10 @@ async function getMoreRecommend(): Promise<void> {
     for (const id of requestIds) {
       searchParams.append('illust_ids', id)
     }
-    const data = await getJSON<{ illusts: ArtworkInfo[]; nextIds: string[] }>(
-      `${API_BASE}/ajax/illust/recommend/illusts?${searchParams.toString()}`
-    )
+    const { data } = await axios.get<{
+      illusts: ArtworkInfo[]
+      nextIds: string[]
+    }>('/ajax/illust/recommend/illusts', { params: searchParams })
     recommend.value = recommend.value.concat(data.illusts)
     recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
   } catch (err) {

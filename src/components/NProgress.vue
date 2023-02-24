@@ -1,13 +1,8 @@
-<template lang="pug">
-</template>
+<template lang="pug"></template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
-
-import { useRouter } from 'vue-router'
-import axios from 'axios'
 
 const router = useRouter()
 
@@ -16,23 +11,6 @@ onMounted(() => {
   router.beforeEach(() => void nprogress.start())
 
   router.afterEach(() => void nprogress.done())
-
-  // 介入 Axios 事件
-  axios.interceptors.request.use((config) => {
-    nprogress.start()
-    return config
-  })
-
-  axios.interceptors.response.use(
-    (res) => {
-      nprogress.done()
-      return res
-    },
-    (err) => {
-      nprogress.done()
-      return Promise.reject(err)
-    }
-  )
 })
 </script>
 

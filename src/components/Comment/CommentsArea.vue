@@ -3,31 +3,25 @@
   //- CommentSubmit(:id="id" @push-comment="pushComment")
   em.stats
     | 共{{ count || comments.length || 0 }}条评论
-  p(v-if="!comments.length && !loading") 还没有人发表评论呢~
-  ul.comments-list(v-if="comments.length")
-    comment(v-for="item in comments" :comment="item")
+  p(v-if='!comments.length && !loading') 还没有人发表评论呢~
+  ul.comments-list(v-if='comments.length')
+    comment(:comment='item' v-for='item in comments')
     .show-more.align-center
       a.button(
-        v-if="comments.length && hasNext"
-        @click="async () => await init(id)"
+        @click='async () => await init(id)'
+        v-if='comments.length && hasNext'
       )
         | {{ loading ? '正在加载' : '查看更多' }}
         | &nbsp;
-        fa(
-          :icon="loading ? 'spinner' : 'plus'"
-          :spin="loading")
-  .align-center(v-if="!comments.length && loading")
+        fa(:icon='loading ? "spinner" : "plus"', :spin='loading')
+  .align-center(v-if='!comments.length && loading')
     placeholder
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
-import { onMounted, ref } from 'vue'
-import { API_BASE } from '../../config'
-
 import Comment from './Comment.vue'
-import Placeholder from '../Placeholder.vue'
-import type { Comments } from '../../types'
+import Placeholder from '@/components/Placeholder.vue'
+import type { Comments } from '@/types'
 
 const loading = ref(false)
 const comments = ref<Comments[]>([])
@@ -43,16 +37,13 @@ async function init(id: string | number): Promise<void> {
 
   try {
     loading.value = true
-    const { data } = await axios.get(
-      `${API_BASE}/ajax/illusts/comments/roots`,
-      {
-        params: {
-          illust_id: id,
-          limit: comments.value.length ? 30 : 3,
-          offset: comments.value.length,
-        },
-      }
-    )
+    const { data } = await axios.get(`/ajax/illusts/comments/roots`, {
+      params: new URLSearchParams({
+        illust_id: `${id}`,
+        limit: comments.value.length ? '30' : '3',
+        offset: `${comments.value.length}`,
+      }),
+    })
     hasNext.value = data.hasNext
     comments.value = comments.value.concat(data.comments)
   } catch (err) {
@@ -62,7 +53,7 @@ async function init(id: string | number): Promise<void> {
   }
 }
 
-function pushComment(data: any) {
+function pushComment(data: Comments) {
   console.log(data)
   comments.value.unshift(data)
 }

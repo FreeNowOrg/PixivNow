@@ -12,15 +12,15 @@
 
     .bg-info
       a.pointer(
-        style='margin-right: 0.5em',
-        title='换一个~',
         @click='async () => await setRandomBgNoCache()'
+        style='margin-right: 0.5em'
+        title='换一个~'
       )
         fa(icon='random')
       a.pointer(
-        v-if='randomBg.info.id',
-        title='关于背景',
         @click='showBgInfo = true'
+        title='关于背景'
+        v-if='randomBg.info.id'
       )
         fa(icon='question-circle')
 
@@ -39,8 +39,10 @@
     section.discover
       h2 探索发现
       .align-center
-        a.button(@click='discoveryList.length ? (async () => await setDiscoveryNoCache())() : void 0')
-          | {{ discoveryList.length ? "换一批" : "加载中" }}
+        a.button(
+          @click='discoveryList.length ? (async () => await setDiscoveryNoCache())() : void 0'
+        )
+          | {{ discoveryList.length ? '换一批' : '加载中' }}
           |
           fa(
             :icon='discoveryList.length ? "random" : "spinner"',
@@ -52,18 +54,17 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
 import { formatInTimeZone } from 'date-fns-tz'
-import { API_BASE } from '../config'
+import { API_BASE } from '@/config'
 import { getCache, setCache } from './siteCache'
+import { defaultArtwork, isArtwork } from '@/utils'
 
-import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
-import Modal from '../components/Modal.vue'
-import SearchBox from '../components/SearchBox.vue'
-import Placeholder from '../components/Placeholder.vue'
-import LogoH from '../assets/LogoH.png'
-import type { ArtworkInfo, ArtworkInfoOrAd } from '../types'
-import { getJSON } from '../utils/fetch'
+import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
+import Modal from '@/components/Modal.vue'
+import SearchBox from '@/components/SearchBox.vue'
+import Placeholder from '@/components/Placeholder.vue'
+import LogoH from '@/assets/LogoH.png'
+import type { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
 
 const showBgInfo = ref(false)
 const discoveryList = ref<ArtworkInfo[]>([])
@@ -77,10 +78,13 @@ const randomBg = ref<{
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const data: { illusts: ArtworkInfo[] } = await getJSON(
-      `${API_BASE}/ajax/illust/discovery?mode=safe&max=1`
+    const data: { illusts: ArtworkInfoOrAd[] } = await axios.get(
+      '/ajax/illust/discovery',
+      { params: new URLSearchParams({ mode: 'safe', max: '1' }) }
     )
-    const info = data.illusts.find((item) => item.id) as ArtworkInfo
+    const info =
+      data.illusts.find((item): item is ArtworkInfo => isArtwork(item)) ??
+      defaultArtwork
     const middle = `img/${formatInTimeZone(
       info.updateDate,
       'Asia/Tokyo',
@@ -107,16 +111,17 @@ async function setRandomBgFromCache(): Promise<void> {
 async function setDiscoveryNoCache(): Promise<void> {
   try {
     discoveryList.value = []
-    const data: { illusts: ArtworkInfoOrAd[] } = await getJSON(
-      `${API_BASE}/ajax/illust/discovery?mode=all&max=8`
+    const { data } = await axios.get<{ illusts: ArtworkInfoOrAd[] }>(
+      '/ajax/illust/discovery',
+      { params: new URLSearchParams({ mode: 'safe', max: '8' }) }
     )
-    const illusts = data.illusts.filter((item) =>
-      Object.keys(item).includes('id')
-    ) as ArtworkInfo[]
+    const illusts = data.illusts.filter((item): item is ArtworkInfo =>
+      isArtwork(item)
+    )
     discoveryList.value = illusts
     setCache('home.discoveryList', illusts)
   } catch (err) {
-    console.error('获取探索发现失败')
+    console.error('获取探索发现失败', err)
   }
 }
 

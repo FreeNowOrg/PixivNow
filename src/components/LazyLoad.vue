@@ -1,18 +1,15 @@
 <template lang="pug">
 component(
-  :is='loaded ? "img" : "svg"',
-  :width='width',
-  :height='height',
-  :src='src',
   :class='{ lazyload: true, isLoading: !loaded && !error, isLoaded: loaded, isError: error }',
-  role='img',
-  ref='imgRef'
+  :height='height',
+  :is='loaded ? "img" : "svg"',
+  :src='src',
+  :width='width'
+  role='img'
 )
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-
 const props = defineProps<{
   src: string
   width?: number
