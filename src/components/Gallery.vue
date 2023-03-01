@@ -3,14 +3,14 @@
   .center-img(:class='showAll ? "show-all" : "show-single"')
     div(:data-pic-index='index' v-for='(item, index) in pages')
       a.image-container(
-        :href='API_BASE + item.urls.original'
+        :href='item.urls.original'
         target='_blank'
         title='点击下载原图'
         v-if='picShow === index'
       )
         lazy-load.img(
           :height='item.height',
-          :src='API_BASE + item.urls.regular',
+          :src='item.urls.regular',
           :width='item.width'
           lazyload
         )
@@ -24,14 +24,13 @@
       )
         lazy-load.pic(
           :height='80',
-          :src='API_BASE + item.urls.thumb_mini',
+          :src='item.urls.thumb_mini',
           :width='80'
           lazyload
         )
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from '@/config'
 import type { ArtworkUrls } from '@/types'
 import LazyLoad from './LazyLoad.vue'
 

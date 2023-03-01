@@ -4,7 +4,7 @@
   .flex.logged-in(v-if='store.isLoggedIn')
     .left
       .avatar
-        img(:src='API_BASE + store.userProfileImg')
+        img(:src='store.userProfileImg')
     .right
       textarea(:disabled='loading' v-model='comment')
     .submit.align-right
@@ -18,7 +18,6 @@
 
 <script lang="ts" setup>
 import Cookies from 'js-cookie'
-import { API_BASE } from '@/config'
 import { useUserStore } from '@/plugins'
 
 const store = useUserStore()

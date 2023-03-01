@@ -15,24 +15,18 @@
     )
       fa(icon='heart')
   router-link(:to='"/artworks/" + item.id')
-    lazy-load.img(
-      :alt='item.alt',
-      :src='API_BASE + item.url',
-      :title='item.alt'
-      lazyload
-    )
+    lazy-load.img(:alt='item.alt', :src='item.url', :title='item.alt' lazyload)
     .hover-title {{ item.title }}
 .info
   .title
     router-link(:to='"/artworks/" + item.id') {{ item.title }}
   .author(:title='item.userName')
     router-link(:to='"/users/" + item.userId')
-      img.avatar(:src='API_BASE + item.profileImageUrl' lazyload)
+      img.avatar(:src='item.profileImageUrl' lazyload)
       | {{ item.userName }}
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from '@/config'
 import LazyLoad from '@/components/LazyLoad.vue'
 import { addBookmark, removeBookmark } from '@/utils/artworkActions'
 

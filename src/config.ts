@@ -1,15 +1,10 @@
 // Env
 import { version } from '../package.json'
+export { version } from '../package.json'
 export const SITE_ENV =
   process.env.NODE_ENV === 'development' || version.includes('-')
     ? 'development'
     : 'production'
-
-// API endpoint
-export const API_BASE =
-  process.env.NODE_ENV === 'development'
-    ? 'https://pixiv-now-dev.vercel.app'
-    : ''
 
 // Copyright links
 // Do not modify please

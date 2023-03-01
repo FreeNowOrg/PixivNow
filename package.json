@@ -36,11 +36,11 @@
     "@types/cookie": "^0.5.1",
     "@types/js-cookie": "^3.0.3",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^18.14.1",
+    "@types/node": "^18.14.2",
     "@types/nprogress": "^0.2.0",
-    "@vercel/node": "^2.9.7",
+    "@vercel/node": "^2.9.10",
     "@vitejs/plugin-vue": "^4.0.0",
-    "@volar/vue-language-plugin-pug": "^1.1.7",
+    "@volar/vue-language-plugin-pug": "^1.2.0",
     "camelcase-object-deep": "^1.1.7",
     "cheerio": "1.0.0-rc.12",
     "conventional-changelog-cli": "^2.2.2",
@@ -50,7 +50,7 @@
     "sass": "^1.58.3",
     "typescript": "^4.9.5",
     "unplugin-auto-import": "^0.15.0",
-    "vercel": "^28.16.6",
+    "vercel": "^28.16.10",
     "vite": "^4.1.4"
   }
 }

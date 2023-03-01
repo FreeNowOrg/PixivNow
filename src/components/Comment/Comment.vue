@@ -3,7 +3,7 @@ li.comment-block
   .left
     router-link.plain(:to='"/users/" + comment.userId')
       img.avatar(
-        :src='API_BASE + comment.img',
+        :src='comment.img',
         :title='comment.userName + " (" + comment.userId + ")"'
       )
   .right
@@ -15,7 +15,7 @@ li.comment-block
     .content(v-html='replaceStamps(comment.comment)' v-if='!comment.stampId')
     .content(v-if='comment.stampId')
       img.big-stamp(
-        :src='API_BASE + "/~/common/images/stamp/generated-stamps/" + comment.stampId + "_s.jpg"'
+        :src='`/~/common/images/stamp/generated-stamps/${comment.stampId}"_s.jpg`'
         alt='表情包'
         lazyload
       )
@@ -23,7 +23,6 @@ li.comment-block
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from '@/config'
 import stampList from './stampList.json'
 import type { Comments } from '@/types'
 import { useUserStore } from '@/plugins'
@@ -35,7 +34,7 @@ function replaceStamps(str: string): string {
   for (const [stampName, stampUrl] of Object.entries(stampList)) {
     str = str.replaceAll(
       `(${stampName})`,
-      `<img class="stamp" src="${API_BASE}${stampUrl}" alt="表情包" lazyload>`
+      `<img class="stamp" src="${stampUrl}" alt="表情包" lazyload>`
     )
   }
   return str

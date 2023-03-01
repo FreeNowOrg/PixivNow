@@ -23,7 +23,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
           @click='showUserDropdown = !showUserDropdown'
         )
           img.avatar(
-            :src='userStore.isLoggedIn ? userStore.userProfileImg : API_BASE + "/~/common/images/no_profile.png"',
+            :src='userStore.isLoggedIn ? userStore.userProfileImg : "/~/common/images/no_profile.png"',
             :title='userStore.isLoggedIn ? userStore.userId + " (" + userStore.userPixivId + ")" : "未登入"'
           )
           fa(icon='angle-down')
@@ -41,9 +41,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                 .nav-user-card
                   .top
                     .banner-bg
-                    img.avatar(
-                      :src='API_BASE + "/~/common/images/no_profile.png"'
-                    )
+                    img.avatar(:src='"/~/common/images/no_profile.png"')
                   .details
                     a.user-name 游客
                     .uid 绑定令牌，同步您的 Pixiv 信息！
@@ -54,7 +52,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                   .top
                     .banner-bg
                     router-link.plain.name(:to='"/users/" + userStore.userId')
-                      img.avatar(:src='API_BASE + userStore.userProfileImgBig')
+                      img.avatar(:src='userStore.userProfileImgBig')
                   .details
                     router-link.plain.user-name(
                       :to='"/users/" + userStore.userId'
@@ -69,7 +67,6 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 
 <script lang="ts" setup>
 import SearchBox from './SearchBox.vue'
-import { API_BASE } from '@/config'
 import { logout } from './userData'
 import LogoH from '@/assets/LogoH.png'
 import { useSideNavStore, useUserStore } from '@/plugins'

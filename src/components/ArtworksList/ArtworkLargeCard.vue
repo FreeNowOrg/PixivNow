@@ -5,7 +5,7 @@
       .thumb
         img(
           :alt='illust.title',
-          :src='API_BASE + illust.url.replace("p0_master", "p0_square")'
+          :src='illust.url.replace("p0_master", "p0_square")'
           lazyload
         )
       .x-restrict.tag(title='R-18' v-if='illust.xRestrict === 2')
@@ -25,7 +25,7 @@
       router-link(:to='"/artworks/" + illust.id') {{ illust.title }}
     .author(:title='illust.userName')
       router-link(:to='"/users/" + illust.id')
-        img.avatar(:src='API_BASE + illust.profileImageUrl' lazyload)
+        img.avatar(:src='illust.profileImageUrl' lazyload)
         | {{ illust.userName }}
     .tags
       router-link.tag(
@@ -35,7 +35,6 @@
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from '@/config'
 import type { ArtworkInfo } from '@/types'
 
 defineProps<{

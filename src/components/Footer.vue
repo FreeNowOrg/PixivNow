@@ -5,7 +5,7 @@ footer.global-footer
       h4 探索更多
       ul
         li
-          external-link(href='/api/illust/random?format=image') 随机图片
+          external-link(href='/ajax/illust/discovery?mode=safe&max=1') 随机图片
         li
           router-link(to='/ranking') 今日排行
         li
@@ -43,8 +43,7 @@ footer.global-footer
 </template>
 
 <script lang="ts" setup>
-import { GITHUB_URL, PROJECT_NAME, GITHUB_OWNER } from '@/config'
-import { version } from '../../package.json'
+import { GITHUB_URL, PROJECT_NAME, GITHUB_OWNER, version } from '@/config'
 
 const yearStr = ref(`2021 - ${new Date().getFullYear()}`)
 </script>

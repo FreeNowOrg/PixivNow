@@ -55,7 +55,6 @@
 
 <script lang="ts" setup>
 import { formatInTimeZone } from 'date-fns-tz'
-import { API_BASE } from '@/config'
 import { getCache, setCache } from './siteCache'
 import { defaultArtwork, isArtwork } from '@/utils'
 
@@ -78,7 +77,7 @@ const randomBg = ref<{
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const data: { illusts: ArtworkInfoOrAd[] } = await axios.get(
+    const { data } = await axios.get<{ illusts: ArtworkInfoOrAd[] }>(
       '/ajax/illust/discovery',
       { params: new URLSearchParams({ mode: 'safe', max: '1' }) }
     )
@@ -90,11 +89,12 @@ async function setRandomBgNoCache(): Promise<void> {
       'Asia/Tokyo',
       'yyyy/MM/dd/HH/mm/ss'
     )}/${info.id}`
-    const url = `${API_BASE}/-/img-master/${middle}_p0_master1200.jpg`
+    const url = `/-/img-master/${middle}_p0_master1200.jpg`
     randomBg.value.info = info
     randomBg.value.url = url
     setCache('home.randomBg', { info, url })
   } catch (err) {
+    console.error(err)
     randomBg.value.url = 'https://api.daihan.top/api/acg'
   }
 }
