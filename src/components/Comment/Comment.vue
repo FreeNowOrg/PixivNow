@@ -15,7 +15,7 @@ li.comment-block
     .content(v-html='replaceStamps(comment.comment)' v-if='!comment.stampId')
     .content(v-if='comment.stampId')
       img.big-stamp(
-        :src='`/~/common/images/stamp/generated-stamps/${comment.stampId}"_s.jpg`'
+        :src='`/~/common/images/stamp/generated-stamps/${comment.stampId}_s.jpg`'
         alt='表情包'
         lazyload
       )
