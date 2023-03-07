@@ -12,6 +12,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
+    "importHelpers": true,
     "paths": {
       "@/*": ["src/*"]
     }

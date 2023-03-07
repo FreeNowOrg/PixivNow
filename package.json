@@ -3,6 +3,7 @@
   "version": "3.0.1",
   "private": true,
   "main": "index.js",
+  "type": "module",
   "repository": "https://github.com/FreeNowOrg/PixivNow.git",
   "contributors": [
     "Dragon-Fish <824399619@qq.com>",
@@ -26,7 +27,7 @@
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
     "nprogress": "^0.2.0",
-    "pinia": "^2.0.32",
+    "pinia": "^2.0.33",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
@@ -36,7 +37,7 @@
     "@types/cookie": "^0.5.1",
     "@types/js-cookie": "^3.0.3",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^18.14.2",
+    "@types/node": "^18.14.6",
     "@types/nprogress": "^0.2.0",
     "@vercel/node": "^2.9.10",
     "@vitejs/plugin-vue": "^4.0.0",
@@ -48,9 +49,10 @@
     "prettier": "^2.8.4",
     "pug": "^3.0.2",
     "sass": "^1.58.3",
+    "tslib": "^2.5.0",
     "typescript": "^4.9.5",
-    "unplugin-auto-import": "^0.15.0",
-    "vercel": "^28.16.10",
+    "unplugin-auto-import": "^0.15.1",
+    "vercel": "^28.16.13",
     "vite": "^4.1.4"
   }
 }
