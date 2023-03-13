@@ -1,13 +1,12 @@
 <template lang="pug">
 ul.artwork-large-list
-  li(v-for="(item) in artworks")
-    artwork-large-card(:illust="item[0]" :rank="item[1]")
+  li(v-for='item in artworks')
+    artwork-large-card(:illust='item[0]', :rank='item[1]')
 </template>
 
 <script lang="ts" setup>
 import ArtworkLargeCard from './ArtworkLargeCard.vue'
-import type { ArtworkInfo, ArtworkRank } from '../../types'
-import { computed } from 'vue'
+import type { ArtworkInfo, ArtworkRank } from '@/types'
 
 const props = defineProps<{
   rankList?: ArtworkRank[]
@@ -17,8 +16,8 @@ const artworks = computed(() => {
   if (props.rankList) {
     return convertRankToInfo(props.rankList)
   } else if (props.artworkList) {
-    return props.artworkList.map((item) => {
-      return [item, 0] as [ArtworkInfo, number]
+    return props.artworkList.map((item): [ArtworkInfo, number] => {
+      return [item, 0]
     })
   } else {
     return []
@@ -26,10 +25,10 @@ const artworks = computed(() => {
 })
 
 function convertRankToInfo(rankInfo: ArtworkRank[]): [ArtworkInfo, number][] {
-  return rankInfo.map((item) => {
+  return rankInfo.map((item): [ArtworkInfo, number] => {
     return [
       {
-        id: item.illust_id.toString(),
+        id: `${item.illust_id}`,
         title: item.title,
         description: '',
         createDate: item.date,
@@ -38,7 +37,7 @@ function convertRankToInfo(rankInfo: ArtworkRank[]): [ArtworkInfo, number][] {
         restrict: 0,
         xRestrict: item.illust_content_type.sexual,
         sl: 2,
-        userId: item.user_id.toString(),
+        userId: `${item.user_id}`,
         userName: item.user_name,
         alt: item.title,
         width: item.width,
@@ -55,7 +54,7 @@ function convertRankToInfo(rankInfo: ArtworkRank[]): [ArtworkInfo, number][] {
         tags: item.tags,
         profileImageUrl: item.profile_img,
         type: 'illust',
-      } as ArtworkInfo,
+      },
       item.rank,
     ]
   })

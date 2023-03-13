@@ -1,42 +1,43 @@
 <template lang="pug">
 .artwork-large-card
   .top
-    router-link(:to="'/artworks/' + illust.id")
+    router-link(:to='"/artworks/" + illust.id')
       .thumb
         img(
-          :src="API_BASE + illust.url.replace('p0_master', 'p0_square')"
-          :alt="illust.title"
-          lazyload)
-      .x-restrict.tag(v-if="illust.xRestrict === 2" title="R-18")
-        fa(icon="eye")
+          :alt='illust.title',
+          :src='illust.url.replace("p0_master", "p0_square")'
+          lazyload
+        )
+      .x-restrict.tag(title='R-18' v-if='illust.xRestrict === 2')
+        fa(icon='eye')
       .page-count(
-        v-if="+illust.pageCount > 1"
-        :title="'共 ' + illust.pageCount + ' 张'")
-        fa(icon="images")
+        :title='"共 " + illust.pageCount + " 张"'
+        v-if='+illust.pageCount > 1'
+      )
+        fa(icon='images')
         | {{ illust.pageCount }}
       .ranking(
-        v-if="rank !== 0"
-        :class="{ gold: rank === 1, silver: rank === 2, bronze: rank === 3 }"
-        ) {{ rank }}
+        :class='{ gold: rank === 1, silver: rank === 2, bronze: rank === 3 }'
+        v-if='rank !== 0'
+      ) {{ rank }}
   .bottom
-    h3.title(:title="illust.title")
-      router-link(:to="'/artworks/' + illust.id") {{ illust.title }}
-    .author(:title="illust.userName")
-      router-link(:to="'/users/' + illust.userId")
-        img.avatar(
-          :src="API_BASE + illust.profileImageUrl"
-          lazyload
-          )
+    h3.title(:title='illust.title')
+      router-link(:to='"/artworks/" + illust.id') {{ illust.title }}
+    .author(:title='illust.userName')
+      router-link(:to='"/users/" + illust.id')
+        img.avatar(:src='illust.profileImageUrl' lazyload)
         | {{ illust.userName }}
     .tags
-      router-link.tag(v-for="tagName in illust.tags", :to="'/search/' + tagName") \#{{ tagName }}
+      router-link.tag(
+        :to='"/search/" + tagName'
+        v-for='tagName in illust.tags'
+      ) \#{{ tagName }}
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from '../../config'
-import type { ArtworkInfo } from '../../types'
+import type { ArtworkInfo } from '@/types'
 
-const props = defineProps<{
+defineProps<{
   illust: ArtworkInfo
   rank: number
 }>()

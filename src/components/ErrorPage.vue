@@ -3,14 +3,10 @@ section.error-page
   .title
     span {{ title }}
   .description {{ description }}
-  .random(@click="randomMsg") {{ msg }}
-  //- SearchBox(class="big" :style="{margin: '3rem'}")
+  .random(@click='randomMsg') {{ msg }}
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
-import SearchBox from './SearchBox.vue'
-
 const msgList = [
   // 正经向提示
   '频繁遇到此问题？请通过关于里的联系方式联系我们！',

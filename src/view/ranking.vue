@@ -4,7 +4,7 @@
     //- Error
     section(v-if='error')
       h1 排行榜加载失败
-      error-page(title='出大问题', :description='error')
+      error-page(:description='error' title='出大问题')
 
     //- Loading
     section(v-if='loading')
@@ -19,16 +19,11 @@
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from '../config'
-
-import ArtworkLargeList from '../components/ArtworksList/ArtworkLargeList.vue'
-import ErrorPage from '../components/ErrorPage.vue'
-import Placeholder from '../components/Placeholder.vue'
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import type { ArtworkRank } from '../types'
+import ArtworkLargeList from '@/components/ArtworksList/ArtworkLargeList.vue'
+import ErrorPage from '@/components/ErrorPage.vue'
+import Placeholder from '@/components/Placeholder.vue'
+import type { ArtworkRank } from '@/types'
 import { getCache, setCache } from './siteCache'
-import { getJSON } from '../utils/fetch'
 
 const error = ref('')
 const loading = ref(true)
@@ -52,10 +47,10 @@ async function init(): Promise<void> {
     if (mode && typeof mode === 'string') searchParams.append('mode', mode)
     if (date && typeof date === 'string') searchParams.append('date', date)
     searchParams.append('format', 'json')
-    const data: {
+    const { data } = await axios.get<{
       date: string
       contents: ArtworkRank[]
-    } = await getJSON(`${API_BASE}/ranking.php?${searchParams.toString()}`)
+    }>('/ranking.php', { params: searchParams })
     // Date
     const rankingDate = data.date
     const listValue = {

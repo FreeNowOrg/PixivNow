@@ -1,13 +1,14 @@
 <template lang="pug">
 .search-box
-  input(v-model="keyword" @keyup.enter="makeSearch", placeholder="输入关键词搜索/输入 id:数字 查看作品")
-  fa.icon(icon="search")
+  input(
+    @keyup.enter='makeSearch'
+    placeholder='输入关键词搜索/输入 id:数字 查看作品'
+    v-model='keyword'
+  )
+  fa.icon(icon='search')
 </template>
 
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router'
-import { ref } from 'vue'
-
 const route = useRoute()
 const router = useRouter()
 const keyword = ref((route.params.keyword as string) || '')

@@ -1,11 +1,22 @@
 import { defineStore } from 'pinia'
-import { PixivUser } from './components/userData'
+import { PixivUser } from '@/types'
 
 export const useSideNavStore = defineStore('sidenav', {
-  state: () => ({ open: false }),
+  state: () => ({ openState: false }),
   getters: {
-    isOpen(state) {
-      return state.open
+    isOpened(state) {
+      return state.openState
+    },
+  },
+  actions: {
+    toggle() {
+      this.openState = !this.openState
+    },
+    open() {
+      this.openState = true
+    },
+    close() {
+      this.openState = false
     },
   },
 })

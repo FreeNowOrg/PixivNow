@@ -3,28 +3,28 @@
   //- Loading
   section.loading(v-if='loading')
     placeholder
-    p {{ loading ? "正在读取用户 #" + $route.params.id : "“" + user.name + "”的空间" }}
+    p {{ loading ? '正在读取用户 #' + $route.params.id : '“' + user.name + '”的空间' }}
 
   //- Error
   section.error(v-if='error')
-    error-page(title='出大问题', :description='error')
+    error-page(:description='error' title='出大问题')
 
   //- :)
   section.user(v-if='!loading && !error')
     .user-info
       .bg-area
         .bg-container(
-          :style='{ backgroundImage: "url(" + API_BASE + user?.background?.url + ")" }'
+          :style='{ backgroundImage: user?.background?.url ? `url("${user.background.url}")` : undefined }'
         )
           span(v-if='!user.background') 用户未设置封面~
       .avatar-area
         a.plain.pointer(@click='showUserMore = true')
-          img(:src='API_BASE + user.imageBig')
+          img(:src='user.imageBig')
       .info-area
         .username {{ user.name }}
         .following
           | 关注了 <strong>{{ user.following }}</strong> 人
-        .gender(v-if='user.gender?.name') 
+        .gender(v-if='user.gender?.name')
           fa(icon='venus-mars')
           | {{ user.gender.name }}
         .birthday(v-if='user.birthDay?.name')
@@ -35,22 +35,18 @@
           | {{ user.region?.name }}
         .webpage(v-if='user.webpage')
           fa(icon='home')
-          a(:href='user.webpage', target='_blank', rel='noopener noreferrer') {{ user.webpage }}
+          a(:href='user.webpage' rel='noopener noreferrer' target='_blank') {{ user.webpage }}
         .flex
           .comment.flex-1 {{ user.comment }}
           .user-more
-            a(@click='userMore', href='javascript:;') 查看更多
+            a(@click='userMore' href='javascript:;') 查看更多
 
     modal.info-modal(v-model:show='showUserMore')
       .top
         h3
-          a.avatar(
-            :href='API_BASE + user.imageBig',
-            title='查看头像',
-            target='_blank'
-          )
-            img(:src='API_BASE + user.imageBig')
-            .premium-icon(v-if='user.premium', title='该用户订阅了高级会员')
+          a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
+            img(:src='user.imageBig')
+            .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
               fa(icon='parking')
           .title {{ user.name }}
           .follow
@@ -59,17 +55,17 @@
       .bottom
         section.user-comment
           h4 个人简介
-          .comment.pre {{ user.comment || "-" }}
+          .comment.pre {{ user.comment || '-' }}
         section.user-workspace(v-if='user.workspace')
           hr
           h4 工作环境
           .flex-list
             .list-item(v-if='user.workspace.wsUrl')
               img(
-                :src='user.workspace.wsUrl',
-                style='width: 100%; height: auto',
+                :src='user.workspace.wsUrl'
                 alt='工作环境照片'
                 lazyload
+                style='width: 100%; height: auto'
               )
             .list-item(v-if='user.workspace.userWorkspacePc')
               .key 主机
@@ -124,51 +120,47 @@
           li(@click='tab = "manga"')
             a(:class='{ "tab-active": tab === "manga" }') 漫画
           li(
-            v-if='$route.params.id === userStore.userId',
             @click='tab = "bookmarks"'
+            v-if='$route.params.id === userStore.userId'
           )
             a(:class='{ "tab-active": tab === "bookmarks" }') 收藏
         .tab-contents
           section(v-if='tab === "illust"')
             h2 插画
-            .no-result(v-if='user.illusts && !user.illusts.length') 
+            .no-result(v-if='user.illusts && !user.illusts.length')
               div 用户没有插画作品 (｡•́︿•̀｡)
-            artwork-list(:list='user.illusts' :show-tags="false")
+            artwork-list(:list='user.illusts', :show-tags='false')
           section(v-if='tab === "manga"')
             h2 漫画
             .no-result(v-if='user.manga && !user.manga.length')
               div 用户没有漫画作品 (*/ω＼*)
-            artwork-list(:list='user.manga' :show-tags="false")
+            artwork-list(:list='user.manga', :show-tags='false')
           section(v-if='tab === "bookmarks"')
             h2 收藏
             .no-result(v-if='!loadingBookmarks && !bookmarks.length')
               div 收藏夹是空的 Σ(⊙▽⊙"a
-            artwork-list(:list='bookmarks' :show-tags="false")
+            artwork-list(:list='bookmarks', :show-tags='false')
             .more-btn.align-center
               a.button(@click='getBookmarks')
                 fa(
                   :icon='loadingBookmarks ? "spinner" : "arrow-down"',
                   :spin='loadingBookmarks'
                 )
-                | {{ loadingBookmarks ? "正在加载……" : "加载更多" }}
+                | {{ loadingBookmarks ? '正在加载……' : '加载更多' }}
 </template>
 
 <script lang="ts" setup>
-import { API_BASE } from '../config'
-import { addFollow, removeFollow } from '../utils/userActions'
+import { addFollow, removeFollow } from '@/utils/userActions'
 
-import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
-import ErrorPage from '../components/ErrorPage.vue'
-import Modal from '../components/Modal.vue'
-import Placeholder from '../components/Placeholder.vue'
+import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
+import ErrorPage from '@/components/ErrorPage.vue'
+import Modal from '@/components/Modal.vue'
+import Placeholder from '@/components/Placeholder.vue'
 
 import { getCache, setCache } from './siteCache'
-import type { ArtworkInfo, User } from '../types'
-import { onMounted, ref } from 'vue'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { getJSON } from '../utils/fetch'
-import { sortArtList } from '../utils/artworkActions'
-import { useUserStore } from '../states'
+import { ArtworkInfo, User } from '@/types'
+import { sortArtList } from '@/utils/artworkActions'
+import { useUserStore } from '@/plugins'
 
 const loading = ref(true)
 const user = ref<User>({} as User)
@@ -192,13 +184,13 @@ async function init(id: string | number): Promise<void> {
   }
   try {
     loading.value = true
-    const [data, profileData] = await Promise.all([
-      getJSON<User>(`${API_BASE}/ajax/user/${id}?full=1`),
-      getJSON<{
+    const [{ data }, { data: profileData }] = await Promise.all([
+      axios.get<User>(`/ajax/user/${id}?full=1`),
+      axios.get<{
         illusts: Record<string, ArtworkInfo>
         manga: Record<string, ArtworkInfo>
         novels: Record<string, ArtworkInfo>
-      }>(`${API_BASE}/ajax/user/${id}/profile/top`),
+      }>(`/ajax/user/${id}/profile/top`),
     ])
     const userValue = {
       ...data,
@@ -231,15 +223,16 @@ async function getBookmarks(): Promise<void> {
 
   try {
     loadingBookmarks.value = true
-    const searchParams = new URLSearchParams()
-    searchParams.append('tag', '')
-    searchParams.append('offset', bookmarks.value.length.toString())
-    searchParams.append('limit', '48')
-    searchParams.append('rest', 'show')
-    const data: { works: ArtworkInfo[] } = await getJSON(
-      `${API_BASE}/ajax/user/${
-        userStore.userId
-      }/illusts/bookmarks?${searchParams.toString()}`
+    const { data } = await axios.get<{ works: ArtworkInfo }>(
+      `/ajax/user/${userStore.userId}/illusts/bookmarks`,
+      {
+        params: new URLSearchParams({
+          tag: '',
+          offset: `${bookmarks.value.length}`,
+          limit: '48',
+          rest: 'show',
+        }),
+      }
     )
     bookmarks.value = bookmarks.value.concat(data.works)
   } catch (err) {

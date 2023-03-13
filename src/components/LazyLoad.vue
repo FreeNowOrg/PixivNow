@@ -1,18 +1,16 @@
 <template lang="pug">
 component(
-  :is='loaded ? "img" : "svg"',
-  :width='width',
-  :height='height',
-  :src='src',
   :class='{ lazyload: true, isLoading: !loaded && !error, isLoaded: loaded, isError: error }',
-  role='img',
+  :height='height',
+  :is='loaded ? "img" : "svg"',
+  :src='src',
+  :width='width'
   ref='imgRef'
+  role='img'
 )
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-
 const props = defineProps<{
   src: string
   width?: number
@@ -21,14 +19,15 @@ const props = defineProps<{
 
 const loaded = ref(false)
 const error = ref(false)
-const imgRef = ref<HTMLImageElement>()
+const imgRef = ref<HTMLImageElement | null>(null)
 
 function init() {
-  const img = new Image()
+  const img = new Image(props.width, props.height)
   img.src = props.src
   img.onload = () => {
     loaded.value = true
     error.value = false
+    imgRef.value = img
   }
   img.onerror = () => {
     loaded.value = false

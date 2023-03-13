@@ -1,11 +1,11 @@
 <template lang="pug">
-a(:href="href" target="_blank" rel="nofollow")
+a(:href='href' rel='nofollow' target='_blank')
   slot
-  fa.external-icon(icon="external-link-alt")
+  fa.external-icon(icon='external-link-alt')
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{ href: string }>()
+defineProps<{ href: string }>()
 </script>
 
 <style scoped lang="sass">

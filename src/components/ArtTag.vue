@@ -1,9 +1,9 @@
 <template lang="pug">
-router-link.tag(:to="'/search/' + tag") \#{{ tag }}
+router-link.tag(:to='"/search/" + tag') \#{{ tag }}
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{ tag: string }>()
+defineProps<{ tag: string }>()
 </script>
 
 <style lang="sass">

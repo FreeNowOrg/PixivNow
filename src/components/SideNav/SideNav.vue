@@ -1,5 +1,5 @@
 <template lang="pug">
-aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpen }')
+aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
   .backdrop(@click='closeSideNav')
   .inner
     .group
@@ -10,46 +10,44 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpen }')
       .group
         .title 导航
         ul
-          list-link(icon='home', link='/', text='首页')
-          list-link.not-allowed(icon='image', link='', text='插画')
-          list-link(icon='user', link='', text='用户')
-          list-link(icon='crown', link='/ranking', text='排行榜')
+          list-link(icon='home' link='/' text='首页')
+          list-link.not-allowed(icon='image' link='' text='插画')
+          list-link(icon='user' link='' text='用户')
+          list-link(icon='crown' link='/ranking' text='排行榜')
 
       .group
         .title Pixiv 令牌
         ul
           list-link(
-            icon='fingerprint',
-            link='/login',
             :text='userStore.isLoggedIn ? "查看令牌" : "设置令牌"'
+            icon='fingerprint'
+            link='/login'
           )
 
       .group
         .title PixivNow
         ul
           list-link(
-            icon='external-link-alt',
-            externalLink='https://www.pixiv.net/',
+            externalLink='https://www.pixiv.net/'
+            icon='external-link-alt'
             text='Pixiv.net'
           )
-          list-link(icon='heart', link='/about', text='关于我们')
+          list-link(icon='heart' link='/about' text='关于我们')
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useSideNavStore, useUserStore } from '../../states'
+import { useSideNavStore, useUserStore } from '@/plugins'
 
-import SearchBox from '../SearchBox.vue'
+import SearchBox from '@/components/SearchBox.vue'
 import ListLink from './ListLink.vue'
 
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()
 const router = useRouter()
-router.afterEach(() => (sideNavStore.open = false))
+router.afterEach(() => sideNavStore.close())
 
 sideNavStore.$subscribe((_mutation, state): void => {
-  if (state.open) {
+  if (state.openState) {
     document.body.style.overflow = 'hidden'
   } else {
     document.body.style.overflow = 'visible'
@@ -57,7 +55,7 @@ sideNavStore.$subscribe((_mutation, state): void => {
 })
 
 function closeSideNav() {
-  sideNavStore.open = false
+  sideNavStore.close()
 }
 
 onMounted(() => {

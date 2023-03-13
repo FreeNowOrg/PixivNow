@@ -75,3 +75,17 @@ export interface User {
   manga: ArtworkInfo[]
   novels: ArtworkInfo[]
 }
+
+export interface PixivUser {
+  id: string
+  pixivId: string
+  name: string
+  profileImg: string
+  profileImgBig: string
+  premium: boolean
+  xRestrict: 0 | 1 | 2
+  adult: boolean
+  safeMode: boolean
+  illustCreator: boolean
+  novelCreator: boolean
+}

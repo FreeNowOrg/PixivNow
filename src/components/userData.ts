@@ -1,20 +1,5 @@
+import { PixivUser } from '@/types'
 import Cookies from 'js-cookie'
-import { API_BASE } from '../config'
-import { getJSON } from '../utils/fetch'
-
-export interface PixivUser {
-  id: string
-  pixivId: string
-  name: string
-  profileImg: string
-  profileImgBig: string
-  premium: boolean
-  xRestrict: 0 | 1 | 2
-  adult: boolean
-  safeMode: boolean
-  illustCreator: boolean
-  novelCreator: boolean
-}
 
 export function existsSessionId(): boolean {
   const sessionId = Cookies.get('PHPSESSID')
@@ -28,17 +13,17 @@ export function existsSessionId(): boolean {
 
 export async function initUser(): Promise<PixivUser> {
   try {
-    const data = await getJSON<{ userData: PixivUser; token: string }>(
-      `${API_BASE}/api/user`,
+    const { data } = await axios.get<{ userData: PixivUser; token: string }>(
+      `/api/user`,
       {
         headers: {
-          'cache-control': 'no-store',
+          'Cache-Control': 'no-store',
         },
       }
     )
     if (data.token) {
       console.log('session ID认证成功', data)
-      Cookies.set('CSRFTOKEN', data.token)
+      Cookies.set('CSRFTOKEN', data.token, { secure: true, sameSite: 'Strict' })
       const res = data.userData
       return res
     } else {
@@ -60,6 +45,7 @@ export function login(token: string): Promise<PixivUser> {
     expires: 180,
     path: '/',
     secure: true,
+    sameSite: 'Strict',
   })
   return initUser()
 }
@@ -77,16 +63,19 @@ export function validateSessionId(token: string): boolean {
 }
 
 export function exampleSessionId(): string {
-  const uid = Math.floor(100000000 * Math.random())
+  const uid = new Uint32Array(1)
+  window.crypto.getRandomValues(uid)
   const secret = (() => {
     const strSet =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     const final = []
-    for (let i = 0; i < 32; i++) {
-      const charIndex = Math.floor(Math.random() * strSet.length)
+    const indexes = new Uint8Array(32)
+    window.crypto.getRandomValues(indexes)
+    for (const i of indexes) {
+      const charIndex = Math.floor((i * strSet.length) / 256)
       final.push(strSet[charIndex])
     }
     return final.join('')
   })()
-  return `${uid}_${secret}`
+  return `${uid[0]}_${secret}`
 }

@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { load } from 'cheerio'
-import { handleError, request } from '../utils'
+import { sendRequest } from './http'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const token = req.cookies.PHPSESSID || req.query.token
@@ -8,7 +8,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return res.status(403).send({ message: '未配置用户密钥' })
   }
 
-  request({ params: req.query, headers: req.headers })
+  sendRequest({ params: req.query, headers: req.headers })
     .then(async ({ data }) => {
       const $ = load(data)
       const $meta = $('meta[name="global-data"]')
@@ -45,6 +45,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       res.send(meta)
     })
     .catch((err) => {
-      return handleError(err, res)
+      return res
+        .status(err?.response?.status || 500)
+        .send(err?.response?.data || err)
     })
 }

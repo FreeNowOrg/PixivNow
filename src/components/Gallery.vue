@@ -1,42 +1,40 @@
 <template lang="pug">
 .gallery
   .center-img(:class='showAll ? "show-all" : "show-single"')
-    div(v-for='(item, index) in pages', :data-pic-index='index')
+    div(:data-pic-index='index' v-for='(item, index) in pages')
       a.image-container(
-        v-if='picShow === index',
-        :href='API_BASE + item.urls.original',
-        target='_blank',
+        :href='item.urls.original'
+        target='_blank'
         title='点击下载原图'
+        v-if='picShow === index'
       )
         lazy-load.img(
-          :src='API_BASE + item.urls.regular',
-          :width='item.width',
-          :height='item.height'
+          :height='item.height',
+          :src='item.urls.regular',
+          :width='item.width'
           lazyload
         )
   //- .tips.align-center (这是预览图，点击下载原图)
   ul.pagenator(v-if='pages.length > 1')
     li(v-for='(item, index) in pages')
       a(
-        @click='picShow = index',
-        :title='`第${index + 1}张，共${pages.length}张`',
-        :class='{ "is-active": picShow === index }'
+        :class='{ "is-active": picShow === index }',
+        :title='`第${index + 1}张，共${pages.length}张`'
+        @click='picShow = index'
       )
         lazy-load.pic(
-          :src='API_BASE + item.urls.thumb_mini',
-          :width='80',
-          :height='80'
+          :height='80',
+          :src='item.urls.thumb_mini',
+          :width='80'
           lazyload
         )
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { API_BASE } from '../config'
-import type { ArtworkUrls } from '../types'
+import type { ArtworkUrls } from '@/types'
 import LazyLoad from './LazyLoad.vue'
 
-const props = defineProps<{
+defineProps<{
   pages: {
     urls: ArtworkUrls & {
       thumb_mini: string

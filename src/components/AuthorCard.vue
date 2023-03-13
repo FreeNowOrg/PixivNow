@@ -2,31 +2,28 @@
 card.author-card(title='')
   .flex-center
     .left
-      router-link(:to="'/users/' + user.userId")
-        img(:src="API + user.imageBig" alt="")
+      router-link(:to='"/users/" + user.userId')
+        img(:src='user.imageBig' alt='')
     .right
       .flex
         h4
-          router-link(:to="'/users/' + user.userId") {{ user.name }}
+          router-link(:to='"/users/" + user.userId') {{ user.name }}
         button
           | 关注&nbsp;
-          fa(icon="plus")
+          fa(icon='plus')
       p.description.pre {{ user.comment }}
 
-  artwork-list.inline.tiny(:list="user.illusts")
+  artwork-list.inline.tiny(:list='user.illusts')
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-import ArtworkList from '../components/ArtworksList/ArtworkList.vue'
+import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import Card from './Card.vue'
+import type { User } from '@/types'
 
-import type { User } from '../types'
-
-const props = defineProps<{
+defineProps<{
   user: User
 }>()
-const API = ref('https://pixiv.js.org')
 </script>
 
 <style scoped lang="sass">

@@ -1,12 +1,12 @@
 <template lang="pug">
 .card
-  h2(v-if="title" :id="title") {{ title }}
+  h2(:id='title' v-if='title') {{ title }}
   .inner
     slot/
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{ title: string | undefined }>()
+defineProps<{ title: string | undefined }>()
 </script>
 
 <style scoped lang="sass">
