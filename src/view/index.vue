@@ -16,13 +16,13 @@
         style='margin-right: 0.5em'
         title='换一个~'
       )
-        fa(icon='random')
+        i-fa-solid-random
       a.pointer(
         @click='showBgInfo = true'
         title='关于背景'
         v-if='randomBg.info.id'
       )
-        fa(icon='question-circle')
+        i-fa-solid-question-circle
 
   modal.bg-info-modal(v-model:show='showBgInfo')
     h3 背景图片：{{ randomBg.info.title }}
@@ -44,10 +44,8 @@
         )
           | {{ discoveryList.length ? '换一批' : '加载中' }}
           |
-          fa(
-            :icon='discoveryList.length ? "random" : "spinner"',
-            :spin='!discoveryList.length'
-          )
+          i-fa-solid-random(v-if='discoveryList.length')
+          i-fa-solid-spinner.spin(v-else)
       .align-center(v-if='!discoveryList.length')
         placeholder
       artwork-list(:list='discoveryList')
@@ -58,10 +56,6 @@ import { formatInTimeZone } from 'date-fns-tz'
 import { getCache, setCache } from './siteCache'
 import { defaultArtwork, isArtwork } from '@/utils'
 
-import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
-import Modal from '@/components/Modal.vue'
-import SearchBox from '@/components/SearchBox.vue'
-import Placeholder from '@/components/Placeholder.vue'
 import LogoH from '@/assets/LogoH.png'
 import type { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
 

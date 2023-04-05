@@ -23,7 +23,9 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/**/*.json",
-    "vite.config.ts"
+    "vite.config.ts",
+    "components.d.ts",
+    "auto-imports.d.ts"
   ],
   "vueCompilerOptions": {
     "plugins": ["@volar/vue-language-plugin-pug"]

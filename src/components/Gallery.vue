@@ -31,18 +31,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { ArtworkUrls } from '@/types'
-import LazyLoad from './LazyLoad.vue'
+import type { ArtworkGallery } from '@/types'
 
-defineProps<{
-  pages: {
-    urls: ArtworkUrls & {
-      thumb_mini: string
-    }
-    width: number
-    height: number
-  }[]
-}>()
+defineProps<{ pages: ArtworkGallery[] }>()
 const showAll = ref(false)
 const picShow = ref(0)
 </script>

@@ -4,7 +4,7 @@
     :to='$route.query.back.toString()'
     v-if='$route.query.back'
   )
-    fa(icon='angle-left')
+    i-fa-solid-angle-left
     | &nbsp;取消
   label
     h1.title 设置 Pixiv 令牌
@@ -42,7 +42,7 @@
     :to='$route.query.back.toString()'
     v-if='$route.query.back'
   )
-    fa(icon='angle-left')
+    i-fa-solid-angle-left
     | &nbsp;返回
   h1 查看 Pixiv 令牌
   input.token(:value='Cookies.get("PHPSESSID")' readonly)
@@ -58,7 +58,7 @@ import {
   login,
   logout,
 } from '@/components/userData'
-import { useUserStore } from '@/plugins'
+import { useUserStore } from '@/plugins/states'
 
 const example = ref(exampleSessionId())
 const sessionIdInput = ref('')

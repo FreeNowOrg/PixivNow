@@ -9,12 +9,12 @@
           lazyload
         )
       .x-restrict.tag(title='R-18' v-if='illust.xRestrict === 2')
-        fa(icon='eye')
+        i-fa-solid-eye
       .page-count(
         :title='"共 " + illust.pageCount + " 张"'
         v-if='+illust.pageCount > 1'
       )
-        fa(icon='images')
+        i-fa-solid-images
         | {{ illust.pageCount }}
       .ranking(
         :class='{ gold: rank === 1, silver: rank === 2, bronze: rank === 3 }'

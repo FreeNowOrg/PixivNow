@@ -4,6 +4,9 @@
 .fade-out-down
   animation: fadeOutDown 0.4s ease
 
+svg.spin
+  animation: spin 2s linear infinite
+
 @keyframes fadeInUp
   0%
     opacity: 0
@@ -26,3 +29,9 @@
     background-color: lighten(#e8e8e8, 4%)
   to
     background-color: #e8e8e8
+
+@keyframes spin
+  from
+    transform: rotate(0deg)
+  to
+    transform: rotate(360deg)

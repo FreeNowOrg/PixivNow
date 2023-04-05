@@ -1,14 +1,15 @@
 import { createApp } from 'vue'
 import { SITE_ENV } from '@/config'
-import { addComponents, registerPlugins } from '@/plugins'
-import '@/styles/index.sass'
-
-// Create App
+import { registerPlugins } from '@/plugins'
 import App from './App.vue'
+import '@/styles/index.sass'
+import { setupAxios } from './axios'
+
+setupAxios()
+// Create App
 const app = createApp(App)
 
 registerPlugins(app)
-addComponents(app)
 
 // Mount
 app.mount('#app')

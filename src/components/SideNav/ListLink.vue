@@ -1,6 +1,7 @@
 <template lang="pug">
 mixin content
-  fa(:icon='icon')
+  slot
+    i-fa-solid-list-ul
   | {{ text }}
 
 li
@@ -14,7 +15,6 @@ li
 
 <script lang="ts" setup>
 defineProps<{
-  icon: string
   text: string
   externalLink?: string
   link?: string

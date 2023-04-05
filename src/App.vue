@@ -12,12 +12,8 @@ n-progress
 </template>
 
 <script lang="ts" setup>
-import SiteHeader from '@/components/Header.vue'
-import SiteFooter from '@/components/Footer.vue'
-import SideNav from '@/components/SideNav/SideNav.vue'
-import NProgress from '@/components/NProgress.vue'
 import { existsSessionId, initUser } from '@/components/userData'
-import { useUserStore } from '@/plugins'
+import { useUserStore } from '@/plugins/states'
 
 const userStore = useUserStore()
 

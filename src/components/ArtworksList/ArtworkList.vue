@@ -5,7 +5,6 @@ ul.artworks-list
 </template>
 
 <script lang="ts" setup>
-import ArtworkCard from './ArtworkCard.vue'
 import { isArtwork } from '@/utils'
 import type { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
 

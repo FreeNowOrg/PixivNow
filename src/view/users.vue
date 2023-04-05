@@ -25,16 +25,16 @@
         .following
           | 关注了 <strong>{{ user.following }}</strong> 人
         .gender(v-if='user.gender?.name')
-          fa(icon='venus-mars')
+          i-fa-solid-venus-mars
           | {{ user.gender.name }}
         .birthday(v-if='user.birthDay?.name')
-          fa(icon='birthday-cake')
+          i-fa-solid-birthday-cake
           | {{ user.birthDay?.name }}
         .region(v-if='user.region?.name')
-          fa(icon='map-marker-alt')
+          i-fa-solid-map-marker-alt
           | {{ user.region?.name }}
         .webpage(v-if='user.webpage')
-          fa(icon='home')
+          i-fa-solid-home
           a(:href='user.webpage' rel='noopener noreferrer' target='_blank') {{ user.webpage }}
         .flex
           .comment.flex-1 {{ user.comment }}
@@ -47,7 +47,7 @@
           a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
             img(:src='user.imageBig')
             .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
-              fa(icon='parking')
+              i-fa-solid-parking
           .title {{ user.name }}
           .follow
             button 关注
@@ -142,10 +142,8 @@
             artwork-list(:list='bookmarks', :show-tags='false')
             .more-btn.align-center
               a.button(@click='getBookmarks')
-                fa(
-                  :icon='loadingBookmarks ? "spinner" : "arrow-down"',
-                  :spin='loadingBookmarks'
-                )
+                i-fa-solid-arrow-down(v-if='!loadingBookmarks')
+                i-fa-solid-spinner.spin(v-else)
                 | {{ loadingBookmarks ? '正在加载……' : '加载更多' }}
 </template>
 
@@ -160,7 +158,7 @@ import Placeholder from '@/components/Placeholder.vue'
 import { getCache, setCache } from './siteCache'
 import { ArtworkInfo, User } from '@/types'
 import { sortArtList } from '@/utils/artworkActions'
-import { useUserStore } from '@/plugins'
+import { useUserStore } from '@/plugins/states'
 
 const loading = ref(true)
 const user = ref<User>({} as User)

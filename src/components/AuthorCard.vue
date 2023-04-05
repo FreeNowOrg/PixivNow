@@ -10,14 +10,13 @@ card.author-card(title='')
           router-link(:to='"/users/" + user.userId') {{ user.name }}
         button
           | 关注&nbsp;
-          fa(icon='plus')
+          i-fa-solid-plus
       p.description.pre {{ user.comment }}
 
   artwork-list.inline.tiny(:list='user.illusts')
 </template>
 
 <script lang="ts" setup>
-import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import Card from './Card.vue'
 import type { User } from '@/types'
 

@@ -10,36 +10,35 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
       .group
         .title 导航
         ul
-          list-link(icon='home' link='/' text='首页')
-          list-link.not-allowed(icon='image' link='' text='插画')
-          list-link(icon='user' link='' text='用户')
-          list-link(icon='crown' link='/ranking' text='排行榜')
+          list-link(link='/' text='首页')
+            i-fa-solid-home
+          list-link.not-allowed(link='' text='插画')
+            i-fa-solid-image
+          list-link(link='' text='用户')
+            i-fa-solid-user
+          list-link(link='/ranking' text='排行榜')
+            i-fa-solid-crown
 
       .group
         .title Pixiv 令牌
         ul
           list-link(
             :text='userStore.isLoggedIn ? "查看令牌" : "设置令牌"'
-            icon='fingerprint'
             link='/login'
           )
+            i-fa-solid-fingerprint
 
       .group
         .title PixivNow
         ul
-          list-link(
-            externalLink='https://www.pixiv.net/'
-            icon='external-link-alt'
-            text='Pixiv.net'
-          )
-          list-link(icon='heart' link='/about' text='关于我们')
+          list-link(externalLink='https://www.pixiv.net/' text='Pixiv.net')
+            i-fa-solid-external-link-alt
+          list-link(link='/about' text='关于我们')
+            i-fa-solid-heart
 </template>
 
 <script lang="ts" setup>
-import { useSideNavStore, useUserStore } from '@/plugins'
-
-import SearchBox from '@/components/SearchBox.vue'
-import ListLink from './ListLink.vue'
+import { useSideNavStore, useUserStore } from '@/plugins/states'
 
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()

@@ -5,6 +5,14 @@ export interface ArtworkUrls {
   regular: string
   original: string
 }
+
+export interface ArtworkPageUrls {
+  original: string
+  small: string
+  regular: string
+  thumb_mini: string
+}
+
 export interface ArtworkTag {
   tag: string
   locked: boolean
@@ -14,6 +22,12 @@ export interface ArtworkTag {
     en?: string
   }
   userName: string
+}
+
+export interface ArtworkGallery {
+  urls: ArtworkPageUrls
+  width: number
+  height: number
 }
 
 interface ArtworkCommon {
@@ -185,14 +199,5 @@ export interface Artwork extends ArtworkCommon {
       }
     }
   }
-  pages: {
-    width: number
-    height: number
-    urls: {
-      original: string
-      small: string
-      regular: string
-      thumb_mini: string
-    }
-  }[]
+  pages: ArtworkGallery[]
 }

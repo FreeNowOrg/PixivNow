@@ -2,7 +2,7 @@
 header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
   .flex
     a.side-nav-toggle.plain(@click='toggleSideNav')
-      fa(icon='bars')
+      i-fa-solid-bars
 
     .logo-area
       router-link.plain(to='/')
@@ -13,7 +13,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
         search-box
       .search-icon.align-right.flex-1
         button.pointer(@click='openSideNav')
-          fa(icon='search')
+          i-fa-solid-search
           | &nbsp;搜索
 
     #global-nav__user-area.user-area
@@ -26,7 +26,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
             :src='userStore.isLoggedIn ? userStore.userProfileImg : "/~/common/images/no_profile.png"',
             :title='userStore.isLoggedIn ? userStore.userId + " (" + userStore.userPixivId + ")" : "未登入"'
           )
-          fa(icon='angle-down')
+          i-fa-solid-angle-down
 
         transition(
           enter-active-class='fade-in-up'
@@ -66,10 +66,9 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 </template>
 
 <script lang="ts" setup>
-import SearchBox from './SearchBox.vue'
 import { logout } from './userData'
 import LogoH from '@/assets/LogoH.png'
-import { useSideNavStore, useUserStore } from '@/plugins'
+import { useSideNavStore, useUserStore } from '@/plugins/states'
 
 const hidden = ref(false)
 const notAtTop = ref(false)

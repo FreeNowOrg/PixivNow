@@ -3,8 +3,8 @@
   a(@click='method')
     | {{ text }}
     | &nbsp;
-    fa(icon='plus' v-if='!loading')
-    fa(icon='spinner' spin v-if='loading')
+    i-fa-solid-plus(v-if='!loading')
+    i-fa-solid-spinner.spin(v-else)
 </template>
 
 <script lang="ts" setup>

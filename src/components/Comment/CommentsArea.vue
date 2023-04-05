@@ -13,14 +13,13 @@
       )
         | {{ loading ? '正在加载' : '查看更多' }}
         | &nbsp;
-        fa(:icon='loading ? "spinner" : "plus"', :spin='loading')
+        i-fa-solid-plus(v-if='!loading')
+        i-fa-solid-spinner.spin(v-else)
   .align-center(v-if='!comments.length && loading')
     placeholder
 </template>
 
 <script lang="ts" setup>
-import Comment from './Comment.vue'
-import Placeholder from '@/components/Placeholder.vue'
 import type { Comments } from '@/types'
 
 const loading = ref(false)

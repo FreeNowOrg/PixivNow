@@ -8,7 +8,7 @@
   //- Done
   section.illust-container(v-if='!error && !loading')
     #top-area
-      gallery(:pages='gallery')
+      gallery(:pages='pages')
 
       .body-inner
         #meta-area
@@ -28,10 +28,10 @@
 
             p.stats
               span.original(v-if='illust.isOriginal')
-                fa(icon='laugh-wink')
+                i-fa-solid-laugh-wink
                 | 原创
               span.like-count(title='点赞')
-                fa(icon='thumbs-up')
+                i-fa-solid-thumbs-up
                 | {{ illust.likeCount }}
 
               //- 收藏
@@ -41,7 +41,7 @@
                 @click='async () => await addArtworkBookmark()'
                 v-if='!illust.bookmarkData'
               )
-                fa(icon='heart')
+                i-fa-solid-heart
                 | {{ illust.bookmarkCount }}
               //- 已收藏
               router-link.bookmark-count.bookmarked(
@@ -49,15 +49,15 @@
                 title='查看收藏'
                 v-if='illust.bookmarkData'
               )
-                fa(icon='heart')
+                i-fa-solid-heart
                 | {{ illust.bookmarkCount }}
 
               span.view-count(title='浏览')
-                fa(icon='eye')
+                i-fa-solid-eye
                 | {{ illust.viewCount }}
               span.count
-                fa(icon='images')
-                | {{ gallery.length }}张
+                i-fa-solid-images
+                | {{ pages.length }}张
 
             p.create-date {{ new Date(illust.createDate).toLocaleString() }}
 
@@ -101,35 +101,18 @@
 </template>
 
 <script lang="ts" setup>
-import AuthorCard from '@/components/AuthorCard.vue'
-import ArtTag from '@/components/ArtTag.vue'
-import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
-import Card from '@/components/Card.vue'
-import CommentsArea from '@/components/Comment/CommentsArea.vue'
-import ErrorPage from '@/components/ErrorPage.vue'
-import Gallery from '@/components/Gallery.vue'
-import Placeholder from '@/components/Placeholder.vue'
-import ShowMore from '@/components/ShowMore.vue'
 import { getCache, setCache } from './siteCache'
 
 // Types
-import type { Artwork, ArtworkInfo, ArtworkUrls, User } from '@/types'
+import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '@/types'
 
-import { useUserStore } from '@/plugins'
+import { useUserStore } from '@/plugins/states'
 import { addBookmark, sortArtList } from '@/utils/artworkActions'
-
-type Gallery = {
-  urls: ArtworkUrls & {
-    thumb_mini: string
-  }
-  width: number
-  height: number
-}
 
 const loading = ref(true)
 const error = ref('')
 const illust = ref<Artwork>({} as Artwork)
-const gallery = ref<Gallery[]>([])
+const pages = ref<ArtworkGallery[]>([])
 const user = ref<User>({} as User)
 const recommend = ref<ArtworkInfo[]>([])
 const recommendNextIds = ref<string[]>([])
@@ -144,7 +127,7 @@ async function init(id: string): Promise<void> {
   const pageCache = getCache(`illust.${id}.page`)
   if (dataCache && pageCache) {
     illust.value = dataCache
-    gallery.value = pageCache
+    pages.value = pageCache
     loading.value = false
     document.title = `${dataCache.illustTitle} | Artwork | PixivNow`
     await getUser(dataCache.userId)
@@ -155,13 +138,13 @@ async function init(id: string): Promise<void> {
   try {
     const [{ data: illustData }, { data: illustPage }] = await Promise.all([
       axios.get<Artwork>(`/ajax/illust/${id}?full=1`),
-      axios.get<Gallery[]>(`/ajax/illust/${id}/pages`),
+      axios.get<ArtworkGallery[]>(`/ajax/illust/${id}/pages`),
     ])
     document.title = `${illustData.illustTitle} | Artwork | PixivNow`
     setCache(`illust.${id}`, illustData)
     setCache(`illust.${id}.page`, illustPage)
     illust.value = illustData
-    gallery.value = illustPage
+    pages.value = illustPage
     await getUser(illustData.userId)
     await getFirstRecommend(id)
   } catch (err) {
