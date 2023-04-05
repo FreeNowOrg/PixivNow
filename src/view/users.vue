@@ -25,16 +25,16 @@
         .following
           | 关注了 <strong>{{ user.following }}</strong> 人
         .gender(v-if='user.gender?.name')
-          i-fa-solid-venus-mars
+          i-fa-solid-venus-mars(data-icon)
           | {{ user.gender.name }}
         .birthday(v-if='user.birthDay?.name')
-          i-fa-solid-birthday-cake
+          i-fa-solid-birthday-cake(data-icon)
           | {{ user.birthDay?.name }}
         .region(v-if='user.region?.name')
-          i-fa-solid-map-marker-alt
+          i-fa-solid-map-marker-alt(data-icon)
           | {{ user.region?.name }}
         .webpage(v-if='user.webpage')
-          i-fa-solid-home
+          i-fa-solid-home(data-icon)
           a(:href='user.webpage' rel='noopener noreferrer' target='_blank') {{ user.webpage }}
         .flex
           .comment.flex-1 {{ user.comment }}
@@ -47,7 +47,7 @@
           a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
             img(:src='user.imageBig')
             .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
-              i-fa-solid-parking
+              i-fa-solid-parking(data-icon)
           .title {{ user.name }}
           .follow
             button 关注
@@ -142,8 +142,8 @@
             artwork-list(:list='bookmarks', :show-tags='false')
             .more-btn.align-center
               a.button(@click='getBookmarks')
-                i-fa-solid-arrow-down(v-if='!loadingBookmarks')
-                i-fa-solid-spinner.spin(v-else)
+                i-fa-solid-arrow-down(data-icon v-if='!loadingBookmarks')
+                i-fa-solid-spinner.spin(data-icon v-else)
                 | {{ loadingBookmarks ? '正在加载……' : '加载更多' }}
 </template>
 

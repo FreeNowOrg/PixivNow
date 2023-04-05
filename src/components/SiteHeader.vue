@@ -2,7 +2,7 @@
 header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
   .flex
     a.side-nav-toggle.plain(@click='toggleSideNav')
-      i-fa-solid-bars
+      i-fa-solid-bars(data-icon)
 
     .logo-area
       router-link.plain(to='/')
@@ -26,7 +26,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
             :src='userStore.isLoggedIn ? userStore.userProfileImg : "/~/common/images/no_profile.png"',
             :title='userStore.isLoggedIn ? userStore.userId + " (" + userStore.userPixivId + ")" : "未登入"'
           )
-          i-fa-solid-angle-down
+          i-fa-solid-angle-down(data-icon)
 
         transition(
           enter-active-class='fade-in-up'

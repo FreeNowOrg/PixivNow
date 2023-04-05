@@ -11,13 +11,13 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
         .title 导航
         ul
           list-link(link='/' text='首页')
-            i-fa-solid-home
+            i-fa-solid-home.svg--list-link(data-icon)
           list-link.not-allowed(link='' text='插画')
-            i-fa-solid-image
+            i-fa-solid-image.svg--list-link
           list-link(link='' text='用户')
-            i-fa-solid-user
+            i-fa-solid-user.svg--list-link
           list-link(link='/ranking' text='排行榜')
-            i-fa-solid-crown
+            i-fa-solid-crown.svg--list-link
 
       .group
         .title Pixiv 令牌
@@ -26,15 +26,15 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
             :text='userStore.isLoggedIn ? "查看令牌" : "设置令牌"'
             link='/login'
           )
-            i-fa-solid-fingerprint
+            i-fa-solid-fingerprint.svg--list-link
 
       .group
         .title PixivNow
         ul
           list-link(externalLink='https://www.pixiv.net/' text='Pixiv.net')
-            i-fa-solid-external-link-alt
+            i-fa-solid-external-link-alt.svg--list-link
           list-link(link='/about' text='关于我们')
-            i-fa-solid-heart
+            i-fa-solid-heart.svg--list-link
 </template>
 
 <script lang="ts" setup>
@@ -65,6 +65,8 @@ onMounted(() => {
 </script>
 
 <style scoped lang="sass">
+svg.svg--list-link
+  width: 2em
 
 .global-side-nav
   z-index: 90

@@ -1,7 +1,7 @@
 <template lang="pug">
 mixin content
   slot
-    i-fa-solid-list-ul
+    i-fa-solid-list-ul.svg--list-link
   | {{ text }}
 
 li
@@ -36,5 +36,8 @@ li
       text-decoration: line-through
 
     [data-icon]
-      width: 2rem
+      width: 2em
+
+:slotted(svg)
+  width: 2em
 </style>

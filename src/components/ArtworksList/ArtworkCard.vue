@@ -2,18 +2,18 @@
 .artwork-card
   .side-tags
     .x-restrict(title='R-18' v-if='item.xRestrict')
-      i-fa-solid-eye
+      i-fa-solid-eye(data-icon)
     .page-count(
       :title='"共 " + item.pageCount + " 张"'
       v-if='item.pageCount > 1'
     )
-      i-fa-solid-images
+      i-fa-solid-images(data-icon)
       | {{ item.pageCount }}
     .bookmark(
       :class='{ bookmarked: item.bookmarkData }'
       @click='toggleBookmark'
     )
-      i-fa-solid-heart
+      i-fa-solid-heart(data-icon)
   router-link(:to='"/artworks/" + item.id')
     lazy-load.img(:alt='item.alt', :src='item.url', :title='item.alt' lazyload)
     .hover-title {{ item.title }}

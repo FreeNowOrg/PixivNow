@@ -15,10 +15,11 @@ export default defineConfig({
     }),
     Icons({
       scale: 1,
-      defaultClass: 'svg--inline'
+      defaultClass: 'svg--inline',
     }),
     Components({
       dts: true,
+      dirs: [],
       resolvers: [IconsResolver()],
     }),
   ],

@@ -1,12 +1,12 @@
 <template lang="pug">
-side-nav(ref='globalSideNav')
-site-header(ref='globalHeader')
+side-nav
+site-header
 
 main
   article
     router-view
 
-site-footer(ref='globalFooter')
+site-footer
 
 n-progress
 </template>

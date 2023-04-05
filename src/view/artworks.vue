@@ -28,10 +28,10 @@
 
             p.stats
               span.original(v-if='illust.isOriginal')
-                i-fa-solid-laugh-wink
+                i-fa-solid-laugh-wink(data-icon)
                 | 原创
               span.like-count(title='点赞')
-                i-fa-solid-thumbs-up
+                i-fa-solid-thumbs-up(data-icon)
                 | {{ illust.likeCount }}
 
               //- 收藏
@@ -41,7 +41,7 @@
                 @click='async () => await addArtworkBookmark()'
                 v-if='!illust.bookmarkData'
               )
-                i-fa-solid-heart
+                i-fa-solid-heart(data-icon)
                 | {{ illust.bookmarkCount }}
               //- 已收藏
               router-link.bookmark-count.bookmarked(
@@ -49,14 +49,14 @@
                 title='查看收藏'
                 v-if='illust.bookmarkData'
               )
-                i-fa-solid-heart
+                i-fa-solid-heart(data-icon)
                 | {{ illust.bookmarkCount }}
 
               span.view-count(title='浏览')
-                i-fa-solid-eye
+                i-fa-solid-eye(data-icon)
                 | {{ illust.viewCount }}
               span.count
-                i-fa-solid-images
+                i-fa-solid-images(data-icon)
                 | {{ pages.length }}张
 
             p.create-date {{ new Date(illust.createDate).toLocaleString() }}

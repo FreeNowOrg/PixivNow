@@ -21,11 +21,11 @@ declare module '@vue/runtime-core' {
     CommentSubmit: typeof import('./src/components/Comment/CommentSubmit.vue')['default']
     ErrorPage: typeof import('./src/components/ErrorPage.vue')['default']
     ExternalLink: typeof import('./src/components/ExternalLink.vue')['default']
-    Footer: typeof import('./src/components/Footer.vue')['default']
     Gallery: typeof import('./src/components/Gallery.vue')['default']
-    Header: typeof import('./src/components/Header.vue')['default']
+    IFaSolidAngleDown: typeof import('~icons/fa-solid/angle-down')['default']
     IFaSolidAngleLeft: typeof import('~icons/fa-solid/angle-left')['default']
     IFaSolidArrowDown: typeof import('~icons/fa-solid/arrow-down')['default']
+    IFaSolidBars: typeof import('~icons/fa-solid/bars')['default']
     IFaSolidBirthdayCake: typeof import('~icons/fa-solid/birthday-cake')['default']
     IFaSolidCrown: typeof import('~icons/fa-solid/crown')['default']
     IFaSolidExternalLinkAlt: typeof import('~icons/fa-solid/external-link-alt')['default']
@@ -58,5 +58,7 @@ declare module '@vue/runtime-core' {
     SearchBox: typeof import('./src/components/SearchBox.vue')['default']
     ShowMore: typeof import('./src/components/ShowMore.vue')['default']
     SideNav: typeof import('./src/components/SideNav/SideNav.vue')['default']
+    SiteFooter: typeof import('./src/components/SiteFooter.vue')['default']
+    SiteHeader: typeof import('./src/components/SiteHeader.vue')['default']
   }
 }
