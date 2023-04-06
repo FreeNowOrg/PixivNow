@@ -13,7 +13,10 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     const data: { illusts?: ArtworkOrAd[] } = (
       await sendRequest({
         path: '/ajax/illust/discovery',
-        params: { mode: req.query.mode ?? 'safe' },
+        params: {
+          mode: req.query.mode ?? 'safe',
+          max: requestImage ? '1' : req.query.max ?? '18',
+        },
         headers: req.headers,
       })
     ).data
