@@ -29,7 +29,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         'Asia/Tokyo',
         'yyyy/MM/dd/HH/mm/ss'
       )}/${value.id}`
-
       value.urls = {
         mini: `/-/c/48x48/img-master/${middle}_p0_square1200.jpg`,
         thumb: `/-/c/250x250_80_a2/img-master/${middle}_p0_square1200.jpg`,
@@ -43,9 +42,9 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       return
     } else {
       res.send(illusts)
+      return
     }
   } catch (err) {
-    const e = err as any
-    res.status(e?.response?.status || 500).send(e?.response?.data || e)
+    res.status(err?.response?.status ?? 500).send(err?.response?.data ?? err)
   }
 }
