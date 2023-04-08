@@ -4,7 +4,7 @@
     .modal-backdrop(@click='closeModal')
     .modal-window
       a.plain.close-btn(@click='closeModal' roll='button')
-        fa(icon='times')
+        i-fa-solid-times
       section.modal-content
         div
           slot

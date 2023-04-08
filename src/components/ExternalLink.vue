@@ -1,7 +1,7 @@
 <template lang="pug">
 a(:href='href' rel='nofollow' target='_blank')
   slot
-  fa.external-icon(icon='external-link-alt')
+  i-fa-solid-external-link-alt.external-icon
 </template>
 
 <script lang="ts" setup>

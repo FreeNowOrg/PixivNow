@@ -2,7 +2,7 @@
 header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
   .flex
     a.side-nav-toggle.plain(@click='toggleSideNav')
-      fa(icon='bars')
+      i-fa-solid-bars(data-icon)
 
     .logo-area
       router-link.plain(to='/')
@@ -13,20 +13,20 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
         search-box
       .search-icon.align-right.flex-1
         button.pointer(@click='openSideNav')
-          fa(icon='search')
+          i-fa-solid-search
           | &nbsp;搜索
 
     #global-nav__user-area.user-area
       .user-link
         a.dropdown-btn.plain.pointer(
           :class='{ "show-user": showUserDropdown }'
-          @click='showUserDropdown = !showUserDropdown'
+          @click.stop='showUserDropdown = !showUserDropdown'
         )
           img.avatar(
             :src='userStore.isLoggedIn ? userStore.userProfileImg : "/~/common/images/no_profile.png"',
             :title='userStore.isLoggedIn ? userStore.userId + " (" + userStore.userPixivId + ")" : "未登入"'
           )
-          fa(icon='angle-down')
+          i-fa-solid-angle-down(data-icon)
 
         transition(
           enter-active-class='fade-in-up'
@@ -66,10 +66,9 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 </template>
 
 <script lang="ts" setup>
-import SearchBox from './SearchBox.vue'
 import { logout } from './userData'
 import LogoH from '@/assets/LogoH.png'
-import { useSideNavStore, useUserStore } from '@/plugins'
+import { useSideNavStore, useUserStore } from '@/plugins/states'
 
 const hidden = ref(false)
 const notAtTop = ref(false)
@@ -99,6 +98,11 @@ watch(hidden, (value) => {
   }
 })
 
+const router = useRouter()
+router.afterEach(() => {
+  showUserDropdown.value = false
+})
+
 onMounted(() => {
   window.addEventListener('scroll', () => {
     const newTop = document.documentElement.scrollTop
@@ -110,11 +114,8 @@ onMounted(() => {
   })
 
   // Outside close user dropdown
-  document
-    .getElementById('global-nav__user-area')
-    ?.addEventListener('click', (e) => e.stopPropagation())
   document.addEventListener('click', () => {
-    if (showUserDropdown.value) showUserDropdown.value = false
+    showUserDropdown.value = false
   })
 })
 </script>

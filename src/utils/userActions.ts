@@ -1,24 +1,28 @@
-export async function addFollow(user_id: number | `${number}`): Promise<any> {
+import { ajaxPostWithFormData } from '@/utils/ajax'
+
+export async function addUserFollow(
+  user_id: number | `${number}`
+): Promise<any> {
   return (
-    await axios.post(`/bookmark_add.php`, {
+    await ajaxPostWithFormData(`/bookmark_add.php`, {
       mode: 'add',
       type: 'user',
-      user_id,
+      user_id: '' + user_id,
       tag: '',
-      restrict: 0,
+      restrict: '0',
       format: 'json',
     })
   ).data
 }
 
-export async function removeFollow(
+export async function removeUserFollow(
   user_id: number | `${number}`
 ): Promise<any> {
   return (
-    await axios.post(`/rpc_group_setting.php`, {
+    await ajaxPostWithFormData(`/rpc_group_setting.php`, {
       mode: 'del',
       type: 'bookuser',
-      id: user_id,
+      id: '' + user_id,
     })
   ).data
 }

@@ -32,10 +32,7 @@ mixin pagenator
 </template>
 
 <script lang="ts" setup>
-import ArtworkLargeList from '@/components/ArtworksList/ArtworkLargeList.vue'
-import ErrorPage from '@/components/ErrorPage.vue'
-import Placeholder from '@/components/Placeholder.vue'
-import SearchBox from '@/components/SearchBox.vue'
+import { ajax } from '@/utils/ajax'
 import type { ArtworkInfo } from '@/types'
 
 const error = ref('')
@@ -62,7 +59,7 @@ async function makeSearch({
   try {
     loading.value = true
     document.title = `${keyword} (第${p}页) | Search | PixivNow`
-    const { data } = await axios.get<{ illustManga: { data: ArtworkInfo[] } }>(
+    const { data } = await ajax.get<{ illustManga: { data: ArtworkInfo[] } }>(
       `/ajax/search/artworks/${encodeURIComponent(keyword)}`,
       { params: new URLSearchParams({ p: p ?? '1', mode: mode ?? 'text' }) }
     )

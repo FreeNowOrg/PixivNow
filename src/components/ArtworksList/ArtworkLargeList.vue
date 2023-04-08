@@ -5,7 +5,6 @@ ul.artwork-large-list
 </template>
 
 <script lang="ts" setup>
-import ArtworkLargeCard from './ArtworkLargeCard.vue'
 import type { ArtworkInfo, ArtworkRank } from '@/types'
 
 const props = defineProps<{

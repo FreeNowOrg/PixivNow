@@ -5,7 +5,7 @@
     placeholder='输入关键词搜索/输入 id:数字 查看作品'
     v-model='keyword'
   )
-  fa.icon(icon='search')
+  i-fa-solid-search.icon(data-icon)
 </template>
 
 <script lang="ts" setup>

@@ -1,3 +1,4 @@
+import { ajax, ajaxPostWithFormData } from '@/utils/ajax'
 import { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
 
 export function sortArtList<T extends { id: number | `${number}` }>(
@@ -14,7 +15,7 @@ export async function addBookmark(
   illust_id: number | `${number}`
 ): Promise<any> {
   return (
-    await axios.post('/ajax/illusts/bookmarks/add', {
+    await ajax.post('/ajax/illusts/bookmarks/add', {
       illust_id,
       restrict: 0,
       comment: '',
@@ -27,9 +28,8 @@ export async function removeBookmark(
   bookmark_id: number | `${number}`
 ): Promise<any> {
   return (
-    await axios.post('/rpc/index.php', {
-      mode: 'delete_illust_bookmark',
-      bookmark_id,
+    await ajaxPostWithFormData('/ajax/illusts/bookmarks/delete', {
+      bookmark_id: '' + bookmark_id,
     })
   ).data
 }

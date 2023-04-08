@@ -44,3 +44,27 @@
 
 .pointer
   cursor: pointer
+
+// Loading
+.loading-cover
+  position: relative
+  &::before,&::after
+    content: ""
+    width: 100%
+    height: 100%
+    display: block
+    position: absolute
+  &::before
+    background-image: url(/images/spinner.svg)
+    background-size: 75px
+    background-repeat: no-repeat
+    background-position: center
+    top: 50%
+    left: 50%
+    transform: translateX(-50%) translateY(-50%)
+    z-index: 6
+  &::after
+    top: 0
+    left: 0
+    background-color: rgba(255,255,255,0.25)
+    z-index: 5

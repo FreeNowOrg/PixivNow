@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { load } from 'cheerio'
-import { sendRequest } from './http'
+import { ajax, replaceUrlInObject } from './http'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const token = req.cookies.PHPSESSID || req.query.token
@@ -8,7 +8,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return res.status(403).send({ message: '未配置用户密钥' })
   }
 
-  sendRequest({ params: req.query, headers: req.headers })
+  ajax
+    .get('/', { params: req.query, headers: req.headers })
     .then(async ({ data }) => {
       const $ = load(data)
       const $meta = $('meta[name="global-data"]')
@@ -42,7 +43,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
       res.setHeader('cache-control', 'no-cache')
       res.setHeader('set-cookie', `CSRFTOKEN=${meta.token}; path=/; secure`)
-      res.send(meta)
+      res.send(replaceUrlInObject(meta))
     })
     .catch((err) => {
       return res

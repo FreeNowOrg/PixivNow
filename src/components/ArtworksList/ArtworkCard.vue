@@ -2,18 +2,18 @@
 .artwork-card
   .side-tags
     .x-restrict(title='R-18' v-if='item.xRestrict')
-      fa(icon='eye')
+      i-fa-solid-eye(data-icon)
     .page-count(
       :title='"共 " + item.pageCount + " 张"'
       v-if='item.pageCount > 1'
     )
-      fa(icon='images')
+      i-fa-solid-images(data-icon)
       | {{ item.pageCount }}
     .bookmark(
-      :class='{ bookmarked: item.bookmarkData }'
-      @click='toggleBookmark'
+      :class='{ bookmarked: item.bookmarkData, disabled: loadingBookmark }'
+      @click='handleBookmark'
     )
-      fa(icon='heart')
+      i-fa-solid-heart(data-icon)
   router-link(:to='"/artworks/" + item.id')
     lazy-load.img(:alt='item.alt', :src='item.url', :title='item.alt' lazyload)
     .hover-title {{ item.title }}
@@ -27,7 +27,6 @@
 </template>
 
 <script lang="ts" setup>
-import LazyLoad from '@/components/LazyLoad.vue'
 import { addBookmark, removeBookmark } from '@/utils/artworkActions'
 
 import type { ArtworkInfo } from '@/types'
@@ -36,12 +35,27 @@ const props = defineProps<{
   item: ArtworkInfo
 }>()
 
-function toggleBookmark(): void {
+const loadingBookmark = ref(false)
+async function handleBookmark() {
+  if (loadingBookmark.value) return
+  loadingBookmark.value = true
   const item = props.item
-  if (item.bookmarkData) {
-    removeBookmark(item.bookmarkData.id)
-  } else {
-    addBookmark(item.id)
+  try {
+    if (item.bookmarkData) {
+      await removeBookmark(item.bookmarkData.id).then(() => {
+        item.bookmarkData = null
+      })
+    } else {
+      await addBookmark(item.id).then((data) => {
+        if (data.last_bookmark_id) {
+          item.bookmarkData = { id: data.last_bookmark_id, private: false }
+        }
+      })
+    }
+  } catch (e) {
+    console.warn('handleBookmark', e)
+  } finally {
+    loadingBookmark.value = false
   }
 }
 </script>
@@ -86,6 +100,8 @@ function toggleBookmark(): void {
 
   .bookmark
     cursor: pointer
+    &.disabled
+      opacity: 0.7
 
   .hover-title
     z-index: 10

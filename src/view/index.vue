@@ -16,13 +16,13 @@
         style='margin-right: 0.5em'
         title='换一个~'
       )
-        fa(icon='random')
+        i-fa-solid-random
       a.pointer(
         @click='showBgInfo = true'
         title='关于背景'
         v-if='randomBg.info.id'
       )
-        fa(icon='question-circle')
+        i-fa-solid-info-circle
 
   modal.bg-info-modal(v-model:show='showBgInfo')
     h3 背景图片：{{ randomBg.info.title }}
@@ -42,26 +42,24 @@
         a.button(
           @click='discoveryList.length ? (async () => await setDiscoveryNoCache())() : void 0'
         )
-          | {{ discoveryList.length ? '换一批' : '加载中' }}
+          | {{ loadingDiscovery ? '加载中' : '换一批' }}
           |
-          fa(
-            :icon='discoveryList.length ? "random" : "spinner"',
-            :spin='!discoveryList.length'
-          )
+          i-fa-solid-random(v-if='!loadingDiscovery')
+          i-fa-solid-spinner.spin(v-else)
       .align-center(v-if='!discoveryList.length')
         placeholder
-      artwork-list(:list='discoveryList')
+      artwork-list(
+        :class='{ "loading-cover": loadingDiscovery }',
+        :list='discoveryList'
+      )
 </template>
 
 <script lang="ts" setup>
 import { formatInTimeZone } from 'date-fns-tz'
 import { getCache, setCache } from './siteCache'
 import { defaultArtwork, isArtwork } from '@/utils'
+import { ajax } from '@/utils/ajax'
 
-import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
-import Modal from '@/components/Modal.vue'
-import SearchBox from '@/components/SearchBox.vue'
-import Placeholder from '@/components/Placeholder.vue'
 import LogoH from '@/assets/LogoH.png'
 import type { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
 
@@ -77,7 +75,7 @@ const randomBg = ref<{
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const { data } = await axios.get<{ illusts: ArtworkInfoOrAd[] }>(
+    const { data } = await ajax.get<{ illusts: ArtworkInfoOrAd[] }>(
       '/ajax/illust/discovery',
       { params: new URLSearchParams({ mode: 'safe', max: '1' }) }
     )
@@ -108,13 +106,17 @@ async function setRandomBgFromCache(): Promise<void> {
   }
 }
 
+const loadingDiscovery = ref(false)
 async function setDiscoveryNoCache(): Promise<void> {
+  if (loadingDiscovery.value) return
   try {
-    discoveryList.value = []
-    const { data } = await axios.get<{ illusts: ArtworkInfoOrAd[] }>(
+    loadingDiscovery.value = true
+    // discoveryList.value = []
+    const { data } = await ajax.get<{ illusts: ArtworkInfoOrAd[] }>(
       '/ajax/illust/discovery',
       { params: new URLSearchParams({ mode: 'safe', max: '8' }) }
     )
+    console.info('setDiscoveryNoCache', data)
     const illusts = data.illusts.filter((item): item is ArtworkInfo =>
       isArtwork(item)
     )
@@ -122,6 +124,8 @@ async function setDiscoveryNoCache(): Promise<void> {
     setCache('home.discoveryList', illusts)
   } catch (err) {
     console.error('获取探索发现失败', err)
+  } finally {
+    loadingDiscovery.value = false
   }
 }
 
@@ -129,6 +133,7 @@ async function setDiscoveryFromCache(): Promise<void> {
   const cache = getCache('home.discoveryList')
   if (cache) {
     discoveryList.value = cache
+    loadingDiscovery.value = false
   } else {
     await setDiscoveryNoCache()
   }
@@ -146,7 +151,7 @@ onMounted(async () => {
 [data-route="home"]
   .top-slider
     min-height: calc(100vh)
-    margin-top: calc(-50px - 1rem)
+    margin-top: -50px
     padding: 30px 10%
     background-position: center
     background-repeat: no-repeat
@@ -178,6 +183,7 @@ onMounted(async () => {
       position: absolute
       right: 1.5rem
       bottom: 1rem
+      font-size: 1.25rem
 
       a
         --color: #fff

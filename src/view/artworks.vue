@@ -8,7 +8,7 @@
   //- Done
   section.illust-container(v-if='!error && !loading')
     #top-area
-      gallery(:pages='gallery')
+      gallery(:pages='pages')
 
       .body-inner
         #meta-area
@@ -28,62 +28,53 @@
 
             p.stats
               span.original(v-if='illust.isOriginal')
-                fa(icon='laugh-wink')
+                i-fa-solid-laugh-wink(data-icon)
                 | 原创
               span.like-count(title='点赞')
-                fa(icon='thumbs-up')
+                i-fa-solid-thumbs-up(data-icon)
                 | {{ illust.likeCount }}
 
               //- 收藏
-              //- 未收藏/不可收藏
               span.bookmark-count(
-                :title='store.isLoggedIn ? "添加收藏" : "收藏"'
-                @click='async () => await addArtworkBookmark()'
-                v-if='!illust.bookmarkData'
+                :class='{ bookmarked: illust.bookmarkData }',
+                :title='!store.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
+                @click='illust.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
               )
-                fa(icon='heart')
-                | {{ illust.bookmarkCount }}
-              //- 已收藏
-              router-link.bookmark-count.bookmarked(
-                :to='"/users/" + store.userId'
-                title='查看收藏'
-                v-if='illust.bookmarkData'
-              )
-                fa(icon='heart')
+                i-fa-solid-heart(data-icon)
                 | {{ illust.bookmarkCount }}
 
               span.view-count(title='浏览')
-                fa(icon='eye')
+                i-fa-solid-eye(data-icon)
                 | {{ illust.viewCount }}
               span.count
-                fa(icon='images')
-                | {{ gallery.length }}张
+                i-fa-solid-images(data-icon)
+                | {{ pages.length }}张
 
             p.create-date {{ new Date(illust.createDate).toLocaleString() }}
 
           .artwork-tags
-            span.x-restrict(title='R-18' v-if='illust.xRestrict') R-18
+            span.x-restrict(title='R-18' v-if='illust?.xRestrict') R-18
             art-tag(
               :key='_',
               :tag='item.tag'
               v-for='(item, _) in illust.tags.tags'
             )
 
-        aside#author-area
+        aside#author-area(ref='authorRef')
           .author-info
             h2 作者
             .align-center(v-if='!user.userId')
               placeholder
             author-card(:user='user' v-if='user.userId')
 
-        card.comments(title='评论')
+        card.comments(ref='commentsRef' title='评论')
           comments-area(
             :count='illust.commentCount',
             :id='illust.id || illust.illustId'
           )
 
     //- 相关推荐
-    .recommend-works
+    .recommend-works.body-inner(ref='recommendRef')
       h2 相关推荐
       .align-center.loading(v-if='!recommend.length')
         placeholder
@@ -101,35 +92,23 @@
 </template>
 
 <script lang="ts" setup>
-import AuthorCard from '@/components/AuthorCard.vue'
-import ArtTag from '@/components/ArtTag.vue'
-import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
-import Card from '@/components/Card.vue'
-import CommentsArea from '@/components/Comment/CommentsArea.vue'
-import ErrorPage from '@/components/ErrorPage.vue'
-import Gallery from '@/components/Gallery.vue'
-import Placeholder from '@/components/Placeholder.vue'
-import ShowMore from '@/components/ShowMore.vue'
 import { getCache, setCache } from './siteCache'
+import { ajax } from '@/utils/ajax'
 
 // Types
-import type { Artwork, ArtworkInfo, ArtworkUrls, User } from '@/types'
+import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '@/types'
 
-import { useUserStore } from '@/plugins'
-import { addBookmark, sortArtList } from '@/utils/artworkActions'
-
-type Gallery = {
-  urls: ArtworkUrls & {
-    thumb_mini: string
-  }
-  width: number
-  height: number
-}
+import { useUserStore } from '@/plugins/states'
+import {
+  addBookmark,
+  removeBookmark,
+  sortArtList,
+} from '@/utils/artworkActions'
 
 const loading = ref(true)
 const error = ref('')
 const illust = ref<Artwork>({} as Artwork)
-const gallery = ref<Gallery[]>([])
+const pages = ref<ArtworkGallery[]>([])
 const user = ref<User>({} as User)
 const recommend = ref<ArtworkInfo[]>([])
 const recommendNextIds = ref<string[]>([])
@@ -144,26 +123,22 @@ async function init(id: string): Promise<void> {
   const pageCache = getCache(`illust.${id}.page`)
   if (dataCache && pageCache) {
     illust.value = dataCache
-    gallery.value = pageCache
+    pages.value = pageCache
     loading.value = false
     document.title = `${dataCache.illustTitle} | Artwork | PixivNow`
-    await getUser(dataCache.userId)
-    await getFirstRecommend(id)
     return
   }
 
   try {
     const [{ data: illustData }, { data: illustPage }] = await Promise.all([
-      axios.get<Artwork>(`/ajax/illust/${id}?full=1`),
-      axios.get<Gallery[]>(`/ajax/illust/${id}/pages`),
+      ajax.get<Artwork>(`/ajax/illust/${id}?full=1`),
+      ajax.get<ArtworkGallery[]>(`/ajax/illust/${id}/pages`),
     ])
     document.title = `${illustData.illustTitle} | Artwork | PixivNow`
     setCache(`illust.${id}`, illustData)
     setCache(`illust.${id}.page`, illustPage)
     illust.value = illustData
-    gallery.value = illustPage
-    await getUser(illustData.userId)
-    await getFirstRecommend(id)
+    pages.value = illustPage
   } catch (err) {
     console.warn('illust fetch error', `#${id}`, err)
     if (err instanceof Error) {
@@ -176,6 +151,10 @@ async function init(id: string): Promise<void> {
   }
 }
 
+const authorRef = ref<HTMLElement>()
+addObserver(authorRef, () => {
+  getUser(illust.value.userId)
+})
 async function getUser(userId: string): Promise<void> {
   const value = getCache(`user.${userId}`)
   if (value) {
@@ -207,7 +186,7 @@ async function getFirstRecommend(id: string): Promise<void> {
   try {
     recommendLoading.value = true
     console.log('init recommend')
-    const { data } = await axios.get<{
+    const { data } = await ajax.get<{
       illusts: ArtworkInfo[]
       nextIds: string[]
     }>(`/ajax/illust/${id}/recommend/init?limit=18`)
@@ -235,7 +214,7 @@ async function getMoreRecommend(): Promise<void> {
     for (const id of requestIds) {
       searchParams.append('illust_ids', id)
     }
-    const { data } = await axios.get<{
+    const { data } = await ajax.get<{
       illusts: ArtworkInfo[]
       nextIds: string[]
     }>('/ajax/illust/recommend/illusts', { params: searchParams })
@@ -248,7 +227,12 @@ async function getMoreRecommend(): Promise<void> {
   }
 }
 
-async function addArtworkBookmark(): Promise<void> {
+const recommendRef = ref<HTMLElement>()
+addObserver(recommendRef, () => {
+  getFirstRecommend(illust.value.illustId)
+})
+
+async function handleAddBookmark(): Promise<void> {
   if (!store.isLoggedIn) {
     console.log('需要登录才可以添加收藏')
     return
@@ -266,11 +250,27 @@ async function addArtworkBookmark(): Promise<void> {
     bookmarkLoading.value = true
     const data = await addBookmark(illust.value.illustId)
     if (data.last_bookmark_id) {
-      illust.value.bookmarkData = data
+      illust.value.bookmarkData = {
+        id: data.last_bookmark_id,
+        private: false,
+      }
       illust.value.bookmarkCount++
     }
   } catch (err) {
     console.error('bookmark add error:', err)
+  } finally {
+    bookmarkLoading.value = false
+  }
+}
+async function handleRemoveBookmark(): Promise<void> {
+  if (bookmarkLoading.value || !illust.value.bookmarkData) return
+  try {
+    bookmarkLoading.value = true
+    await removeBookmark(illust.value.bookmarkData.id)
+    illust.value.bookmarkData = null
+    illust.value.bookmarkCount--
+  } catch (err) {
+    console.error('bookmark remove failed:', err)
   } finally {
     bookmarkLoading.value = false
   }
@@ -284,6 +284,33 @@ onMounted(async () => {
   document.title = 'Artwork | PixivNow'
   await init(route.params.id as string)
 })
+
+function addObserver(elRef: Ref<HTMLElement | undefined>, callback: () => any) {
+  let observer: IntersectionObserver
+  onMounted(() => {
+    observer = new IntersectionObserver(([entry]) => {
+      console.info(entry.isIntersecting, illust.value?.illustId)
+      if (entry.isIntersecting && illust.value?.illustId) {
+        observer.disconnect()
+        callback?.()
+        console.info('INTO VIEW', entry)
+      }
+    })
+    const unWatch = watch(loading, async (val) => {
+      if (val) return
+      await nextTick()
+      const el = elRef.value
+      if (!el) return console.warn('observer missing target')
+      if (illust.value.illustId) {
+        unWatch()
+        observer.observe(el)
+      }
+    })
+  })
+  onBeforeUnmount(() => {
+    observer && observer.disconnect()
+  })
+}
 </script>
 
 <style scoped lang="sass">
