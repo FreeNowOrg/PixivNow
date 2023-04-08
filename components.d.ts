@@ -36,6 +36,7 @@ declare module '@vue/runtime-core' {
     IFaSolidHome: typeof import('~icons/fa-solid/home')['default']
     IFaSolidImage: typeof import('~icons/fa-solid/image')['default']
     IFaSolidImages: typeof import('~icons/fa-solid/images')['default']
+    IFaSolidInfoCircle: typeof import('~icons/fa-solid/info-circle')['default']
     IFaSolidLaughWink: typeof import('~icons/fa-solid/laugh-wink')['default']
     IFaSolidListUl: typeof import('~icons/fa-solid/list-ul')['default']
     IFaSolidMapMarkerAlt: typeof import('~icons/fa-solid/map-marker-alt')['default']

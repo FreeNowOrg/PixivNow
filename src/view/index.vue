@@ -22,7 +22,7 @@
         title='关于背景'
         v-if='randomBg.info.id'
       )
-        i-fa-solid-question-circle
+        i-fa-solid-info-circle
 
   modal.bg-info-modal(v-model:show='showBgInfo')
     h3 背景图片：{{ randomBg.info.title }}
@@ -42,13 +42,16 @@
         a.button(
           @click='discoveryList.length ? (async () => await setDiscoveryNoCache())() : void 0'
         )
-          | {{ discoveryList.length ? '换一批' : '加载中' }}
+          | {{ loadingDiscovery ? '加载中' : '换一批' }}
           |
-          i-fa-solid-random(v-if='discoveryList.length')
+          i-fa-solid-random(v-if='!loadingDiscovery')
           i-fa-solid-spinner.spin(v-else)
       .align-center(v-if='!discoveryList.length')
         placeholder
-      artwork-list(:list='discoveryList')
+      artwork-list(
+        :class='{ "loading-cover": loadingDiscovery }',
+        :list='discoveryList'
+      )
 </template>
 
 <script lang="ts" setup>
@@ -103,9 +106,12 @@ async function setRandomBgFromCache(): Promise<void> {
   }
 }
 
+const loadingDiscovery = ref(false)
 async function setDiscoveryNoCache(): Promise<void> {
+  if (loadingDiscovery.value) return
   try {
-    discoveryList.value = []
+    loadingDiscovery.value = true
+    // discoveryList.value = []
     const { data } = await ajax.get<{ illusts: ArtworkInfoOrAd[] }>(
       '/ajax/illust/discovery',
       { params: new URLSearchParams({ mode: 'safe', max: '8' }) }
@@ -118,6 +124,8 @@ async function setDiscoveryNoCache(): Promise<void> {
     setCache('home.discoveryList', illusts)
   } catch (err) {
     console.error('获取探索发现失败', err)
+  } finally {
+    loadingDiscovery.value = false
   }
 }
 
@@ -125,6 +133,7 @@ async function setDiscoveryFromCache(): Promise<void> {
   const cache = getCache('home.discoveryList')
   if (cache) {
     discoveryList.value = cache
+    loadingDiscovery.value = false
   } else {
     await setDiscoveryNoCache()
   }
@@ -174,6 +183,7 @@ onMounted(async () => {
       position: absolute
       right: 1.5rem
       bottom: 1rem
+      font-size: 1.25rem
 
       a
         --color: #fff

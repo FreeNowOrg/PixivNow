@@ -60,21 +60,21 @@
               v-for='(item, _) in illust.tags.tags'
             )
 
-        aside#author-area
+        aside#author-area(ref='authorRef')
           .author-info
             h2 作者
             .align-center(v-if='!user.userId')
               placeholder
             author-card(:user='user' v-if='user.userId')
 
-        card.comments(title='评论')
+        card.comments(ref='commentsRef' title='评论')
           comments-area(
             :count='illust.commentCount',
             :id='illust.id || illust.illustId'
           )
 
     //- 相关推荐
-    .recommend-works
+    .recommend-works.body-inner(ref='recommendRef')
       h2 相关推荐
       .align-center.loading(v-if='!recommend.length')
         placeholder
@@ -126,8 +126,6 @@ async function init(id: string): Promise<void> {
     pages.value = pageCache
     loading.value = false
     document.title = `${dataCache.illustTitle} | Artwork | PixivNow`
-    await getUser(dataCache.userId)
-    await getFirstRecommend(id)
     return
   }
 
@@ -141,8 +139,6 @@ async function init(id: string): Promise<void> {
     setCache(`illust.${id}.page`, illustPage)
     illust.value = illustData
     pages.value = illustPage
-    await getUser(illustData.userId)
-    await getFirstRecommend(id)
   } catch (err) {
     console.warn('illust fetch error', `#${id}`, err)
     if (err instanceof Error) {
@@ -155,6 +151,10 @@ async function init(id: string): Promise<void> {
   }
 }
 
+const authorRef = ref<HTMLElement>()
+addObserver(authorRef, () => {
+  getUser(illust.value.userId)
+})
 async function getUser(userId: string): Promise<void> {
   const value = getCache(`user.${userId}`)
   if (value) {
@@ -227,6 +227,11 @@ async function getMoreRecommend(): Promise<void> {
   }
 }
 
+const recommendRef = ref<HTMLElement>()
+addObserver(recommendRef, () => {
+  getFirstRecommend(illust.value.illustId)
+})
+
 async function handleAddBookmark(): Promise<void> {
   if (!store.isLoggedIn) {
     console.log('需要登录才可以添加收藏')
@@ -279,6 +284,33 @@ onMounted(async () => {
   document.title = 'Artwork | PixivNow'
   await init(route.params.id as string)
 })
+
+function addObserver(elRef: Ref<HTMLElement | undefined>, callback: () => any) {
+  let observer: IntersectionObserver
+  onMounted(() => {
+    observer = new IntersectionObserver(([entry]) => {
+      console.info(entry.isIntersecting, illust.value?.illustId)
+      if (entry.isIntersecting && illust.value?.illustId) {
+        observer.disconnect()
+        callback?.()
+        console.info('INTO VIEW', entry)
+      }
+    })
+    const unWatch = watch(loading, async (val) => {
+      if (val) return
+      await nextTick()
+      const el = elRef.value
+      if (!el) return console.warn('observer missing target')
+      if (illust.value.illustId) {
+        unWatch()
+        observer.observe(el)
+      }
+    })
+  })
+  onBeforeUnmount(() => {
+    observer && observer.disconnect()
+  })
+}
 </script>
 
 <style scoped lang="sass">

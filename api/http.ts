@@ -1,8 +1,18 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
-import cookie from 'cookie'
 
 const PROD = process.env.NODE_ENV === 'production'
+
+export class CookieUtils {
+  static toJSON(raw: string) {
+    return Object.fromEntries(new URLSearchParams(raw.replace(/;\s*/g, '&')))
+  }
+  static toString(obj: any) {
+    return Object.keys(obj)
+      .map((i) => `${i}=${obj[i]}`)
+      .join(';')
+  }
+}
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   if (!isAccepted(req)) {
@@ -40,28 +50,7 @@ ajax.interceptors.request.use((ctx) => {
   delete ctx.params.__PATH
   delete ctx.params.__PREFIX
 
-  // 将 params 做一些转换防止抑郁
-  // "foo[]": [] -> "foo": []
-  const resolvedParams = new URLSearchParams()
-  for (const [key, value] of Object.entries(
-    ctx.params as Record<string, any>
-  )) {
-    if (key.endsWith('[]')) {
-      const newKey = key.replace(/\[\]$/, '')
-      if (Array.isArray(value)) {
-        for (const v of value) {
-          resolvedParams.append(newKey, v)
-        }
-      } else {
-        resolvedParams.append(newKey, value)
-      }
-    } else {
-      resolvedParams.append(key, value.toString())
-    }
-  }
-  ctx.params = resolvedParams
-
-  const cookies = cookie.parse((ctx.headers.cookie ?? '').toString())
+  const cookies = CookieUtils.toJSON(ctx.headers.cookie || '')
   const csrfToken = ctx.headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
   // 强制覆写部分 headers
   ctx.headers = ctx.headers || {}
@@ -79,7 +68,7 @@ ajax.interceptors.request.use((ctx) => {
       params: ctx.params,
       data: ctx.data,
       headers: ctx.headers,
-      cookies,
+      cookies: cookies,
     })
 
   return ctx

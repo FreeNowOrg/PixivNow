@@ -1,5 +1,5 @@
 <template lang="pug">
-.comments-area
+.comments-area(ref='commentsArea')
   //- CommentSubmit(:id="id" @push-comment="pushComment")
   em.stats
     | 共{{ count || comments.length || 0 }}条评论
@@ -58,10 +58,35 @@ function pushComment(data: Comments) {
   comments.value.unshift(data)
 }
 
-onMounted(async () => {
-  if (!props.id) return console.info('Component CommentsArea missing param: id')
-  await init(props.id)
-})
+function addObserver(elRef: Ref<HTMLElement | undefined>, callback: () => any) {
+  let observer: IntersectionObserver
+  onMounted(async () => {
+    await nextTick()
+    const el = elRef.value
+    if (!el) return console.warn('observer missing target')
+    observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        observer.disconnect()
+        callback?.()
+        console.info('INTO VIEW', entry)
+      }
+    })
+    observer.observe(el)
+  })
+  onBeforeUnmount(() => {
+    observer && observer.disconnect()
+  })
+}
+
+const commentsArea = ref<HTMLElement>()
+
+if (!props.id) {
+  console.info('Component CommentsArea missing param: id')
+} else {
+  addObserver(commentsArea, () => {
+    init(props.id)
+  })
+}
 </script>
 
 <style scoped lang="sass">

@@ -1,5 +1,5 @@
 <template lang="pug">
-.show-more
+.show-more(ref='elRef')
   a(@click='method')
     | {{ text }}
     | &nbsp;
@@ -8,11 +8,29 @@
 </template>
 
 <script lang="ts" setup>
-defineProps<{
+const elRef = ref<HTMLElement>()
+const props = defineProps<{
   text: string
   method: () => void
   loading: boolean
 }>()
+
+let observer: IntersectionObserver
+onMounted(() => {
+  const el = elRef.value
+  if (!el) return
+  observer = new IntersectionObserver((entries) => {
+    const [entry] = entries
+    if (entry.isIntersecting) {
+      console.info('into view')
+      props?.method()
+    }
+  })
+  observer.observe(el)
+})
+onBeforeUnmount(() => {
+  observer && observer.disconnect()
+})
 </script>
 
 <style scoped lang="sass">
