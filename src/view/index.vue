@@ -55,6 +55,7 @@
 import { formatInTimeZone } from 'date-fns-tz'
 import { getCache, setCache } from './siteCache'
 import { defaultArtwork, isArtwork } from '@/utils'
+import { ajax } from '@/utils/ajax'
 
 import LogoH from '@/assets/LogoH.png'
 import type { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
@@ -71,7 +72,7 @@ const randomBg = ref<{
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const { data } = await axios.get<{ illusts: ArtworkInfoOrAd[] }>(
+    const { data } = await ajax.get<{ illusts: ArtworkInfoOrAd[] }>(
       '/ajax/illust/discovery',
       { params: new URLSearchParams({ mode: 'safe', max: '1' }) }
     )
@@ -105,10 +106,11 @@ async function setRandomBgFromCache(): Promise<void> {
 async function setDiscoveryNoCache(): Promise<void> {
   try {
     discoveryList.value = []
-    const { data } = await axios.get<{ illusts: ArtworkInfoOrAd[] }>(
+    const { data } = await ajax.get<{ illusts: ArtworkInfoOrAd[] }>(
       '/ajax/illust/discovery',
       { params: new URLSearchParams({ mode: 'safe', max: '8' }) }
     )
+    console.info('setDiscoveryNoCache', data)
     const illusts = data.illusts.filter((item): item is ArtworkInfo =>
       isArtwork(item)
     )

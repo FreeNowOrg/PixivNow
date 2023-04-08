@@ -12,16 +12,24 @@
   //- :)
   section.user(v-if='!loading && !error')
     .user-info
-      .bg-area
+      .bg-area(:class='{ "no-background": !user?.background }')
         .bg-container(
           :style='{ backgroundImage: user?.background?.url ? `url("${user.background.url}")` : undefined }'
         )
-          span(v-if='!user.background') 用户未设置封面~
-      .avatar-area
-        a.plain.pointer(@click='showUserMore = true')
-          img(:src='user.imageBig')
+          span(v-if='!user?.background') 用户未设置封面~
       .info-area
-        .username {{ user.name }}
+        .avatar-area
+          a.plain.pointer(@click='showUserMore = true')
+            img(:src='user.imageBig')
+        .username-header.flex
+          .username {{ user.name }}
+          .flex-1
+          .user-folow
+            button(:disabled='loadingUserFollow' @click='handleUserFollow')
+              i-fa-solid-check(v-if='user.isFollowed')
+              i-fa-solid-plus(v-else)
+              |
+              | {{ user.isFollowed ? '已关注' : '关注' }}
         .following
           | 关注了 <strong>{{ user.following }}</strong> 人
         .gender(v-if='user.gender?.name')
@@ -49,8 +57,6 @@
             .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
               i-fa-solid-parking(data-icon)
           .title {{ user.name }}
-          .follow
-            button 关注
 
       .bottom
         section.user-comment
@@ -106,12 +112,6 @@
           details
             pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
 
-    .dev-only
-      h2 Follow Test
-      .align-center
-        button(@click='async () => await addFollow(+user.userId)') addFollow
-        button(@click='async () => await removeFollow(+user.userId)') removeFollow
-
     #user-artworks
       .tabber
         ul.tab-btn
@@ -119,11 +119,8 @@
             a(:class='{ "tab-active": tab === "illust" }') 插画
           li(@click='tab = "manga"')
             a(:class='{ "tab-active": tab === "manga" }') 漫画
-          li(
-            @click='tab = "bookmarks"'
-            v-if='$route.params.id === userStore.userId'
-          )
-            a(:class='{ "tab-active": tab === "bookmarks" }') 收藏
+          li(@click='tab = "bookmarks"')
+            a(:class='{ "tab-active": tab === "bookmarks" }') {{ user.userId === userStore.userId ? '我' : user.name }}的收藏
         .tab-contents
           section(v-if='tab === "illust"')
             h2 插画
@@ -136,9 +133,9 @@
               div 用户没有漫画作品 (*/ω＼*)
             artwork-list(:list='user.manga', :show-tags='false')
           section(v-if='tab === "bookmarks"')
-            h2 收藏
+            h2 {{ user.userId === userStore.userId ? '我' : user.name }}的收藏
             .no-result(v-if='!loadingBookmarks && !bookmarks.length')
-              div 收藏夹是空的 Σ(⊙▽⊙"a
+              div {{  user.userId === userStore.userId ? '收藏夹是空的 Σ(⊙▽⊙"a' : `${user.name}没有公开的收藏`  }}
             artwork-list(:list='bookmarks', :show-tags='false')
             .more-btn.align-center
               a.button(@click='getBookmarks')
@@ -148,7 +145,8 @@
 </template>
 
 <script lang="ts" setup>
-import { addFollow, removeFollow } from '@/utils/userActions'
+import { addUserFollow, removeUserFollow } from '@/utils/userActions'
+import { ajax } from '@/utils/ajax'
 
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
@@ -156,9 +154,9 @@ import Modal from '@/components/Modal.vue'
 import Placeholder from '@/components/Placeholder.vue'
 
 import { getCache, setCache } from './siteCache'
-import { ArtworkInfo, User } from '@/types'
 import { sortArtList } from '@/utils/artworkActions'
 import { useUserStore } from '@/plugins/states'
+import type { ArtworkInfo, User } from '@/types'
 
 const loading = ref(true)
 const user = ref<User>({} as User)
@@ -183,8 +181,8 @@ async function init(id: string | number): Promise<void> {
   try {
     loading.value = true
     const [{ data }, { data: profileData }] = await Promise.all([
-      axios.get<User>(`/ajax/user/${id}?full=1`),
-      axios.get<{
+      ajax.get<User>(`/ajax/user/${id}?full=1`),
+      ajax.get<{
         illusts: Record<string, ArtworkInfo>
         manga: Record<string, ArtworkInfo>
         novels: Record<string, ArtworkInfo>
@@ -199,7 +197,6 @@ async function init(id: string | number): Promise<void> {
     user.value = userValue
     setCache(`users.${id}`, userValue)
     document.title = `${data.name} | User | PixivNow`
-    await getBookmarks()
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
@@ -208,7 +205,22 @@ async function init(id: string | number): Promise<void> {
     }
   } finally {
     loading.value = false
+    getBookmarks()
   }
+}
+
+const loadingUserFollow = ref(false)
+function handleUserFollow() {
+  loadingUserFollow.value = true
+  const isFollowed = user.value.isFollowed
+  const handler = isFollowed ? removeUserFollow : addUserFollow
+  handler(user.value.userId)
+    .then(() => {
+      user.value.isFollowed = !isFollowed
+    })
+    .finally(() => {
+      loadingUserFollow.value = false
+    })
 }
 
 function userMore(): void {
@@ -216,13 +228,13 @@ function userMore(): void {
 }
 
 async function getBookmarks(): Promise<void> {
-  if (userStore.userId !== route.params.id) return
+  // if (userStore.userId !== route.params.id) return
   if (loadingBookmarks.value) return
 
   try {
     loadingBookmarks.value = true
-    const { data } = await axios.get<{ works: ArtworkInfo }>(
-      `/ajax/user/${userStore.userId}/illusts/bookmarks`,
+    const { data } = await ajax.get<{ works: ArtworkInfo }>(
+      `/ajax/user/${user.value.userId}/illusts/bookmarks`,
       {
         params: new URLSearchParams({
           tag: '',
@@ -263,19 +275,22 @@ onMounted(async () => {
   // box-shadow: 0 4px 16px var(--theme-box-shadow-color)
 
   .bg-area
+    position: fixed
+    left: 0
+    top: 50px
+    height: 40vh
+    width: 100%
+    z-index: 1
+    @media (max-width: 800px)
+      height: 20vh
     .bg-container
       position: relative
       width: 100%
-      height: 45vh
+      height: 100%
       background-color: #efefef
       background-position: center
       background-repeat: no-repeat
       background-size: cover
-      background-attachment: fixed
-
-      @media screen and (max-width: 800px)
-        &
-          background-size: auto 55vh
 
       > span
         user-select: none
@@ -287,37 +302,31 @@ onMounted(async () => {
         transform: translateX(-50%) translateY(-50%)
 
   .info-area
+    position: relative
+    background-color: #fff
+    box-shadow: 0 0 0.5rem #aaa
     padding-left: calc(2rem + 100px + 2rem)
     padding-top: 1rem
     padding-right: 1rem
-
+    padding-bottom: 3rem
+    margin-top: 40vh
+    z-index: 2
     > div
       margin: 0.4rem auto
-
       [data-icon]
         width: 1rem
         margin-right: .4rem
-
-    .username
-      font-size: 1.4rem
-      font-weight: 600
-
-    .comment
-      max-height: 4rem
-      overflow: hidden
-      white-space: nowrap
-      text-overflow: ellipsis
-
-    .userMore
-      white-space: nowrap
-
+    @media (max-width: 800px)
+      margin-top: 20vh
+      padding-left: 1rem
+      padding-top: 60px
   .avatar-area
     position: absolute
-    top: calc(45vh - 50px)
+    top: -50px
     left: 2rem
-    // left: 50%
-    // transform: translateX(-50%)
-
+    @media (max-width: 800px)
+      left: 50%
+      transform: translateX(-50%)
     img
       box-sizing: border-box
       width: 100px
@@ -325,6 +334,30 @@ onMounted(async () => {
       border-radius: 50%
       border: 4px solid #fff
       box-shadow: 0 4px 8px #efefef
+  .username
+    font-size: 1.4rem
+    font-weight: 700
+  .user-folow
+    button
+      font-size: 1rem
+      background-color: #ddd
+      border-radius: 1rem
+      color: var(--theme-text-color)
+      padding: 0.3rem 1.5rem
+      &:disabled
+        opacity: 0.7
+  .comment
+    max-height: 4rem
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
+  .userMore
+    white-space: nowrap
+
+#user-artworks
+  position: relative
+  background-color: #fff
+  z-index: 2
 
 .tabber
   ul.tab-btn
@@ -334,21 +367,17 @@ onMounted(async () => {
     background-color: var(--theme-background-color)
     box-shadow: 0 6px 10px -6px #ccc
     transition: all 0.4s ease-in-out
-    z-index: 10
+    z-index: 12
     position: sticky
     top: 50px
-
     .global-navbar_hidden &
       top: 0
-
     li
       display: inline-block
       margin: 1px 0
-
       a
         padding: 0.4rem 1rem
         cursor: pointer
-
         &.tab-active
           font-weight: bold
 
@@ -399,14 +428,6 @@ onMounted(async () => {
     .title
       font-size: 1rem
       font-weight: 600
-
-    .follow
-      button
-        font-size: 1rem
-        background-color: #ddd
-        border-radius: 1rem
-        color: var(--theme-text-color)
-        padding: 0.3rem 1.5rem
 
   .bottom
     margin: 1.5rem 5%

@@ -20,6 +20,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ajax } from '@/utils/ajax'
 import type { Comments } from '@/types'
 
 const loading = ref(false)
@@ -36,7 +37,7 @@ async function init(id: string | number): Promise<void> {
 
   try {
     loading.value = true
-    const { data } = await axios.get(`/ajax/illusts/comments/roots`, {
+    const { data } = await ajax.get(`/ajax/illusts/comments/roots`, {
       params: new URLSearchParams({
         illust_id: `${id}`,
         limit: comments.value.length ? '30' : '3',

@@ -35,19 +35,10 @@
                 | {{ illust.likeCount }}
 
               //- 收藏
-              //- 未收藏/不可收藏
               span.bookmark-count(
-                :title='store.isLoggedIn ? "添加收藏" : "收藏"'
-                @click='async () => await addArtworkBookmark()'
-                v-if='!illust.bookmarkData'
-              )
-                i-fa-solid-heart(data-icon)
-                | {{ illust.bookmarkCount }}
-              //- 已收藏
-              router-link.bookmark-count.bookmarked(
-                :to='"/users/" + store.userId'
-                title='查看收藏'
-                v-if='illust.bookmarkData'
+                :class='{ bookmarked: illust.bookmarkData }',
+                :title='!store.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
+                @click='illust.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
               )
                 i-fa-solid-heart(data-icon)
                 | {{ illust.bookmarkCount }}
@@ -62,7 +53,7 @@
             p.create-date {{ new Date(illust.createDate).toLocaleString() }}
 
           .artwork-tags
-            span.x-restrict(title='R-18' v-if='illust.xRestrict') R-18
+            span.x-restrict(title='R-18' v-if='illust?.xRestrict') R-18
             art-tag(
               :key='_',
               :tag='item.tag'
@@ -102,12 +93,17 @@
 
 <script lang="ts" setup>
 import { getCache, setCache } from './siteCache'
+import { ajax } from '@/utils/ajax'
 
 // Types
 import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '@/types'
 
 import { useUserStore } from '@/plugins/states'
-import { addBookmark, sortArtList } from '@/utils/artworkActions'
+import {
+  addBookmark,
+  removeBookmark,
+  sortArtList,
+} from '@/utils/artworkActions'
 
 const loading = ref(true)
 const error = ref('')
@@ -137,8 +133,8 @@ async function init(id: string): Promise<void> {
 
   try {
     const [{ data: illustData }, { data: illustPage }] = await Promise.all([
-      axios.get<Artwork>(`/ajax/illust/${id}?full=1`),
-      axios.get<ArtworkGallery[]>(`/ajax/illust/${id}/pages`),
+      ajax.get<Artwork>(`/ajax/illust/${id}?full=1`),
+      ajax.get<ArtworkGallery[]>(`/ajax/illust/${id}/pages`),
     ])
     document.title = `${illustData.illustTitle} | Artwork | PixivNow`
     setCache(`illust.${id}`, illustData)
@@ -190,7 +186,7 @@ async function getFirstRecommend(id: string): Promise<void> {
   try {
     recommendLoading.value = true
     console.log('init recommend')
-    const { data } = await axios.get<{
+    const { data } = await ajax.get<{
       illusts: ArtworkInfo[]
       nextIds: string[]
     }>(`/ajax/illust/${id}/recommend/init?limit=18`)
@@ -218,7 +214,7 @@ async function getMoreRecommend(): Promise<void> {
     for (const id of requestIds) {
       searchParams.append('illust_ids', id)
     }
-    const { data } = await axios.get<{
+    const { data } = await ajax.get<{
       illusts: ArtworkInfo[]
       nextIds: string[]
     }>('/ajax/illust/recommend/illusts', { params: searchParams })
@@ -231,7 +227,7 @@ async function getMoreRecommend(): Promise<void> {
   }
 }
 
-async function addArtworkBookmark(): Promise<void> {
+async function handleAddBookmark(): Promise<void> {
   if (!store.isLoggedIn) {
     console.log('需要登录才可以添加收藏')
     return
@@ -254,6 +250,19 @@ async function addArtworkBookmark(): Promise<void> {
     }
   } catch (err) {
     console.error('bookmark add error:', err)
+  } finally {
+    bookmarkLoading.value = false
+  }
+}
+async function handleRemoveBookmark(): Promise<void> {
+  if (bookmarkLoading.value || !illust.value.bookmarkData) return
+  try {
+    bookmarkLoading.value = true
+    await removeBookmark(illust.value.bookmarkData.id)
+    illust.value.bookmarkData = null
+    illust.value.bookmarkCount--
+  } catch (err) {
+    console.error('bookmark remove failed:', err)
   } finally {
     bookmarkLoading.value = false
   }
