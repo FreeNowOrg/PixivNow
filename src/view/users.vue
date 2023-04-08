@@ -24,7 +24,7 @@
         .username-header.flex
           .username {{ user.name }}
           .flex-1
-          .user-folow
+          .user-folow(v-if='user.userId !== userStore.userId')
             button(:disabled='loadingUserFollow' @click='handleUserFollow')
               i-fa-solid-check(v-if='user.isFollowed')
               i-fa-solid-plus(v-else)
@@ -138,10 +138,11 @@
               div {{  user.userId === userStore.userId ? '收藏夹是空的 Σ(⊙▽⊙"a' : `${user.name}没有公开的收藏`  }}
             artwork-list(:list='bookmarks', :show-tags='false')
             .more-btn.align-center
-              a.button(@click='getBookmarks')
-                i-fa-solid-arrow-down(data-icon v-if='!loadingBookmarks')
-                i-fa-solid-spinner.spin(data-icon v-else)
-                | {{ loadingBookmarks ? '正在加载……' : '加载更多' }}
+              show-more(
+                :loading='loadingBookmarks',
+                :method='getBookmarks',
+                :text='loadingBookmarks ? "正在加载" : "加载更多"'
+              )
 </template>
 
 <script lang="ts" setup>
@@ -246,11 +247,7 @@ async function getBookmarks(): Promise<void> {
     )
     bookmarks.value = bookmarks.value.concat(data.works)
   } catch (err) {
-    if (err instanceof Error) {
-      error.value = err.message
-    } else {
-      error.value = '未知错误'
-    }
+    console.warn('failed to fetch bookmarks', err)
   } finally {
     loadingBookmarks.value = false
   }
