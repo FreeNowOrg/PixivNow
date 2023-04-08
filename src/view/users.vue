@@ -135,9 +135,9 @@
           section(v-if='tab === "bookmarks"')
             h2 {{ user.userId === userStore.userId ? '我' : user.name }}的收藏
             .no-result(v-if='!loadingBookmarks && !bookmarks.length')
-              div {{  user.userId === userStore.userId ? '收藏夹是空的 Σ(⊙▽⊙"a' : `${user.name}没有公开的收藏`  }}
+              div {{  user.userId === userStore.userId ? '收藏夹是空的 Σ(⊙▽⊙"a' : `${user.name}没有公开的收藏 ${'(❁´◡`❁)'}`  }}
             artwork-list(:list='bookmarks', :show-tags='false')
-            .more-btn.align-center
+            .more-btn.align-center(v-if='bookmarks.length')
               show-more(
                 :loading='loadingBookmarks',
                 :method='getBookmarks',
