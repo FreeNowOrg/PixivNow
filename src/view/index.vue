@@ -142,7 +142,7 @@ onMounted(async () => {
 [data-route="home"]
   .top-slider
     min-height: calc(100vh)
-    margin-top: calc(-50px - 1rem)
+    margin-top: -50px
     padding: 30px 10%
     background-position: center
     background-repeat: no-repeat
