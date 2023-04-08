@@ -20,7 +20,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
       .user-link
         a.dropdown-btn.plain.pointer(
           :class='{ "show-user": showUserDropdown }'
-          @click='showUserDropdown = !showUserDropdown'
+          @click.stop='showUserDropdown = !showUserDropdown'
         )
           img.avatar(
             :src='userStore.isLoggedIn ? userStore.userProfileImg : "/~/common/images/no_profile.png"',
@@ -98,6 +98,11 @@ watch(hidden, (value) => {
   }
 })
 
+const router = useRouter()
+router.afterEach(() => {
+  showUserDropdown.value = false
+})
+
 onMounted(() => {
   window.addEventListener('scroll', () => {
     const newTop = document.documentElement.scrollTop
@@ -109,11 +114,8 @@ onMounted(() => {
   })
 
   // Outside close user dropdown
-  document
-    .getElementById('global-nav__user-area')
-    ?.addEventListener('click', (e) => e.stopPropagation())
   document.addEventListener('click', () => {
-    if (showUserDropdown.value) showUserDropdown.value = false
+    showUserDropdown.value = false
   })
 })
 </script>
