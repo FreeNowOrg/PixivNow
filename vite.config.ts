@@ -6,6 +6,8 @@ import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Components from 'unplugin-vue-components/vite'
 
+const PROD = process.env.NODE_ENV === 'production'
+
 export default defineConfig({
   plugins: [
     vue(),
@@ -22,6 +24,10 @@ export default defineConfig({
       resolvers: [IconsResolver()],
     }),
   ],
+  build: {},
+  esbuild: {
+    drop: PROD ? ['console'] : [],
+  },
   server: { host: true },
   resolve: {
     alias: {
