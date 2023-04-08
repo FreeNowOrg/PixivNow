@@ -31,7 +31,7 @@ const loadingUserFollow = ref(false)
 function handleUserFollow() {
   loadingUserFollow.value = true
   const isFollowed = props.user.isFollowed
-  const handler = isFollowed ? addUserFollow : removeUserFollow
+  const handler = isFollowed ? removeUserFollow : addUserFollow
   handler(props.user.userId)
     .then(() => {
       props.user.isFollowed = !isFollowed
