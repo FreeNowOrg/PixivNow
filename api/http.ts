@@ -1,20 +1,32 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import type { IncomingHttpHeaders } from 'node:http'
-import axios, { AxiosRequestConfig } from 'axios'
-import cookie from 'cookie'
+import axios from 'axios'
+
+const PROD = process.env.NODE_ENV === 'production'
+
+export class CookieUtils {
+  static toJSON(raw: string) {
+    return Object.fromEntries(new URLSearchParams(raw.replace(/;\s*/g, '&')))
+  }
+  static toString(obj: any) {
+    return Object.keys(obj)
+      .map((i) => `${i}=${obj[i]}`)
+      .join(';')
+  }
+}
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   if (!isAccepted(req)) {
     return res.status(403).send('403')
   }
+
   try {
     const { __PREFIX, __PATH } = req.query
-    const { data } = await sendRequest({
+    const { data } = await ajax({
       method: req.method ?? 'GET',
-      path: `/${encodeURI(`${__PREFIX}${__PATH ? '/' + __PATH : ''}`)}`,
-      params: req.query,
-      data: req.body,
-      headers: req.headers,
+      url: `/${encodeURI(`${__PREFIX}${__PATH ? '/' + __PATH : ''}`)}`,
+      params: req.query ?? {},
+      data: req.body || undefined,
+      headers: req.headers as Record<string, string>,
     })
     res.status(200).send(data)
   } catch (err) {
@@ -23,82 +35,58 @@ export default async function (req: VercelRequest, res: VercelResponse) {
   }
 }
 
-export async function sendRequest({
-  method = 'GET',
-  path = '/',
-  params = {},
-  data = null,
-  headers = {},
-}: {
-  method?: string
-  path?: string
-  params?: Record<string, string | string[]>
-  data?: any
-  headers?: IncomingHttpHeaders
-}) {
-  const url = new URL(path, 'https://www.pixiv.net')
-  const newParams = new URLSearchParams()
+export const ajax = axios.create({
+  baseURL: 'https://www.pixiv.net/',
+  params: {},
+  headers: {
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69',
+  },
+  timeout: 9 * 1000,
+})
+ajax.interceptors.request.use((ctx) => {
+  // 去除内部参数
+  ctx.params = ctx.params || {}
+  delete ctx.params.__PATH
+  delete ctx.params.__PREFIX
 
-  // 做一些转换防止抑郁
-  // "foo[]": [] -> "foo": []
-  for (const [key, value] of Object.entries(params)) {
-    if (key.endsWith('[]')) {
-      const newKey = key.replace(/\[\]$/, '')
-      if (Array.isArray(value)) {
-        for (const v of value) {
-          newParams.append(newKey, v)
-        }
-      } else {
-        newParams.append(newKey, value)
-      }
-    } else {
-      newParams.append(key, value.toString())
-    }
-  }
-  const cookies = cookie.parse((headers.Cookie ?? '').toString())
+  const cookies = CookieUtils.toJSON(ctx.headers.cookie || '')
+  const csrfToken = ctx.headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
+  // 强制覆写部分 headers
+  ctx.headers = ctx.headers || {}
+  ctx.headers.host = 'www.pixiv.net'
+  ctx.headers.origin = 'https://www.pixiv.net'
+  ctx.headers.referer = 'https://www.pixiv.net/'
+  ctx.headers['user-agent'] =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69'
+  ctx.headers['accept-language'] ??=
+    'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
+  csrfToken && (ctx.headers['x-csrf-token'] = csrfToken)
 
-  const config: AxiosRequestConfig = {
-    method,
-    url: url.href,
-    params: newParams,
-    data,
-    timeout: 9000,
-    headers: {
-      Accept: headers.accept ?? '*/*',
-      'Accept-Language':
-        headers['accept-language'] ??
-        'zh-CN, zh;q=0.8, zh-TW;q=0.7, zh-HK;q=0.5, en-US;q=0.3, en;q=0.2',
-      Cookie: headers.cookie ?? '',
-      // 避免国产阴间浏览器或手机端等导致的验证码
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:110.0) Gecko/20100101 Firefox/110.0',
+  !PROD &&
+    console.info(ctx.method, ctx.url, {
+      params: ctx.params,
+      data: ctx.data,
+      headers: ctx.headers,
+      cookies: cookies,
+    })
 
-      // ↓ Keep these headers
-      Host: 'www.pixiv.net',
-      Origin: 'https://www.pixiv.net',
-      Referer: 'https://www.pixiv.net/',
-      // Token
-      'X-Csrf-Token': headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? '',
-    },
-  }
+  return ctx
+})
+ajax.interceptors.response.use((ctx) => {
+  typeof ctx.data === 'object' &&
+    (ctx.data = replaceUrlInObject(ctx.data?.body ?? ctx.data))
+  !PROD && console.info('[RESPONSE]', ctx.request?.path, ctx.data)
+  return ctx
+})
 
-  try {
-    const res = await axios(config)
-    res.data = replaceUrlInObject(res.data?.body ?? res.data)
-    return res
-  } catch (err) {
-    console.error('[AxiosError]', err)
-    throw err
-  }
-}
-
-function replaceUrlInString(str: string): string {
+export function replaceUrlInString(str: string): string {
   return str
     .replace(/https:\/\/i\.pximg\.net\//g, '/-/')
     .replace(/https:\/\/s\.pximg\.net\//g, '/~/')
 }
 
-function replaceUrlInObject(
+export function replaceUrlInObject(
   obj: Record<string, any> | string
 ): Record<string, any> | string {
   if (typeof obj === 'string') return replaceUrlInString(obj)

@@ -5,6 +5,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
+    "skipLibCheck": true,
     "jsx": "preserve",
     "sourceMap": true,
     "lib": ["esnext", "dom"],
@@ -27,6 +28,7 @@
     "components.d.ts",
     "auto-imports.d.ts"
   ],
+  "exclude": ["node_modules/**", "**/dist"],
   "vueCompilerOptions": {
     "plugins": ["@volar/vue-language-plugin-pug"]
   }

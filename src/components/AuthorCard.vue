@@ -1,5 +1,5 @@
 <template lang="pug">
-card.author-card(title='')
+card.author-card(:data-user-is-followed='user.isFollowed' title='')
   .flex-center
     .left
       router-link(:to='"/users/" + user.userId')
@@ -8,9 +8,11 @@ card.author-card(title='')
       .flex
         h4
           router-link(:to='"/users/" + user.userId') {{ user.name }}
-        button
-          | 关注&nbsp;
-          i-fa-solid-plus
+        button(:disabled='loadingUserFollow' @click='handleUserFollow')
+          i-fa-solid-check(v-if='user.isFollowed')
+          i-fa-solid-plus(v-else)
+          |
+          | {{ user.isFollowed ? '已关注' : '关注' }}
       p.description.pre {{ user.comment }}
 
   artwork-list.inline.tiny(:list='user.illusts')
@@ -19,10 +21,25 @@ card.author-card(title='')
 <script lang="ts" setup>
 import Card from './Card.vue'
 import type { User } from '@/types'
+import { addUserFollow, removeUserFollow } from '@/utils'
 
-defineProps<{
+const props = defineProps<{
   user: User
 }>()
+
+const loadingUserFollow = ref(false)
+function handleUserFollow() {
+  loadingUserFollow.value = true
+  const isFollowed = props.user.isFollowed
+  const handler = isFollowed ? removeUserFollow : addUserFollow
+  handler(props.user.userId)
+    .then(() => {
+      props.user.isFollowed = !isFollowed
+    })
+    .finally(() => {
+      loadingUserFollow.value = false
+    })
+}
 </script>
 
 <style scoped lang="sass">

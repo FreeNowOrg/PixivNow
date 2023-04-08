@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { formatInTimeZone } from 'date-fns-tz'
-import { sendRequest } from './http'
+import { ajax } from './http'
 import { Artwork } from '../src/types'
 
 type ArtworkOrAd = Artwork | { isAdContainer: boolean }
@@ -11,8 +11,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     req.query.format !== 'json'
   try {
     const data: { illusts?: ArtworkOrAd[] } = (
-      await sendRequest({
-        path: '/ajax/illust/discovery',
+      await ajax({
+        url: '/ajax/illust/discovery',
         params: {
           mode: req.query.mode ?? 'safe',
           max: requestImage ? '1' : req.query.max ?? '18',

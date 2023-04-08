@@ -1,0 +1,295 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="45px" width="45px" class="ms-spinner">
+  <g class="circle-group" transform="translate(22.5,22.5)">
+    <circle r="20" fill="none" stroke="#000" stroke-width="5"/>
+    <circle r="20" fill="none" stroke="#000" stroke-width="5"/>
+    <circle r="20" fill="none" stroke="#000" stroke-width="5"/>
+    <circle r="20" fill="none" stroke="#000" stroke-width="5"/>
+    <circle r="20" fill="none" stroke="#000" stroke-width="5"/>
+  </g>
+  <style>
+    /* Copyright Microsoft, Imitated by: 机智的小鱼君 */
+    @keyframes opacity-keyframe {
+
+      0%,
+      74.72706% {
+        opacity: 1;
+        animation-timing-function: step-start
+      }
+
+      74.75029%,
+      100% {
+        opacity: 0;
+        animation-timing-function: step-start
+      }
+    }
+
+    .ms-spinner circle {
+      stroke: #1483da;
+      stroke-dasharray: 126;
+      stroke-dashoffset: 125.999;
+      stroke-linecap: round;
+      opacity: 0;
+      transform: rotate(225deg);
+      animation-iteration-count: infinite;
+      animation-duration: 4500ms;
+    }
+
+    @keyframes e1r {
+      0% {
+        animation-timing-function: cubic-bezier(.02, .33, .38, .77);
+        transform: rotate(90deg)
+      }
+
+      10.05807% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(210deg)
+      }
+
+      27.87456% {
+        animation-timing-function: cubic-bezier(.57, .17, .95, .75);
+        transform: rotate(293deg)
+      }
+
+      37.56098% {
+        animation-timing-function: cubic-bezier(0, .19, .07, .72);
+        transform: rotate(405deg)
+      }
+
+      46.8525% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(557deg)
+      }
+
+      64.64576% {
+        animation-timing-function: cubic-bezier(0, 0, .95, .37);
+        transform: rotate(639deg)
+      }
+
+      74.72706%,
+      100% {
+        transform: rotate(785deg);
+        animation-timing-function: cubic-bezier(.13, .21, .1, .7)
+      }
+    }
+
+    .ms-spinner circle:nth-child(1) {
+      animation-name: e1r, opacity-keyframe;
+      animation-delay: 0ms
+    }
+
+    @keyframes e2r {
+      0% {
+        animation-timing-function: cubic-bezier(.02, .33, .38, .77);
+        transform: rotate(84deg)
+      }
+
+      10.05807% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(204deg)
+      }
+
+      27.87456% {
+        animation-timing-function: cubic-bezier(.57, .17, .95, .75);
+        transform: rotate(287deg)
+      }
+
+      37.56098% {
+        animation-timing-function: cubic-bezier(0, .19, .07, .72);
+        transform: rotate(399deg)
+      }
+
+      46.8525% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(551deg)
+      }
+
+      64.64576% {
+        animation-timing-function: cubic-bezier(0, 0, .95, .37);
+        transform: rotate(633deg)
+      }
+
+      74.72706%,
+      100% {
+        transform: rotate(779deg);
+        animation-timing-function: cubic-bezier(.13, .21, .1, .7)
+      }
+    }
+
+    .ms-spinner circle:nth-child(2) {
+      animation-name: e2r, opacity-keyframe;
+      animation-delay: 180ms
+    }
+
+    @keyframes e3r {
+      0% {
+        animation-timing-function: cubic-bezier(.02, .33, .38, .77);
+        transform: rotate(78deg)
+      }
+
+      10.05807% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(198deg)
+      }
+
+      27.87456% {
+        animation-timing-function: cubic-bezier(.57, .17, .95, .75);
+        transform: rotate(281deg)
+      }
+
+      37.56098% {
+        animation-timing-function: cubic-bezier(0, .19, .07, .72);
+        transform: rotate(393deg)
+      }
+
+      46.8525% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(545deg)
+      }
+
+      64.64576% {
+        animation-timing-function: cubic-bezier(0, 0, .95, .37);
+        transform: rotate(627deg)
+      }
+
+      74.72706%,
+      100% {
+        transform: rotate(773deg);
+        animation-timing-function: cubic-bezier(.13, .21, .1, .7)
+      }
+    }
+
+    .ms-spinner circle:nth-child(3) {
+      animation-name: e3r, opacity-keyframe;
+      animation-delay: 360ms
+    }
+
+    @keyframes e4r {
+      0% {
+        animation-timing-function: cubic-bezier(.02, .33, .38, .77);
+        transform: rotate(72deg)
+      }
+
+      10.05807% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(192deg)
+      }
+
+      27.87456% {
+        animation-timing-function: cubic-bezier(.57, .17, .95, .75);
+        transform: rotate(275deg)
+      }
+
+      37.56098% {
+        animation-timing-function: cubic-bezier(0, .19, .07, .72);
+        transform: rotate(387deg)
+      }
+
+      46.8525% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(539deg)
+      }
+
+      64.64576% {
+        animation-timing-function: cubic-bezier(0, 0, .95, .37);
+        transform: rotate(621deg)
+      }
+
+      74.72706%,
+      100% {
+        transform: rotate(767deg);
+        animation-timing-function: cubic-bezier(.13, .21, .1, .7)
+      }
+    }
+
+    .ms-spinner circle:nth-child(4) {
+      animation-name: e4r, opacity-keyframe;
+      animation-delay: 540ms
+    }
+
+    @keyframes e5r {
+      0% {
+        animation-timing-function: cubic-bezier(.02, .33, .38, .77);
+        transform: rotate(66deg)
+      }
+
+      10.05807% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(186deg)
+      }
+
+      27.87456% {
+        animation-timing-function: cubic-bezier(.57, .17, .95, .75);
+        transform: rotate(269deg)
+      }
+
+      37.56098% {
+        animation-timing-function: cubic-bezier(0, .19, .07, .72);
+        transform: rotate(381deg)
+      }
+
+      46.8525% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(533deg)
+      }
+
+      64.64576% {
+        animation-timing-function: cubic-bezier(0, 0, .95, .37);
+        transform: rotate(615deg)
+      }
+
+      74.72706%,
+      100% {
+        transform: rotate(761deg);
+        animation-timing-function: cubic-bezier(.13, .21, .1, .7)
+      }
+    }
+
+    .ms-spinner circle:nth-child(5) {
+      animation-name: e5r, opacity-keyframe;
+      animation-delay: 720ms
+    }
+
+    @keyframes e6r {
+      0% {
+        animation-timing-function: cubic-bezier(.02, .33, .38, .77);
+        transform: rotate(60deg)
+      }
+
+      10.05807% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(180deg)
+      }
+
+      27.87456% {
+        animation-timing-function: cubic-bezier(.57, .17, .95, .75);
+        transform: rotate(263deg)
+      }
+
+      37.56098% {
+        animation-timing-function: cubic-bezier(0, .19, .07, .72);
+        transform: rotate(375deg)
+      }
+
+      46.8525% {
+        animation-timing-function: cubic-bezier(0, 0, 1, 1);
+        transform: rotate(527deg)
+      }
+
+      64.64576% {
+        animation-timing-function: cubic-bezier(0, 0, .95, .37);
+        transform: rotate(609deg)
+      }
+
+      74.72706%,
+      100% {
+        transform: rotate(755deg);
+        animation-timing-function: cubic-bezier(.13, .21, .1, .7)
+      }
+    }
+
+    .ms-spinner circle:nth-child(6) {
+      animation-name: e6r, opacity-keyframe;
+      animation-delay: 900ms
+    }
+  </style>
+</svg>
