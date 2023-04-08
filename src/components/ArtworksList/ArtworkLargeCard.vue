@@ -54,7 +54,7 @@ h3
   box-shadow: 0 0 4px #ccc
   padding: .4rem
   width: 240px
-  max-width: calc(50vw - 2rem)
+  max-width: calc(50vw - 2.5rem)
   background-color: var(--theme-background-color)
   border-radius: 4px
   transition: all .24s ease-in-out
