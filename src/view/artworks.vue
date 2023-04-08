@@ -245,7 +245,10 @@ async function handleAddBookmark(): Promise<void> {
     bookmarkLoading.value = true
     const data = await addBookmark(illust.value.illustId)
     if (data.last_bookmark_id) {
-      illust.value.bookmarkData = data
+      illust.value.bookmarkData = {
+        id: data.last_bookmark_id,
+        private: false,
+      }
       illust.value.bookmarkCount++
     }
   } catch (err) {
