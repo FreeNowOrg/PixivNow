@@ -24,6 +24,7 @@ declare module '@vue/runtime-core' {
     Gallery: typeof import('./src/components/Gallery.vue')['default']
     IFaSolidAngleDown: typeof import('~icons/fa-solid/angle-down')['default']
     IFaSolidAngleLeft: typeof import('~icons/fa-solid/angle-left')['default']
+    IFaSolidAngleRight: typeof import('~icons/fa-solid/angle-right')['default']
     IFaSolidArrowDown: typeof import('~icons/fa-solid/arrow-down')['default']
     IFaSolidArrowRight: typeof import('~icons/fa-solid/arrow-right')['default']
     IFaSolidBars: typeof import('~icons/fa-solid/bars')['default']

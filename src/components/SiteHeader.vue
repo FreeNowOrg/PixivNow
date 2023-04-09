@@ -12,7 +12,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
       .search-full.align-right.flex-1
         SearchBox
       .search-icon.align-right.flex-1
-        button.pointer(@click='openSideNav')
+        a.pointer.plain(@click='openSideNav')
           i-fa-solid-search
           | &nbsp;搜索
     .flex.search-area(v-else)
@@ -249,8 +249,10 @@ onMounted(() => {
 
   .search-icon
     display: none
+    a
+      color: var(--theme-accent-link-color)
 
-@media screen and (max-width: 450px)
+@media (max-width: 450px)
   .global-navbar
     .search-full
       display: none

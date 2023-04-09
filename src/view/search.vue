@@ -1,10 +1,15 @@
 <template lang="pug">
 mixin pagenator
   .pagenator(v-if='resultList.length >= 60')
-    button.prev(disabled v-if='page === 1') 上一页
-    button.prev(@click='page--' v-if='page !== 1') 上一页
+    NButton.prev(
+      :disabled='page <= 1'
+      @click='page--'
+      circle
+      secondary
+      type='primary'
+    ): IFaSolidAngleLeft
     span.page {{ page }}
-    button.next(@click='page++') 下一页
+    NButton.next(@click='page++' circle secondary type='primary'): IFaSolidAngleRight
 
 #search-view
   .body-inner
@@ -19,11 +24,10 @@ mixin pagenator
       +pagenator
 
       //- Loading
-      .loading-area(v-if='loading')
-        .align-center
-          Placeholder
+      .loading-area(v-if='loading && !resultList.length')
+        ArtworkList(:list='[]', :loading='16')
 
-      .result-area(v-if='!loading')
+      NSpin.result-area(:show='loading' v-if='resultList.length')
         ArtworkLargeList(:artwork-list='resultList')
 
       .no-more(v-if='!loading && resultList.length < 60') 没有了，一滴都没有了……
@@ -33,9 +37,10 @@ mixin pagenator
 
 <script lang="ts" setup>
 import ArtworkLargeList from '@/components/ArtworksList/ArtworkLargeList.vue'
+import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
-import Placeholder from '@/components/Placeholder.vue'
 import SearchBox from '@/components/SearchBox.vue'
+import { NButton, NSpin } from 'naive-ui'
 
 import { ajax } from '@/utils/ajax'
 import type { ArtworkInfo } from '@/types'
@@ -96,7 +101,7 @@ onBeforeRouteUpdate(async (to) => {
     p?: `${number}`
     mode?: string
   }
-  await makeSearch(params)
+  makeSearch(params)
 })
 
 onMounted(async () => {
@@ -113,6 +118,7 @@ onMounted(async () => {
 
 .pagenator
   text-align: center
+  margin: 1rem auto
 
   .page
     display: inline-block
