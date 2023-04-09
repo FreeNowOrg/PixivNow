@@ -21,11 +21,11 @@
       ArtworkList(:list='[]', :loading='20')
 
   //- Error
-  section.error(v-if='error')
+  section.error(v-else-if='error')
     ErrorPage(:description='error' title='出大问题')
 
   //- :)
-  section.user(v-if='!loading && !error && user')
+  section.user(v-else-if='user')
     .user-info
       .bg-area(:class='{ "no-background": !user?.background }')
         .bg-container(
@@ -102,31 +102,34 @@
               pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
 
     #user-artworks
-      .tabber
-        ul.tab-btn
-          li(@click='tab = "illust"')
-            a(:class='{ "tab-active": tab === "illust" }') 插画
-          li(@click='tab = "manga"')
-            a(:class='{ "tab-active": tab === "manga" }') 漫画
-          li(@click='tab = "bookmarks"')
-            a(:class='{ "tab-active": tab === "bookmarks" }') {{ user.userId === userStore.userId ? '我' : user.name }}的收藏
-        .tab-contents
-          section(v-if='tab === "illust"')
-            h2 插画
-            .no-result(v-if='user.illusts && !user.illusts.length')
-              div 用户没有插画作品 (｡•́︿•̀｡)
-            ArtworkList(:list='user.illusts', :show-tags='false')
-          section(v-if='tab === "manga"')
-            h2 漫画
-            .no-result(v-if='user.manga && !user.manga.length')
-              div 用户没有漫画作品 (*/ω＼*)
-            ArtworkList(:list='user.manga', :show-tags='false')
-          section(v-if='tab === "bookmarks"')
-            h2 {{ user.userId === userStore.userId ? '我' : user.name }}的收藏
-            .no-result(v-if='!loadingBookmarks && !bookmarks.length')
-              div {{  user.userId === userStore.userId ? '收藏夹是空的 Σ(⊙▽⊙"a' : `${user.name}没有公开的收藏 ${'(❁´◡`❁)'}`  }}
-            ArtworkList(:list='bookmarks', :show-tags='false')
-            .more-btn.align-center(v-if='bookmarks.length')
+      NTabs(
+        :bar-width='32'
+        animated
+        justify-content='space-evenly'
+        type='line'
+      )
+        NTabPane(name='illust' tab='插画')
+          NEmpty(
+            description='用户没有插画作品 (｡•́︿•̀｡)'
+            v-if='user.illusts && !user.illusts.length'
+          )
+          .user-illust.body-inner(v-else)
+            ArtworkList(:list='user.illusts')
+        NTabPane(name='manga' tab='漫画')
+          NEmpty(description='用户没有漫画作品 (*/ω＼*)' v-if='!user.manga?.length')
+          .user-manga.body-inner(v-else)
+            ArtworkList(:list='user.manga')
+        NTabPane(
+          :tab='`${user.userId === userStore.userId ? "我" : user.name}的收藏`'
+          name='bookmarks'
+        )
+          NEmpty(
+            :description='user.userId === userStore.userId ? `收藏夹是空的 Σ(⊙▽⊙"a` : `${user.name}没有公开的收藏 ${"(❁´◡`❁)"}`'
+            v-if='!bookmarks?.length'
+          )
+          .user-bookmarks.body-inner(v-else)
+            ArtworkList(:list='bookmarks')
+            .more-btn.align-center(v-if='bookmarks.length && hasMoreBookmarks')
               ShowMore(
                 :loading='loadingBookmarks',
                 :method='getBookmarks',
@@ -140,19 +143,31 @@ import { ajax } from '@/utils/ajax'
 
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
-import Placeholder from '@/components/Placeholder.vue'
 import ShowMore from '@/components/ShowMore.vue'
 
 import { getCache, setCache } from './siteCache'
 import { sortArtList } from '@/utils/artworkActions'
 import { useUserStore } from '@/plugins/states'
 import type { ArtworkInfo, User } from '@/types'
-import { NButton, NImage, NModal, NSkeleton, NTable } from 'naive-ui'
+import {
+  NButton,
+  NEmpty,
+  NImage,
+  NModal,
+  NSkeleton,
+  NTabPane,
+  NTable,
+  NTabs,
+} from 'naive-ui'
 
 const loading = ref(true)
 const user = ref<User>()
 const bookmarks = ref<ArtworkInfo[]>([])
 const loadingBookmarks = ref(false)
+const totalBookmarks = ref(0)
+const hasMoreBookmarks = computed(
+  () => bookmarks.value.length && bookmarks.value.length < totalBookmarks.value
+)
 const tab = ref<'illust' | 'manga' | 'bookmarks'>('illust')
 const error = ref('')
 const showUserMore = ref(false)
@@ -182,6 +197,7 @@ async function init(id: string | number): Promise<void> {
   tab.value = 'illust'
   error.value = ''
   bookmarks.value = []
+  totalBookmarks.value = 0
 
   const cache = getCache(`users.${id}`)
   if (cache) {
@@ -262,6 +278,7 @@ async function getBookmarks(): Promise<void> {
         }),
       }
     )
+    totalBookmarks.value = data.total
     bookmarks.value = bookmarks.value.concat(data.works)
   } catch (err) {
     console.warn('failed to fetch bookmarks', err)
@@ -347,8 +364,9 @@ onMounted(async () => {
       width: 100px
       height: 100px
       border-radius: 50%
+      background-color: #fff
       border: 4px solid #fff
-      box-shadow: 0 4px 8px #efefef
+      box-shadow: 0 0.2rem 0.4rem #cdcdcd
   .username
     font-size: 1.6rem
     font-weight: 700
@@ -366,39 +384,19 @@ onMounted(async () => {
   background-color: #fff
   z-index: 2
 
-.tabber
-  ul.tab-btn
-    list-style: none
-    padding-left: 0
-    margin: 0
+:deep(.n-tabs)
+  .n-tabs-nav
     background-color: var(--theme-background-color)
-    box-shadow: 0 6px 10px -6px #ccc
-    transition: all 0.4s ease-in-out
     z-index: 12
     position: sticky
     top: 50px
-    .global-navbar_hidden &
-      top: 0
-    li
-      display: inline-block
-      margin: 1px 0
-      a
-        padding: 0.4rem 1rem
-        cursor: pointer
-        &.tab-active
-          font-weight: bold
 
-  .tab-contents
-    border-top: 1px solid var(--theme-link-color)
+.user-illust, .user-manga
+  :deep(.author)
+    display: none
 
-.no-result
-  height: 90vh
-  display: flex
-  align-items: center
-
-  > div
-    text-align: center
-    flex: 1
+:deep(.n-empty)
+  margin: 20vh auto
 
 .info-modal
   position: relative
