@@ -2,8 +2,23 @@
 #user-view
   //- Loading
   section.loading(v-if='loading')
-    Placeholder
-    p {{ !user ? '正在读取用户 #' + $route.params.id : '“' + user.name + '”的空间' }}
+    .bg-area.no-background
+      .bg-container(style='background-color: #efefef')
+    .user-info
+      .info-area
+        .avatar-area
+          NSkeleton(circle height='6rem' width='6rem')
+        .username-header.flex
+          h1.username: NSkeleton(text width='8em')
+        .desc(v-for='_ in 5')
+          NSkeleton(circle height='1em' text width='1em')
+          NSkeleton(
+            :width='`${Math.max(4, 12 * Math.random())}em`'
+            style='margin-left: 0.5em'
+            text
+          )
+    #user-artworks.body-inner
+      ArtworkList(:list='[]', :loading='20')
 
   //- Error
   section.error(v-if='error')
@@ -132,7 +147,7 @@ import { getCache, setCache } from './siteCache'
 import { sortArtList } from '@/utils/artworkActions'
 import { useUserStore } from '@/plugins/states'
 import type { ArtworkInfo, User } from '@/types'
-import { NButton, NImage, NModal, NTable } from 'naive-ui'
+import { NButton, NImage, NModal, NSkeleton, NTable } from 'naive-ui'
 
 const loading = ref(true)
 const user = ref<User>()
@@ -269,10 +284,6 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="sass">
-
-.loading
-  text-align: center
-
 .user-info
   position: relative
   // margin: -1rem -1rem 1rem -1rem
