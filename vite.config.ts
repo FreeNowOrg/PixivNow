@@ -13,7 +13,12 @@ export default defineConfig({
     vue(),
     AutoImport({
       dts: true,
-      imports: ['vue', 'vue-router', { axios: [['default', 'axios']] }],
+      imports: [
+        'vue',
+        'vue-router',
+        'vue-i18n',
+        { axios: [['default', 'axios']] },
+      ],
     }),
     Icons({
       scale: 1,
