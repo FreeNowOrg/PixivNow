@@ -8,28 +8,25 @@
 </template>
 
 <script lang="ts" setup>
+import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
+
 const elRef = ref<HTMLElement>()
 const props = defineProps<{
   text: string
-  method: () => void
+  method: () => any | Promise<any>
   loading: boolean
 }>()
 
-let observer: IntersectionObserver
-onMounted(() => {
-  const el = elRef.value
-  if (!el) return
-  observer = new IntersectionObserver((entries) => {
-    const [entry] = entries
-    if (entry.isIntersecting) {
-      console.info('into view')
-      props?.method()
-    }
-  })
-  observer.observe(el)
-})
-onBeforeUnmount(() => {
-  observer && observer.disconnect()
+async function mountObserver(el: HTMLElement) {
+  await getElementUntilIntoView(el)
+  await props?.method()
+  mountObserver(el)
+}
+
+onMounted(async () => {
+  await nextTick()
+  const el = elRef.value!
+  mountObserver(el)
 })
 </script>
 

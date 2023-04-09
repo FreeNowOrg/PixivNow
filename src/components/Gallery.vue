@@ -8,7 +8,7 @@
         title='点击下载原图'
         v-if='picShow === index'
       )
-        lazy-load.img(
+        LazyLoad.img(
           :height='item.height',
           :src='item.urls.regular',
           :width='item.width'
@@ -17,12 +17,12 @@
   //- .tips.align-center (这是预览图，点击下载原图)
   ul.pagenator(v-if='pages.length > 1')
     li(v-for='(item, index) in pages')
-      a(
+      a.pointer(
         :class='{ "is-active": picShow === index }',
         :title='`第${index + 1}张，共${pages.length}张`'
         @click='picShow = index'
       )
-        lazy-load.pic(
+        LazyLoad.pic(
           :height='80',
           :src='item.urls.thumb_mini',
           :width='80'

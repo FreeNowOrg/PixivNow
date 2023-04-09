@@ -4,18 +4,18 @@
     //- Error
     section(v-if='error')
       h1 排行榜加载失败
-      error-page(:description='error' title='出大问题')
+      ErrorPage(:description='error' title='出大问题')
 
     //- Loading
     section(v-if='loading')
       h1 排行榜加载中……
       .loading
-        placeholder
+        Placeholder
 
     //- Result
     section(v-if='list')
       h1 {{ list.date.toLocaleDateString('zh', { dateStyle: 'long' }) }}排行榜
-      artwork-large-list(:rank-list='list.contents')
+      ArtworkLargeList(:rank-list='list.contents')
 </template>
 
 <script lang="ts" setup>
@@ -43,7 +43,7 @@ async function init(): Promise<void> {
     return
   }
   try {
-    const { p, mode, date } = route.params
+    const { p, mode, date } = route.query
     const searchParams = new URLSearchParams()
     if (p && typeof p === 'string') searchParams.append('p', p)
     if (mode && typeof mode === 'string') searchParams.append('mode', mode)

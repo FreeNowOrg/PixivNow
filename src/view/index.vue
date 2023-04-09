@@ -4,61 +4,59 @@
     :style='{ "background-image": `url(${randomBg.url})` }'
   )
     section.search-area.flex-1
-      search-box.big.search
+      SearchBox.big.search
 
     .site-logo
       img(:src='LogoH')
     .description Pixiv Service Proxy
 
     .bg-info
+      a.pointer(@click='async () => await setRandomBgNoCache()' title='换一个~')
+        IFaSolidRandom
       a.pointer(
-        @click='async () => await setRandomBgNoCache()'
-        style='margin-right: 0.5em'
-        title='换一个~'
-      )
-        i-fa-solid-random
-      a.pointer(
-        @click='showBgInfo = true'
+        @click='isShowBgInfo = true'
+        style='margin-left: 0.5em'
         title='关于背景'
         v-if='randomBg.info.id'
       )
-        i-fa-solid-info-circle
+        IFaSolidInfoCircle
 
-  modal.bg-info-modal(v-model:show='showBgInfo')
-    h3 背景图片：{{ randomBg.info.title }}
-    .align-center
-      router-link.thumb(:to='"/artworks/" + randomBg.info.id')
-        img(:src='randomBg.url' lazyload)
-      .desc
-        strong {{ randomBg.info.title }}
-        | &ensp;&mdash;&ensp;
-        router-link(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
-        | 的作品 (ID: {{ randomBg.info.id }})
+  NModal(
+    :title='`背景图片：${randomBg.info.title}`'
+    closable
+    preset='card'
+    v-model:show='isShowBgInfo'
+  )
+    .bg-info-modal
+      .align-center
+        RouterLink.thumb(:to='"/artworks/" + randomBg.info.id')
+          img(:src='randomBg.url' lazyload)
+        .desc
+          strong {{ randomBg.info.title }}
+          | &ensp;&mdash;&ensp;
+          RouterLink(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
+          | 的作品 (ID: {{ randomBg.info.id }})
 
   .body-inner
     section.discover
-      h2 探索发现
+      NH2 探索发现
       .align-center
-        a.button(
+        NButton(
+          :loading='loadingDiscovery'
           @click='discoveryList.length ? (async () => await setDiscoveryNoCache())() : void 0'
+          round
+          secondary
+          size='small'
         )
-          | {{ loadingDiscovery ? '加载中' : '换一批' }}
-          |
-          i-fa-solid-random(v-if='!loadingDiscovery')
-          i-fa-solid-spinner.spin(v-else)
-      .align-center(v-if='!discoveryList.length')
-        placeholder
-      artwork-list(
-        :class='{ "loading-cover": loadingDiscovery }',
-        :list='discoveryList'
-      )
+          template(#default) {{ loadingDiscovery ? '加载中' : '换一批' }}
+          template(#icon): NIcon: IFaSolidRandom
+      ArtworkList(:list='discoveryList', :loading='loadingDiscovery')
 </template>
 
 <script lang="ts" setup>
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
-import Modal from '@/components/Modal.vue'
-import Placeholder from '@/components/Placeholder.vue'
 import SearchBox from '@/components/SearchBox.vue'
+import { NH2, NButton, NIcon, NModal } from 'naive-ui'
 
 import { formatInTimeZone } from 'date-fns-tz'
 import { getCache, setCache } from './siteCache'
@@ -68,7 +66,7 @@ import { ajax } from '@/utils/ajax'
 import LogoH from '@/assets/LogoH.png'
 import type { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
 
-const showBgInfo = ref(false)
+const isShowBgInfo = ref(false)
 const discoveryList = ref<ArtworkInfo[]>([])
 const randomBg = ref<{
   url: string
@@ -146,8 +144,8 @@ async function setDiscoveryFromCache(): Promise<void> {
 
 onMounted(async () => {
   document.title = 'Pixiv Now'
-  await setRandomBgFromCache()
-  await setDiscoveryFromCache()
+  setRandomBgFromCache()
+  setDiscoveryFromCache()
 })
 </script>
 
@@ -222,8 +220,6 @@ onMounted(async () => {
         pointer-events: all
 
   .bg-info-modal
-    h3
-      margin-top: 0
     .thumb
       > *
         width: auto

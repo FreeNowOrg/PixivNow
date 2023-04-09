@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createDiscreteApi } from 'naive-ui'
+const { message } = createDiscreteApi(['message'])
 
 const routes: RouteRecordRaw[] = [
   {
@@ -53,9 +55,15 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior(to, from) {
-    if (to === from) return
-    return { top: 0 }
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return {
+        top: 0,
+        behavior: 'smooth',
+      }
+    }
   },
 })
 
@@ -65,6 +73,9 @@ router.afterEach(({ name }) => {
   document.body.style.overflow = 'visible'
 })
 
-router.onError((error, to, from) => console.log(error, to, from))
+router.onError((error, to, from) => {
+  console.log(error, to, from)
+  message.error(error)
+})
 
 export default router

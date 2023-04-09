@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from 'axios'
 import nprogress from 'nprogress'
 
 export const ajax = axios.create({
-  timeout: 60 * 1000,
+  timeout: 15 * 1000,
   headers: {
     'Content-Type': 'application/json',
   },

@@ -5,16 +5,17 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
       i-fa-solid-bars(data-icon)
 
     .logo-area
-      router-link.plain(to='/')
+      RouterLink.plain(to='/')
         img.site-logo(:src='LogoH')
 
-    .flex.search-area
+    .flex.search-area(v-if='$route.name !== "search"')
       .search-full.align-right.flex-1
-        search-box
+        SearchBox
       .search-icon.align-right.flex-1
-        button.pointer(@click='openSideNav')
+        a.pointer.plain(@click='openSideNav')
           i-fa-solid-search
           | &nbsp;搜索
+    .flex.search-area(v-else)
 
     #global-nav__user-area.user-area
       .user-link
@@ -26,9 +27,8 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
             :src='userStore.isLoggedIn ? userStore.userProfileImg : "/~/common/images/no_profile.png"',
             :title='userStore.isLoggedIn ? userStore.userId + " (" + userStore.userPixivId + ")" : "未登入"'
           )
-          i-fa-solid-angle-down(data-icon)
 
-        transition(
+        Transition(
           enter-active-class='fade-in-up'
           leave-active-class='fade-out-down'
           mode='out-in'
@@ -51,16 +51,16 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                 .nav-user-card
                   .top
                     .banner-bg
-                    router-link.plain.name(:to='"/users/" + userStore.userId')
+                    RouterLink.plain.name(:to='"/users/" + userStore.userId')
                       img.avatar(:src='userStore.userProfileImgBig')
                   .details
-                    router-link.plain.user-name(
+                    RouterLink.plain.user-name(
                       :to='"/users/" + userStore.userId'
                     ) {{ userStore.userName }}
                     .uid @{{ userStore.userPixivId }}
 
               li(v-if='$route.path !== "/login"')
-                router-link.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
+                RouterLink.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
               li(v-if='userStore.isLoggedIn')
                 a.plain(@click='logoutUser') 用户登出
 </template>
@@ -88,7 +88,6 @@ function openSideNav() {
 function logoutUser() {
   logout()
   userStore.logout()
-  location.reload()
 }
 
 watch(hidden, (value) => {
@@ -185,15 +184,12 @@ onMounted(() => {
         list-style: none
         display: flex
         align-items: center
-
-      [data-icon]
-        margin-left: 6px
-        color: #fff
-        transition: all 0.4s
-
-      .dropdown-btn.show-user
-        [data-icon]
-          transform: rotateZ(180deg)
+        .avatar
+          box-shadow: 0 0 0 2px #fff
+          transition: box-shadow 0.24s ease
+        &.show-user
+          .avatar
+            box-shadow: 0 0 0 2px var(--theme-secondary-color)
 
       .dropdown-content
         position: absolute
@@ -253,8 +249,10 @@ onMounted(() => {
 
   .search-icon
     display: none
+    a
+      color: var(--theme-accent-link-color)
 
-@media screen and (max-width: 450px)
+@media (max-width: 450px)
   .global-navbar
     .search-full
       display: none

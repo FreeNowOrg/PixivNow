@@ -1,30 +1,34 @@
 <template lang="pug">
 mixin pagenator
   .pagenator(v-if='resultList.length >= 60')
-    button.prev(disabled v-if='page === 1') 上一页
-    button.prev(@click='page--' v-if='page !== 1') 上一页
+    NButton.prev(
+      :disabled='page <= 1'
+      @click='page--'
+      circle
+      secondary
+      type='primary'
+    ): IFaSolidAngleLeft
     span.page {{ page }}
-    button.next(@click='page++') 下一页
+    NButton.next(@click='page++' circle secondary type='primary'): IFaSolidAngleRight
 
 #search-view
   .body-inner
-    search-box.big
+    SearchBox.big
 
     //- Error
     section(v-if='error && !loading')
-      error-page(:description='error' title='出大问题')
+      ErrorPage(:description='error' title='出大问题')
 
     //- Result
     section(v-if='!error')
       +pagenator
 
       //- Loading
-      .loading-area(v-if='loading')
-        .align-center
-          placeholder
+      .loading-area(v-if='loading && !resultList.length')
+        ArtworkList(:list='[]', :loading='16')
 
-      .result-area(v-if='!loading')
-        artwork-large-list(:artwork-list='resultList')
+      NSpin.result-area(:show='loading' v-if='resultList.length')
+        ArtworkLargeList(:artwork-list='resultList')
 
       .no-more(v-if='!loading && resultList.length < 60') 没有了，一滴都没有了……
 
@@ -33,9 +37,10 @@ mixin pagenator
 
 <script lang="ts" setup>
 import ArtworkLargeList from '@/components/ArtworksList/ArtworkLargeList.vue'
+import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
-import Placeholder from '@/components/Placeholder.vue'
 import SearchBox from '@/components/SearchBox.vue'
+import { NButton, NSpin } from 'naive-ui'
 
 import { ajax } from '@/utils/ajax'
 import type { ArtworkInfo } from '@/types'
@@ -96,7 +101,7 @@ onBeforeRouteUpdate(async (to) => {
     p?: `${number}`
     mode?: string
   }
-  await makeSearch(params)
+  makeSearch(params)
 })
 
 onMounted(async () => {
@@ -113,6 +118,7 @@ onMounted(async () => {
 
 .pagenator
   text-align: center
+  margin: 1rem auto
 
   .page
     display: inline-block
@@ -122,8 +128,7 @@ onMounted(async () => {
 .no-more
   text-align: center
   padding: 1rem
-  border-radius: 4px
-  box-shadow: 0 0 4px #aaaaaa
+  opacity: 0.75
 
 .search-box
   margin: 2rem auto

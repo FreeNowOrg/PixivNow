@@ -5,22 +5,22 @@ footer.global-footer
       h4 探索更多
       ul
         li
-          external-link(href='/ajax/illust/discovery?mode=safe&max=1') 随机图片
+          ExternalLink(href='/api/random?format=image') 随机图片
         li
-          router-link(to='/ranking') 今日排行
+          RouterLink(to='/ranking') 今日排行
         li
-          router-link(to='/about') 关于本站
+          RouterLink(to='/about') 关于本站
     section.flex-1
       h4 关注我们
       ul
         li
           | FreeNow 团队：
-          external-link(:href='`https://github.com/${GITHUB_OWNER}`') Free Now Tech.
+          ExternalLink(:href='`https://github.com/${GITHUB_OWNER}`') Free Now Tech.
         li
           | PixivNow 团队：
-          router-link.plain(to='/users/32338232') Dragon Fish
+          RouterLink.plain(to='/users/32338232') Dragon Fish
           | 、
-          router-link.plain(to='/users/15552366') MysticNebula70
+          RouterLink.plain(to='/users/15552366') MysticNebula70
     //- section.flex-1
     //-   h4 社交媒体
     //-     p Placeholder

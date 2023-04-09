@@ -1,15 +1,16 @@
 <template lang="pug">
 .artwork-large-card
   .top
-    router-link(:to='"/artworks/" + illust.id')
+    RouterLink(:to='"/artworks/" + illust.id')
       .thumb
-        img(
+        LazyLoad(
           :alt='illust.title',
           :src='illust.url.replace("p0_master", "p0_square")'
-          lazyload
         )
-      .x-restrict.tag(title='R-18' v-if='illust.xRestrict === 2')
+      .restrict.x-restrict(title='R-18' v-if='illust.xRestrict === 2')
         i-fa-solid-eye(data-icon)
+      .restrict.ai-restrict(title='AI生成' v-if='illust.aiType === 2')
+        i-fa-solid-robot(data-icon)
       .page-count(
         :title='"共 " + illust.pageCount + " 张"'
         v-if='+illust.pageCount > 1'
@@ -21,21 +22,20 @@
         v-if='rank !== 0'
       ) {{ rank }}
   .bottom
-    h3.title(:title='illust.title')
-      router-link(:to='"/artworks/" + illust.id') {{ illust.title }}
+    h3.title.plain(:title='illust.title')
+      RouterLink(:to='"/artworks/" + illust.id') {{ illust.title }}
     .author(:title='illust.userName')
-      router-link(:to='"/users/" + illust.id')
+      RouterLink(:to='"/users/" + illust.id')
         img.avatar(:src='illust.profileImageUrl' lazyload)
         | {{ illust.userName }}
     .tags
-      router-link.tag(
-        :to='"/search/" + tagName'
-        v-for='tagName in illust.tags'
-      ) \#{{ tagName }}
+      ArtTag(:key='_', :tag='item' v-for='(item, _) in illust.tags')
 </template>
 
 <script lang="ts" setup>
 import type { ArtworkInfo } from '@/types'
+import LazyLoad from '../LazyLoad.vue'
+import ArtTag from '../ArtTag.vue'
 
 defineProps<{
   illust: ArtworkInfo
@@ -44,37 +44,31 @@ defineProps<{
 </script>
 
 <style lang="sass">
-
 h3
   margin-bottom: .4rem
 
 .artwork-large-card
-  display: inline-block
-  box-sizing: border-box
-  box-shadow: 0 0 4px #ccc
-  padding: .4rem
+  display: block
+  border: 1px solid #eee
   width: 240px
-  max-width: calc(50vw - 2.5rem)
+  max-width: calc(50vw - 2rem)
   background-color: var(--theme-background-color)
-  border-radius: 4px
+  border-radius: 0.5rem
   transition: all .24s ease-in-out
-
-  &:hover
-    box-shadow: var(--theme-box-shadow-hover)
+  margin-bottom: 1rem
 
 .top
   position: relative
-
   a
     display: block
-
   .thumb
+    border-radius: 0.5rem 0.5rem 0 0
+    overflow: hidden
     position: relative
     width: 100%
     height: 0
     padding-top: 100%
     animation: imgProgress 0.6s ease infinite alternate
-
     img
       position: absolute
       top: 0
@@ -89,49 +83,52 @@ h3
     color: #fff
     background-color: rgba(0, 0, 0, 0.6)
     padding: .2rem .6rem
-    border-radius: 1rem
-
+    border-radius: 0.2rem
     [data-icon]
       margin-right: .2rem
 
-  .x-restrict
+  .restrict
     position: absolute
-    top: .2rem
-    left: .2rem
     color: #fff
-    background-color: rgb(255, 0, 0, 0.8)
     width: 2rem
     height: 2rem
     border-radius: 50%
     display: flex
     align-items: center
-
     [data-icon]
       margin: 0 auto
+  .x-restrict
+    top: .4rem
+    left: .4rem
+    background-color: rgb(255, 0, 0, 0.8)
+  .ai-restrict
+    bottom: .4rem
+    left: .4rem
+    background-color: rgba(204, 102, 0, 0.8)
 
   .ranking
     position: absolute
-    top: -1rem
-    left: -1rem
-    font-size: 1.4rem
+    top: -0.9rem
+    left: -0.89rem
+    font-size: 1.2rem
     color: #252525
     background-color: #fff
     border-radius: 50%
-    width: 2rem
-    height: 2rem
+    width: 1.8rem
+    height: 1.8rem
     text-align: center
-    line-height: 1.4
-    box-shadow: 0 0 0 2px rgba(var(--theme-accent-color--rgb), 0.4) inset, 0 0 0 4px #fff
-
+    line-height: 1.6
+    --ring-color: rgba(var(--theme-accent-color--rgb), 0.4)
+    box-shadow: 0 0 0 1px var(--ring-color) inset, 0 0 0 2px #fff
     &.gold
-      box-shadow: 0 0 0 2px gold inset, 0 0 0 4px #fff
+      --ring-color: gold
     &.silver
-      box-shadow: 0 0 0 2px darkgray inset, 0 0 0 4px #fff
+      --ring-color: darkgray
     &.bronze
-      box-shadow: 0 0 0 2px #b87333 inset, 0 0 0 4px #fff
+      --ring-color: #b87333
 
 .bottom
-
+  padding: 0.5rem
   .title a
     display: inline
   .author a
@@ -147,13 +144,11 @@ h3
 
     a
       align-items: center
-
-      &.router-link-active
+      &.RouterLink-active
         color: var(--theme-text-color)
         font-weight: 600
         font-style: normal
         cursor: default
-
         &::after
           visibility: hidden
 
@@ -169,15 +164,6 @@ h3
 
   .author
     margin: .4rem 0
-
   .tags
-    overflow: auto
-    max-height: 140px
-
-    .tag
-      display: inline-block
-      margin: 2px
-      padding: 2px 4px
-      background-color: #d6e4ff
-      border-radius: 4px
+    overflow: hidden
 </style>

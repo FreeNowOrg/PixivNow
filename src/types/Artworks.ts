@@ -56,6 +56,7 @@ interface ArtworkCommon {
     workCaption: string | null
   }
   isUnlisted: boolean
+  aiType: number
 }
 
 export interface ArtworkInfo extends ArtworkCommon {
