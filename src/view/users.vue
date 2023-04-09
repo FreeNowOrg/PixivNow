@@ -390,6 +390,9 @@ onMounted(async () => {
     z-index: 12
     position: sticky
     top: 50px
+  .n-tabs-nav-scroll-wrapper
+    max-width: 1200px
+    margin: 0 auto
 
 .user-illust, .user-manga
   :deep(.author)

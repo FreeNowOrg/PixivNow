@@ -133,7 +133,6 @@ import Card from '@/components/Card.vue'
 import CommentsArea from '@/components/Comment/CommentsArea.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
 import Gallery from '@/components/Gallery.vue'
-import Placeholder from '@/components/Placeholder.vue'
 import ShowMore from '@/components/ShowMore.vue'
 
 import { getCache, setCache } from './siteCache'
@@ -381,7 +380,7 @@ h1
   &.danger
     --bg-color: var(--theme-danger-color)
   &.loading
-    --bg-color: rgba(0, 0, 0, 0.24)
+    --bg-color: rgba(0, 0, 0, .08)
     opacity: 0.85
 
 .original-tag

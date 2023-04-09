@@ -17,7 +17,7 @@
   //- .tips.align-center (这是预览图，点击下载原图)
   ul.pagenator(v-if='pages.length > 1')
     li(v-for='(item, index) in pages')
-      a(
+      a.pointer(
         :class='{ "is-active": picShow === index }',
         :title='`第${index + 1}张，共${pages.length}张`'
         @click='picShow = index'
