@@ -45,6 +45,7 @@ declare module '@vue/runtime-core' {
     IFaSolidPlus: typeof import('~icons/fa-solid/plus')['default']
     IFaSolidQuestionCircle: typeof import('~icons/fa-solid/question-circle')['default']
     IFaSolidRandom: typeof import('~icons/fa-solid/random')['default']
+    IFaSolidRobot: typeof import('~icons/fa-solid/robot')['default']
     IFaSolidSearch: typeof import('~icons/fa-solid/search')['default']
     IFaSolidSpinner: typeof import('~icons/fa-solid/spinner')['default']
     IFaSolidThumbsUp: typeof import('~icons/fa-solid/thumbs-up')['default']

@@ -27,9 +27,6 @@
               ) 在 Pixiv 上查看 →
 
             p.stats
-              span.original(v-if='illust.isOriginal')
-                IFaSolidLaughWink(data-icon)
-                | 原创
               span.like-count(title='点赞')
                 IFaSolidThumbsUp(data-icon)
                 | {{ illust.likeCount }}
@@ -53,7 +50,14 @@
             p.create-date {{ new Date(illust.createDate).toLocaleString() }}
 
           .artwork-tags
-            span.x-restrict(title='R-18' v-if='illust?.xRestrict') R-18
+            span.original-tag(v-if='illust.isOriginal')
+              IFaSolidLaughWink(data-icon)
+              | 原创
+            span.restrict-tag.x-restrict(title='R-18' v-if='illust?.xRestrict') R-18
+            span.restrict-tag.ai-restrict(
+              :title='`AI生成 (${illust.aiType})`'
+              v-if='illust?.aiType'
+            ) AI生成
             ArtTag(
               :key='_',
               :tag='item.tag'
@@ -327,6 +331,9 @@ function addObserver(elRef: Ref<HTMLElement | undefined>, callback: () => any) {
 
 .artwork-tags
   margin: 1rem 0
+  > span
+    font-weight: 700
+    margin-right: 1rem
 
 h1
   // display: inline-block
@@ -341,10 +348,12 @@ h1
     background-position: 0 1em
     background-repeat: no-repeat
 
+.original-tag
+  color: #e02080
 .x-restrict
-  font-weight: bold
   color: #c00
-  margin-right: 1rem
+.ai-restrict
+  color: #c70
 
 .stats
   > span, > a
@@ -354,16 +363,12 @@ h1
     [data-icon]
       margin-right: 4px
 
-  .original
-    color: inherit
-    font-weight: 600
-
   .bookmark-count
     cursor: pointer
 
     &.bookmarked
       color: var(--theme-bookmark-color)
-      font-weight: 600
+      font-weight: 700
 
 .create-date
   color: #aaa

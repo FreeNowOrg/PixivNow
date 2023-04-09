@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
+import colors from 'colors'
 
 const PROD = process.env.NODE_ENV === 'production'
 
@@ -29,8 +30,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
       headers: req.headers as Record<string, string>,
     })
     res.status(200).send(data)
-  } catch (err) {
-    const e = err as any
+  } catch (e: any) {
     res.status(e?.response?.status || 500).send(e?.response?.data || e)
   }
 }
@@ -65,19 +65,14 @@ ajax.interceptors.request.use((ctx) => {
 
   if (!PROD) {
     console.info(
-      `[${ctx.method?.toUpperCase()}]`,
-      ctx.url,
-      '\n' +
-        JSON.stringify(
-          {
-            params: ctx.params,
-            data: ctx.data,
-            cookies,
-          },
-          null,
-          2
-        )
+      colors.green(`[${ctx.method?.toUpperCase()}] <`),
+      colors.cyan(ctx.url || '')
     )
+    console.info({
+      params: ctx.params,
+      data: ctx.data,
+      cookies,
+    })
   }
 
   return ctx
@@ -89,11 +84,13 @@ ajax.interceptors.response.use((ctx) => {
     const out: string =
       typeof ctx.data === 'object'
         ? JSON.stringify(ctx.data, null, 2)
-        : ctx.data.toString()
+        : ctx.data.toString().trim()
     console.info(
-      '[RESPONSE]',
-      ctx.request?.path?.replace('https://www.pixiv.net', ''),
-      `\n${out.length >= 200 ? out.slice(0, 200) + '...' : out}`
+      colors.green('[SEND] >'),
+      colors.cyan(ctx.request?.path?.replace('https://www.pixiv.net', '')),
+      `\n${colors.yellow(typeof ctx.data)} ${
+        out.length >= 200 ? out.slice(0, 200).trim() + '\n...' : out
+      }`
     )
   }
   return ctx

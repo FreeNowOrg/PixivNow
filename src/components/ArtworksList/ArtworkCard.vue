@@ -1,8 +1,10 @@
 <template lang="pug">
 .artwork-card
   .side-tags
-    .x-restrict(title='R-18' v-if='item.xRestrict')
+    .restrict.x-restrict(title='R-18' v-if='item.xRestrict')
       i-fa-solid-eye(data-icon)
+    .restrict.ai-restrict(:title='`AI生成(${item.aiType})`' v-if='item.aiType')
+      i-fa-solid-robot(data-icon)
     .page-count(
       :title='"共 " + item.pageCount + " 张"'
       v-if='item.pageCount > 1'
@@ -154,17 +156,22 @@ async function handleBookmark() {
   [data-icon]
     margin-right: .2rem
 
-  .x-restrict
-    top: .4rem
-    left: .4rem
+  .restrict
     color: #fff
     font-size: 0.8rem
-    background-color: rgb(255, 0, 0, 0.8)
     width: 1.5rem
     height: 1.5rem
     border-radius: 50%
     display: flex
     align-items: center
+  .x-restrict
+    top: .4rem
+    left: .4rem
+    background-color: rgb(255, 0, 0, 0.8)
+  .ai-restrict
+    bottom: .4rem
+    left: .4rem
+    background-color: rgba(204, 102, 0, 0.8)
 
   [data-icon]
     margin: 0 auto

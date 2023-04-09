@@ -8,8 +8,10 @@
           :src='illust.url.replace("p0_master", "p0_square")'
           lazyload
         )
-      .x-restrict.tag(title='R-18' v-if='illust.xRestrict === 2')
+      .restrict.x-restrict(title='R-18' v-if='illust.xRestrict === 2')
         i-fa-solid-eye(data-icon)
+      .restrict.ai-restrict(title='AI生成' v-if='illust.aiType')
+        i-fa-solid-robot(data-icon)
       .page-count(
         :title='"共 " + illust.pageCount + " 张"'
         v-if='+illust.pageCount > 1'
@@ -28,10 +30,7 @@
         img.avatar(:src='illust.profileImageUrl' lazyload)
         | {{ illust.userName }}
     .tags
-      RouterLink.tag(
-        :to='"/search/" + tagName'
-        v-for='tagName in illust.tags'
-      ) \#{{ tagName }}
+      RouterLink.tag(:to='"/search/" + tagName' v-for='tagName in illust.tags') \#{{ tagName }}
 </template>
 
 <script lang="ts" setup>
@@ -94,17 +93,22 @@ h3
     [data-icon]
       margin-right: .2rem
 
-  .x-restrict
+  .restrict
     position: absolute
-    top: .2rem
-    left: .2rem
     color: #fff
-    background-color: rgb(255, 0, 0, 0.8)
     width: 2rem
     height: 2rem
     border-radius: 50%
     display: flex
     align-items: center
+  .x-restrict
+    top: .2rem
+    left: .2rem
+    background-color: rgb(255, 0, 0, 0.8)
+  .ai-restrict
+    bottom: .2rem
+    left: .2rem
+    background-color: rgba(204, 102, 0, 0.8)
 
     [data-icon]
       margin: 0 auto
