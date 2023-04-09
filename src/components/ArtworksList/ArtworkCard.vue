@@ -27,6 +27,7 @@
 </template>
 
 <script lang="ts" setup>
+import LazyLoad from '../LazyLoad.vue'
 import { addBookmark, removeBookmark } from '@/utils/artworkActions'
 
 import type { ArtworkInfo } from '@/types'

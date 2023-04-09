@@ -92,6 +92,16 @@
 </template>
 
 <script lang="ts" setup>
+import ArtTag from '@/components/ArtTag.vue'
+import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
+import AuthorCard from '@/components/AuthorCard.vue'
+import Card from '@/components/Card.vue'
+import CommentsArea from '@/components/Comment/CommentsArea.vue'
+import ErrorPage from '@/components/ErrorPage.vue'
+import Gallery from '@/components/Gallery.vue'
+import Placeholder from '@/components/Placeholder.vue'
+import ShowMore from '@/components/ShowMore.vue'
+
 import { getCache, setCache } from './siteCache'
 import { ajax } from '@/utils/ajax'
 

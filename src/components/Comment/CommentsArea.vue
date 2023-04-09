@@ -20,6 +20,7 @@
 </template>
 
 <script lang="ts" setup>
+import Comment from './Comment.vue'
 import { ajax } from '@/utils/ajax'
 import type { Comments } from '@/types'
 

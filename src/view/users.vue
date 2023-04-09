@@ -153,6 +153,7 @@ import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
 import Modal from '@/components/Modal.vue'
 import Placeholder from '@/components/Placeholder.vue'
+import ShowMore from '@/components/ShowMore.vue'
 
 import { getCache, setCache } from './siteCache'
 import { sortArtList } from '@/utils/artworkActions'

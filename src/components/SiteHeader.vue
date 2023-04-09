@@ -66,6 +66,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 </template>
 
 <script lang="ts" setup>
+import SearchBox from './SearchBox.vue'
 import { logout } from './userData'
 import LogoH from '@/assets/LogoH.png'
 import { useSideNavStore, useUserStore } from '@/plugins/states'
