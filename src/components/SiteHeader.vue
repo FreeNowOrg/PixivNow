@@ -26,7 +26,6 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
             :src='userStore.isLoggedIn ? userStore.userProfileImg : "/~/common/images/no_profile.png"',
             :title='userStore.isLoggedIn ? userStore.userId + " (" + userStore.userPixivId + ")" : "未登入"'
           )
-          i-fa-solid-angle-down(data-icon)
 
         Transition(
           enter-active-class='fade-in-up'
@@ -185,15 +184,12 @@ onMounted(() => {
         list-style: none
         display: flex
         align-items: center
-
-      [data-icon]
-        margin-left: 6px
-        color: #fff
-        transition: all 0.4s
-
-      .dropdown-btn.show-user
-        [data-icon]
-          transform: rotateZ(180deg)
+        .avatar
+          box-shadow: 0 0 0 2px #fff
+          transition: box-shadow 0.24s ease
+        &.show-user
+          .avatar
+            box-shadow: 0 0 0 2px var(--theme-secondary-color)
 
       .dropdown-content
         position: absolute

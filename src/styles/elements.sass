@@ -57,31 +57,6 @@ a
       background-color: rgba(var(--theme-link-color--rgb), 1)
       color: var(--theme-accent-link-color)
 
-// Button
-button
-  display: inline-block
-  padding: 0.4rem 0.8rem
-  font-size: 1rem
-  border: none
-  border-radius: 4px
-  background-color: rgb(54, 151, 231)
-  color: #fff
-  cursor: pointer
-
-  &:hover
-    background-color: rgb(69, 162, 238)
-
-  &:focus
-    background-color: rgb(32, 125, 201)
-    box-shadow: 0 0 0 2px #fff inset, 0 0 0 2px rgb(32, 125, 201)
-
-  &:disabled
-    background-color: #ccc
-    cursor: not-allowed
-
-    &:active
-      box-shadow: 0 0 0 2px #fff inset, 0 0 0 2px #ccc
-
 // Code
 pre
   overflow: auto
@@ -109,3 +84,7 @@ svg.svg--inline
   display: inline-block
   vertical-align: -0.125em
   overflow: visible
+
+.n-modal
+  width: 800px
+  max-width: 90vw

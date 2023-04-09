@@ -10,7 +10,7 @@
         )
       .restrict.x-restrict(title='R-18' v-if='illust.xRestrict === 2')
         i-fa-solid-eye(data-icon)
-      .restrict.ai-restrict(title='AI生成' v-if='illust.aiType')
+      .restrict.ai-restrict(title='AI生成' v-if='illust.aiType === 2')
         i-fa-solid-robot(data-icon)
       .page-count(
         :title='"共 " + illust.pageCount + " 张"'

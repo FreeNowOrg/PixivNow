@@ -1,17 +1,18 @@
 <template lang="pug">
-RouterLink.tag(:to='"/search/" + tag') \#{{ tag }}
+NTag.artwork-tag(
+  @click='$router.push({ name: "search", params: { keyword: tag, p: 1 } })'
+  type='info'
+) \#{{ tag }}
 </template>
 
 <script lang="ts" setup>
+import { NTag } from 'naive-ui'
+
 defineProps<{ tag: string }>()
 </script>
 
 <style lang="sass">
-
-.tag
-  display: inline-block
+.artwork-tag
   margin: 2px
-  padding: 2px 4px
-  background-color: var(--theme-tag-color)
-  border-radius: 4px
+  cursor: pointer
 </style>

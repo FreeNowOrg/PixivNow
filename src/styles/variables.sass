@@ -1,11 +1,15 @@
+@use 'sass:color'
+
+$accent-color: rgb(73, 147, 255)
+
 :root
   font-size: 16px
-  --theme-accent-color: #3697e7
-  --theme-accent-color--rgb: 54, 151, 231
-  --theme-accent-color-darken: #2671c2
+  --theme-accent-color: #{$accent-color}
+  --theme-accent-color--rgb: 73, 147, 255
+  --theme-accent-color-darken: #{color.scale($accent-color, $lightness: -12%)}
   --theme-accent-link-color: #fff
-  --theme-secondary-color: #e02080
-  --theme-secondary-color--rgb: 224, 32, 128
+  --theme-secondary-color: rgb(161, 89, 255)
+  --theme-secondary-color--rgb: 161, 89, 255
   --theme-text-color: #2c3e50
   --theme-link-color: #3f51b5
   --theme-link-color--rgb: 63, 81, 181

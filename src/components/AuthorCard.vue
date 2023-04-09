@@ -1,21 +1,37 @@
 <template lang="pug">
-card.author-card(:data-user-is-followed='user.isFollowed' title='')
-  .flex-center
-    .left
-      RouterLink(:to='"/users/" + user.userId')
-        img(:src='user.imageBig' alt='')
-    .right
-      .flex
-        h4
-          RouterLink(:to='"/users/" + user.userId') {{ user.name }}
-        button(:disabled='loadingUserFollow' @click='handleUserFollow')
-          i-fa-solid-check(v-if='user.isFollowed')
-          i-fa-solid-plus(v-else)
-          |
-          | {{ user.isFollowed ? '已关注' : '关注' }}
-      p.description.pre {{ user.comment }}
+Card.author-card(title='')
+  .author-inner(v-if='user')
+    .flex-center
+      .left
+        RouterLink(:to='"/users/" + user.userId')
+          img(:src='user.imageBig' alt='')
+      .right
+        .flex
+          h4
+            RouterLink(:to='"/users/" + user.userId') {{ user.name }}
+          NButton(
+            :loading='loadingUserFollow',
+            :type='user.isFollowed ? "success" : undefined'
+            @click='handleUserFollow'
+            round
+            secondary
+            size='small'
+            v-if='user.userId !== userStore.userId'
+          )
+            template(#icon)
+              i-fa-solid-check(v-if='user.isFollowed')
+              i-fa-solid-plus(v-else)
+            | {{ user.isFollowed ? '已关注' : '关注' }}
+        NEllipsis.description.pre(:line-clamp='3', :tooltip='false') {{ user.comment }}
+    ArtworkList.tiny(:list='user.illusts' inline)
 
-  ArtworkList.inline.tiny(:list='user.illusts')
+  .author-placeholder(v-else)
+    .flex-center
+      .left: a: NSkeleton(circle height='80px' text width='80px')
+      .right
+        h4: NSkeleton(height='1.6em' text width='12em')
+        NSkeleton(block height='3em' width='100%')
+    ArtworkList.tiny(:list='[]' inline loading)
 </template>
 
 <script lang="ts" setup>
@@ -23,19 +39,26 @@ import Card from './Card.vue'
 import ArtworkList from './ArtworksList/ArtworkList.vue'
 import type { User } from '@/types'
 import { addUserFollow, removeUserFollow } from '@/utils'
+import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
+import { useUserStore } from '@/plugins/states'
+
+const userStore = useUserStore()
 
 const props = defineProps<{
-  user: User
+  user?: User
 }>()
 
 const loadingUserFollow = ref(false)
 function handleUserFollow() {
+  if (!props.user || loadingUserFollow.value) return
+  const user = props.user
+
   loadingUserFollow.value = true
-  const isFollowed = props.user.isFollowed
+  const isFollowed = user.isFollowed
   const handler = isFollowed ? removeUserFollow : addUserFollow
-  handler(props.user.userId)
+  handler(user.userId)
     .then(() => {
-      props.user.isFollowed = !isFollowed
+      user.isFollowed = !isFollowed
     })
     .finally(() => {
       loadingUserFollow.value = false
@@ -44,7 +67,6 @@ function handleUserFollow() {
 </script>
 
 <style scoped lang="sass">
-
 .left
   margin-right: 1rem
 
@@ -59,16 +81,8 @@ function handleUserFollow() {
   h4
     margin: 0.2rem 0
     flex: 1
-    font-weight: 600
+    font-weight: 700
 
-  button
-    background-color: #efefef
-    color: var(--theme-text-color)
-    padding: 0.2rem 1rem
-    border-radius: 1rem
-
-.description
-  width: 100%
-  max-height: 80px
-  overflow: auto
+:deep(.artworks-list .author)
+  display: none
 </style>

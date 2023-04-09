@@ -1,12 +1,30 @@
 <template lang="pug">
 #artwork-view
   //- Loading
-  section.align-center(v-if='loading')
-    Placeholder
-    p {{ '正在读取作品 #' + $route.params.id }}
+  section.placeholder(v-if='loading')
+    .gallery
+      NSkeleton(
+        :sharp='false'
+        block
+        height='50vh'
+        style='margin: 0 auto; width: 500px; max-width: 80vw'
+      )
+    .body-inner
+      .artwork-info
+        h1.loading: NSkeleton(
+          height='2rem'
+          style='margin-top: 1em'
+          width='20rem'
+        )
+        p.description: NSkeleton(:repeat='4' text)
+        p.canonical-link: NSkeleton(height='1.5rem' width='8rem')
+        p.stats: span(v-for='_ in 4')
+          NSkeleton(circle height='1em' text width='1em')
+          NSkeleton(style='margin-left: 0.5em' text width='4em')
+        p.create-date: NSkeleton(text width='12em')
 
   //- Done
-  section.illust-container(v-if='!error && !loading')
+  section.illust-container(v-if='!error && illust')
     #top-area
       Gallery(:pages='pages')
 
@@ -35,7 +53,7 @@
               span.bookmark-count(
                 :class='{ bookmarked: illust.bookmarkData }',
                 :title='!store.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
-                @click='illust.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
+                @click='illust?.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
               )
                 IFaSolidHeart(data-icon)
                 | {{ illust.bookmarkCount }}
@@ -56,7 +74,7 @@
             span.restrict-tag.x-restrict(title='R-18' v-if='illust?.xRestrict') R-18
             span.restrict-tag.ai-restrict(
               :title='`AI生成 (${illust.aiType})`'
-              v-if='illust?.aiType'
+              v-if='illust?.aiType === 2'
             ) AI生成
             ArtTag(
               :key='_',
@@ -67,9 +85,7 @@
         aside#author-area(ref='authorRef')
           .author-info
             h2 作者
-            .align-center(v-if='!user.userId')
-              Placeholder
-            AuthorCard(:user='user' v-if='user.userId')
+            AuthorCard(:user='user')
 
         Card.comments(ref='commentsRef' title='评论')
           CommentsArea(
@@ -80,9 +96,7 @@
     //- 相关推荐
     .recommend-works.body-inner(ref='recommendRef')
       h2 相关推荐
-      .align-center.loading(v-if='!recommend.length')
-        Placeholder
-      ArtworkList(:list='recommend')
+      ArtworkList(:list='recommend', :loading='!recommend.length')
       ShowMore(
         :loading='recommendLoading',
         :method='handleMoreRecommend',
@@ -119,12 +133,13 @@ import {
   sortArtList,
 } from '@/utils/artworkActions'
 import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
+import { NSkeleton } from 'naive-ui'
 
 const loading = ref(true)
 const error = ref('')
-const illust = ref<Artwork>({} as Artwork)
+const illust = ref<Artwork>()
 const pages = ref<ArtworkGallery[]>([])
-const user = ref<User>({} as User)
+const user = ref<User>()
 const recommend = ref<ArtworkInfo[]>([])
 const recommendNextIds = ref<string[]>([])
 const recommendLoading = ref(false)
@@ -139,17 +154,17 @@ async function init(id: string): Promise<void> {
   loading.value = true
 
   // Reset states
-  illust.value = {} as any
+  illust.value = undefined
   pages.value = []
-  user.value = {} as any
+  user.value = undefined
   recommend.value = []
   recommendNextIds.value = []
 
   addObserver(recommendRef, () => {
-    handleRecommendInit(illust.value.illustId)
+    handleRecommendInit(illust.value!.illustId)
   })
   addObserver(authorRef, () => {
-    handleUserInit(illust.value.userId)
+    handleUserInit(illust.value!.userId)
   })
 
   const dataCache = getCache(`illust.${id}`)
@@ -256,6 +271,7 @@ async function handleMoreRecommend(): Promise<void> {
 }
 
 async function handleAddBookmark(): Promise<void> {
+  if (!illust.value) return
   if (!store.isLoggedIn) {
     console.log('需要登录才可以添加收藏')
     return
@@ -286,6 +302,7 @@ async function handleAddBookmark(): Promise<void> {
   }
 }
 async function handleRemoveBookmark(): Promise<void> {
+  if (!illust.value) return
   if (bookmarkLoading.value || !illust.value.bookmarkData) return
   try {
     bookmarkLoading.value = true
@@ -314,7 +331,7 @@ function addObserver(elRef: Ref<HTMLElement | undefined>, callback: () => any) {
     await nextTick()
     const el = elRef.value
     if (!el) return console.warn('observer missing target')
-    if (illust.value.illustId) {
+    if (illust.value?.illustId) {
       unWatch()
       getElementUntilIntoView(el).then(() => {
         callback?.()
@@ -325,9 +342,11 @@ function addObserver(elRef: Ref<HTMLElement | undefined>, callback: () => any) {
 </script>
 
 <style scoped lang="sass">
+section
+  padding-top: 1rem
 
 .gallery
-  margin: 1rem auto
+  margin: 0 auto
 
 .artwork-tags
   margin: 1rem 0
@@ -342,9 +361,13 @@ h1
   background-position: 0 1em
   background-repeat: no-repeat
   margin: 0
-
   &.danger
     background: linear-gradient(90deg, var(--theme-danger-color), rgba(255,255,255,0))
+    background-position: 0 1em
+    background-repeat: no-repeat
+  &.loading
+    opacity: 0.85
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.24), rgba(255,255,255,0))
     background-position: 0 1em
     background-repeat: no-repeat
 

@@ -55,6 +55,7 @@ declare module '@vue/runtime-core' {
     LazyLoad: typeof import('./src/components/LazyLoad.vue')['default']
     ListLink: typeof import('./src/components/SideNav/ListLink.vue')['default']
     Modal: typeof import('./src/components/Modal.vue')['default']
+    NaiveuiProvider: typeof import('./src/components/NaiveuiProvider.vue')['default']
     NProgress: typeof import('./src/components/NProgress.vue')['default']
     Placeholder: typeof import('./src/components/Placeholder.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

@@ -1,48 +1,68 @@
 <template lang="pug">
-.artwork-card
-  .side-tags
-    .restrict.x-restrict(title='R-18' v-if='item.xRestrict')
-      i-fa-solid-eye(data-icon)
-    .restrict.ai-restrict(:title='`AI生成(${item.aiType})`' v-if='item.aiType')
-      i-fa-solid-robot(data-icon)
-    .page-count(
-      :title='"共 " + item.pageCount + " 张"'
-      v-if='item.pageCount > 1'
-    )
-      i-fa-solid-images(data-icon)
-      | {{ item.pageCount }}
-    .bookmark(
-      :class='{ bookmarked: item.bookmarkData, disabled: loadingBookmark }'
-      @click='handleBookmark'
-    )
-      i-fa-solid-heart(data-icon)
-  RouterLink(:to='"/artworks/" + item.id')
-    LazyLoad.img(:alt='item.alt', :src='item.url', :title='item.alt' lazyload)
-    .hover-title {{ item.title }}
-.info
-  .title
-    RouterLink(:to='"/artworks/" + item.id') {{ item.title }}
-  .author(:title='item.userName')
-    RouterLink(:to='"/users/" + item.userId')
-      img.avatar(:src='item.profileImageUrl' lazyload)
-      | {{ item.userName }}
+.artwork-card-container
+  .artwork-card.placeholder(v-if='loading')
+    .artwork-image
+      NSkeleton(block height='180px' width='180px')
+    .artwork-info
+      .title: a: NSkeleton(height='1.4em' text width='8em')
+      .author: a
+        NSkeleton.avatar(circle height='1.5em' text width='1.5em')
+        NSkeleton(text width='4em')
+  .artwork-card(v-else-if='item')
+    .artwork-image
+      .side-tags
+        .restrict.x-restrict(title='R-18' v-if='item.xRestrict')
+          i-fa-solid-eye(data-icon)
+        .restrict.ai-restrict(
+          :title='`AI生成(${item.aiType})`'
+          v-if='item.aiType === 2'
+        )
+          i-fa-solid-robot(data-icon)
+        .page-count(
+          :title='"共 " + item.pageCount + " 张"'
+          v-if='item.pageCount > 1'
+        )
+          i-fa-solid-images(data-icon)
+          | {{ item.pageCount }}
+        .bookmark(
+          :class='{ bookmarked: item.bookmarkData, disabled: loadingBookmark }'
+          @click='handleBookmark'
+        )
+          i-fa-solid-heart(data-icon)
+      RouterLink(:to='"/artworks/" + item.id')
+        LazyLoad.img(
+          :alt='item.alt',
+          :src='item.url',
+          :title='item.alt'
+          lazyload
+        )
+        .hover-title {{ item.title }}
+    .artwork-info
+      .title
+        RouterLink(:to='"/artworks/" + item.id') {{ item.title }}
+      .author(:title='item.userName')
+        RouterLink(:to='"/users/" + item.userId')
+          img.avatar(:src='item.profileImageUrl' lazyload)
+          | {{ item.userName }}
 </template>
 
 <script lang="ts" setup>
 import LazyLoad from '../LazyLoad.vue'
 import { addBookmark, removeBookmark } from '@/utils/artworkActions'
+import { NSkeleton } from 'naive-ui'
 
 import type { ArtworkInfo } from '@/types'
 
 const props = defineProps<{
-  item: ArtworkInfo
+  item?: ArtworkInfo
+  loading?: boolean
 }>()
 
 const loadingBookmark = ref(false)
 async function handleBookmark() {
   if (loadingBookmark.value) return
   loadingBookmark.value = true
-  const item = props.item
+  const item = props.item!
   try {
     if (item.bookmarkData) {
       await removeBookmark(item.bookmarkData.id).then(() => {
@@ -65,7 +85,7 @@ async function handleBookmark() {
 
 <style lang="sass">
 
-.artwork-card
+.artwork-image
   position: relative
   overflow: hidden
   border-radius: 8px
@@ -185,7 +205,7 @@ async function handleBookmark() {
     &.bookmarked
       color: var(--theme-bookmark-color)
 
-.info
+.artwork-info
   .title,
   .author
     white-space: nowrap
@@ -199,7 +219,7 @@ async function handleBookmark() {
 
       &.router-link-active
         color: var(--theme-text-color)
-        font-weight: 600
+        font-weight: 700
         font-style: normal
         cursor: default
 
