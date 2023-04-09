@@ -267,7 +267,7 @@ async function getBookmarks(): Promise<void> {
 
   try {
     loadingBookmarks.value = true
-    const { data } = await ajax.get<{ works: ArtworkInfo }>(
+    const { data } = await ajax.get<{ works: ArtworkInfo; total: number }>(
       `/ajax/user/${target.userId}/illusts/bookmarks`,
       {
         params: new URLSearchParams({
