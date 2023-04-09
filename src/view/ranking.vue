@@ -39,7 +39,7 @@ async function init(): Promise<void> {
     return
   }
   try {
-    const { p, mode, date } = route.params
+    const { p, mode, date } = route.query
     const searchParams = new URLSearchParams()
     if (p && typeof p === 'string') searchParams.append('p', p)
     if (mode && typeof mode === 'string') searchParams.append('mode', mode)
