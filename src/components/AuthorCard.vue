@@ -20,6 +20,7 @@ card.author-card(:data-user-is-followed='user.isFollowed' title='')
 
 <script lang="ts" setup>
 import Card from './Card.vue'
+import ArtworkList from './ArtworksList/ArtworkList.vue'
 import type { User } from '@/types'
 import { addUserFollow, removeUserFollow } from '@/utils'
 
