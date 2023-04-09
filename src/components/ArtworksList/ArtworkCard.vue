@@ -166,8 +166,8 @@ async function handleBookmark() {
     display: flex
     align-items: center
 
-  [data-icon]
-    margin: 0 auto
+    [data-icon]
+      margin: 0 auto
 
   .bookmark
     bottom: 0.4rem
