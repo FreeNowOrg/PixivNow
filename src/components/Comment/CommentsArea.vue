@@ -40,6 +40,12 @@ const props = defineProps<{
 
 async function init(id: string | number): Promise<void> {
   if (loading.value) return
+  if (!props.count) {
+    hasNext.value = false
+    comments.value = []
+    loading.value = false
+    return
+  }
 
   try {
     loading.value = true

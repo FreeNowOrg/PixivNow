@@ -10,10 +10,6 @@ defineProps<{ title: string | undefined }>()
 </script>
 
 <style scoped lang="sass">
-
-h2
-  text-align: center
-
 .inner
   background-color: var(--theme-background-color)
   border: 1px solid #efefef

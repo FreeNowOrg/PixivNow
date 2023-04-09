@@ -25,6 +25,7 @@ declare module '@vue/runtime-core' {
     IFaSolidAngleDown: typeof import('~icons/fa-solid/angle-down')['default']
     IFaSolidAngleLeft: typeof import('~icons/fa-solid/angle-left')['default']
     IFaSolidArrowDown: typeof import('~icons/fa-solid/arrow-down')['default']
+    IFaSolidArrowRight: typeof import('~icons/fa-solid/arrow-right')['default']
     IFaSolidBars: typeof import('~icons/fa-solid/bars')['default']
     IFaSolidBirthdayCake: typeof import('~icons/fa-solid/birthday-cake')['default']
     IFaSolidCheck: typeof import('~icons/fa-solid/check')['default']

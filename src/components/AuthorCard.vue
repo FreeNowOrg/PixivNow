@@ -1,5 +1,5 @@
 <template lang="pug">
-Card.author-card(title='')
+.author-card
   .author-inner(v-if='user')
     .flex-center
       .left
@@ -7,7 +7,7 @@ Card.author-card(title='')
           img(:src='user.imageBig' alt='')
       .right
         .flex
-          h4
+          h4.plain
             RouterLink(:to='"/users/" + user.userId') {{ user.name }}
           NButton(
             :loading='loadingUserFollow',
@@ -29,7 +29,7 @@ Card.author-card(title='')
     .flex-center
       .left: a: NSkeleton(circle height='80px' text width='80px')
       .right
-        h4: NSkeleton(height='1.6em' text width='12em')
+        h4.plain: NSkeleton(height='1.6em' text width='12em')
         NSkeleton(block height='3em' width='100%')
     ArtworkList.tiny(:list='[]' inline loading)
 </template>

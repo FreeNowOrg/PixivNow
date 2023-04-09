@@ -16,12 +16,13 @@
           style='margin-top: 1em'
           width='20rem'
         )
-        p.description: NSkeleton(:repeat='4' text)
-        p.canonical-link: NSkeleton(height='1.5rem' width='8rem')
-        p.stats: span(v-for='_ in 4')
-          NSkeleton(circle height='1em' text width='1em')
-          NSkeleton(style='margin-left: 0.5em' text width='4em')
-        p.create-date: NSkeleton(text width='12em')
+        Card(title='')
+          p.description: NSkeleton(:repeat='4' text)
+          p.stats: span(v-for='_ in 4')
+            NSkeleton(circle height='1em' text width='1em')
+            NSkeleton(style='margin-left: 0.5em' text width='4em')
+          p.create-date: NSkeleton(text width='12em')
+          p.canonical-link: NSkeleton(height='1.5rem' width='8rem')
 
   //- Done
   section.illust-container(v-if='!error && illust')
@@ -30,64 +31,74 @@
 
       .body-inner
         #meta-area
-          .artwork-info
-            h1(:class='illust.xRestrict ? "danger" : ""') {{ illust.illustTitle }}
-            p.description.pre(v-html='illust.description')
-            p.description.no-desc(
-              :style='{ color: "#aaa" }'
-              v-if='!illust.description'
-            ) (无简介)
-            p.canonical-link
-              a.button(
-                :href='illust?.extraData?.meta?.canonical || "#"'
-                rel='noopener noreferrer'
-                target='_blank'
-              ) 在 Pixiv 上查看 →
+          h1(:class='illust.xRestrict ? "danger" : ""') {{ illust.illustTitle }}
+          Card(title='')
+            .artwork-info
+              p.description.pre(v-html='illust.description')
+              p.description.no-desc(
+                :style='{ color: "#aaa" }'
+                v-if='!illust.description'
+              ) (作者未填写简介)
 
-            p.stats
-              span.like-count(title='点赞')
-                IFaSolidThumbsUp(data-icon)
-                | {{ illust.likeCount }}
+              p.stats
+                span.like-count(title='点赞')
+                  IFaSolidThumbsUp(data-icon)
+                  | {{ illust.likeCount }}
 
-              //- 收藏
-              span.bookmark-count(
-                :class='{ bookmarked: illust.bookmarkData }',
-                :title='!store.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
-                @click='illust?.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
+                //- 收藏
+                span.bookmark-count(
+                  :class='{ bookmarked: illust.bookmarkData }',
+                  :title='!store.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
+                  @click='illust?.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
+                )
+                  IFaSolidHeart(data-icon)
+                  | {{ illust.bookmarkCount }}
+
+                span.view-count(title='浏览')
+                  IFaSolidEye(data-icon)
+                  | {{ illust.viewCount }}
+                span.count
+                  IFaSolidImages(data-icon)
+                  | {{ pages.length }}张
+
+              p.create-date {{ new Date(illust.createDate).toLocaleString() }}
+
+            .artwork-tags
+              span.original-tag(v-if='illust.isOriginal')
+                IFaSolidLaughWink(data-icon)
+                | 原创
+              span.restrict-tag.x-restrict(
+                title='R-18'
+                v-if='illust?.xRestrict'
+              ) R-18
+              span.restrict-tag.ai-restrict(
+                :title='`AI生成 (${illust.aiType})`'
+                v-if='illust?.aiType === 2'
+              ) AI生成
+              ArtTag(
+                :key='_',
+                :tag='item.tag'
+                v-for='(item, _) in illust.tags.tags'
               )
-                IFaSolidHeart(data-icon)
-                | {{ illust.bookmarkCount }}
 
-              span.view-count(title='浏览')
-                IFaSolidEye(data-icon)
-                | {{ illust.viewCount }}
-              span.count
-                IFaSolidImages(data-icon)
-                | {{ pages.length }}张
+            .canonical-link
+              NButton(
+                :href='illust?.extraData?.meta?.canonical || "#"'
+                icon-placement='right'
+                rel='noopener noreferrer'
+                size='small'
+                tag='a'
+                target='_blank'
+              )
+                template(#icon)
+                  IFaSolidArrowRight
+                | 前往 Pixiv 查看
 
-            p.create-date {{ new Date(illust.createDate).toLocaleString() }}
-
-          .artwork-tags
-            span.original-tag(v-if='illust.isOriginal')
-              IFaSolidLaughWink(data-icon)
-              | 原创
-            span.restrict-tag.x-restrict(title='R-18' v-if='illust?.xRestrict') R-18
-            span.restrict-tag.ai-restrict(
-              :title='`AI生成 (${illust.aiType})`'
-              v-if='illust?.aiType === 2'
-            ) AI生成
-            ArtTag(
-              :key='_',
-              :tag='item.tag'
-              v-for='(item, _) in illust.tags.tags'
-            )
-
-        aside#author-area(ref='authorRef')
-          .author-info
-            h2 作者
+        aside.author-area(ref='authorRef')
+          Card(title='作者')
             AuthorCard(:user='user')
 
-        Card.comments(ref='commentsRef' title='评论')
+        Card.comments(title='评论')
           CommentsArea(
             :count='illust.commentCount',
             :id='illust.id || illust.illustId'
@@ -133,7 +144,7 @@ import {
   sortArtList,
 } from '@/utils/artworkActions'
 import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
-import { NSkeleton } from 'naive-ui'
+import { NButton, NSkeleton } from 'naive-ui'
 
 const loading = ref(true)
 const error = ref('')
@@ -358,21 +369,15 @@ section
     margin-right: 1rem
 
 h1
-  // display: inline-block
-  box-shadow: none
-  background: linear-gradient(90deg, var(--theme-accent-color), rgba(255,255,255,0))
-  background-position: 0 1em
-  background-repeat: no-repeat
+  --bg-color: var(--theme-accent-color)
+  box-shadow: 0 2px 0 var(--bg-color)
   margin: 0
+  margin-bottom: 1rem
   &.danger
-    background: linear-gradient(90deg, var(--theme-danger-color), rgba(255,255,255,0))
-    background-position: 0 1em
-    background-repeat: no-repeat
+    --bg-color: var(--theme-danger-color)
   &.loading
+    --bg-color: rgba(0, 0, 0, 0.24)
     opacity: 0.85
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.24), rgba(255,255,255,0))
-    background-position: 0 1em
-    background-repeat: no-repeat
 
 .original-tag
   color: #e02080

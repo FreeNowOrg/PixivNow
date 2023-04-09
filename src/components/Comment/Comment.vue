@@ -7,7 +7,7 @@ li.comment-block
         :title='comment.userName + " (" + comment.userId + ")"'
       )
   .right
-    h4.user
+    h4.user.plain
       span.comment-author
         | {{ comment.userName }}
         .tag(v-if='store.userId === comment.userId') 您
