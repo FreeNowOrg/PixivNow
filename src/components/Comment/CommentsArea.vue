@@ -23,6 +23,7 @@
 import Comment from './Comment.vue'
 import { ajax } from '@/utils/ajax'
 import type { Comments } from '@/types'
+import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
 
 const loading = ref(false)
 const comments = ref<Comments[]>([])
@@ -59,35 +60,16 @@ function pushComment(data: Comments) {
   comments.value.unshift(data)
 }
 
-function addObserver(elRef: Ref<HTMLElement | undefined>, callback: () => any) {
-  let observer: IntersectionObserver
-  onMounted(async () => {
-    await nextTick()
-    const el = elRef.value
-    if (!el) return console.warn('observer missing target')
-    observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        observer.disconnect()
-        callback?.()
-        console.info('INTO VIEW', entry)
-      }
-    })
-    observer.observe(el)
-  })
-  onBeforeUnmount(() => {
-    observer && observer.disconnect()
-  })
-}
-
 const commentsArea = ref<HTMLElement>()
-
-if (!props.id) {
-  console.info('Component CommentsArea missing param: id')
-} else {
-  addObserver(commentsArea, () => {
-    init(props.id)
-  })
-}
+onMounted(async () => {
+  if (!props.id) {
+    console.warn('Component CommentsArea missing param: id')
+    return
+  }
+  await nextTick()
+  await getElementUntilIntoView(commentsArea.value!)
+  init(props.id)
+})
 </script>
 
 <style scoped lang="sass">

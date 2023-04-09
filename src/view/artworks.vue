@@ -81,9 +81,9 @@
       ArtworkList(:list='recommend')
       ShowMore(
         :loading='recommendLoading',
-        :method='async () => await getMoreRecommend()',
+        :method='handleMoreRecommend',
         :text='recommendLoading ? "加载中" : "加载更多"'
-        v-if='recommendNextIds.length'
+        v-if='recommend.length && recommendNextIds.length'
       )
 
   //- Error
@@ -114,6 +114,7 @@ import {
   removeBookmark,
   sortArtList,
 } from '@/utils/artworkActions'
+import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
 
 const loading = ref(true)
 const error = ref('')
@@ -127,8 +128,26 @@ const bookmarkLoading = ref(false)
 const route = useRoute()
 const store = useUserStore()
 
+const recommendRef = ref<HTMLElement>()
+const authorRef = ref<HTMLElement>()
+
 async function init(id: string): Promise<void> {
   loading.value = true
+
+  // Reset states
+  illust.value = {} as any
+  pages.value = []
+  user.value = {} as any
+  recommend.value = []
+  recommendNextIds.value = []
+
+  addObserver(recommendRef, () => {
+    handleRecommendInit(illust.value.illustId)
+  })
+  addObserver(authorRef, () => {
+    handleUserInit(illust.value.userId)
+  })
+
   const dataCache = getCache(`illust.${id}`)
   const pageCache = getCache(`illust.${id}.page`)
   if (dataCache && pageCache) {
@@ -161,11 +180,7 @@ async function init(id: string): Promise<void> {
   }
 }
 
-const authorRef = ref<HTMLElement>()
-addObserver(authorRef, () => {
-  getUser(illust.value.userId)
-})
-async function getUser(userId: string): Promise<void> {
+async function handleUserInit(userId: string): Promise<void> {
   const value = getCache(`user.${userId}`)
   if (value) {
     user.value = value
@@ -191,7 +206,7 @@ async function getUser(userId: string): Promise<void> {
   }
 }
 
-async function getFirstRecommend(id: string): Promise<void> {
+async function handleRecommendInit(id: string): Promise<void> {
   if (recommendLoading.value) return
   try {
     recommendLoading.value = true
@@ -208,8 +223,7 @@ async function getFirstRecommend(id: string): Promise<void> {
     recommendLoading.value = false
   }
 }
-
-async function getMoreRecommend(): Promise<void> {
+async function handleMoreRecommend(): Promise<void> {
   if (recommendLoading.value) return
   if (!recommendNextIds.value.length) {
     console.log('no more recommend')
@@ -236,11 +250,6 @@ async function getMoreRecommend(): Promise<void> {
     recommendLoading.value = false
   }
 }
-
-const recommendRef = ref<HTMLElement>()
-addObserver(recommendRef, () => {
-  getFirstRecommend(illust.value.illustId)
-})
 
 async function handleAddBookmark(): Promise<void> {
   if (!store.isLoggedIn) {
@@ -290,35 +299,23 @@ onBeforeRouteUpdate(async (to) => {
   await init(to.params.id as string)
 })
 
-onMounted(async () => {
+onMounted(() => {
   document.title = 'Artwork | PixivNow'
-  await init(route.params.id as string)
+  init(route.params.id as string)
 })
 
 function addObserver(elRef: Ref<HTMLElement | undefined>, callback: () => any) {
-  let observer: IntersectionObserver
-  onMounted(() => {
-    observer = new IntersectionObserver(([entry]) => {
-      console.info(entry.isIntersecting, illust.value?.illustId)
-      if (entry.isIntersecting && illust.value?.illustId) {
-        observer.disconnect()
+  const unWatch = watch(loading, async (val) => {
+    if (val) return
+    await nextTick()
+    const el = elRef.value
+    if (!el) return console.warn('observer missing target')
+    if (illust.value.illustId) {
+      unWatch()
+      getElementUntilIntoView(el).then(() => {
         callback?.()
-        console.info('INTO VIEW', entry)
-      }
-    })
-    const unWatch = watch(loading, async (val) => {
-      if (val) return
-      await nextTick()
-      const el = elRef.value
-      if (!el) return console.warn('observer missing target')
-      if (illust.value.illustId) {
-        unWatch()
-        observer.observe(el)
-      }
-    })
-  })
-  onBeforeUnmount(() => {
-    observer && observer.disconnect()
+      })
+    }
   })
 }
 </script>
