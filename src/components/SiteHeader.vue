@@ -88,7 +88,6 @@ function openSideNav() {
 function logoutUser() {
   logout()
   userStore.logout()
-  location.reload()
 }
 
 watch(hidden, (value) => {
