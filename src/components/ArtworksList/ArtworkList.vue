@@ -2,6 +2,7 @@
 Component.artworks-list(
   :class='{ inline }',
   :is='inline ? NScrollbar : "ul"'
+  trigger='none'
   x-scrollable
 )
   li(v-for='_ in skeletonNumber' v-if='loading')

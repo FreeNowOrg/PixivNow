@@ -7,14 +7,17 @@
   ul.comments-list(v-if='comments.length')
     comment(:comment='item' v-for='item in comments')
     .show-more.align-center
-      a.button(
+      NButton(
+        :loading='loading'
         @click='async () => await init(id)'
+        round
+        secondary
+        size='small'
         v-if='comments.length && hasNext'
       )
+        template(#icon)
+          i-fa-solid-plus
         | {{ loading ? '正在加载' : '查看更多' }}
-        | &nbsp;
-        i-fa-solid-plus(v-if='!loading')
-        i-fa-solid-spinner.spin(v-else)
   .align-center(v-if='!comments.length && loading')
     placeholder
 </template>
@@ -24,6 +27,7 @@ import Comment from './Comment.vue'
 import { ajax } from '@/utils/ajax'
 import type { Comments } from '@/types'
 import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
+import { NButton } from 'naive-ui'
 
 const loading = ref(false)
 const comments = ref<Comments[]>([])

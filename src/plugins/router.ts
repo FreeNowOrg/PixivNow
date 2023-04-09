@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createDiscreteApi } from 'naive-ui'
+const { message } = createDiscreteApi(['message'])
 
 const routes: RouteRecordRaw[] = [
   {
@@ -71,6 +73,9 @@ router.afterEach(({ name }) => {
   document.body.style.overflow = 'visible'
 })
 
-router.onError((error, to, from) => console.log(error, to, from))
+router.onError((error, to, from) => {
+  console.log(error, to, from)
+  message.error(error)
+})
 
 export default router

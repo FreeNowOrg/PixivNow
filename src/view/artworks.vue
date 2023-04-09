@@ -317,7 +317,10 @@ async function handleRemoveBookmark(): Promise<void> {
 }
 
 onBeforeRouteUpdate(async (to) => {
-  await init(to.params.id as string)
+  if (to.name !== 'artworks') {
+    return
+  }
+  init(to.params.id as string)
 })
 
 onMounted(() => {
