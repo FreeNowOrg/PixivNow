@@ -38,6 +38,8 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
 </template>
 
 <script lang="ts" setup>
+import ListLink from './ListLink.vue'
+import SearchBox from '../SearchBox.vue'
 import { useSideNavStore, useUserStore } from '@/plugins/states'
 
 const sideNavStore = useSideNavStore()

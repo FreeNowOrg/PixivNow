@@ -31,6 +31,7 @@
 </template>
 
 <script lang="ts" setup>
+import LazyLoad from './LazyLoad.vue'
 import type { ArtworkGallery } from '@/types'
 
 defineProps<{ pages: ArtworkGallery[] }>()

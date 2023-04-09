@@ -19,6 +19,10 @@
 </template>
 
 <script lang="ts" setup>
+import ArtworkLargeList from '@/components/ArtworksList/ArtworkLargeList.vue'
+import ErrorPage from '@/components/ErrorPage.vue'
+import Placeholder from '@/components/Placeholder.vue'
+
 import type { ArtworkRank } from '@/types'
 import { getCache, setCache } from './siteCache'
 import { ajax } from '@/utils/ajax'

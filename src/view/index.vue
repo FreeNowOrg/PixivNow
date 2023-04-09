@@ -55,6 +55,11 @@
 </template>
 
 <script lang="ts" setup>
+import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
+import Modal from '@/components/Modal.vue'
+import Placeholder from '@/components/Placeholder.vue'
+import SearchBox from '@/components/SearchBox.vue'
+
 import { formatInTimeZone } from 'date-fns-tz'
 import { getCache, setCache } from './siteCache'
 import { defaultArtwork, isArtwork } from '@/utils'
