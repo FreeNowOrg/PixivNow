@@ -3,14 +3,14 @@
   //- Loading
   section.loading(v-if='loading')
     Placeholder
-    p {{ loading ? '正在读取用户 #' + $route.params.id : '“' + user.name + '”的空间' }}
+    p {{ !user ? '正在读取用户 #' + $route.params.id : '“' + user.name + '”的空间' }}
 
   //- Error
   section.error(v-if='error')
     ErrorPage(:description='error' title='出大问题')
 
   //- :)
-  section.user(v-if='!loading && !error')
+  section.user(v-if='!loading && !error && user')
     .user-info
       .bg-area(:class='{ "no-background": !user?.background }')
         .bg-container(
@@ -22,13 +22,17 @@
           a.plain.pointer(@click='showUserMore = true')
             img(:src='user.imageBig')
         .username-header.flex
-          .username {{ user.name }}
+          h1.username {{ user.name }}
           .flex-1
           .user-folow(v-if='user.userId !== userStore.userId')
-            button(:disabled='loadingUserFollow' @click='handleUserFollow')
-              i-fa-solid-check(v-if='user.isFollowed')
-              i-fa-solid-plus(v-else)
-              |
+            NButton(
+              :loading='loadingUserFollow',
+              :type='user.isFollowed ? "success" : undefined'
+              @click='handleUserFollow'
+            )
+              template(#icon)
+                i-fa-solid-check(v-if='user.isFollowed')
+                i-fa-solid-plus(v-else)
               | {{ user.isFollowed ? '已关注' : '关注' }}
         .following
           | 关注了 <strong>{{ user.following }}</strong> 人
@@ -49,68 +53,38 @@
           .user-more
             a(@click='userMore' href='javascript:;') 查看更多
 
-    Modal.info-modal(v-model:show='showUserMore')
-      .top
-        h3
-          a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
-            img(:src='user.imageBig')
-            .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
-              i-fa-solid-parking(data-icon)
-          .title {{ user.name }}
-
-      .bottom
-        section.user-comment
-          h4 个人简介
-          .comment.pre {{ user.comment || '-' }}
-        section.user-workspace(v-if='user.workspace')
-          hr
-          h4 工作环境
-          .flex-list
-            .list-item(v-if='user.workspace.wsUrl')
-              img(
-                :src='user.workspace.wsUrl'
-                alt='工作环境照片'
-                lazyload
-                style='width: 100%; height: auto'
-              )
-            .list-item(v-if='user.workspace.userWorkspacePc')
-              .key 主机
-              .value {{ user.workspace.userWorkspacePc }}
-            .list-item(v-if='user.workspace.userWorkspaceMonitor')
-              .key 显示器
-              .value {{ user.workspace.userWorkspaceMonitor }}
-            .list-item(v-if='user.workspace.userWorkspaceTool')
-              .key 软件
-              .value {{ user.workspace.userWorkspaceTool }}
-            .list-item(v-if='user.workspace.userWorkspaceScanner')
-              .key 扫描仪
-              .value {{ user.workspace.userWorkspaceScanner }}
-            .list-item(v-if='user.workspace.userWorkspaceTablet')
-              .key 数码版
-              .value {{ user.workspace.userWorkspaceTablet }}
-            .list-item(v-if='user.workspace.userWorkspacePrinter')
-              .key 打印机
-              .value {{ user.workspace.userWorkspacePrinter }}
-            .list-item(v-if='user.workspace.userWorkspaceDesktop')
-              .key 台面
-              .value {{ user.workspace.userWorkspaceDesktop }}
-            .list-item(v-if='user.workspace.userWorkspaceMusic')
-              .key 音乐
-              .value {{ user.workspace.userWorkspaceMusic }}
-            .list-item(v-if='user.workspace.userWorkspaceDesk')
-              .key 桌子
-              .value {{ user.workspace.userWorkspaceDesk }}
-            .list-item(v-if='user.workspace.userWorkspaceChair')
-              .key 椅子
-              .value {{ user.workspace.userWorkspaceChair }}
-            .list-item(v-if='user.workspace.userWorkspaceComment')
-              .key 说明
-              .value {{ user.workspace.userWorkspaceComment }}
-        section.dev-only
-          hr
-          h4 Debug Info
-          details
-            pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
+    NModal(closable preset='card' v-model:show='showUserMore')
+      .info-modal
+        .top
+          h3
+            a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
+              img(:src='user.imageBig')
+              .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
+                i-fa-solid-parking(data-icon)
+            .title {{ user.name }}
+        .bottom
+          section.user-comment
+            h4 个人简介
+            .comment.pre {{ user.comment || '-' }}
+          section.user-workspace(v-if='user.workspace')
+            hr
+            h4 工作环境
+            NImage(
+              :preview-src='user.workspace.wsBigUrl',
+              :src='user.workspace.wsUrl'
+              lazy
+              v-if='user.workspace.wsUrl'
+            )
+            NTable
+              tbody
+                tr(v-for='(val, key) in user.workspace')
+                  th {{ workspaceNameMap[key] || key }}
+                  td {{ val }}
+          section.dev-only
+            hr
+            h4 Debug Info
+            details
+              pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
 
     #user-artworks
       .tabber
@@ -151,7 +125,6 @@ import { ajax } from '@/utils/ajax'
 
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
-import Modal from '@/components/Modal.vue'
 import Placeholder from '@/components/Placeholder.vue'
 import ShowMore from '@/components/ShowMore.vue'
 
@@ -159,9 +132,10 @@ import { getCache, setCache } from './siteCache'
 import { sortArtList } from '@/utils/artworkActions'
 import { useUserStore } from '@/plugins/states'
 import type { ArtworkInfo, User } from '@/types'
+import { NButton, NImage, NModal, NTable } from 'naive-ui'
 
 const loading = ref(true)
-const user = ref<User>({} as User)
+const user = ref<User>()
 const bookmarks = ref<ArtworkInfo[]>([])
 const loadingBookmarks = ref(false)
 const tab = ref<'illust' | 'manga' | 'bookmarks'>('illust')
@@ -170,7 +144,30 @@ const showUserMore = ref(false)
 const route = useRoute()
 const userStore = useUserStore()
 
+const workspaceNameMap = {
+  userWorkspacePc: '个人电脑',
+  userWorkspaceMonitor: '显示器',
+  userWorkspaceTool: '创作工具',
+  userWorkspaceScanner: '扫描仪',
+  userWorkspaceTablet: '平板电脑',
+  userWorkspaceMouse: '鼠标',
+  userWorkspacePrinter: '打印机',
+  userWorkspaceDesktop: '桌面',
+  userWorkspaceMusic: '音乐播放器',
+  userWorkspaceDesk: '桌子',
+  userWorkspaceChair: '椅子',
+  userWorkspaceComment: '说明',
+  wsUrl: '工作空间图片URL',
+  wsBigUrl: '工作空间大图片URL',
+}
+
 async function init(id: string | number): Promise<void> {
+  // reset states
+  user.value = undefined
+  tab.value = 'illust'
+  error.value = ''
+  bookmarks.value = []
+
   const cache = getCache(`users.${id}`)
   if (cache) {
     loading.value = false
@@ -213,12 +210,15 @@ async function init(id: string | number): Promise<void> {
 
 const loadingUserFollow = ref(false)
 function handleUserFollow() {
+  const target = user.value
+  if (!target) return
+
   loadingUserFollow.value = true
-  const isFollowed = user.value.isFollowed
+  const isFollowed = target.isFollowed
   const handler = isFollowed ? removeUserFollow : addUserFollow
-  handler(user.value.userId)
+  handler(target.userId)
     .then(() => {
-      user.value.isFollowed = !isFollowed
+      target.isFollowed = !isFollowed
     })
     .finally(() => {
       loadingUserFollow.value = false
@@ -230,13 +230,14 @@ function userMore(): void {
 }
 
 async function getBookmarks(): Promise<void> {
-  // if (userStore.userId !== route.params.id) return
+  const target = user.value
+  if (!target) return
   if (loadingBookmarks.value) return
 
   try {
     loadingBookmarks.value = true
     const { data } = await ajax.get<{ works: ArtworkInfo }>(
-      `/ajax/user/${user.value.userId}/illusts/bookmarks`,
+      `/ajax/user/${target.userId}/illusts/bookmarks`,
       {
         params: new URLSearchParams({
           tag: '',
@@ -254,11 +255,16 @@ async function getBookmarks(): Promise<void> {
   }
 }
 
-onBeforeRouteUpdate(async (to) => await init(to.params.id as string))
+onBeforeRouteUpdate((to) => {
+  if (to.name !== 'users') {
+    return
+  }
+  init(to.params.id as string)
+})
 
 onMounted(async () => {
   document.title = `User | PixivNow`
-  await init(route.params.id as string)
+  init(route.params.id as string)
 })
 </script>
 
@@ -333,17 +339,9 @@ onMounted(async () => {
       border: 4px solid #fff
       box-shadow: 0 4px 8px #efefef
   .username
-    font-size: 1.4rem
+    font-size: 1.6rem
     font-weight: 700
-  .user-folow
-    button
-      font-size: 1rem
-      background-color: #ddd
-      border-radius: 1rem
-      color: var(--theme-text-color)
-      padding: 0.3rem 1.5rem
-      &:disabled
-        opacity: 0.7
+    margin: 0
   .comment
     max-height: 4rem
     overflow: hidden
@@ -393,39 +391,37 @@ onMounted(async () => {
 
 .info-modal
   position: relative
-
   hr
     margin: 1.5rem auto
     width: 75%
     border: none
     height: 2px
     background-color: #dedede
-
   .top
     text-align: center
     background-color: #f4f4f4
     z-index: 1
-    margin: -3.5rem -2rem 0 -2rem
-    padding: 2rem
-
+    // margin: -3.5rem -2rem 0 -2rem
+    // padding: 2rem
     .avatar
       width: 80px
       margin: 0 auto
-
       img
         border-radius: 50%
         width: 80px
-
       .premium-icon
         position: absolute
         bottom: 0
         right: 0
         color: #ffa500
         cursor: help
-
     .title
       font-size: 1rem
       font-weight: 600
+
+  .user-workspace
+    :deep(img)
+      width: 100%
 
   .bottom
     margin: 1.5rem 5%

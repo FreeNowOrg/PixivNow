@@ -68,6 +68,7 @@ export interface User {
     userWorkspaceChair?: string
     userWorkspaceComment?: string
     wsUrl?: string
+    wsBigUrl?: string
   }
   official: boolean
   group: null
