@@ -1,5 +1,5 @@
 <template lang="pug">
-router-link.tag(:to='"/search/" + tag') \#{{ tag }}
+RouterLink.tag(:to='"/search/" + tag') \#{{ tag }}
 </template>
 
 <script lang="ts" setup>

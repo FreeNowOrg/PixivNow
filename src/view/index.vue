@@ -4,7 +4,7 @@
     :style='{ "background-image": `url(${randomBg.url})` }'
   )
     section.search-area.flex-1
-      search-box.big.search
+      SearchBox.big.search
 
     .site-logo
       img(:src='LogoH')
@@ -16,23 +16,23 @@
         style='margin-right: 0.5em'
         title='换一个~'
       )
-        i-fa-solid-random
+        IFaSolidRandom
       a.pointer(
         @click='showBgInfo = true'
         title='关于背景'
         v-if='randomBg.info.id'
       )
-        i-fa-solid-info-circle
+        IFaSolidInfoCircle
 
-  modal.bg-info-modal(v-model:show='showBgInfo')
+  Modal.bg-info-modal(v-model:show='showBgInfo')
     h3 背景图片：{{ randomBg.info.title }}
     .align-center
-      router-link.thumb(:to='"/artworks/" + randomBg.info.id')
+      RouterLink.thumb(:to='"/artworks/" + randomBg.info.id')
         img(:src='randomBg.url' lazyload)
       .desc
         strong {{ randomBg.info.title }}
         | &ensp;&mdash;&ensp;
-        router-link(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
+        RouterLink(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
         | 的作品 (ID: {{ randomBg.info.id }})
 
   .body-inner
@@ -44,11 +44,11 @@
         )
           | {{ loadingDiscovery ? '加载中' : '换一批' }}
           |
-          i-fa-solid-random(v-if='!loadingDiscovery')
-          i-fa-solid-spinner.spin(v-else)
+          IFaSolidRandom(v-if='!loadingDiscovery')
+          IFaSolidSpinner.spin(v-else)
       .align-center(v-if='!discoveryList.length')
-        placeholder
-      artwork-list(
+        Placeholder
+      ArtworkList(
         :class='{ "loading-cover": loadingDiscovery }',
         :list='discoveryList'
       )

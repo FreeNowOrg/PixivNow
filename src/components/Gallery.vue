@@ -8,7 +8,7 @@
         title='点击下载原图'
         v-if='picShow === index'
       )
-        lazy-load.img(
+        LazyLoad.img(
           :height='item.height',
           :src='item.urls.regular',
           :width='item.width'
@@ -22,7 +22,7 @@
         :title='`第${index + 1}张，共${pages.length}张`'
         @click='picShow = index'
       )
-        lazy-load.pic(
+        LazyLoad.pic(
           :height='80',
           :src='item.urls.thumb_mini',
           :width='80'

@@ -1,7 +1,7 @@
 <template lang="pug">
 .artwork-large-card
   .top
-    router-link(:to='"/artworks/" + illust.id')
+    RouterLink(:to='"/artworks/" + illust.id')
       .thumb
         img(
           :alt='illust.title',
@@ -22,13 +22,13 @@
       ) {{ rank }}
   .bottom
     h3.title(:title='illust.title')
-      router-link(:to='"/artworks/" + illust.id') {{ illust.title }}
+      RouterLink(:to='"/artworks/" + illust.id') {{ illust.title }}
     .author(:title='illust.userName')
-      router-link(:to='"/users/" + illust.id')
+      RouterLink(:to='"/users/" + illust.id')
         img.avatar(:src='illust.profileImageUrl' lazyload)
         | {{ illust.userName }}
     .tags
-      router-link.tag(
+      RouterLink.tag(
         :to='"/search/" + tagName'
         v-for='tagName in illust.tags'
       ) \#{{ tagName }}
@@ -148,7 +148,7 @@ h3
     a
       align-items: center
 
-      &.router-link-active
+      &.RouterLink-active
         color: var(--theme-text-color)
         font-weight: 600
         font-style: normal

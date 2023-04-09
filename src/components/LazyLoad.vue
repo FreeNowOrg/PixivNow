@@ -1,5 +1,5 @@
 <template lang="pug">
-component(
+Component(
   :class='{ lazyload: true, isLoading: !loaded && !error, isLoaded: loaded, isError: error }',
   :height='height',
   :is='loaded ? "img" : "svg"',

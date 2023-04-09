@@ -1,10 +1,10 @@
 <template lang="pug">
 #login-form.not-logged-in(v-if='!userStore.isLoggedIn')
-  router-link.button(
+  RouterLink.button(
     :to='$route.query.back.toString()'
     v-if='$route.query.back'
   )
-    i-fa-solid-angle-left
+    IFaSolidAngleLeft
     | &nbsp;取消
   label
     h1.title 设置 Pixiv 令牌
@@ -38,7 +38,7 @@
     p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
 
 #login-form.logged-in(v-if='userStore.isLoggedIn')
-  router-link.button(
+  RouterLink.button(
     :to='$route.query.back.toString()'
     v-if='$route.query.back'
   )

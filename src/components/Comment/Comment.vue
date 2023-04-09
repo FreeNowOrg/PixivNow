@@ -1,7 +1,7 @@
 <template lang="pug">
 li.comment-block
   .left
-    router-link.plain(:to='"/users/" + comment.userId')
+    RouterLink.plain(:to='"/users/" + comment.userId')
       img.avatar(
         :src='comment.img',
         :title='comment.userName + " (" + comment.userId + ")"'

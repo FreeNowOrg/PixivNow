@@ -2,12 +2,12 @@
 #user-view
   //- Loading
   section.loading(v-if='loading')
-    placeholder
+    Placeholder
     p {{ loading ? '正在读取用户 #' + $route.params.id : '“' + user.name + '”的空间' }}
 
   //- Error
   section.error(v-if='error')
-    error-page(:description='error' title='出大问题')
+    ErrorPage(:description='error' title='出大问题')
 
   //- :)
   section.user(v-if='!loading && !error')
@@ -49,7 +49,7 @@
           .user-more
             a(@click='userMore' href='javascript:;') 查看更多
 
-    modal.info-modal(v-model:show='showUserMore')
+    Modal.info-modal(v-model:show='showUserMore')
       .top
         h3
           a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
@@ -126,19 +126,19 @@
             h2 插画
             .no-result(v-if='user.illusts && !user.illusts.length')
               div 用户没有插画作品 (｡•́︿•̀｡)
-            artwork-list(:list='user.illusts', :show-tags='false')
+            ArtworkList(:list='user.illusts', :show-tags='false')
           section(v-if='tab === "manga"')
             h2 漫画
             .no-result(v-if='user.manga && !user.manga.length')
               div 用户没有漫画作品 (*/ω＼*)
-            artwork-list(:list='user.manga', :show-tags='false')
+            ArtworkList(:list='user.manga', :show-tags='false')
           section(v-if='tab === "bookmarks"')
             h2 {{ user.userId === userStore.userId ? '我' : user.name }}的收藏
             .no-result(v-if='!loadingBookmarks && !bookmarks.length')
               div {{  user.userId === userStore.userId ? '收藏夹是空的 Σ(⊙▽⊙"a' : `${user.name}没有公开的收藏 ${'(❁´◡`❁)'}`  }}
-            artwork-list(:list='bookmarks', :show-tags='false')
+            ArtworkList(:list='bookmarks', :show-tags='false')
             .more-btn.align-center(v-if='bookmarks.length')
-              show-more(
+              ShowMore(
                 :loading='loadingBookmarks',
                 :method='getBookmarks',
                 :text='loadingBookmarks ? "正在加载" : "加载更多"'

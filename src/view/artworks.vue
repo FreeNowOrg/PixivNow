@@ -2,13 +2,13 @@
 #artwork-view
   //- Loading
   section.align-center(v-if='loading')
-    placeholder
+    Placeholder
     p {{ '正在读取作品 #' + $route.params.id }}
 
   //- Done
   section.illust-container(v-if='!error && !loading')
     #top-area
-      gallery(:pages='pages')
+      Gallery(:pages='pages')
 
       .body-inner
         #meta-area
@@ -28,10 +28,10 @@
 
             p.stats
               span.original(v-if='illust.isOriginal')
-                i-fa-solid-laugh-wink(data-icon)
+                IFaSolidLaughWink(data-icon)
                 | 原创
               span.like-count(title='点赞')
-                i-fa-solid-thumbs-up(data-icon)
+                IFaSolidThumbsUp(data-icon)
                 | {{ illust.likeCount }}
 
               //- 收藏
@@ -40,21 +40,21 @@
                 :title='!store.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
                 @click='illust.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
               )
-                i-fa-solid-heart(data-icon)
+                IFaSolidHeart(data-icon)
                 | {{ illust.bookmarkCount }}
 
               span.view-count(title='浏览')
-                i-fa-solid-eye(data-icon)
+                IFaSolidEye(data-icon)
                 | {{ illust.viewCount }}
               span.count
-                i-fa-solid-images(data-icon)
+                IFaSolidImages(data-icon)
                 | {{ pages.length }}张
 
             p.create-date {{ new Date(illust.createDate).toLocaleString() }}
 
           .artwork-tags
             span.x-restrict(title='R-18' v-if='illust?.xRestrict') R-18
-            art-tag(
+            ArtTag(
               :key='_',
               :tag='item.tag'
               v-for='(item, _) in illust.tags.tags'
@@ -64,11 +64,11 @@
           .author-info
             h2 作者
             .align-center(v-if='!user.userId')
-              placeholder
-            author-card(:user='user' v-if='user.userId')
+              Placeholder
+            AuthorCard(:user='user' v-if='user.userId')
 
-        card.comments(ref='commentsRef' title='评论')
-          comments-area(
+        Card.comments(ref='commentsRef' title='评论')
+          CommentsArea(
             :count='illust.commentCount',
             :id='illust.id || illust.illustId'
           )
@@ -77,9 +77,9 @@
     .recommend-works.body-inner(ref='recommendRef')
       h2 相关推荐
       .align-center.loading(v-if='!recommend.length')
-        placeholder
-      artwork-list(:list='recommend')
-      show-more(
+        Placeholder
+      ArtworkList(:list='recommend')
+      ShowMore(
         :loading='recommendLoading',
         :method='async () => await getMoreRecommend()',
         :text='recommendLoading ? "加载中" : "加载更多"'
@@ -88,7 +88,7 @@
 
   //- Error
   section.error(v-if='error')
-    error-page(:description='error' title='出大问题')
+    ErrorPage(:description='error' title='出大问题')
 </template>
 
 <script lang="ts" setup>

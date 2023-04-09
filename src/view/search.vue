@@ -8,11 +8,11 @@ mixin pagenator
 
 #search-view
   .body-inner
-    search-box.big
+    SearchBox.big
 
     //- Error
     section(v-if='error && !loading')
-      error-page(:description='error' title='出大问题')
+      ErrorPage(:description='error' title='出大问题')
 
     //- Result
     section(v-if='!error')
@@ -21,10 +21,10 @@ mixin pagenator
       //- Loading
       .loading-area(v-if='loading')
         .align-center
-          placeholder
+          Placeholder
 
       .result-area(v-if='!loading')
-        artwork-large-list(:artwork-list='resultList')
+        ArtworkLargeList(:artwork-list='resultList')
 
       .no-more(v-if='!loading && resultList.length < 60') 没有了，一滴都没有了……
 

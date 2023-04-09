@@ -2,12 +2,12 @@
 card.author-card(:data-user-is-followed='user.isFollowed' title='')
   .flex-center
     .left
-      router-link(:to='"/users/" + user.userId')
+      RouterLink(:to='"/users/" + user.userId')
         img(:src='user.imageBig' alt='')
     .right
       .flex
         h4
-          router-link(:to='"/users/" + user.userId') {{ user.name }}
+          RouterLink(:to='"/users/" + user.userId') {{ user.name }}
         button(:disabled='loadingUserFollow' @click='handleUserFollow')
           i-fa-solid-check(v-if='user.isFollowed')
           i-fa-solid-plus(v-else)
@@ -15,7 +15,7 @@ card.author-card(:data-user-is-followed='user.isFollowed' title='')
           | {{ user.isFollowed ? '已关注' : '关注' }}
       p.description.pre {{ user.comment }}
 
-  artwork-list.inline.tiny(:list='user.illusts')
+  ArtworkList.inline.tiny(:list='user.illusts')
 </template>
 
 <script lang="ts" setup>

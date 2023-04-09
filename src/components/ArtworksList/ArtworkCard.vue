@@ -14,14 +14,14 @@
       @click='handleBookmark'
     )
       i-fa-solid-heart(data-icon)
-  router-link(:to='"/artworks/" + item.id')
-    lazy-load.img(:alt='item.alt', :src='item.url', :title='item.alt' lazyload)
+  RouterLink(:to='"/artworks/" + item.id')
+    LazyLoad.img(:alt='item.alt', :src='item.url', :title='item.alt' lazyload)
     .hover-title {{ item.title }}
 .info
   .title
-    router-link(:to='"/artworks/" + item.id') {{ item.title }}
+    RouterLink(:to='"/artworks/" + item.id') {{ item.title }}
   .author(:title='item.userName')
-    router-link(:to='"/users/" + item.userId')
+    RouterLink(:to='"/users/" + item.userId')
       img.avatar(:src='item.profileImageUrl' lazyload)
       | {{ item.userName }}
 </template>
