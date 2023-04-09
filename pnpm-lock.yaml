@@ -28,6 +28,9 @@ dependencies:
   vue:
     specifier: ^3.2.47
     version: 3.2.47
+  vue-flex-waterfall:
+    specifier: ^2.2.2
+    version: 2.2.2
   vue-router:
     specifier: ^4.1.6
     version: 4.1.6(vue@3.2.47)
@@ -4258,6 +4261,10 @@ packages:
         optional: true
     dependencies:
       vue: 3.2.47
+    dev: false
+
+  /vue-flex-waterfall@2.2.2:
+    resolution: {integrity: sha512-w8I0vyadnMfeLuS0f/LDlMN6XC6hnUNl7zkbF/gPeXyV+8ICfPj6ap6y8aybbUPODZE2J8bnmc+BgzbrMgDH6A==}
     dev: false
 
   /vue-router@4.1.6(vue@3.2.47):

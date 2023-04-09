@@ -11,7 +11,7 @@
       )
     .body-inner
       .artwork-info
-        h1.loading: NSkeleton(
+        h1.loading(style='padding: 0.5rem 0'): NSkeleton(
           height='2rem'
           style='margin-top: 1em'
           width='20rem'
@@ -23,6 +23,11 @@
             NSkeleton(style='margin-left: 0.5em' text width='4em')
           p.create-date: NSkeleton(text width='12em')
           p.canonical-link: NSkeleton(height='1.5rem' width='8rem')
+        h2: NSkeleton(height='2rem' width='8rem')
+        Card(title='')
+          AuthorCard
+        h2: NSkeleton(height='2rem' width='8rem')
+        NSkeleton(:sharp='false' height='8rem' width='100%')
 
   //- Done
   section.illust-container(v-if='!error && illust')

@@ -2,7 +2,7 @@
 NTag.artwork-tag(
   @click='$router.push({ name: "search", params: { keyword: tag, p: 1 } })'
   type='info'
-) \#{{ tag }}
+) {{ '#' }}{{ tag }}
 </template>
 
 <script lang="ts" setup>

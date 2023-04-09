@@ -27,6 +27,7 @@
     "nprogress": "^0.2.0",
     "pinia": "^2.0.34",
     "vue": "^3.2.47",
+    "vue-flex-waterfall": "^2.2.2",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {

@@ -1,11 +1,18 @@
 <template lang="pug">
-ul.artwork-large-list
-  li(v-for='item in artworks')
-    artwork-large-card(:illust='item[0]', :rank='item[1]')
+//- ul.artwork-large-list
+//-   li(v-for='item in artworks')
+VueFlexWaterfall.artwork-large-list(
+  :break-at='{ 1200: 3, 800: 2, 300: 1 }'
+  align-content='center'
+  col='3'
+  col-spacing='16'
+)
+  ArtworkLargeCard(:illust='item[0]', :rank='item[1]' v-for='item in artworks')
 </template>
 
 <script lang="ts" setup>
 import ArtworkLargeCard from './ArtworkLargeCard.vue'
+import { VueFlexWaterfall } from 'vue-flex-waterfall'
 import type { ArtworkInfo, ArtworkRank } from '@/types'
 
 const props = defineProps<{
@@ -27,6 +34,7 @@ const artworks = computed(() => {
 function convertRankToInfo(rankInfo: ArtworkRank[]): [ArtworkInfo, number][] {
   return rankInfo.map((item): [ArtworkInfo, number] => {
     return [
+      // @ts-ignore
       {
         id: `${item.illust_id}`,
         title: item.title,
@@ -61,23 +69,4 @@ function convertRankToInfo(rankInfo: ArtworkRank[]): [ArtworkInfo, number][] {
 }
 </script>
 
-<style lang="sass">
-
-.artwork-large-list
-  display: flex
-  flex-wrap: wrap
-  padding-left: 0
-  list-style: none
-  gap: 1.5rem
-  justify-content: center
-
-  &.inline
-    padding: 1rem
-    flex-wrap: nowrap
-    overflow-y: auto
-    justify-content: left
-
-    .artwork-large-card
-      height: 500px
-      // overflow-x: auto
-</style>
+<style lang="sass"></style>

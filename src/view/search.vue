@@ -122,8 +122,7 @@ onMounted(async () => {
 .no-more
   text-align: center
   padding: 1rem
-  border-radius: 4px
-  box-shadow: 0 0 4px #aaaaaa
+  opacity: 0.75
 
 .search-box
   margin: 2rem auto

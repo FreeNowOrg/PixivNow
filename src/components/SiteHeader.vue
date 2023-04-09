@@ -8,13 +8,14 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
       RouterLink.plain(to='/')
         img.site-logo(:src='LogoH')
 
-    .flex.search-area
+    .flex.search-area(v-if='$route.name !== "search"')
       .search-full.align-right.flex-1
         SearchBox
       .search-icon.align-right.flex-1
         button.pointer(@click='openSideNav')
           i-fa-solid-search
           | &nbsp;搜索
+    .flex.search-area(v-else)
 
     #global-nav__user-area.user-area
       .user-link
