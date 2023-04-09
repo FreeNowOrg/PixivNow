@@ -157,7 +157,7 @@ import ShowMore from '@/components/ShowMore.vue'
 
 import { getCache, setCache } from './siteCache'
 import { sortArtList } from '@/utils/artworkActions'
-import { useUserStore } from '@/plugins/states'
+import { useUserStore } from '@/composables/states'
 import type { ArtworkInfo, User } from '@/types'
 
 const loading = ref(true)

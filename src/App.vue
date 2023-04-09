@@ -16,7 +16,7 @@ import SideNav from './components/SideNav/SideNav.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import SiteHeader from './components/SiteHeader.vue'
 import { existsSessionId, initUser } from '@/components/userData'
-import { useUserStore } from '@/plugins/states'
+import { useUserStore } from '@/composables/states'
 
 const userStore = useUserStore()
 

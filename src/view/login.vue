@@ -58,7 +58,7 @@ import {
   login,
   logout,
 } from '@/components/userData'
-import { useUserStore } from '@/plugins/states'
+import { useUserStore } from '@/composables/states'
 
 const example = ref(exampleSessionId())
 const sessionIdInput = ref('')

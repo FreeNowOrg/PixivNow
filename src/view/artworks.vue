@@ -108,7 +108,7 @@ import { ajax } from '@/utils/ajax'
 // Types
 import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '@/types'
 
-import { useUserStore } from '@/plugins/states'
+import { useUserStore } from '@/composables/states'
 import {
   addBookmark,
   removeBookmark,
