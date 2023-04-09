@@ -63,20 +63,39 @@ ajax.interceptors.request.use((ctx) => {
     'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
   csrfToken && (ctx.headers['x-csrf-token'] = csrfToken)
 
-  !PROD &&
-    console.info(ctx.method, ctx.url, {
-      params: ctx.params,
-      data: ctx.data,
-      headers: ctx.headers,
-      cookies: cookies,
-    })
+  if (!PROD) {
+    console.info(
+      `[${ctx.method?.toUpperCase()}]`,
+      ctx.url,
+      '\n' +
+        JSON.stringify(
+          {
+            params: ctx.params,
+            data: ctx.data,
+            cookies,
+          },
+          null,
+          2
+        )
+    )
+  }
 
   return ctx
 })
 ajax.interceptors.response.use((ctx) => {
   typeof ctx.data === 'object' &&
     (ctx.data = replaceUrlInObject(ctx.data?.body ?? ctx.data))
-  !PROD && console.info('[RESPONSE]', ctx.request?.path, ctx.data)
+  if (!PROD) {
+    const out: string =
+      typeof ctx.data === 'object'
+        ? JSON.stringify(ctx.data, null, 2)
+        : ctx.data.toString()
+    console.info(
+      '[RESPONSE]',
+      ctx.request?.path?.replace('https://www.pixiv.net', ''),
+      `\n${out.length >= 200 ? out.slice(0, 200) + '...' : out}`
+    )
+  }
   return ctx
 })
 
