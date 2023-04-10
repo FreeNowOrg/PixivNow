@@ -1,20 +1,21 @@
 <template lang="pug">
-side-nav
-site-header
+NaiveuiProvider#app-full-container
+  main
+    article
+      RouterView
 
-main
-  article
-    router-view
-
-site-footer
-
-n-progress
+  SideNav
+  SiteHeader
+  SiteFooter
+  NProgress
 </template>
 
 <script lang="ts" setup>
+import NaiveuiProvider from './components/NaiveuiProvider.vue'
 import SideNav from './components/SideNav/SideNav.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import SiteHeader from './components/SiteHeader.vue'
+import NProgress from './components/NProgress.vue'
 import { existsSessionId, initUser } from '@/components/userData'
 import { useUserStore } from '@/composables/states'
 
@@ -37,12 +38,15 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="sass">
+#app-full-container
+  min-height: 100vh
+  display: flex
+  flex-direction: column
 
 main
   padding-top: 50px
   position: relative
   flex: 1
-
   article
     background-color: rgba(0, 0, 0, 0.02)
     padding-bottom: 3rem

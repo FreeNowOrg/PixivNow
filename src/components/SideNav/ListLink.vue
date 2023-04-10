@@ -5,7 +5,7 @@ mixin content
   | {{ text }}
 
 li
-  router-link.plain(:to='link' v-if='link')
+  RouterLink.plain(:to='link' v-if='link')
     +content
   a.plain(:href='externalLink' target='_blank' v-else-if='externalLink')
     +content

@@ -1,12 +1,18 @@
 <template lang="pug">
 section.error-page
-  .title
-    span {{ title }}
-  .description {{ description }}
-  .random(@click='randomMsg') {{ msg }}
+  NResult(
+    :description='description',
+    :status='status || "warning"',
+    :title='title'
+  )
+    template(#footer)
+      .random(@click='randomMsg') {{ msg }}
+      .extra: slot
 </template>
 
 <script lang="ts" setup>
+import { NResult } from 'naive-ui'
+
 const msgList = [
   // 正经向提示
   '频繁遇到此问题？请通过关于里的联系方式联系我们！',
@@ -51,9 +57,18 @@ const msgList = [
   '这像劲爆纵连一样没有人喜欢！',
 ]
 
-const props = defineProps<{
-  title: string
-  description: string
+defineProps<{
+  title?: string
+  description?: string
+  status?:
+    | 'warning'
+    | '500'
+    | 'error'
+    | 'info'
+    | 'success'
+    | '404'
+    | '403'
+    | '418'
 }>()
 const msg = ref('')
 function randomMsg(): void {
@@ -73,7 +88,7 @@ onMounted(() => {
 <style scoped lang="sass">
 
 .error-page
-  margin: 20vh auto
+  padding: 10vh 0
   height: 100%
   text-align: center
   display: flex
@@ -100,4 +115,7 @@ onMounted(() => {
   color: #aaa
   user-select: none
   margin-top: 1rem
+
+.extra
+  margin-top: 1em
 </style>

@@ -1,30 +1,28 @@
 <template lang="pug">
-#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
-  router-link.button(
+NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
+  RouterLink.button(
     :to='$route.query.back.toString()'
     v-if='$route.query.back'
   )
-    i-fa-solid-angle-left
+    IFaSolidAngleLeft
     | &nbsp;取消
-  label
-    h1.title 设置 Pixiv 令牌
-    input(
+  h1.title 设置 Pixiv 令牌
+  NFormItem(
+    :feedback='sessionIdInput && !validateSessionId(sessionIdInput) ? "哎呀，这个格式看上去不太对……" : error ? error : "这个格式看上去没问题，点击保存试试"',
+    :validation-status='(sessionIdInput && !validateSessionId(sessionIdInput)) || error ? "error" : "success"'
+    label='PHPSESSID'
+    required
+  )
+    NInput(
       :class='validateSessionId(sessionIdInput) ? "valid" : "invalid"'
-      v-model='sessionIdInput'
+      v-model:value='sessionIdInput'
     )
-  .status.invalid(v-if='error') {{ error }}
-  .status.valid(
-    v-else-if='sessionIdInput && validateSessionId(sessionIdInput)'
-  )
-    | 格式正确，请点击保存！
-  .status.invalid(
-    v-else-if='sessionIdInput && !validateSessionId(sessionIdInput)'
-  )
-    | 哎呀，这个格式看上去不太对……
   #submit
-    button.btn.btn-primary(
+    NButton(
       :disabled='!!error || loading || !validateSessionId(sessionIdInput)'
       @click='async () => await submit()'
+      block
+      type='primary'
     ) {{ loading ? '登录中……' : '保存令牌' }}
   .tips
     h2 如何获取 Pixiv 令牌？
@@ -38,16 +36,16 @@
     p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
 
 #login-form.logged-in(v-if='userStore.isLoggedIn')
-  router-link.button(
+  RouterLink.button(
     :to='$route.query.back.toString()'
     v-if='$route.query.back'
   )
     i-fa-solid-angle-left
     | &nbsp;返回
   h1 查看 Pixiv 令牌
-  input.token(:value='Cookies.get("PHPSESSID")' readonly)
+  NInput.token(:value='Cookies.get("PHPSESSID")' readonly)
   #submit
-    button(@click='remove') 移除令牌
+    NButton(@click='remove' type='error') 移除令牌
 </template>
 
 <script lang="ts" setup>
@@ -59,6 +57,7 @@ import {
   logout,
 } from '@/components/userData'
 import { useUserStore } from '@/composables/states'
+import { NButton, NForm, NFormItem, NInput } from 'naive-ui'
 
 const example = ref(exampleSessionId())
 const sessionIdInput = ref('')
@@ -103,7 +102,7 @@ async function submit(): Promise<void> {
 function remove(): void {
   logout()
   userStore.logout()
-  location.reload()
+  goBack()
 }
 
 watch(sessionIdInput, () => (error.value = ''))

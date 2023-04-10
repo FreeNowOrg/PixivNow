@@ -44,7 +44,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       res.send(illusts)
       return
     }
-  } catch (err) {
-    res.status(err?.response?.status ?? 500).send(err?.response?.data ?? err)
+  } catch (e: any) {
+    res.status(e?.response?.status ?? 500).send(e?.response?.data ?? e)
   }
 }

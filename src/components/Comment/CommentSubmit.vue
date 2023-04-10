@@ -12,7 +12,7 @@
   .flex.not-logged-in(v-if='!store.isLoggedIn')
     p
       | 您需要
-      router-link(:to='"/login?back=" + $route.path') 设置 Pixiv 令牌
+      RouterLink(:to='"/login?back=" + $route.path') 设置 Pixiv 令牌
       | 以发表评论。
 </template>
 

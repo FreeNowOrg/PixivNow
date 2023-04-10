@@ -4,37 +4,37 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
   .inner
     .group
       .search-area
-        search-box
+        SearchBox
 
     .list
       .group
         .title 导航
         ul
-          list-link(link='/' text='首页')
-            i-fa-solid-home.svg--list-link(data-icon)
-          list-link.not-allowed(link='' text='插画')
-            i-fa-solid-image.svg--list-link
-          list-link(link='' text='用户')
-            i-fa-solid-user.svg--list-link
-          list-link(link='/ranking' text='排行榜')
-            i-fa-solid-crown.svg--list-link
+          ListLink(link='/' text='首页')
+            i-fa-solid-home.svg--ListLink(data-icon)
+          ListLink.not-allowed(link='' text='插画')
+            i-fa-solid-image.svg--ListLink
+          ListLink(link='' text='用户')
+            i-fa-solid-user.svg--ListLink
+          ListLink(link='/ranking' text='排行榜')
+            i-fa-solid-crown.svg--ListLink
 
       .group
         .title Pixiv 令牌
         ul
-          list-link(
+          ListLink(
             :text='userStore.isLoggedIn ? "查看令牌" : "设置令牌"'
             link='/login'
           )
-            i-fa-solid-fingerprint.svg--list-link
+            i-fa-solid-fingerprint.svg--ListLink
 
       .group
         .title PixivNow
         ul
-          list-link(externalLink='https://www.pixiv.net/' text='Pixiv.net')
-            i-fa-solid-external-link-alt.svg--list-link
-          list-link(link='/about' text='关于我们')
-            i-fa-solid-heart.svg--list-link
+          ListLink(externalLink='https://www.pixiv.net/' text='Pixiv.net')
+            i-fa-solid-external-link-alt.svg--ListLink
+          ListLink(link='/about' text='关于我们')
+            i-fa-solid-heart.svg--ListLink
 </template>
 
 <script lang="ts" setup>
@@ -67,7 +67,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="sass">
-svg.svg--list-link
+svg.svg--ListLink
   width: 2em
 
 .global-side-nav

@@ -1,13 +1,13 @@
 <template lang="pug">
 li.comment-block
   .left
-    router-link.plain(:to='"/users/" + comment.userId')
+    RouterLink.plain(:to='"/users/" + comment.userId')
       img.avatar(
         :src='comment.img',
         :title='comment.userName + " (" + comment.userId + ")"'
       )
   .right
-    h4.user
+    h4.user.plain
       span.comment-author
         | {{ comment.userName }}
         .tag(v-if='store.userId === comment.userId') 您

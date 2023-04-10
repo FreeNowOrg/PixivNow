@@ -1,74 +1,110 @@
 <template lang="pug">
 #artwork-view
   //- Loading
-  section.align-center(v-if='loading')
-    placeholder
-    p {{ '正在读取作品 #' + $route.params.id }}
+  section.placeholder(v-if='loading')
+    .gallery
+      NSkeleton(
+        :sharp='false'
+        block
+        height='50vh'
+        style='margin: 0 auto; width: 500px; max-width: 80vw'
+      )
+    .body-inner
+      .artwork-info
+        h1.loading(style='padding: 0.5rem 0'): NSkeleton(
+          height='2rem'
+          style='margin-top: 1em'
+          width='20rem'
+        )
+        Card(title='')
+          p.description: NSkeleton(:repeat='4' text)
+          p.stats: span(v-for='_ in 4')
+            NSkeleton(circle height='1em' text width='1em')
+            NSkeleton(style='margin-left: 0.5em' text width='4em')
+          p.create-date: NSkeleton(text width='12em')
+          p.canonical-link: NSkeleton(height='1.5rem' width='8rem')
+        h2: NSkeleton(height='2rem' width='8rem')
+        Card(title='')
+          AuthorCard
+        h2: NSkeleton(height='2rem' width='8rem')
+        NSkeleton(:sharp='false' height='8rem' width='100%')
 
   //- Done
-  section.illust-container(v-if='!error && !loading')
+  section.illust-container(v-if='!error && illust')
     #top-area
-      gallery(:pages='pages')
+      Gallery(:pages='pages')
 
       .body-inner
         #meta-area
-          .artwork-info
-            h1(:class='illust.xRestrict ? "danger" : ""') {{ illust.illustTitle }}
-            p.description.pre(v-html='illust.description')
-            p.description.no-desc(
-              :style='{ color: "#aaa" }'
-              v-if='!illust.description'
-            ) (无简介)
-            p.canonical-link
-              a.button(
-                :href='illust?.extraData?.meta?.canonical || "#"'
-                rel='noopener noreferrer'
-                target='_blank'
-              ) 在 Pixiv 上查看 →
+          h1(:class='illust.xRestrict ? "danger" : ""') {{ illust.illustTitle }}
+          Card(title='')
+            .artwork-info
+              p.description.pre(v-html='illust.description')
+              p.description.no-desc(
+                :style='{ color: "#aaa" }'
+                v-if='!illust.description'
+              ) (作者未填写简介)
 
-            p.stats
-              span.original(v-if='illust.isOriginal')
-                i-fa-solid-laugh-wink(data-icon)
+              p.stats
+                span.like-count(title='点赞')
+                  IFaSolidThumbsUp(data-icon)
+                  | {{ illust.likeCount }}
+
+                //- 收藏
+                span.bookmark-count(
+                  :class='{ bookmarked: illust.bookmarkData }',
+                  :title='!store.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
+                  @click='illust?.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
+                )
+                  IFaSolidHeart(data-icon)
+                  | {{ illust.bookmarkCount }}
+
+                span.view-count(title='浏览')
+                  IFaSolidEye(data-icon)
+                  | {{ illust.viewCount }}
+                span.count
+                  IFaSolidImages(data-icon)
+                  | {{ pages.length }}张
+
+              p.create-date {{ new Date(illust.createDate).toLocaleString() }}
+
+            .artwork-tags
+              span.original-tag(v-if='illust.isOriginal')
+                IFaSolidLaughWink(data-icon)
                 | 原创
-              span.like-count(title='点赞')
-                i-fa-solid-thumbs-up(data-icon)
-                | {{ illust.likeCount }}
-
-              //- 收藏
-              span.bookmark-count(
-                :class='{ bookmarked: illust.bookmarkData }',
-                :title='!store.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
-                @click='illust.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
+              span.restrict-tag.x-restrict(
+                title='R-18'
+                v-if='illust?.xRestrict'
+              ) R-18
+              span.restrict-tag.ai-restrict(
+                :title='`AI生成 (${illust.aiType})`'
+                v-if='illust?.aiType === 2'
+              ) AI生成
+              ArtTag(
+                :key='_',
+                :tag='item.tag'
+                v-for='(item, _) in illust.tags.tags'
               )
-                i-fa-solid-heart(data-icon)
-                | {{ illust.bookmarkCount }}
 
-              span.view-count(title='浏览')
-                i-fa-solid-eye(data-icon)
-                | {{ illust.viewCount }}
-              span.count
-                i-fa-solid-images(data-icon)
-                | {{ pages.length }}张
+            .canonical-link
+              NButton(
+                :href='illust?.extraData?.meta?.canonical || "#"'
+                icon-placement='right'
+                rel='noopener noreferrer'
+                size='small'
+                tag='a'
+                target='_blank'
+              )
+                template(#icon)
+                  IFaSolidArrowRight
+                | 前往 Pixiv 查看
 
-            p.create-date {{ new Date(illust.createDate).toLocaleString() }}
+        aside.author-area(ref='authorRef')
+          Card(title='作者')
+            AuthorCard(:user='user')
 
-          .artwork-tags
-            span.x-restrict(title='R-18' v-if='illust?.xRestrict') R-18
-            art-tag(
-              :key='_',
-              :tag='item.tag'
-              v-for='(item, _) in illust.tags.tags'
-            )
-
-        aside#author-area(ref='authorRef')
-          .author-info
-            h2 作者
-            .align-center(v-if='!user.userId')
-              placeholder
-            author-card(:user='user' v-if='user.userId')
-
-        card.comments(ref='commentsRef' title='评论')
-          comments-area(
+        Card.comments(title='评论')
+          CommentsArea(
             :count='illust.commentCount',
             :id='illust.id || illust.illustId'
           )
@@ -76,19 +112,17 @@
     //- 相关推荐
     .recommend-works.body-inner(ref='recommendRef')
       h2 相关推荐
-      .align-center.loading(v-if='!recommend.length')
-        placeholder
-      artwork-list(:list='recommend')
-      show-more(
+      ArtworkList(:list='recommend', :loading='!recommend.length')
+      ShowMore(
         :loading='recommendLoading',
-        :method='async () => await getMoreRecommend()',
+        :method='handleMoreRecommend',
         :text='recommendLoading ? "加载中" : "加载更多"'
-        v-if='recommendNextIds.length'
+        v-if='recommend.length && recommendNextIds.length'
       )
 
   //- Error
   section.error(v-if='error')
-    error-page(:description='error' title='出大问题')
+    ErrorPage(:description='error' title='出大问题')
 </template>
 
 <script lang="ts" setup>
@@ -99,7 +133,6 @@ import Card from '@/components/Card.vue'
 import CommentsArea from '@/components/Comment/CommentsArea.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
 import Gallery from '@/components/Gallery.vue'
-import Placeholder from '@/components/Placeholder.vue'
 import ShowMore from '@/components/ShowMore.vue'
 
 import { getCache, setCache } from './siteCache'
@@ -114,12 +147,14 @@ import {
   removeBookmark,
   sortArtList,
 } from '@/utils/artworkActions'
+import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
+import { NButton, NSkeleton } from 'naive-ui'
 
 const loading = ref(true)
 const error = ref('')
-const illust = ref<Artwork>({} as Artwork)
+const illust = ref<Artwork>()
 const pages = ref<ArtworkGallery[]>([])
-const user = ref<User>({} as User)
+const user = ref<User>()
 const recommend = ref<ArtworkInfo[]>([])
 const recommendNextIds = ref<string[]>([])
 const recommendLoading = ref(false)
@@ -127,8 +162,26 @@ const bookmarkLoading = ref(false)
 const route = useRoute()
 const store = useUserStore()
 
+const recommendRef = ref<HTMLElement>()
+const authorRef = ref<HTMLElement>()
+
 async function init(id: string): Promise<void> {
   loading.value = true
+
+  // Reset states
+  illust.value = undefined
+  pages.value = []
+  user.value = undefined
+  recommend.value = []
+  recommendNextIds.value = []
+
+  addObserver(recommendRef, () => {
+    handleRecommendInit(illust.value!.illustId)
+  })
+  addObserver(authorRef, () => {
+    handleUserInit(illust.value!.userId)
+  })
+
   const dataCache = getCache(`illust.${id}`)
   const pageCache = getCache(`illust.${id}.page`)
   if (dataCache && pageCache) {
@@ -161,11 +214,7 @@ async function init(id: string): Promise<void> {
   }
 }
 
-const authorRef = ref<HTMLElement>()
-addObserver(authorRef, () => {
-  getUser(illust.value.userId)
-})
-async function getUser(userId: string): Promise<void> {
+async function handleUserInit(userId: string): Promise<void> {
   const value = getCache(`user.${userId}`)
   if (value) {
     user.value = value
@@ -191,7 +240,7 @@ async function getUser(userId: string): Promise<void> {
   }
 }
 
-async function getFirstRecommend(id: string): Promise<void> {
+async function handleRecommendInit(id: string): Promise<void> {
   if (recommendLoading.value) return
   try {
     recommendLoading.value = true
@@ -208,8 +257,7 @@ async function getFirstRecommend(id: string): Promise<void> {
     recommendLoading.value = false
   }
 }
-
-async function getMoreRecommend(): Promise<void> {
+async function handleMoreRecommend(): Promise<void> {
   if (recommendLoading.value) return
   if (!recommendNextIds.value.length) {
     console.log('no more recommend')
@@ -237,12 +285,8 @@ async function getMoreRecommend(): Promise<void> {
   }
 }
 
-const recommendRef = ref<HTMLElement>()
-addObserver(recommendRef, () => {
-  getFirstRecommend(illust.value.illustId)
-})
-
 async function handleAddBookmark(): Promise<void> {
+  if (!illust.value) return
   if (!store.isLoggedIn) {
     console.log('需要登录才可以添加收藏')
     return
@@ -273,6 +317,7 @@ async function handleAddBookmark(): Promise<void> {
   }
 }
 async function handleRemoveBookmark(): Promise<void> {
+  if (!illust.value) return
   if (bookmarkLoading.value || !illust.value.bookmarkData) return
   try {
     bookmarkLoading.value = true
@@ -287,67 +332,63 @@ async function handleRemoveBookmark(): Promise<void> {
 }
 
 onBeforeRouteUpdate(async (to) => {
-  await init(to.params.id as string)
+  if (to.name !== 'artworks') {
+    return
+  }
+  init(to.params.id as string)
 })
 
-onMounted(async () => {
+onMounted(() => {
   document.title = 'Artwork | PixivNow'
-  await init(route.params.id as string)
+  init(route.params.id as string)
 })
 
 function addObserver(elRef: Ref<HTMLElement | undefined>, callback: () => any) {
-  let observer: IntersectionObserver
-  onMounted(() => {
-    observer = new IntersectionObserver(([entry]) => {
-      console.info(entry.isIntersecting, illust.value?.illustId)
-      if (entry.isIntersecting && illust.value?.illustId) {
-        observer.disconnect()
+  const unWatch = watch(loading, async (val) => {
+    if (val) return
+    await nextTick()
+    const el = elRef.value
+    if (!el) return console.warn('observer missing target')
+    if (illust.value?.illustId) {
+      unWatch()
+      getElementUntilIntoView(el).then(() => {
         callback?.()
-        console.info('INTO VIEW', entry)
-      }
-    })
-    const unWatch = watch(loading, async (val) => {
-      if (val) return
-      await nextTick()
-      const el = elRef.value
-      if (!el) return console.warn('observer missing target')
-      if (illust.value.illustId) {
-        unWatch()
-        observer.observe(el)
-      }
-    })
-  })
-  onBeforeUnmount(() => {
-    observer && observer.disconnect()
+      })
+    }
   })
 }
 </script>
 
 <style scoped lang="sass">
+section
+  padding-top: 1rem
 
 .gallery
-  margin: 1rem auto
+  margin: 0 auto
 
 .artwork-tags
   margin: 1rem 0
+  > span
+    font-weight: 700
+    margin-right: 1rem
 
 h1
-  // display: inline-block
-  box-shadow: none
-  background: linear-gradient(90deg, var(--theme-accent-color), rgba(255,255,255,0))
-  background-position: 0 1em
-  background-repeat: no-repeat
+  --bg-color: var(--theme-accent-color)
+  box-shadow: 0 2px 0 var(--bg-color)
   margin: 0
-
+  margin-bottom: 1rem
   &.danger
-    background: linear-gradient(90deg, var(--theme-danger-color), rgba(255,255,255,0))
-    background-position: 0 1em
-    background-repeat: no-repeat
+    --bg-color: var(--theme-danger-color)
+  &.loading
+    --bg-color: rgba(0, 0, 0, .08)
+    opacity: 0.85
 
+.original-tag
+  color: #e02080
 .x-restrict
-  font-weight: bold
   color: #c00
-  margin-right: 1rem
+.ai-restrict
+  color: #c70
 
 .stats
   > span, > a
@@ -357,16 +398,12 @@ h1
     [data-icon]
       margin-right: 4px
 
-  .original
-    color: inherit
-    font-weight: 600
-
   .bookmark-count
     cursor: pointer
 
     &.bookmarked
       color: var(--theme-bookmark-color)
-      font-weight: 600
+      font-weight: 700
 
 .create-date
   color: #aaa
