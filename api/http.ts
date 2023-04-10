@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
-import colors from 'colors'
+import colors from 'picocolors'
 import escapeRegExp from 'lodash.escaperegexp'
 
 const PROD = process.env.NODE_ENV === 'production'

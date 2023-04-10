@@ -45,9 +45,6 @@ devDependencies:
   '@prettier/plugin-pug':
     specifier: ^2.4.2
     version: 2.4.2(prettier@2.8.7)
-  '@types/colors':
-    specifier: ^1.2.1
-    version: 1.2.1
   '@types/cookie':
     specifier: ^0.5.1
     version: 0.5.1
@@ -75,9 +72,6 @@ devDependencies:
   cheerio:
     specifier: 1.0.0-rc.12
     version: 1.0.0-rc.12
-  colors:
-    specifier: ^1.4.0
-    version: 1.4.0
   conventional-changelog-cli:
     specifier: ^2.2.2
     version: 2.2.2
@@ -87,6 +81,9 @@ devDependencies:
   lodash.escaperegexp:
     specifier: ^4.1.2
     version: 4.1.2
+  picocolors:
+    specifier: ^1.0.0
+    version: 1.0.0
   prettier:
     specifier: ^2.8.7
     version: 2.8.7
@@ -597,13 +594,6 @@ packages:
 
   /@tsconfig/node16@1.0.3:
     resolution: {integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==}
-    dev: true
-
-  /@types/colors@1.2.1:
-    resolution: {integrity: sha512-7jNkpfN2lVO07nJ1RWzyMnNhH/I5N9iWuMPx9pedptxJ4MODf8rRV0lbJi6RakQ4sKQk231Fw4e2W9n3D7gZ3w==}
-    deprecated: This is a stub types definition. colors provides its own type definitions, so you don't need this installed.
-    dependencies:
-      colors: 1.4.0
     dev: true
 
   /@types/cookie@0.5.1:
@@ -1358,11 +1348,6 @@ packages:
   /color-support@1.1.3:
     resolution: {integrity: sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==}
     hasBin: true
-    dev: true
-
-  /colors@1.4.0:
-    resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
-    engines: {node: '>=0.1.90'}
     dev: true
 
   /combined-stream@1.0.8:
