@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import IFaSolidPlus from '~icons/fa-solid-plus'
+import IFaSolidPlus from '~icons/fa-solid/plus'
 import IFaSolidSpinner from '~icons/fa-solid/spinner'
 import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
 
