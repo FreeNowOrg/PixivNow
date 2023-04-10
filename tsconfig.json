@@ -16,7 +16,8 @@
     "importHelpers": true,
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "types": ["unplugin-icons/types/vue"]
   },
   "include": [
     "src/**/*.ts",
@@ -25,7 +26,6 @@
     "src/**/*.vue",
     "src/**/*.json",
     "vite.config.ts",
-    "components.d.ts",
     "auto-imports.d.ts"
   ],
   "exclude": ["node_modules/**", "**/dist"],

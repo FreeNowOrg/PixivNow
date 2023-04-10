@@ -3,8 +3,6 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import Components from 'unplugin-vue-components/vite'
 
 const PROD = process.env.NODE_ENV === 'production'
 
@@ -23,10 +21,6 @@ export default defineConfig({
     Icons({
       scale: 1,
       defaultClass: 'svg--inline',
-    }),
-    Components({
-      dts: true,
-      resolvers: [IconsResolver()],
     }),
   ],
   build: {},
