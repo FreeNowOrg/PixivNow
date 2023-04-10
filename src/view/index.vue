@@ -67,6 +67,7 @@ import { ajax } from '@/utils/ajax'
 
 import LogoH from '@/assets/LogoH.png'
 import type { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
+import { setTitle } from '@/utils/setTitle'
 
 const isShowBgInfo = ref(false)
 const discoveryList = ref<ArtworkInfo[]>([])
@@ -145,7 +146,7 @@ async function setDiscoveryFromCache(): Promise<void> {
 }
 
 onMounted(async () => {
-  document.title = 'Pixiv Now'
+  setTitle()
   setRandomBgFromCache()
   setDiscoveryFromCache()
 })

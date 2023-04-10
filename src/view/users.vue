@@ -166,6 +166,8 @@ import {
   NTable,
   NTabs,
 } from 'naive-ui'
+import { setTitle } from '@/utils/setTitle'
+import { effect } from 'vue'
 
 const loading = ref(true)
 const user = ref<User>()
@@ -210,7 +212,6 @@ async function init(id: string | number): Promise<void> {
   if (cache) {
     loading.value = false
     user.value = cache
-    document.title = `${cache.name} | User | PixivNow`
     // Extra
     await getBookmarks()
     return
@@ -233,7 +234,6 @@ async function init(id: string | number): Promise<void> {
     }
     user.value = userValue
     setCache(`users.${id}`, userValue)
-    document.title = `${data.name} | User | PixivNow`
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
@@ -301,8 +301,8 @@ onBeforeRouteUpdate((to) => {
   init(to.params.id as string)
 })
 
+effect(() => setTitle(user.value?.name, 'Users'))
 onMounted(async () => {
-  document.title = `User | PixivNow`
   init(route.params.id as string)
 })
 </script>

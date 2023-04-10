@@ -11,7 +11,9 @@ section.error-page
 </template>
 
 <script lang="ts" setup>
+import { setTitle } from '@/utils/setTitle'
 import { NResult } from 'naive-ui'
+import { effect } from 'vue'
 
 const msgList = [
   // 正经向提示
@@ -57,7 +59,7 @@ const msgList = [
   '这像劲爆纵连一样没有人喜欢！',
 ]
 
-defineProps<{
+const props = defineProps<{
   title?: string
   description?: string
   status?:
@@ -79,8 +81,12 @@ function randomMsg(): void {
     randomMsg()
   }
 }
+
+effect(() => {
+  setTitle(props.title, 'Error')
+})
+
 onMounted(() => {
-  document.title = 'Error | PixivNow'
   randomMsg()
 })
 </script>

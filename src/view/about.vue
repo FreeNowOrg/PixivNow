@@ -69,6 +69,7 @@ mixin repoLink
 import { PROJECT_NAME, GITHUB_OWNER, GITHUB_REPO, GITHUB_URL } from '@/config'
 import Card from '@/components/Card.vue'
 import ExternalLink from '@/components/ExternalLink.vue'
+import { setTitle } from '@/utils/setTitle'
 
-onMounted(() => (document.title = 'About | PixivNow'))
+onMounted(() => setTitle('About'))
 </script>

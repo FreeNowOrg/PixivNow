@@ -155,6 +155,8 @@ import {
 } from '@/utils/artworkActions'
 import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
 import { NButton, NSkeleton } from 'naive-ui'
+import { effect } from 'vue'
+import { setTitle } from '@/utils/setTitle'
 
 const loading = ref(true)
 const error = ref('')
@@ -194,7 +196,6 @@ async function init(id: string): Promise<void> {
     illust.value = dataCache
     pages.value = pageCache
     loading.value = false
-    document.title = `${dataCache.illustTitle} | Artwork | PixivNow`
     return
   }
 
@@ -203,7 +204,6 @@ async function init(id: string): Promise<void> {
       ajax.get<Artwork>(`/ajax/illust/${id}?full=1`),
       ajax.get<ArtworkGallery[]>(`/ajax/illust/${id}/pages`),
     ])
-    document.title = `${illustData.illustTitle} | Artwork | PixivNow`
     setCache(`illust.${id}`, illustData)
     setCache(`illust.${id}.page`, illustPage)
     illust.value = illustData
@@ -344,8 +344,9 @@ onBeforeRouteUpdate(async (to) => {
   init(to.params.id as string)
 })
 
+effect(() => setTitle(illust.value?.illustTitle, 'Artworks'))
+
 onMounted(() => {
-  document.title = 'Artwork | PixivNow'
   init(route.params.id as string)
 })
 

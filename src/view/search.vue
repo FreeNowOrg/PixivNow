@@ -46,6 +46,8 @@ import { NButton, NSpin } from 'naive-ui'
 
 import { ajax } from '@/utils/ajax'
 import type { ArtworkInfo } from '@/types'
+import { effect } from 'vue'
+import { setTitle } from '@/utils/setTitle'
 
 const error = ref('')
 const loading = ref(true)
@@ -70,7 +72,6 @@ async function makeSearch({
   if (!searchKeyword.value) return
   try {
     loading.value = true
-    document.title = `${keyword} (第${p}页) | Search | PixivNow`
     const { data } = await ajax.get<{ illustManga: { data: ArtworkInfo[] } }>(
       `/ajax/search/artworks/${encodeURIComponent(keyword)}`,
       { params: new URLSearchParams({ p: p ?? '1', mode: mode ?? 'text' }) }
@@ -106,6 +107,9 @@ onBeforeRouteUpdate(async (to) => {
   makeSearch(params)
 })
 
+effect(() =>
+  setTitle(`${route.params.keyword} (第${route.params.p}页)`, 'Search')
+)
 onMounted(async () => {
   const params = route.params as {
     keyword: string
