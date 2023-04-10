@@ -35,12 +35,11 @@
 </template>
 
 <script lang="ts" setup>
-import Card from './Card.vue'
 import ArtworkList from './ArtworksList/ArtworkList.vue'
 import type { User } from '@/types'
 import { addUserFollow, removeUserFollow } from '@/utils'
 import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
-import { useUserStore } from '@/plugins/states'
+import { useUserStore } from '@/composables/states'
 
 const userStore = useUserStore()
 
