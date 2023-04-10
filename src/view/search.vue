@@ -40,6 +40,8 @@ import ArtworkLargeList from '@/components/ArtworksList/ArtworkLargeList.vue'
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
 import SearchBox from '@/components/SearchBox.vue'
+import IFaSolidAngleLeft from '~icons/fa-solid/angle-left'
+import IFaSolidAngleRight from '~icons/fa-solid/angle-right'
 import { NButton, NSpin } from 'naive-ui'
 
 import { ajax } from '@/utils/ajax'

@@ -36,6 +36,9 @@
 import type { ArtworkInfo } from '@/types'
 import LazyLoad from '../LazyLoad.vue'
 import ArtTag from '../ArtTag.vue'
+import IFaSolidEye from '~icons/fa-solid/eye'
+import IFaSolidImages from '~icons/fa-solid/images'
+import IFaSolidRobot from '~icons/fa-solid/robot'
 
 defineProps<{
   illust: ArtworkInfo

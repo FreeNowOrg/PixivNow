@@ -12,23 +12,23 @@
     .artwork-image
       .side-tags
         .restrict.x-restrict(title='R-18' v-if='item.xRestrict')
-          i-fa-solid-eye(data-icon)
+          IFaSolidEye(data-icon)
         .restrict.ai-restrict(
           :title='`AI生成(${item.aiType})`'
           v-if='item.aiType === 2'
         )
-          i-fa-solid-robot(data-icon)
+          IFaSolidRobot(data-icon)
         .page-count(
           :title='"共 " + item.pageCount + " 张"'
           v-if='item.pageCount > 1'
         )
-          i-fa-solid-images(data-icon)
+          IFaSolidImages(data-icon)
           | {{ item.pageCount }}
         .bookmark(
           :class='{ bookmarked: item.bookmarkData, disabled: loadingBookmark }'
           @click='handleBookmark'
         )
-          i-fa-solid-heart(data-icon)
+          IFaSolidHeart(data-icon)
       RouterLink(:to='"/artworks/" + item.id')
         LazyLoad.img(
           :alt='item.alt',
@@ -50,6 +50,10 @@
 import LazyLoad from '../LazyLoad.vue'
 import { addBookmark, removeBookmark } from '@/utils/artworkActions'
 import { NSkeleton } from 'naive-ui'
+import IFaSolidEye from '~icons/fa-solid/eye'
+import IFaSolidHeart from '~icons/fa-solid/heart'
+import IFaSolidImages from '~icons/fa-solid/images'
+import IFaSolidRobot from '~icons/fa-solid/robot'
 
 import type { ArtworkInfo } from '@/types'
 

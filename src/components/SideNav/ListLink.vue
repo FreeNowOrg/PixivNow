@@ -1,7 +1,7 @@
 <template lang="pug">
 mixin content
   slot
-    i-fa-solid-list-ul.svg--list-link
+    IFaSolidListUl.svg--ListLink
   | {{ text }}
 
 li
@@ -14,6 +14,7 @@ li
 </template>
 
 <script lang="ts" setup>
+import IFaSolidListUl from '~icons/fa-solid/list-ul'
 defineProps<{
   text: string
   externalLink?: string
@@ -35,7 +36,7 @@ li
       cursor: not-allowed
       text-decoration: line-through
 
-    [data-icon]
+    .svg--ListLink
       width: 2em
 
 :slotted(svg)

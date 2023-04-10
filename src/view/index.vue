@@ -57,6 +57,8 @@
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import { NH2, NButton, NIcon, NModal } from 'naive-ui'
+import IFaSolidInfoCircle from '~icons/fa-solid/info-circle'
+import IFaSolidRandom from '~icons/fa-solid/random'
 
 import { formatInTimeZone } from 'date-fns-tz'
 import { getCache, setCache } from './siteCache'

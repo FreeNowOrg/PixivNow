@@ -40,7 +40,7 @@ NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
     :to='$route.query.back.toString()'
     v-if='$route.query.back'
   )
-    i-fa-solid-angle-left
+    IFaSolidAngleLeft
     | &nbsp;返回
   h1 查看 Pixiv 令牌
   NInput.token(:value='Cookies.get("PHPSESSID")' readonly)
@@ -57,6 +57,7 @@ import {
   logout,
 } from '@/components/userData'
 import { useUserStore } from '@/composables/states'
+import IFaSolidAngleLeft from '~icons/fa-solid/angle-left'
 import { NButton, NForm, NFormItem, NInput } from 'naive-ui'
 
 const example = ref(exampleSessionId())

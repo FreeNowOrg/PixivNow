@@ -19,8 +19,8 @@
             v-if='user.userId !== userStore.userId'
           )
             template(#icon)
-              i-fa-solid-check(v-if='user.isFollowed')
-              i-fa-solid-plus(v-else)
+              IFaSolidCheck(v-if='user.isFollowed')
+              IFaSolidPlus(v-else)
             | {{ user.isFollowed ? '已关注' : '关注' }}
         NEllipsis.description.pre(:line-clamp='3', :tooltip='false') {{ user.comment }}
     ArtworkList.tiny(:list='user.illusts' inline)
@@ -39,6 +39,8 @@ import ArtworkList from './ArtworksList/ArtworkList.vue'
 import type { User } from '@/types'
 import { addUserFollow, removeUserFollow } from '@/utils'
 import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
+import IFaSolidCheck from '~icons/fa-solid/check'
+import IFaSolidPlus from '~icons/fa-solid/plus'
 import { useUserStore } from '@/composables/states'
 
 const userStore = useUserStore()

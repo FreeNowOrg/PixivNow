@@ -46,22 +46,22 @@
               @click='handleUserFollow'
             )
               template(#icon)
-                i-fa-solid-check(v-if='user.isFollowed')
-                i-fa-solid-plus(v-else)
+                IFaSolidCheck(v-if='user.isFollowed')
+                IFaSolidPlus(v-else)
               | {{ user.isFollowed ? '已关注' : '关注' }}
         .following
           | 关注了 <strong>{{ user.following }}</strong> 人
         .gender(v-if='user.gender?.name')
-          i-fa-solid-venus-mars(data-icon)
+          IFaSolidVenusMars(data-icon)
           | {{ user.gender.name }}
         .birthday(v-if='user.birthDay?.name')
-          i-fa-solid-birthday-cake(data-icon)
+          IFaSolidBirthdayCake(data-icon)
           | {{ user.birthDay?.name }}
         .region(v-if='user.region?.name')
-          i-fa-solid-map-marker-alt(data-icon)
+          IFaSolidMapMarkerAlt(data-icon)
           | {{ user.region?.name }}
         .webpage(v-if='user.webpage')
-          i-fa-solid-home(data-icon)
+          IFaSolidHome(data-icon)
           a(:href='user.webpage' rel='noopener noreferrer' target='_blank') {{ user.webpage }}
         .flex
           .comment.flex-1 {{ user.comment }}
@@ -75,7 +75,7 @@
             a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
               img(:src='user.imageBig')
               .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
-                i-fa-solid-parking(data-icon)
+                IFaSolidParking(data-icon)
             .title {{ user.name }}
         .bottom
           section.user-comment
@@ -144,6 +144,13 @@ import { ajax } from '@/utils/ajax'
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
 import ShowMore from '@/components/ShowMore.vue'
+import IFaSolidBirthdayCake from '~icons/fa-solid/birthday-cake'
+import IFaSolidCheck from '~icons/fa-solid/check'
+import IFaSolidHome from '~icons/fa-solid/home'
+import IFaSolidMapMarkerAlt from '~icons/fa-solid/map-marker-alt'
+import IFaSolidParking from '~icons/fa-solid/parking'
+import IFaSolidPlus from '~icons/fa-solid/plus'
+import IFaSolidVenusMars from '~icons/fa-solid/venus-mars'
 
 import { getCache, setCache } from './siteCache'
 import { sortArtList } from '@/utils/artworkActions'
