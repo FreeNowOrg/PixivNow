@@ -188,6 +188,8 @@ async function handleBookmark() {
     border-radius: 50%
     display: flex
     align-items: center
+    [data-icon]
+      margin: 0 auto
   .x-restrict
     top: .4rem
     left: .4rem
@@ -196,9 +198,6 @@ async function handleBookmark() {
     bottom: .4rem
     left: .4rem
     background-color: rgba(204, 102, 0, 0.8)
-
-    [data-icon]
-      margin: 0 auto
 
   .bookmark
     bottom: 0.4rem

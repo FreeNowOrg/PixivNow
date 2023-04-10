@@ -119,7 +119,7 @@ async function setDiscoveryNoCache(): Promise<void> {
     // discoveryList.value = []
     const { data } = await ajax.get<{ illusts: ArtworkInfoOrAd[] }>(
       '/ajax/illust/discovery',
-      { params: new URLSearchParams({ mode: 'safe', max: '8' }) }
+      { params: new URLSearchParams({ mode: 'all', max: '8' }) }
     )
     console.info('setDiscoveryNoCache', data)
     const illusts = data.illusts.filter((item): item is ArtworkInfo =>
