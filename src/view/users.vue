@@ -68,7 +68,7 @@
           .user-more
             a(@click='userMore' href='javascript:;') 查看更多
 
-    NModal(closable preset='card' v-model:show='showUserMore')
+    NModal(closable preset='card' title='用户资料' v-model:show='showUserMore')
       .info-modal
         .top
           h3
@@ -413,8 +413,8 @@ onMounted(async () => {
     text-align: center
     background-color: #f4f4f4
     z-index: 1
-    // margin: -3.5rem -2rem 0 -2rem
-    // padding: 2rem
+    padding: 1rem 0
+    margin: 0 -1.5rem
     .avatar
       width: 80px
       margin: 0 auto
@@ -434,7 +434,4 @@ onMounted(async () => {
   .user-workspace
     :deep(img)
       width: 100%
-
-  .bottom
-    margin: 1.5rem 5%
 </style>
