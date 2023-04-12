@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
-import colors from 'colors'
+import colors from 'picocolors'
+import escapeRegExp from 'lodash.escaperegexp'
 
 const PROD = process.env.NODE_ENV === 'production'
 
@@ -129,7 +130,10 @@ function isAccepted(req: VercelRequest) {
       !!ua &&
       Array.isArray(list) &&
       (list.length > 0
-        ? !new RegExp(`(${list.join('|')})`, 'gi').test(ua)
+        ? !new RegExp(
+            `(${list.map((str) => escapeRegExp(str)).join('|')})`,
+            'gi'
+          ).test(ua)
         : true)
     )
   } catch (e) {

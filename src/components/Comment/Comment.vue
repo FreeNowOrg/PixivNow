@@ -25,7 +25,7 @@ li.comment-block
 <script lang="ts" setup>
 import stampList from './stampList.json'
 import type { Comments } from '@/types'
-import { useUserStore } from '@/plugins/states'
+import { useUserStore } from '@/composables/states'
 
 defineProps<{ comment: Comments }>()
 const store = useUserStore()

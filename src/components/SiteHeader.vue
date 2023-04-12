@@ -2,7 +2,7 @@
 header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
   .flex
     a.side-nav-toggle.plain(@click='toggleSideNav')
-      i-fa-solid-bars(data-icon)
+      IFaSolidBars(data-icon)
 
     .logo-area
       RouterLink.plain(to='/')
@@ -13,7 +13,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
         SearchBox
       .search-icon.align-right.flex-1
         a.pointer.plain(@click='openSideNav')
-          i-fa-solid-search
+          IFaSolidSearch
           | &nbsp;搜索
     .flex.search-area(v-else)
 
@@ -67,9 +67,11 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 
 <script lang="ts" setup>
 import SearchBox from './SearchBox.vue'
+import IFaSolidBars from '~icons/fa-solid/bars'
+import IFaSolidSearch from '~icons/fa-solid/search'
 import { logout } from './userData'
 import LogoH from '@/assets/LogoH.png'
-import { useSideNavStore, useUserStore } from '@/plugins/states'
+import { useSideNavStore, useUserStore } from '@/composables/states'
 
 const hidden = ref(false)
 const notAtTop = ref(false)

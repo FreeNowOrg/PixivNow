@@ -16,7 +16,7 @@
         v-if='comments.length && hasNext'
       )
         template(#icon)
-          i-fa-solid-plus
+          IFaSolidPlus
         | {{ loading ? '正在加载' : '查看更多' }}
   .align-center(v-if='!comments.length && loading')
     placeholder
@@ -28,6 +28,7 @@ import { ajax } from '@/utils/ajax'
 import type { Comments } from '@/types'
 import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
 import { NButton } from 'naive-ui'
+import IFaSolidPlus from '~icons/fa-solid/plus'
 
 const loading = ref(false)
 const comments = ref<Comments[]>([])

@@ -134,6 +134,12 @@ import CommentsArea from '@/components/Comment/CommentsArea.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
 import Gallery from '@/components/Gallery.vue'
 import ShowMore from '@/components/ShowMore.vue'
+import IFaSolidArrowRight from '~icons/fa-solid/arrow-right'
+import IFaSolidEye from '~icons/fa-solid/eye'
+import IFaSolidHeart from '~icons/fa-solid/heart'
+import IFaSolidImages from '~icons/fa-solid/images'
+import IFaSolidLaughWink from '~icons/fa-solid/laugh-wink'
+import IFaSolidThumbsUp from '~icons/fa-solid/thumbs-up'
 
 import { getCache, setCache } from './siteCache'
 import { ajax } from '@/utils/ajax'
@@ -141,7 +147,7 @@ import { ajax } from '@/utils/ajax'
 // Types
 import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '@/types'
 
-import { useUserStore } from '@/plugins/states'
+import { useUserStore } from '@/composables/states'
 import {
   addBookmark,
   removeBookmark,
@@ -149,6 +155,8 @@ import {
 } from '@/utils/artworkActions'
 import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
 import { NButton, NSkeleton } from 'naive-ui'
+import { effect } from 'vue'
+import { setTitle } from '@/utils/setTitle'
 
 const loading = ref(true)
 const error = ref('')
@@ -188,7 +196,6 @@ async function init(id: string): Promise<void> {
     illust.value = dataCache
     pages.value = pageCache
     loading.value = false
-    document.title = `${dataCache.illustTitle} | Artwork | PixivNow`
     return
   }
 
@@ -197,7 +204,6 @@ async function init(id: string): Promise<void> {
       ajax.get<Artwork>(`/ajax/illust/${id}?full=1`),
       ajax.get<ArtworkGallery[]>(`/ajax/illust/${id}/pages`),
     ])
-    document.title = `${illustData.illustTitle} | Artwork | PixivNow`
     setCache(`illust.${id}`, illustData)
     setCache(`illust.${id}.page`, illustPage)
     illust.value = illustData
@@ -338,8 +344,9 @@ onBeforeRouteUpdate(async (to) => {
   init(to.params.id as string)
 })
 
+effect(() => setTitle(illust.value?.illustTitle, 'Artworks'))
+
 onMounted(() => {
-  document.title = 'Artwork | PixivNow'
   init(route.params.id as string)
 })
 

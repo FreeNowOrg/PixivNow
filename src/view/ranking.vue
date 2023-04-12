@@ -26,6 +26,8 @@ import Placeholder from '@/components/Placeholder.vue'
 import type { ArtworkRank } from '@/types'
 import { getCache, setCache } from './siteCache'
 import { ajax } from '@/utils/ajax'
+import { effect } from 'vue'
+import { setTitle } from '@/utils/setTitle'
 
 const error = ref('')
 const loading = ref(true)
@@ -76,9 +78,15 @@ async function init(): Promise<void> {
   }
 }
 
-onMounted(async () => {
-  document.title = 'Ranking | PixvNow'
-  await init()
+effect(() =>
+  setTitle(
+    list.value?.date?.toLocaleDateString('zh', { dateStyle: 'long' }),
+    'Ranking'
+  )
+)
+
+onMounted(() => {
+  init()
 })
 </script>
 

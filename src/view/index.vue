@@ -57,6 +57,8 @@
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import { NH2, NButton, NIcon, NModal } from 'naive-ui'
+import IFaSolidInfoCircle from '~icons/fa-solid/info-circle'
+import IFaSolidRandom from '~icons/fa-solid/random'
 
 import { formatInTimeZone } from 'date-fns-tz'
 import { getCache, setCache } from './siteCache'
@@ -65,6 +67,7 @@ import { ajax } from '@/utils/ajax'
 
 import LogoH from '@/assets/LogoH.png'
 import type { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
+import { setTitle } from '@/utils/setTitle'
 
 const isShowBgInfo = ref(false)
 const discoveryList = ref<ArtworkInfo[]>([])
@@ -117,7 +120,7 @@ async function setDiscoveryNoCache(): Promise<void> {
     // discoveryList.value = []
     const { data } = await ajax.get<{ illusts: ArtworkInfoOrAd[] }>(
       '/ajax/illust/discovery',
-      { params: new URLSearchParams({ mode: 'safe', max: '8' }) }
+      { params: new URLSearchParams({ mode: 'all', max: '8' }) }
     )
     console.info('setDiscoveryNoCache', data)
     const illusts = data.illusts.filter((item): item is ArtworkInfo =>
@@ -143,7 +146,7 @@ async function setDiscoveryFromCache(): Promise<void> {
 }
 
 onMounted(async () => {
-  document.title = 'Pixiv Now'
+  setTitle()
   setRandomBgFromCache()
   setDiscoveryFromCache()
 })

@@ -3,11 +3,13 @@
   a(@click='method')
     | {{ text }}
     | &nbsp;
-    i-fa-solid-plus(v-if='!loading')
-    i-fa-solid-spinner.spin(v-else)
+    IFaSolidPlus(v-if='!loading')
+    IFaSolidSpinner.spin(v-else)
 </template>
 
 <script lang="ts" setup>
+import IFaSolidPlus from '~icons/fa-solid/plus'
+import IFaSolidSpinner from '~icons/fa-solid/spinner'
 import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
 
 const elRef = ref<HTMLElement>()

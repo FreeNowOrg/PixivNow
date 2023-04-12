@@ -11,13 +11,13 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
         .title 导航
         ul
           ListLink(link='/' text='首页')
-            i-fa-solid-home.svg--ListLink(data-icon)
+            IFaSolidHome.svg--ListLink
           ListLink.not-allowed(link='' text='插画')
-            i-fa-solid-image.svg--ListLink
+            IFaSolidImage.svg--ListLink
           ListLink(link='' text='用户')
-            i-fa-solid-user.svg--ListLink
+            IFaSolidUser.svg--ListLink
           ListLink(link='/ranking' text='排行榜')
-            i-fa-solid-crown.svg--ListLink
+            IFaSolidCrown.svg--ListLink
 
       .group
         .title Pixiv 令牌
@@ -26,21 +26,28 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
             :text='userStore.isLoggedIn ? "查看令牌" : "设置令牌"'
             link='/login'
           )
-            i-fa-solid-fingerprint.svg--ListLink
+            IFaSolidFingerprint.svg--ListLink
 
       .group
         .title PixivNow
         ul
           ListLink(externalLink='https://www.pixiv.net/' text='Pixiv.net')
-            i-fa-solid-external-link-alt.svg--ListLink
+            IFaSolidExternalLinkAlt.svg--ListLink
           ListLink(link='/about' text='关于我们')
-            i-fa-solid-heart.svg--ListLink
+            IFaSolidHeart.svg--ListLink
 </template>
 
 <script lang="ts" setup>
 import ListLink from './ListLink.vue'
 import SearchBox from '../SearchBox.vue'
-import { useSideNavStore, useUserStore } from '@/plugins/states'
+import IFaSolidCrown from '~icons/fa-solid/crown'
+import IFaSolidExternalLinkAlt from '~icons/fa-solid/external-link-alt'
+import IFaSolidFingerprint from '~icons/fa-solid/fingerprint'
+import IFaSolidHeart from '~icons/fa-solid/heart'
+import IFaSolidHome from '~icons/fa-solid/home'
+import IFaSolidImage from '~icons/fa-solid/image'
+import IFaSolidUser from '~icons/fa-solid/user'
+import { useSideNavStore, useUserStore } from '@/composables/states'
 
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()

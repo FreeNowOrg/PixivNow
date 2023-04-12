@@ -5,10 +5,11 @@
     placeholder='输入关键词搜索/输入 id:数字 查看作品'
     v-model='keyword'
   )
-  i-fa-solid-search.icon(data-icon)
+  IFaSolidSearch.icon(data-icon)
 </template>
 
 <script lang="ts" setup>
+import IFaSolidSearch from '~icons/fa-solid/search'
 const route = useRoute()
 const router = useRouter()
 const keyword = ref((route.params.keyword as string) || '')
