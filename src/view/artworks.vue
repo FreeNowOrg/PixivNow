@@ -47,7 +47,7 @@
 
               p.stats
                 span.like-count(title='点赞')
-                  IFaSolidThumbsUp(data-icon)
+                  IFasThumbsUp(data-icon)
                   | {{ illust.likeCount }}
 
                 //- 收藏
@@ -56,21 +56,21 @@
                   :title='!store.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
                   @click='illust?.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
                 )
-                  IFaSolidHeart(data-icon)
+                  IFasHeart(data-icon)
                   | {{ illust.bookmarkCount }}
 
                 span.view-count(title='浏览')
-                  IFaSolidEye(data-icon)
+                  IFasEye(data-icon)
                   | {{ illust.viewCount }}
                 span.count
-                  IFaSolidImages(data-icon)
+                  IFasImages(data-icon)
                   | {{ pages.length }}张
 
               p.create-date {{ new Date(illust.createDate).toLocaleString() }}
 
             .artwork-tags
               span.original-tag(v-if='illust.isOriginal')
-                IFaSolidLaughWink(data-icon)
+                IFasLaughWink(data-icon)
                 | 原创
               span.restrict-tag.x-restrict(
                 title='R-18'
@@ -96,7 +96,7 @@
                 target='_blank'
               )
                 template(#icon)
-                  IFaSolidArrowRight
+                  IFasArrowRight
                 | 前往 Pixiv 查看
 
         aside.author-area(ref='authorRef')
@@ -134,12 +134,12 @@ import CommentsArea from '@/components/Comment/CommentsArea.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
 import Gallery from '@/components/Gallery.vue'
 import ShowMore from '@/components/ShowMore.vue'
-import IFaSolidArrowRight from '~icons/fa-solid/arrow-right'
-import IFaSolidEye from '~icons/fa-solid/eye'
-import IFaSolidHeart from '~icons/fa-solid/heart'
-import IFaSolidImages from '~icons/fa-solid/images'
-import IFaSolidLaughWink from '~icons/fa-solid/laugh-wink'
-import IFaSolidThumbsUp from '~icons/fa-solid/thumbs-up'
+import IFasArrowRight from '~icons/fa-solid/arrow-right'
+import IFasEye from '~icons/fa-solid/eye'
+import IFasHeart from '~icons/fa-solid/heart'
+import IFasImages from '~icons/fa-solid/images'
+import IFasLaughWink from '~icons/fa-solid/laugh-wink'
+import IFasThumbsUp from '~icons/fa-solid/thumbs-up'
 
 import { getCache, setCache } from './siteCache'
 import { ajax } from '@/utils/ajax'
