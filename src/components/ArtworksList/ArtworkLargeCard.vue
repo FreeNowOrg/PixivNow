@@ -8,14 +8,14 @@
           :src='illust.url.replace("p0_master", "p0_square")'
         )
       .restrict.x-restrict(title='R-18' v-if='illust.xRestrict === 2')
-        i-fa-solid-eye(data-icon)
+        IFasEye(data-icon)
       .restrict.ai-restrict(title='AI生成' v-if='illust.aiType === 2')
-        i-fa-solid-robot(data-icon)
+        IFasRobot(data-icon)
       .page-count(
         :title='"共 " + illust.pageCount + " 张"'
         v-if='+illust.pageCount > 1'
       )
-        i-fa-solid-images(data-icon)
+        IFasImages(data-icon)
         | {{ illust.pageCount }}
       .ranking(
         :class='{ gold: rank === 1, silver: rank === 2, bronze: rank === 3 }'

@@ -10,25 +10,20 @@
 <script lang="ts" setup>
 import IFasPlus from '~icons/fa-solid/plus'
 import IFasSpinner from '~icons/fa-solid/spinner'
-import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
 
-const elRef = ref<HTMLElement>()
+const elRef = ref<HTMLDivElement | null>(null)
+
 const props = defineProps<{
   text: string
   method: () => any | Promise<any>
   loading: boolean
 }>()
 
-async function mountObserver(el: HTMLElement) {
-  await getElementUntilIntoView(el)
-  await props?.method()
-  mountObserver(el)
-}
-
-onMounted(async () => {
-  await nextTick()
-  const el = elRef.value!
-  mountObserver(el)
+useIntersectionObserver(elRef, async ([{ isIntersecting }]) => {
+  if (isIntersecting) {
+    await nextTick()
+    props.method()
+  }
 })
 </script>
 

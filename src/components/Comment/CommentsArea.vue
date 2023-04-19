@@ -26,7 +26,6 @@
 import Comment from './Comment.vue'
 import { ajax } from '@/utils/ajax'
 import type { Comments } from '@/types'
-import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
 import { NButton } from 'naive-ui'
 import IFasPlus from '~icons/fa-solid/plus'
 
@@ -71,16 +70,18 @@ function pushComment(data: Comments) {
   comments.value.unshift(data)
 }
 
-const commentsArea = ref<HTMLElement>()
-onMounted(async () => {
-  if (!props.id) {
-    console.warn('Component CommentsArea missing param: id')
-    return
+const commentsArea = ref<HTMLDivElement | null>(null)
+
+const ob = useIntersectionObserver(
+  commentsArea,
+  async ([{ isIntersecting }]) => {
+    if (isIntersecting) {
+      await nextTick()
+      init(props.id)
+      ob.stop()
+    }
   }
-  await nextTick()
-  await getElementUntilIntoView(commentsArea.value!)
-  init(props.id)
-})
+)
 </script>
 
 <style scoped lang="sass">

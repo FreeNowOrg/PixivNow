@@ -153,7 +153,6 @@ import {
   removeBookmark,
   sortArtList,
 } from '@/utils/artworkActions'
-import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
 import { NButton, NSkeleton } from 'naive-ui'
 import { effect } from 'vue'
 import { setTitle } from '@/utils/setTitle'
@@ -170,8 +169,35 @@ const bookmarkLoading = ref(false)
 const route = useRoute()
 const store = useUserStore()
 
-const recommendRef = ref<HTMLElement>()
+const recommendRef = ref<HTMLDivElement | null>(null)
 const authorRef = ref<HTMLElement>()
+
+const unWatch = watch(loading, (val) => {
+  if (val) return
+  if (illust.value?.illustId) {
+    unWatch()
+    const recommendOb = useIntersectionObserver(
+      recommendRef,
+      async ([{ isIntersecting }]) => {
+        await nextTick()
+        if (isIntersecting) {
+          handleRecommendInit(illust.value!.illustId)
+          recommendOb.stop()
+        }
+      }
+    )
+    const authorOb = useIntersectionObserver(
+      authorRef,
+      async ([{ isIntersecting }]) => {
+        if (isIntersecting) {
+          await nextTick()
+          handleUserInit(illust.value!.userId)
+          authorOb.stop()
+        }
+      }
+    )
+  }
+})
 
 async function init(id: string): Promise<void> {
   loading.value = true
@@ -182,13 +208,6 @@ async function init(id: string): Promise<void> {
   user.value = undefined
   recommend.value = []
   recommendNextIds.value = []
-
-  addObserver(recommendRef, () => {
-    handleRecommendInit(illust.value!.illustId)
-  })
-  addObserver(authorRef, () => {
-    handleUserInit(illust.value!.userId)
-  })
 
   const dataCache = getCache(`illust.${id}`)
   const pageCache = getCache(`illust.${id}.page`)
@@ -349,21 +368,6 @@ effect(() => setTitle(illust.value?.illustTitle, 'Artworks'))
 onMounted(() => {
   init(route.params.id as string)
 })
-
-function addObserver(elRef: Ref<HTMLElement | undefined>, callback: () => any) {
-  const unWatch = watch(loading, async (val) => {
-    if (val) return
-    await nextTick()
-    const el = elRef.value
-    if (!el) return console.warn('observer missing target')
-    if (illust.value?.illustId) {
-      unWatch()
-      getElementUntilIntoView(el).then(() => {
-        callback?.()
-      })
-    }
-  })
-}
 </script>
 
 <style scoped lang="sass">

@@ -11,8 +11,6 @@ Component(
 </template>
 
 <script lang="ts" setup>
-import { getElementUntilIntoView } from '@/utils/getElementUntilIntoView'
-
 const props = defineProps<{
   src: string
   width?: number
@@ -23,13 +21,17 @@ const loaded = ref(false)
 const error = ref(false)
 const imgRef = ref<HTMLImageElement | null>(null)
 
-async function init() {
+const ob = useIntersectionObserver(imgRef, async ([{ isIntersecting }]) => {
+  if (isIntersecting) {
+    await nextTick()
+    loadImage()
+    ob.stop()
+  }
+})
+
+function loadImage() {
   loaded.value = false
   error.value = false
-
-  await nextTick()
-  const el = imgRef.value!
-  await getElementUntilIntoView(el)
 
   const img = new Image(props.width, props.height)
   img.src = props.src
@@ -43,9 +45,6 @@ async function init() {
     error.value = true
   }
 }
-
-onMounted(init)
-watch(props, init)
 </script>
 
 <style scoped lang="sass">

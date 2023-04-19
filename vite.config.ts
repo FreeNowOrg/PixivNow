@@ -16,6 +16,7 @@ export default defineConfig({
         'vue',
         'vue-router',
         'vue-i18n',
+        '@vueuse/core',
         { axios: [['default', 'axios']] },
       ],
       resolvers: [
