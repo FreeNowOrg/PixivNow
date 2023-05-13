@@ -42,7 +42,10 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       }
 
       res.setHeader('cache-control', 'no-cache')
-      res.setHeader('set-cookie', `CSRFTOKEN=${meta.token}; path=/; secure`)
+      res.setHeader(
+        'set-cookie',
+        `CSRFTOKEN=${meta.token}; path=/; secure; sameSite=Lax`
+      )
       res.send(replaceUrlInObject(meta))
     })
     .catch((err) => {
