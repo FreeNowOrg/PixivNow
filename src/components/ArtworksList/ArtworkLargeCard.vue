@@ -1,9 +1,9 @@
 <template lang="pug">
 .artwork-large-card
   .top
-    RouterLink(:to='"/artworks/" + illust.id')
+    RouterLink.plain(:to='"/artworks/" + illust.id')
       .thumb
-        LazyLoad(
+        LazyLoad.image(
           :alt='illust.title',
           :src='illust.url.replace("p0_master", "p0_square")'
         )
@@ -72,7 +72,7 @@ h3
     height: 0
     padding-top: 100%
     animation: imgProgress 0.6s ease infinite alternate
-    img
+    .image
       position: absolute
       top: 0
       left: 0
