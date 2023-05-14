@@ -11,13 +11,13 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
         .title 导航
         ul
           ListLink(link='/' text='首页')
-            IFaSolidHome.svg--ListLink
+            IFasHome.svg--ListLink
           ListLink.not-allowed(link='' text='插画')
-            IFaSolidImage.svg--ListLink
+            IFasImage.svg--ListLink
           ListLink(link='' text='用户')
-            IFaSolidUser.svg--ListLink
+            IFasUser.svg--ListLink
           ListLink(link='/ranking' text='排行榜')
-            IFaSolidCrown.svg--ListLink
+            IFasCrown.svg--ListLink
 
       .group
         .title Pixiv 令牌
@@ -26,27 +26,27 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
             :text='userStore.isLoggedIn ? "查看令牌" : "设置令牌"'
             link='/login'
           )
-            IFaSolidFingerprint.svg--ListLink
+            IFasFingerprint.svg--ListLink
 
       .group
         .title PixivNow
         ul
           ListLink(externalLink='https://www.pixiv.net/' text='Pixiv.net')
-            IFaSolidExternalLinkAlt.svg--ListLink
+            IFasExternalLinkAlt.svg--ListLink
           ListLink(link='/about' text='关于我们')
-            IFaSolidHeart.svg--ListLink
+            IFasHeart.svg--ListLink
 </template>
 
 <script lang="ts" setup>
 import ListLink from './ListLink.vue'
 import SearchBox from '../SearchBox.vue'
-import IFaSolidCrown from '~icons/fa-solid/crown'
-import IFaSolidExternalLinkAlt from '~icons/fa-solid/external-link-alt'
-import IFaSolidFingerprint from '~icons/fa-solid/fingerprint'
-import IFaSolidHeart from '~icons/fa-solid/heart'
-import IFaSolidHome from '~icons/fa-solid/home'
-import IFaSolidImage from '~icons/fa-solid/image'
-import IFaSolidUser from '~icons/fa-solid/user'
+import IFasCrown from '~icons/fa-solid/crown'
+import IFasExternalLinkAlt from '~icons/fa-solid/external-link-alt'
+import IFasFingerprint from '~icons/fa-solid/fingerprint'
+import IFasHeart from '~icons/fa-solid/heart'
+import IFasHome from '~icons/fa-solid/home'
+import IFasImage from '~icons/fa-solid/image'
+import IFasUser from '~icons/fa-solid/user'
 import { useSideNavStore, useUserStore } from '@/composables/states'
 
 const sideNavStore = useSideNavStore()

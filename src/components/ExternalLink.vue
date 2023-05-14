@@ -1,11 +1,11 @@
 <template lang="pug">
 a(:href='href' rel='nofollow' target='_blank')
   slot
-  IFaSolidExternalLinkAlt.external-icon
+  IFasExternalLinkAlt.external-icon
 </template>
 
 <script lang="ts" setup>
-import IFaSolidExternalLinkAlt from '~icons/fa-solid/external-link-alt'
+import IFasExternalLinkAlt from '~icons/fa-solid/external-link-alt'
 defineProps<{ href: string }>()
 </script>
 

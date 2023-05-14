@@ -12,14 +12,14 @@
 
     .bg-info
       a.pointer(@click='async () => await setRandomBgNoCache()' title='换一个~')
-        IFaSolidRandom
+        IFasRandom
       a.pointer(
         @click='isShowBgInfo = true'
         style='margin-left: 0.5em'
         title='关于背景'
         v-if='randomBg.info.id'
       )
-        IFaSolidInfoCircle
+        IFasInfoCircle
 
   NModal(
     :title='`背景图片：${randomBg.info.title}`'
@@ -49,7 +49,7 @@
           size='small'
         )
           template(#default) {{ loadingDiscovery ? '加载中' : '换一批' }}
-          template(#icon): NIcon: IFaSolidRandom
+          template(#icon): NIcon: IFasRandom
       ArtworkList(:list='discoveryList', :loading='loadingDiscovery')
 </template>
 
@@ -57,8 +57,8 @@
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import { NH2, NButton, NIcon, NModal } from 'naive-ui'
-import IFaSolidInfoCircle from '~icons/fa-solid/info-circle'
-import IFaSolidRandom from '~icons/fa-solid/random'
+import IFasInfoCircle from '~icons/fa-solid/info-circle'
+import IFasRandom from '~icons/fa-solid/random'
 
 import { formatInTimeZone } from 'date-fns-tz'
 import { getCache, setCache } from './siteCache'
