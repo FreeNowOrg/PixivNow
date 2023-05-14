@@ -172,32 +172,25 @@ const store = useUserStore()
 const recommendRef = ref<HTMLDivElement | null>(null)
 const authorRef = ref<HTMLElement>()
 
-const unWatch = watch(loading, (val) => {
-  if (val) return
-  if (illust.value?.illustId) {
-    unWatch()
-    const recommendOb = useIntersectionObserver(
-      recommendRef,
-      async ([{ isIntersecting }]) => {
-        await nextTick()
-        if (isIntersecting) {
-          handleRecommendInit(illust.value!.illustId)
-          recommendOb.stop()
+function addObserver(elementRef: Ref, cb: () => any) {
+  const unWatch = watch(loading, async (val) => {
+    console.log(loading.value)
+    if (val) return
+    await nextTick()
+    if (illust.value?.illustId) {
+      unWatch()
+      const ob = useIntersectionObserver(
+        elementRef.value,
+        ([{ isIntersecting }]) => {
+          if (isIntersecting) {
+            cb()
+            ob.stop()
+          }
         }
-      }
-    )
-    const authorOb = useIntersectionObserver(
-      authorRef,
-      async ([{ isIntersecting }]) => {
-        if (isIntersecting) {
-          await nextTick()
-          handleUserInit(illust.value!.userId)
-          authorOb.stop()
-        }
-      }
-    )
-  }
-})
+      )
+    }
+  })
+}
 
 async function init(id: string): Promise<void> {
   loading.value = true
@@ -208,6 +201,9 @@ async function init(id: string): Promise<void> {
   user.value = undefined
   recommend.value = []
   recommendNextIds.value = []
+
+  addObserver(recommendRef, () => handleRecommendInit(illust.value!.illustId))
+  addObserver(authorRef, () => handleUserInit(illust.value!.userId))
 
   const dataCache = getCache(`illust.${id}`)
   const pageCache = getCache(`illust.${id}.page`)

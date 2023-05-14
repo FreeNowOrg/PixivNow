@@ -30,4 +30,5 @@ export const defaultArtwork: ArtworkInfo = {
   tags: [],
   profileImageUrl: '',
   type: 'illust',
+  aiType: 1,
 }

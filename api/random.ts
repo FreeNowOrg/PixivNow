@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { formatInTimeZone } from 'date-fns-tz'
-import { ajax } from './http'
-import { Artwork } from '../src/types'
+import { ajax } from './http.js'
+import { Artwork } from '../src/types/Artworks.js'
 
 type ArtworkOrAd = Artwork | { isAdContainer: boolean }
 

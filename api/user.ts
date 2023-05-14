@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { load } from 'cheerio'
-import { ajax, replaceUrlInObject } from './http'
+import { ajax, replaceUrlInObject } from './http.js'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const token = req.cookies.PHPSESSID || req.query.token
@@ -42,7 +42,10 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       }
 
       res.setHeader('cache-control', 'no-cache')
-      res.setHeader('set-cookie', `CSRFTOKEN=${meta.token}; path=/; secure`)
+      res.setHeader(
+        'set-cookie',
+        `CSRFTOKEN=${meta.token}; path=/; secure; sameSite=Lax`
+      )
       res.send(replaceUrlInObject(meta))
     })
     .catch((err) => {
