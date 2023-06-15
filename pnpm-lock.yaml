@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   axios:
     specifier: ^1.4.0
@@ -28,6 +32,9 @@ dependencies:
   vue-flex-waterfall:
     specifier: ^2.2.2
     version: 2.2.2
+  vue-gtag:
+    specifier: ^2.0.1
+    version: 2.0.1(vue@3.3.2)
   vue-i18n:
     specifier: ^9.2.2
     version: 9.2.2(vue@3.3.2)
@@ -1965,7 +1972,7 @@ packages:
     resolution: {integrity: sha512-8KG5RD0GVP4ydEzRn/I4BNDuxDtqVbOdm8675T49OIG/NGhaK0pjPX7ZcDlvKYbA+ulvVK3ztfcF4uBdOxuJbQ==}
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.3.8
+      semver: 7.5.1
     dev: true
 
   /@npmcli/move-file@1.1.2:
@@ -2472,7 +2479,7 @@ packages:
       recast: 0.21.5
       remark-frontmatter: 4.0.1
       remark-mdx-frontmatter: 1.1.1
-      semver: 7.3.8
+      semver: 7.5.1
       sort-package-json: 1.57.0
       tar-fs: 2.1.1
       tsconfig-paths: 4.2.0
@@ -4728,7 +4735,7 @@ packages:
       '@types/glob': 7.2.0
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.2.11
+      fast-glob: 3.2.12
       glob: 7.2.3
       ignore: 5.2.4
       merge2: 1.4.1
@@ -8191,6 +8198,14 @@ packages:
 
   /vue-flex-waterfall@2.2.2:
     resolution: {integrity: sha512-w8I0vyadnMfeLuS0f/LDlMN6XC6hnUNl7zkbF/gPeXyV+8ICfPj6ap6y8aybbUPODZE2J8bnmc+BgzbrMgDH6A==}
+    dev: false
+
+  /vue-gtag@2.0.1(vue@3.3.2):
+    resolution: {integrity: sha512-aM4A58FVL0wV2ptYi+xzAjeg+pQVRyUcfBc5UkXAwQrR4t3WBhor50Izp2I+3Oo7+l+vWJ7u78DGcNzReb8S/A==}
+    peerDependencies:
+      vue: ^3.0.0
+    dependencies:
+      vue: 3.3.2
     dev: false
 
   /vue-i18n@9.2.2(vue@3.3.2):

@@ -27,6 +27,7 @@
     "pinia": "^2.0.36",
     "vue": "^3.3.2",
     "vue-flex-waterfall": "^2.2.2",
+    "vue-gtag": "^2.0.1",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.2.0"
   },
