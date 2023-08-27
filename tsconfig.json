@@ -30,6 +30,6 @@
   ],
   "exclude": ["node_modules/**", "**/dist"],
   "vueCompilerOptions": {
-    "plugins": ["@volar/vue-language-plugin-pug"]
+    "plugins": ["@vue/language-plugin-pug"]
   }
 }
