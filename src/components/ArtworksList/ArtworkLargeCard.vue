@@ -53,12 +53,21 @@ h3
 .artwork-large-card
   display: block
   border: 1px solid #eee
-  width: 240px
-  max-width: calc(50vw - 32px)
   background-color: var(--theme-background-color)
   border-radius: 0.5rem
   transition: all .24s ease-in-out
   margin-bottom: 1rem
+  --parent-width: min(1200px, 90vw)
+  @media (max-width: 300px)
+    width: 100%
+  @media (min-width: 300px)
+    width: calc((var(--parent-width) - 1 * 16px) / 2)
+  @media (min-width: 600px)
+    width: calc((var(--parent-width) - 2 * 16px) / 3)
+  @media (min-width: 900px)
+    width: calc((var(--parent-width) - 3 * 16px) / 4)
+  @media (min-width: 1200px)
+    width: calc((var(--parent-width) - 4 * 16px) / 5)
 
 .top
   position: relative
