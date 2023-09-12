@@ -54,7 +54,7 @@ h3
   display: block
   border: 1px solid #eee
   width: 240px
-  max-width: calc(45vw - 1rem)
+  max-width: calc(45vw - 1.5rem)
   background-color: var(--theme-background-color)
   border-radius: 0.5rem
   transition: all .24s ease-in-out
