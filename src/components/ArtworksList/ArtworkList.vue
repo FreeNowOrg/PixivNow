@@ -52,7 +52,7 @@ const artworks = computed(() => {
 
   li
     width: 180px
-    max-width: calc(50vw - 2rem)
+    max-width: calc(45vw - 1.5rem)
     display: inline-block
 
 .tiny

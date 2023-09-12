@@ -2,9 +2,9 @@
 //- ul.artwork-large-list
 //-   li(v-for='item in artworks')
 VueFlexWaterfall.artwork-large-list(
-  :break-at='{ 1200: 3, 800: 2, 300: 1 }'
+  :break-at='{ 1200: 4, 900: 3, 600: 2, 300: 1 }'
   align-content='center'
-  col='3'
+  col='5'
   col-spacing='16'
 )
   ArtworkLargeCard(:illust='item[0]', :rank='item[1]' v-for='item in artworks')
