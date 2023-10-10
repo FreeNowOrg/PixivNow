@@ -55,7 +55,7 @@
     "tslib": "^2.6.2",
     "typescript": "^5.2.2",
     "unplugin-auto-import": "^0.16.6",
-    "unplugin-icons": "^0.16.6",
+    "unplugin-icons": "^0.17.0",
     "vercel": "^32.2.1",
     "vite": "^4.4.9"
   }
