@@ -13,7 +13,7 @@
         "vue-i18n",
         "vue-router",
         "axios",
-        "pinia",
+        "pinia"
       ]
     },
     {
@@ -23,6 +23,9 @@
         "vue-flex-waterfall",
         "vue-gtag",
         "nprogress"
+      ],
+      "matchPackagePrefixes": [
+        "@iconify"
       ]
     },
     {
