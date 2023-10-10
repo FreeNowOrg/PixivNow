@@ -14,7 +14,7 @@ export async function handleImageProxy(
       url.pathname = Array.isArray(ctx.params.path)
         ? '/' + ctx.params.path.join('/')
         : ctx.params.path
-      const request = new Request(url, ctx.request)
+      const request = new Request(url, ctx.request as any)
       return fetch(request, {
         headers: {
           referer: 'https://www.pixiv.net/',
