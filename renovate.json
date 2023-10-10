@@ -58,7 +58,8 @@
         "picocolors",
         "js-cookie",
         "cookie",
-        "cheerio"
+        "cheerio",
+        "conventional-changelog-cli"
       ],
       "matchPackagePrefixes": [
         "lodash",
