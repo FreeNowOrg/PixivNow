@@ -1,10 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
-    "schedule:weekly"
+    "config:base"
   ],
   "labels": ["dependencies"],
+  "baseBranches": [
+    "dev"
+  ],
   "packageRules": [
     {
       "groupName": "framework",
