@@ -13,7 +13,8 @@
         "vue-i18n",
         "vue-router",
         "axios",
-        "pinia"
+        "pinia",
+        "@vercel/node"
       ]
     },
     {
