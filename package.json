@@ -45,7 +45,7 @@
     "@vue/language-plugin-pug": "^1.8.10",
     "@vueuse/core": "^10.4.1",
     "cheerio": "1.0.0-rc.12",
-    "conventional-changelog-cli": "^3.0.0",
+    "conventional-changelog-cli": "^4.0.0",
     "cookie": "^0.5.0",
     "lodash.escaperegexp": "^4.1.2",
     "picocolors": "^1.0.0",
