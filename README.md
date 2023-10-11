@@ -4,9 +4,6 @@
 
 Pixiv Service Proxy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FFreeNowOrg%2FPixivNow&demo-title=PixivNow)
-
-免费部署一个一模一样的服务步骤很简单——点上面的按钮然后一直下一步即可。<br>
 各位爹不要再爬我的服务了好吗？100GB/h的额度都能被您爬完了，我自己还怎么看色图呢？<br>
 好自为之喵，不要怪我骂人喵。
 
@@ -43,7 +40,7 @@ Pixiv Service Proxy
 
 本站的图片使用 CloudFlare Workers 进行代理，可以直接访问欣赏众多插画。
 
-但是由于遭遇了大量不明流量，因此我们暂时开启了图片代理服务的防盗链。如果您有自行部署整站的需要，可以修改 `vercel.json` 中对于图片的重定向配置，图片的请求路径与源站完全一致。
+但是由于遭遇了大量不明流量，因此我们暂时开启了图片代理服务的防盗链。
 
 ---
 
