@@ -1,29 +1,23 @@
+import { VercelRequest, VercelResponse } from '@vercel/node'
 import { formatInTimeZone } from 'date-fns-tz'
-import { ajax } from '../modules/http.js'
-import { Artwork } from '../../src/types/Artworks.js'
-import { EventContext } from '@cloudflare/workers-types'
+import { ajax } from './http.js'
+import { Artwork } from '../src/types/Artworks.js'
 
 type ArtworkOrAd = Artwork | { isAdContainer: boolean }
 
-export async function onRequestGet(
-  ctx: EventContext<any, any, any>
-): Promise<Response> {
-  const req = ctx.request
-  const url = new URL(req.url)
-
+export default async (req: VercelRequest, res: VercelResponse) => {
   const requestImage =
-    (req.headers.get('accept')?.includes('image') ||
-      url.searchParams.get('format') === 'image') &&
-    url.searchParams.get('format') !== 'json'
-
+    (req.headers.accept?.includes('image') || req.query.format === 'image') &&
+    req.query.format !== 'json'
   try {
     const data: { illusts?: ArtworkOrAd[] } = (
-      await ajax.get('/ajax/illust/discovery', {
-        query: {
-          mode: url.searchParams.get('mode') ?? 'safe',
-          max: requestImage ? '1' : url.searchParams.get('max') ?? '18',
+      await ajax({
+        url: '/ajax/illust/discovery',
+        params: {
+          mode: req.query.mode ?? 'safe',
+          max: requestImage ? '1' : req.query.max ?? '18',
         },
-        headers: Object.fromEntries(req.headers.entries()),
+        headers: req.headers,
       })
     ).data
     const illusts = (data.illusts ?? []).filter((value): value is Artwork =>
@@ -44,11 +38,13 @@ export async function onRequestGet(
       }
     })
     if (requestImage) {
-      return Response.redirect(illusts[0].urls.original, 302)
+      res.redirect(illusts[0].urls.regular)
+      return
     } else {
-      return Response.json(illusts)
+      res.send(illusts)
+      return
     }
   } catch (e: any) {
-    return new Response('error', { status: 500 })
+    res.status(e?.response?.status ?? 500).send(e?.response?.data ?? e)
   }
 }

@@ -1,7 +1,7 @@
-import fexios, { FexiosRequestOptions } from 'fexios'
+import { AxiosRequestConfig } from 'axios'
 import nprogress from 'nprogress'
 
-export const ajax = fexios.create({
+export const ajax = axios.create({
   timeout: 15 * 1000,
   headers: {
     'Content-Type': 'application/json',
@@ -11,10 +11,16 @@ ajax.interceptors.request.use((config) => {
   nprogress.start()
   return config
 })
-ajax.interceptors.response.use((res) => {
-  nprogress.done()
-  return res
-})
+ajax.interceptors.response.use(
+  (res) => {
+    nprogress.done()
+    return res
+  },
+  (err) => {
+    nprogress.done()
+    return Promise.reject(err)
+  }
+)
 
 export const ajaxPostWithFormData = (
   url: string,
@@ -24,7 +30,7 @@ export const ajaxPostWithFormData = (
     | Record<string, string>
     | URLSearchParams
     | undefined,
-  config?: FexiosRequestOptions
+  config?: AxiosRequestConfig
 ) =>
   ajax.post(url, new URLSearchParams(data).toString(), {
     ...config,
