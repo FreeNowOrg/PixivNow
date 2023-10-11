@@ -143,6 +143,7 @@ import IFasThumbsUp from '~icons/fa-solid/thumbs-up'
 
 import { getCache, setCache } from './siteCache'
 import { ajax } from '@/utils/ajax'
+import fexios from 'fexios'
 
 // Types
 import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '@/types'
@@ -244,8 +245,8 @@ async function handleUserInit(userId: string): Promise<void> {
 
   try {
     const [{ data: userData }, { data: profileData }] = await Promise.all([
-      axios.get<User>(`/ajax/user/${userId}?full=1`),
-      axios.get<{ illusts: Record<string, ArtworkInfo> }>(
+      fexios.get<User>(`/ajax/user/${userId}?full=1`),
+      fexios.get<{ illusts: Record<string, ArtworkInfo> }>(
         `/ajax/user/${userId}/profile/top`
       ),
     ])
