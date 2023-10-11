@@ -17,7 +17,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["unplugin-icons/types/vue", "@cloudflare/workers-types"]
+    "types": ["unplugin-icons/types/vue"]
   },
   "include": [
     "src/**/*.ts",

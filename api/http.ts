@@ -1,9 +1,7 @@
-import { createFexios } from 'fexios'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
+import axios from 'axios'
 import colors from 'picocolors'
-import { EventContext, PagesFunction } from '@cloudflare/workers-types'
 import escapeRegExp from 'lodash.escaperegexp'
-
-interface Env {}
 
 const PROD = process.env.NODE_ENV === 'production'
 
@@ -18,52 +16,50 @@ export class CookieUtils {
   }
 }
 
-export async function handleHttpRequest(
-  ctx: EventContext<any, any, any>
-): Promise<Response> {
-  const { request, params } = ctx
-  const url = new URL(request.url)
-  console.info('REQUEST', url.href, params)
+export default async function (req: VercelRequest, res: VercelResponse) {
+  if (!isAccepted(req)) {
+    return res.status(403).send('403')
+  }
 
   try {
-    let { prefix, path } = params
-    if (Array.isArray(prefix)) prefix = prefix.join('/')
-    if (Array.isArray(path)) path = path.join('/')
-    const uri = `/${prefix}/${encodeURI(path)}`.replace(/\/+/g, '/')
-    const { data } = await ajax.request(uri, {
-      method: (request.method as any) ?? 'GET',
-      query: Object.fromEntries(url.searchParams.entries()) ?? {},
-      body: request.body || undefined,
-      headers: Object.fromEntries(request.headers.entries()),
+    const { __PREFIX, __PATH } = req.query
+    const { data } = await ajax({
+      method: req.method ?? 'GET',
+      url: `/${encodeURI(`${__PREFIX}${__PATH ? '/' + __PATH : ''}`)}`,
+      params: req.query ?? {},
+      data: req.body || undefined,
+      headers: req.headers as Record<string, string>,
     })
-    return new Response(data)
+    res.status(200).send(data)
   } catch (e: any) {
-    console.error('PROXY ERROR', e, e.context)
-    return new Response(e?.context?.data || e, {
-      status: e?.response?.status || 500,
-    })
+    res.status(e?.response?.status || 500).send(e?.response?.data || e)
   }
 }
 
-export const ajax = createFexios({
+export const ajax = axios.create({
   baseURL: 'https://www.pixiv.net/',
-  query: {},
+  params: {},
   headers: {
     'User-Agent':
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.62',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69',
   },
-  timeout: 30 * 1000,
+  timeout: 9 * 1000,
 })
-ajax.on('beforeInit', (ctx) => {
-  ctx.headers = (ctx.headers || {}) as Record<string, string>
+ajax.interceptors.request.use((ctx) => {
+  // 去除内部参数
+  ctx.params = ctx.params || {}
+  delete ctx.params.__PATH
+  delete ctx.params.__PREFIX
+
   const cookies = CookieUtils.toJSON(ctx.headers.cookie || '')
   const csrfToken = ctx.headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
   // 强制覆写部分 headers
+  ctx.headers = ctx.headers || {}
   ctx.headers.host = 'www.pixiv.net'
   ctx.headers.origin = 'https://www.pixiv.net'
   ctx.headers.referer = 'https://www.pixiv.net/'
   ctx.headers['user-agent'] =
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.62'
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69'
   ctx.headers['accept-language'] ??=
     'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
   csrfToken && (ctx.headers['x-csrf-token'] = csrfToken)
@@ -74,7 +70,7 @@ ajax.on('beforeInit', (ctx) => {
       colors.cyan(ctx.url || '')
     )
     console.info({
-      query: ctx.query,
+      params: ctx.params,
       data: ctx.data,
       cookies,
     })
@@ -92,7 +88,7 @@ ajax.interceptors.response.use((ctx) => {
         : ctx.data.toString().trim()
     console.info(
       colors.green('[SEND] >'),
-      colors.cyan(ctx.rawRequest?.url?.replace('https://www.pixiv.net', '')),
+      colors.cyan(ctx.request?.path?.replace('https://www.pixiv.net', '')),
       `\n${colors.yellow(typeof ctx.data)} ${
         out.length >= 200 ? out.slice(0, 200).trim() + '\n...' : out
       }`
@@ -123,4 +119,24 @@ export function replaceUrlInObject(
     }
   }
   return obj
+}
+
+function isAccepted(req: VercelRequest) {
+  const { UA_BLACKLIST = '[]' } = process.env
+  try {
+    const list: string[] = JSON.parse(UA_BLACKLIST)
+    const ua = req.headers['user-agent'] ?? ''
+    return (
+      !!ua &&
+      Array.isArray(list) &&
+      (list.length > 0
+        ? !new RegExp(
+            `(${list.map((str) => escapeRegExp(str)).join('|')})`,
+            'gi'
+          ).test(ua)
+        : true)
+    )
+  } catch (e) {
+    return false
+  }
 }

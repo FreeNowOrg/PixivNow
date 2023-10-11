@@ -36,11 +36,7 @@ export default defineConfig({
   esbuild: {
     drop: PROD ? ['console'] : [],
   },
-  server: {
-    host: true,
-    port: 4321,
-    proxy: {},
-  },
+  server: { host: true },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

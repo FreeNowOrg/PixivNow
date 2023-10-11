@@ -1,5 +1,4 @@
 import { PixivUser } from '@/types'
-import fexios from 'fexios'
 import Cookies from 'js-cookie'
 
 export function existsSessionId(): boolean {
@@ -14,14 +13,14 @@ export function existsSessionId(): boolean {
 
 export async function initUser(): Promise<PixivUser> {
   try {
-    const { data } = await fexios.get<{
-      userData: PixivUser
-      token: string
-    }>(`/api/user`, {
-      headers: {
-        'Cache-Control': 'no-store',
-      },
-    })
+    const { data } = await axios.get<{ userData: PixivUser; token: string }>(
+      `/api/user`,
+      {
+        headers: {
+          'Cache-Control': 'no-store',
+        },
+      }
+    )
     if (data.token) {
       console.log('session ID认证成功', data)
       Cookies.set('CSRFTOKEN', data.token, { secure: true, sameSite: 'Strict' })

@@ -19,7 +19,6 @@
 <script lang="ts" setup>
 import Cookies from 'js-cookie'
 import { useUserStore } from '@/composables/states'
-import fexios from 'fexios'
 
 const store = useUserStore()
 
@@ -42,7 +41,7 @@ async function submit(): Promise<void> {
   if (loading.value) return
   try {
     loading.value = true
-    const { data } = await fexios.post(
+    const { data } = await axios.post(
       `/ajax/illusts/comments/post`,
       {
         type: 'comment',
