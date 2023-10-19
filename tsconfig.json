@@ -1,34 +1,5 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "sourceMap": true,
-    "lib": ["esnext", "dom"],
-    "plugins": [],
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "isolatedModules": true,
-    "importHelpers": true,
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "types": ["unplugin-icons/types/vue"]
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "src/**/*.json",
-    "vite.config.ts",
-    "auto-imports.d.ts"
-  ],
-  "exclude": ["node_modules/**", "**/dist"],
+  "extends": ["./.nuxt/tsconfig.json"],
   "vueCompilerOptions": {
     "plugins": ["@vue/language-plugin-pug"]
   }

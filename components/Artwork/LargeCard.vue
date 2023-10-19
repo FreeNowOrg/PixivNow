@@ -1,0 +1,180 @@
+<template lang="pug">
+.artwork-large-card
+  .top
+    RouterLink.plain(:to='"/artworks/" + illust.id')
+      .thumb
+        ImageLazy.image(
+          :alt='illust.title',
+          :src='illust.url.replace("p0_master", "p0_square")'
+        )
+      .restrict.x-restrict(title='R-18' v-if='illust.xRestrict === 2')
+        IFaSolidEye(data-icon)
+      .restrict.ai-restrict(title='AI生成' v-if='illust.aiType === 2')
+        IFaSolidRobot(data-icon)
+      .page-count(
+        :title='"共 " + illust.pageCount + " 张"'
+        v-if='+illust.pageCount > 1'
+      )
+        IFaSolidImages(data-icon)
+        | {{ illust.pageCount }}
+      .ranking(
+        :class='{ gold: rank === 1, silver: rank === 2, bronze: rank === 3 }'
+        v-if='rank !== 0'
+      ) {{ rank }}
+  .bottom
+    h3.title.plain(:title='illust.title')
+      RouterLink(:to='"/artworks/" + illust.id') {{ illust.title }}
+    .author(:title='illust.userName')
+      RouterLink(:to='"/users/" + illust.id')
+        img.avatar(:src='illust.profileImageUrl' lazyload)
+        | {{ illust.userName }}
+    .tags
+      ArtTag(:key='_', :tag='item' v-for='(item, _) in illust.tags')
+</template>
+
+<script lang="ts" setup>
+import IFaSolidEye from '~icons/fa-solid/eye'
+import IFaSolidImages from '~icons/fa-solid/images'
+import IFaSolidRobot from '~icons/fa-solid/robot'
+
+import type { ArtworkInfo } from '~/types'
+
+defineProps<{
+  illust: ArtworkInfo
+  rank: number
+}>()
+</script>
+
+<style lang="sass">
+h3
+  margin-bottom: .4rem
+
+.artwork-large-card
+  display: block
+  border: 1px solid #eee
+  background-color: var(--theme-background-color)
+  border-radius: 0.5rem
+  transition: all .24s ease-in-out
+  margin-bottom: 1rem
+  --parent-width: min(1200px, 90vw)
+  @media (max-width: 300px)
+    width: 100%
+  @media (min-width: 300px)
+    width: calc((var(--parent-width) - 1 * 16px) / 2)
+  @media (min-width: 600px)
+    width: calc((var(--parent-width) - 2 * 16px) / 3)
+  @media (min-width: 900px)
+    width: calc((var(--parent-width) - 3 * 16px) / 4)
+  @media (min-width: 1200px)
+    width: calc((var(--parent-width) - 4 * 16px) / 5)
+
+.top
+  position: relative
+  a
+    display: block
+  .thumb
+    border-radius: 0.5rem 0.5rem 0 0
+    overflow: hidden
+    position: relative
+    width: 100%
+    height: 0
+    padding-top: 100%
+    animation: imgProgress 0.6s ease infinite alternate
+    .image
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+
+  .page-count
+    position: absolute
+    top: .4rem
+    right: .4rem
+    color: #fff
+    background-color: rgba(0, 0, 0, 0.6)
+    padding: .2rem .6rem
+    border-radius: 0.2rem
+    [data-icon]
+      margin-right: .2rem
+
+  .restrict
+    position: absolute
+    color: #fff
+    width: 2rem
+    height: 2rem
+    border-radius: 50%
+    display: flex
+    align-items: center
+    [data-icon]
+      margin: 0 auto
+  .x-restrict
+    top: .4rem
+    left: .4rem
+    background-color: rgb(255, 0, 0, 0.8)
+  .ai-restrict
+    bottom: .4rem
+    left: .4rem
+    background-color: rgba(204, 102, 0, 0.8)
+
+  .ranking
+    position: absolute
+    top: -0.9rem
+    left: -0.89rem
+    font-size: 1.2rem
+    color: #252525
+    background-color: #fff
+    border-radius: 50%
+    width: 1.8rem
+    height: 1.8rem
+    text-align: center
+    line-height: 1.6
+    --ring-color: rgba(var(--theme-accent-color--rgb), 0.4)
+    box-shadow: 0 0 0 1px var(--ring-color) inset, 0 0 0 2px #fff
+    &.gold
+      --ring-color: gold
+    &.silver
+      --ring-color: darkgray
+    &.bronze
+      --ring-color: #b87333
+
+.bottom
+  padding: 0.5rem
+  .title a
+    display: inline
+  .author a
+    display: inline-flex
+
+  .title,
+  .author
+    white-space: nowrap
+    text-overflow: ellipsis
+    overflow: hidden
+    width: 100%
+    padding-bottom: 2px
+
+    a
+      align-items: center
+      &.RouterLink-active
+        color: var(--theme-text-color)
+        font-weight: 600
+        font-style: normal
+        cursor: default
+        &::after
+          visibility: hidden
+
+      .avatar
+        display: inline-block
+        width: 2rem
+        height: 2rem
+        box-sizing: border-box
+        border: 2px solid #fff
+        border-radius: 50%
+        box-shadow: 0 0 4px #ccc
+        margin-right: .4rem
+
+  .author
+    margin: .4rem 0
+  .tags
+    overflow: hidden
+</style>
