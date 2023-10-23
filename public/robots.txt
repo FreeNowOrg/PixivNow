@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: 
+Disallow: /ajax/
+Disallow: /user/
+Disallow: /api/
+Disallow: *.php
+
+# Google的爬虫太顶了，扛不住
+User-agent: googlebot-image
+Disallow: /
