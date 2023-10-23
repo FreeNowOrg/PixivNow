@@ -10,13 +10,16 @@ export async function registerPlugins(app: App) {
   app.use(i18n)
   app.use(router)
   app.use(createPinia())
-  app.use(
-    VueGtag,
-    {
-      config: { id: 'G-JN62ZN3RD5' },
-    },
-    router
-  )
+
+  if (import.meta.env.VITE_GOOGLE_ANALYTICS_ID) {
+    app.use(
+      VueGtag,
+      {
+        config: { id: import.meta.env.VITE_GOOGLE_ANALYTICS_ID as string },
+      },
+      router
+    )
+  }
 
   await loadLocaleMessages(i18n, initialLocale)
 }

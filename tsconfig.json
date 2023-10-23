@@ -26,7 +26,8 @@
     "src/**/*.vue",
     "src/**/*.json",
     "vite.config.ts",
-    "auto-imports.d.ts"
+    "auto-imports.d.ts",
+    "middware.ts"
   ],
   "exclude": ["node_modules/**", "**/dist"],
   "vueCompilerOptions": {
