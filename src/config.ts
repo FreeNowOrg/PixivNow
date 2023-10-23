@@ -14,7 +14,7 @@ export const GITHUB_URL = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}`
 
 // Site name
 export const PROJECT_NAME = 'PixivNow'
-export const PROJECT_TAGLINE = 'Pixiv Service Proxy (pixiv.js.org)'
+export const PROJECT_TAGLINE = 'Enjoy Pixiv Now (pixiv.js.org)'
 
 // Image proxy cache seconds
 export const IMAGE_CACHE_SECONDS = 12 * 60 * 60 * 1000

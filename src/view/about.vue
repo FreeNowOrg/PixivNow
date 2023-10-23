@@ -6,16 +6,22 @@ mixin repoLink
   h1#top 关于我们
   section.intro
     Card(title='简介')
-      p
-        strong {{ PROJECT_NAME }}
-        |
-        | 是一个 Pixiv 代理服务，旨在为某些无法直接访问 Pixiv 地区的 ACGN 爱好者提供一个欣赏 P 站插画的途径。
+      p PixivNow - Now, everyone can enjoy Pixiv!
+      p 现在，每个人都能享受 Pixiv！
+      p 也许能给你带来不一样体验的奇妙网站。让你更专注于欣赏插画本身，而不会被<i>神秘</i>因素干扰。
 
     Card(title='使用方法')
       h3 访客
       p 正常用，有手就行（
       h3 开发者
-      p API 文档暂时懒得写……反正设置了 <code>access-control-allow-origin: *</code>，其他的自己慢慢试吧（
+      p 懒得写 API 文档……
+      p 绝大多数地方用的都是 Pixiv Web 版的 ajax API。具体你可以看看源码，如果你真的很好奇，可以用 issues 问问我，我随缘回答。
+
+    Card(title='开销')
+      p 我们曾经是没有任何经济开销的，直到2023年10月。
+      p 原作者的服务被爬爆了，账号也被 Vercel 暂时封禁。他不得不动用钞能力临时维持住了服务。Vercel 的资费是 $20/月，这相当于原作者每个月得少吃三顿肯德鸡疯狂星期四！这实在是太残忍了！
+      p 之后也许会在站内放一些谷歌自动广告之类的。纵然杯水车薪，不过能回点血是一点吧。
+      p 我们正在积极寻找更便宜的解决方案，不过目前来说进度不太乐观就是了。<s>我是不是应该在这里放个收款码，说不定会有富哥包养我</s>
 
     Card(title='访问令牌')
       h3 这是什么
@@ -31,15 +37,12 @@ mixin repoLink
         li 能够使用高级搜索（订阅过 Pixiv 会员时）
       p 部分高级功能的效果取决于您在 Pixiv 源站的设定，您可以在 <ExternalLink href="https://www.pixiv.net/setting_profile.php" target="_blank">这里</ExternalLink> 查看。
 
-    Card(title='开销')
-      p 我们的技术栈全都是白嫖来的，目前没有任何经济开销，因此您在使用的时候完全不用有心理负担（
-
     Card(title='鸣谢')
       p: em 以下排名不分先后
       h3 组织
       ul
         li <strong>GitHub</strong> 提供了源码托管和版本管控服务
-        li <strong>Vercel</strong> 提供了页面托管和 serverless 计算服务
+        li <s>Vercel</s> 提供了页面托管和 serverless 计算服务（但是现在白嫖的额度用完了）
         li <strong>JS.ORG</strong> 提供了域名服务
       h3 个人
       p
