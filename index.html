@@ -1,14 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link rel="icon" href="/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PixivNow</title>
-</head>
-<body>
-  <noscript>This site requires JavaScript enabled. Please check your browser settings.</noscript>
-  <div id="app"></div>
-  <script type="module" src="/src/main.ts"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PixivNow</title>
+
+    <!-- Google tag (gtag.js) -->
+    <!-- <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=%VITE_GOOGLE_ANALYTICS_ID%"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', '%VITE_GOOGLE_ANALYTICS_ID%')
+    </script> -->
+    <!-- Google Search Console -->
+    <meta
+      name="google-site-verification"
+      content="%VITE_GOOGLE_SEARCH_CONSOLE_VERIFICATION%"
+    />
+    <!-- Google AdSense -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=%VITE_ADSENSE_PUB_ID%"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <noscript>
+      This site requires JavaScript enabled. Please check your browser settings.
+    </noscript>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>
