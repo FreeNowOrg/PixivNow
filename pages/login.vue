@@ -51,13 +51,17 @@ NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
 import IFaSolidAngleLeft from '~icons/fa-solid/angle-left'
 import { NButton, NForm, NFormItem, NInput } from 'naive-ui'
 
-const example = ref(getExampleSessionId())
+const example = ref('')
 const sessionIdInput = ref('')
 const error = ref('')
 const loading = ref(false)
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+
+onMounted(() => {
+  example.value = getExampleSessionId()
+})
 
 function goBack(): void {
   const back = route.query.back
