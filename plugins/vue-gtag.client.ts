@@ -1,13 +1,15 @@
 import VueGtag from 'vue-gtag'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(
-    VueGtag,
-    {
-      config: {
-        id: 'G-JN62ZN3RD5',
+  if (import.meta.env.VITE_GOOGLE_ANALYTICS_ID) {
+    nuxtApp.vueApp.use(
+      VueGtag,
+      {
+        config: {
+          id: import.meta.env.VITE_GOOGLE_ANALYTICS_ID as string,
+        },
       },
-    },
-    useRouter()
-  )
+      useRouter()
+    )
+  }
 })

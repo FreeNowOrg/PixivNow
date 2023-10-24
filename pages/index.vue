@@ -8,7 +8,7 @@
 
     .site-logo
       img(:src='LogoH')
-    .description Pixiv Service Proxy
+    .description Now, everyone can enjoy Pixiv
 
     .bg-info
       a.pointer(@click='async () => await setRandomBgNoCache()' title='换一个~')
