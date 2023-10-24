@@ -1,10 +1,14 @@
 <template lang="pug">
-div#app-full-container
+#app-full-container(
+  :data-env='ENV_MODE',
+  :data-locale='routeLocale',
+  :data-route='routeName'
+)
   NuxtLayout
     NaiveuiProvider
       SiteHeader
       SideNavBody
-      NuxtPage
+      main: article: NuxtPage(tag='main')
       SiteFooter
       NProgress
 </template>
@@ -14,9 +18,8 @@ import '~/assets/styles/index.sass'
 useHead({
   titleTemplate(title) {
     return title ? `${title} | PixivNow` : 'PixivNow'
-  }
+  },
 })
-
 
 const SideNavBody = defineAsyncComponent(
   () => import('~/components/SideNav/Body.vue')
@@ -28,13 +31,18 @@ const SiteHeader = defineAsyncComponent(
   () => import('~/components/SiteHeader.vue')
 )
 
-const userStore = useUserStore()
+const route = useRoute()
+const routeName = computed(() => (route.name as string).split('___')[0])
+const routeLocale = computed(
+  () => (route.name as string)?.split('___')[1] ?? ''
+)
+const ENV_MODE = import.meta.env.MODE
 
-onMounted(async () => { })
+onMounted(async () => {})
 </script>
 
 <style scoped lang="sass">
-#app-full-container
+:deep(.n-config-provider)
   min-height: 100vh
   display: flex
   flex-direction: column

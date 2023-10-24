@@ -80,15 +80,14 @@ const randomBg = ref<{
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const { body: data } = await $fetch<{ body: { illusts: ArtworkInfoOrAd[] } }>(
-      '/ajax/illust/discovery',
-      {
-        query: {
-          mode: 'safe',
-          max: '1',
-        },
-      }
-    )
+    const { body: data } = await $fetch<{
+      body: { illusts: ArtworkInfoOrAd[] }
+    }>('/ajax/illust/discovery', {
+      query: {
+        mode: 'safe',
+        max: '1',
+      },
+    })
     const info =
       data.illusts.find((item): item is ArtworkInfo => isArtwork(item)) ??
       defaultArtwork
@@ -122,15 +121,14 @@ async function setDiscoveryNoCache(): Promise<void> {
   try {
     loadingDiscovery.value = true
     // discoveryList.value = []
-    const { body: data } = await $fetch<{ body: { illusts: ArtworkInfoOrAd[] } }>(
-      '/ajax/illust/discovery',
-      {
-        query: {
-          mode: 'all',
-          max: '8',
-        },
-      }
-    )
+    const { body: data } = await $fetch<{
+      body: { illusts: ArtworkInfoOrAd[] }
+    }>('/ajax/illust/discovery', {
+      query: {
+        mode: 'all',
+        max: '8',
+      },
+    })
     console.info('setDiscoveryNoCache', data)
     const illusts = data.illusts.filter((item): item is ArtworkInfo =>
       isArtwork(item)
@@ -161,8 +159,7 @@ onMounted(async () => {
 </script>
 
 <style lang="sass">
-
-[data-route="home"]
+[data-route="index"]
   .top-slider
     min-height: calc(100vh)
     margin-top: -50px
