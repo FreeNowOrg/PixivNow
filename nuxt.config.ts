@@ -4,6 +4,13 @@ export default defineNuxtConfig({
   typescript: {
     shim: false,
   },
+  runtimeConfig: {
+    public: {
+      adsensePubId: '',
+      googleAnalyticsId: '',
+      googleSearchConsoleVerification: '',
+    },
+  },
   build: {
     transpile:
       process.env.NODE_ENV === 'production'

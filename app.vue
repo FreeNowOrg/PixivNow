@@ -6,30 +6,34 @@
 )
   NuxtLayout
     NaiveuiProvider
-      SiteHeader
-      SideNavBody
+      LazySiteHeader
+      LazySideNavBody
       main: article: NuxtPage(tag='main')
-      SiteFooter
+      LazySiteFooter
       NProgress
 </template>
 
 <script lang="ts" setup>
 import '~/assets/styles/index.sass'
+const config = useRuntimeConfig()
 useHead({
+  meta: [
+    {
+      name: 'google-site-verification',
+      content: config.public.googleSearchConsoleVerification,
+    },
+  ],
+  script: [
+    {
+      async: true,
+      src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${config.public.adsensePubId}`,
+      crossorigin: 'anonymous',
+    },
+  ],
   titleTemplate(title) {
     return title ? `${title} | PixivNow` : 'PixivNow'
   },
 })
-
-const SideNavBody = defineAsyncComponent(
-  () => import('~/components/SideNav/Body.vue')
-)
-const SiteFooter = defineAsyncComponent(
-  () => import('~/components/SiteFooter.vue')
-)
-const SiteHeader = defineAsyncComponent(
-  () => import('~/components/SiteHeader.vue')
-)
 
 const route = useRoute()
 const routeName = computed(() => (route.name as string).split('___')[0])

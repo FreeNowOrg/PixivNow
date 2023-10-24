@@ -15,7 +15,7 @@ footer.global-footer
       ul
         li
           | FreeNow 团队：
-          ExternalLink(:href='`https://github.com/FreeNowOrg`') Free Now Tech.
+          ExternalLink(:href='`https://github.com/${config.GITHUB_OWNER}`') Free Now Tech.
         li
           | PixivNow 团队：
           RouterLink.plain(to='/users/32338232') Dragon Fish
@@ -34,7 +34,7 @@ footer.global-footer
     p.copyright
       | Copyright &copy; {{ yearStr }}
       |
-      a(href='https://github.com/FreeNowOrg/PixivNow' target='_blank') PixivNow
+      a(:href='config.GITHUB_URL' target='_blank') PixivNow
       | &nbsp;
       em v3.2.0
     .dev-only(style='font-style: italic')
@@ -43,6 +43,7 @@ footer.global-footer
 </template>
 
 <script lang="ts" setup>
+const config = useAppConfig()
 const yearStr = computed(() => `2021 - ${new Date().getFullYear()}`)
 </script>
 <style scoped lang="sass">

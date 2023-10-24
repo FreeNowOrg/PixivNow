@@ -1,6 +1,6 @@
 <template lang="pug">
 mixin repoLink
-  ExternalLink(href='https://github.com/FreeNowOrg/PixivNow' target='_blank') FreeNowOrg / PixivNow
+  ExternalLink(:href='config.GITHUB_URL' target='_blank') FreeNowOrg / PixivNow
 
 #about-view.body-inner
   h1#top 关于我们
@@ -69,7 +69,6 @@ mixin repoLink
 </template>
 
 <script lang="ts" setup>
-import Card from '@/components/Card.vue'
-import ExternalLink from '@/components/ExternalLink.vue'
+const config = useAppConfig()
 
 </script>
