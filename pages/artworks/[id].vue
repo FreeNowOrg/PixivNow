@@ -17,12 +17,12 @@
           width='20rem'
         )
         Card(title='')
-          p.description: NSkeleton(:repeat='4' text)
-          p.stats: span(v-for='_ in 4')
+          span.description: NSkeleton(:repeat='4' text)
+          span.stats: span(v-for='_ in 4')
             NSkeleton(circle height='1em' text width='1em')
             NSkeleton(style='margin-left: 0.5em' text width='4em')
-          p.create-date: NSkeleton(text width='12em')
-          p.canonical-link: NSkeleton(height='1.5rem' width='8rem')
+          span.create-date: NSkeleton(text width='12em')
+          span.canonical-link: NSkeleton(height='1.5rem' width='8rem')
         h2: NSkeleton(height='2rem' width='8rem')
         Card(title='')
           AuthorCard
@@ -136,7 +136,7 @@ import IFaSolidLaughWink from '~icons/fa-solid/laugh-wink'
 import IFaSolidThumbsUp from '~icons/fa-solid/thumbs-up'
 
 // Types
-import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '@/types'
+import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '~/types'
 
 import { NButton, NSkeleton } from 'naive-ui'
 
@@ -158,7 +158,6 @@ const authorRef = ref<HTMLElement>()
 
 function addObserver(elementRef: Ref, cb: () => any) {
   const unWatch = watch(loading, async (val) => {
-    console.log(loading.value)
     if (val) return
     await nextTick()
     if (illust.value?.illustId) {
@@ -199,9 +198,9 @@ async function init(id: string): Promise<void> {
   }
 
   try {
-    const [illustData, illustPage] = await Promise.all([
-      $fetch<Artwork>(`/ajax/illust/${id}?full=1`),
-      $fetch<ArtworkGallery[]>(`/ajax/illust/${id}/pages`),
+    const [{ body: illustData }, { body: illustPage }] = await Promise.all([
+      $fetch<{ body: Artwork }>(`/ajax/illust/${id}?full=1`),
+      $fetch<{ body: ArtworkGallery[] }>(`/ajax/illust/${id}/pages`),
     ])
     siteCache.set(`illust.${id}`, illustData)
     siteCache.set(`illust.${id}.page`, illustPage)
@@ -227,9 +226,9 @@ async function handleUserInit(userId: string): Promise<void> {
   }
 
   try {
-    const [userData, profileData] = await Promise.all([
-      $fetch<User>(`/ajax/user/${userId}?full=1`),
-      $fetch<{ illusts: Record<string, ArtworkInfo> }>(
+    const [{ body: userData }, { body: profileData }] = await Promise.all([
+      $fetch<{ body: User }>(`/ajax/user/${userId}?full=1`),
+      $fetch<{ body: { illusts: Record<string, ArtworkInfo> } }>(
         `/ajax/user/${userId}/profile/top`
       ),
     ])
@@ -250,9 +249,11 @@ async function handleRecommendInit(id: string): Promise<void> {
   try {
     recommendLoading.value = true
     console.log('init recommend')
-    const data = await $fetch<{
-      illusts: ArtworkInfo[]
-      nextIds: string[]
+    const { body: data } = await $fetch<{
+      body: {
+        illusts: ArtworkInfo[]
+        nextIds: string[]
+      }
     }>(`/ajax/illust/${id}/recommend/init?limit=18`)
     recommend.value = data.illusts
     recommendNextIds.value = data.nextIds
@@ -273,14 +274,12 @@ async function handleMoreRecommend(): Promise<void> {
     recommendLoading.value = true
     console.log('get more recommend')
     const requestIds = recommendNextIds.value.splice(0, 18)
-    const searchParams = new URLSearchParams()
-    for (const id of requestIds) {
-      searchParams.append('illust_ids', id)
-    }
-    const data = await $fetch<{
-      illusts: ArtworkInfo[]
-      nextIds: string[]
-    }>('/ajax/illust/recommend/illusts', { params: searchParams })
+    const { body: data } = await $fetch<{
+      body: {
+        illusts: ArtworkInfo[]
+        nextIds: string[]
+      }
+    }>('/ajax/illust/recommend/illusts', { params: { illust_ids: requestIds } })
     recommend.value = recommend.value.concat(data.illusts)
     recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
   } catch (err) {

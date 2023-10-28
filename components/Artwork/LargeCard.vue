@@ -1,7 +1,7 @@
 <template lang="pug">
 .artwork-large-card
   .top
-    RouterLink.plain(:to='"/artworks/" + illust.id')
+    NuxtLink.plain(:to='"/artworks/" + illust.id')
       .thumb
         ImageLazy.image(
           :alt='illust.title',
@@ -23,10 +23,10 @@
       ) {{ rank }}
   .bottom
     h3.title.plain(:title='illust.title')
-      RouterLink(:to='"/artworks/" + illust.id') {{ illust.title }}
+      NuxtLink(:to='"/artworks/" + illust.id') {{ illust.title }}
     .author(:title='illust.userName')
-      RouterLink(:to='"/users/" + illust.id')
-        img.avatar(:src='illust.profileImageUrl' lazyload)
+      NuxtLink(:to='"/users/" + illust.id')
+        NuxtImg.avatar(:src='illust.profileImageUrl' lazyload)
         | {{ illust.userName }}
     .tags
       ArtTag(:key='_', :tag='item' v-for='(item, _) in illust.tags')
@@ -155,7 +155,7 @@ h3
 
     a
       align-items: center
-      &.RouterLink-active
+      &.NuxtLink-active
         color: var(--theme-text-color)
         font-weight: 600
         font-style: normal

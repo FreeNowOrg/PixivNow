@@ -1,6 +1,6 @@
 <template lang="pug">
 NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
-  RouterLink.button(
+  NuxtLink.button(
     :to='$route.query.back.toString()'
     v-if='$route.query.back'
   )
@@ -36,7 +36,7 @@ NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
     p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
 
 #login-form.logged-in(v-if='userStore.isLoggedIn')
-  RouterLink.button(
+  NuxtLink.button(
     :to='$route.query.back.toString()'
     v-if='$route.query.back'
   )

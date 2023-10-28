@@ -5,8 +5,8 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
       IFaSolidBars(data-icon)
 
     .logo-area
-      RouterLink.plain(to='/')
-        img.site-logo(:src='LogoH')
+      NuxtLink.plain(to='/')
+        NuxtImg.site-logo(src='/images/LogoH.png')
 
     .flex.search-area(v-if='$route.name !== "search"')
       .search-full.align-right.flex-1
@@ -23,7 +23,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
           :class='{ "show-user": showUserDropdown }'
           @click.stop='showUserDropdown = !showUserDropdown'
         )
-          img.avatar(
+          NuxtImg.avatar(
             :src='userStore.isLoggedIn ? userStore.profileImg : "/~/common/images/no_profile.png"',
             :title='userStore.isLoggedIn ? userStore.id + " (" + userStore.pixivId + ")" : "未登入"'
           )
@@ -41,7 +41,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                 .nav-user-card
                   .top
                     .banner-bg
-                    img.avatar(:src='"/~/common/images/no_profile.png"')
+                    NuxtImg.avatar(:src='"/~/common/images/no_profile.png"')
                   .details
                     a.user-name 游客
                     .uid 绑定令牌，同步您的 Pixiv 信息！
@@ -51,16 +51,16 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                 .nav-user-card
                   .top
                     .banner-bg
-                    RouterLink.plain.name(:to='"/users/" + userStore.id')
-                      img.avatar(:src='userStore.profileImgBig')
+                    NuxtLink.plain.name(:to='"/users/" + userStore.id')
+                      NuxtImg.avatar(:src='userStore.profileImgBig')
                   .details
-                    RouterLink.plain.user-name(
+                    NuxtLink.plain.user-name(
                       :to='"/users/" + userStore.id'
                     ) {{ userStore.name }}
                     .uid @{{ userStore.pixivId }}
 
               li(v-if='$route.path !== "/login"')
-                RouterLink.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
+                NuxtLink.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
               li(v-if='userStore.isLoggedIn')
                 a.plain(@click='async () => await logoutUser()') 用户登出
 </template>

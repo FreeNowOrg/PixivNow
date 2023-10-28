@@ -35,7 +35,7 @@
       .info-area
         .avatar-area
           a.plain.pointer(@click='showUserMore = true')
-            img(:src='user.imageBig')
+            NuxtImg(:src='user.imageBig')
         .username-header.flex
           h1.username {{ user.name }}
           .flex-1
@@ -73,7 +73,7 @@
         .top
           h3
             a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
-              img(:src='user.imageBig')
+              NuxtImg(:src='user.imageBig')
               .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
                 IFaSolidParking(data-icon)
             .title {{ user.name }}

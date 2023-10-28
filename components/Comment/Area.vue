@@ -49,12 +49,14 @@ async function init(id: string | number): Promise<void> {
 
   try {
     loading.value = true
-    const data = await $fetch<{hasNext: boolean; comments: Comments[]}>(`/ajax/illusts/comments/roots`, {
-      params: new URLSearchParams({
+    const { body: data } = await $fetch<{
+      body: { hasNext: boolean; comments: Comments[] }
+    }>(`/ajax/illusts/comments/roots`, {
+      params: {
         illust_id: `${id}`,
         limit: comments.value.length ? '30' : '3',
         offset: `${comments.value.length}`,
-      }),
+      },
     })
     hasNext.value = data.hasNext
     comments.value = comments.value.concat(data.comments)

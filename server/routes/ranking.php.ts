@@ -1,8 +1,7 @@
 export default defineEventHandler(async (event) => {
-  const path = event.context.params?.slug ?? ''
   const query = getQuery(event)
   const params = (() => {
-    const ret: string[] = []
+    const ret = ['format=json']
     for (const [k, v] of Object.entries(query)) {
       if (Array.isArray(v)) {
         ret.push(`${k}[]=${v.join(`&${k}[]=`)}`)
@@ -12,7 +11,7 @@ export default defineEventHandler(async (event) => {
     }
     return ret.join('&')
   })()
-  const url = `https://www.pixiv.net/ajax/${path}?${params}`
+  const url = `https://www.pixiv.net/ranking.php?${params}`
   const res = await fetchWithEvent(event, url, {
     headers: {
       ...getProxyRequestHeaders(event),

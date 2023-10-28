@@ -1,8 +1,8 @@
 <template lang="pug">
 li.comment-block
   .left
-    RouterLink.plain(:to='"/users/" + comment.userId')
-      img.avatar(
+    NuxtLink.plain(:to='"/users/" + comment.userId')
+      NuxtImg.avatar(
         :src='comment.img',
         :title='comment.userName + " (" + comment.userId + ")"'
       )
@@ -14,7 +14,7 @@ li.comment-block
       span.comment-reply(v-if='comment.replyToUserId') &emsp;▶&emsp;{{ comment.replyToUserName }}
     .content(v-html='replaceStamps(comment.comment)' v-if='!comment.stampId')
     .content(v-if='comment.stampId')
-      img.big-stamp(
+      NuxtImg.big-stamp(
         :src='`/~/common/images/stamp/generated-stamps/${comment.stampId}_s.jpg`'
         alt='表情包'
         lazyload

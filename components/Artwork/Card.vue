@@ -29,7 +29,7 @@
           @click='handleBookmark'
         )
           IFaSolidHeart(data-icon)
-      RouterLink(:to='"/artworks/" + item.id')
+      NuxtLink(:to='"/artworks/" + item.id')
         ImageLazy.img(
           :alt='item.alt',
           :src='item.url',
@@ -38,10 +38,10 @@
         .hover-title {{ item.title }}
     .artwork-info
       .title
-        RouterLink(:to='"/artworks/" + item.id') {{ item.title }}
+        NuxtLink(:to='"/artworks/" + item.id') {{ item.title }}
       .author(:title='item.userName')
-        RouterLink(:to='"/users/" + item.userId')
-          img.avatar(:src='item.profileImageUrl' lazyload)
+        NuxtLink(:to='"/users/" + item.userId')
+          NuxtImg.avatar(:src='item.profileImageUrl' lazyload)
           | {{ item.userName }}
 </template>
 

@@ -5,7 +5,7 @@
     status='404'
     title='404 Not Found'
   )
-    RouterLink(to='/'): NButton(type='primary') Take me home
+    NuxtLink(to='/'): NButton(type='primary') Take me home
 </template>
 
 <script lang="ts" setup>

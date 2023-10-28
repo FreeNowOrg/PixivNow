@@ -9,6 +9,7 @@ export default defineNuxtConfig({
       adsensePubId: '',
       googleAnalyticsId: '',
       googleSearchConsoleVerification: '',
+      mode: '',
     },
   },
   build: {
@@ -47,9 +48,14 @@ export default defineNuxtConfig({
     langDir: 'locales',
     defaultLocale: 'zh-Hans',
   },
+  image: {
+    domains: ['https://s.pximg.net', 'https://pximg.wjghj.cn'],
+    alias: {
+      '~': 'https://s.pximg.net',
+      '-': 'https://pximg.wjghj.cn',
+    },
+  },
   routeRules: {
-    '/~/**': { proxy: '/api/image/**' },
-    '/-/**': { proxy: 'https://pximg.wjghj.cn/**' },
     '/rpc_group_settings.php': {
       proxy: {
         to: 'https://www.pixiv.net/rpc_group_settings.php',

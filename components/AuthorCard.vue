@@ -3,12 +3,12 @@
   .author-inner(v-if='user')
     .flex-center
       .left
-        RouterLink(:to='"/users/" + user.userId')
-          img(:src='user.imageBig' alt='')
+        NuxtLink(:to='"/users/" + user.userId')
+          NuxtImg(:src='user.imageBig' alt='')
       .right
         .flex
           h4.plain
-            RouterLink(:to='"/users/" + user.userId') {{ user.name }}
+            NuxtLink(:to='"/users/" + user.userId') {{ user.name }}
           NButton(
             :loading='loadingUserFollow',
             :type='user.isFollowed ? "success" : undefined'

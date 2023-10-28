@@ -39,15 +39,14 @@ async function init(): Promise<void> {
   }
   try {
     const { p, mode, date } = route.query
-    const searchParams = new URLSearchParams()
-    if (p && typeof p === 'string') searchParams.append('p', p)
-    if (mode && typeof mode === 'string') searchParams.append('mode', mode)
-    if (date && typeof date === 'string') searchParams.append('date', date)
-    searchParams.append('format', 'json')
+    const params = new URLSearchParams()
+    if (p && typeof p === 'string') params.append('p', p)
+    if (mode && typeof mode === 'string') params.append('mode', mode)
+    if (date && typeof date === 'string') params.append('date', date)
     const data = await $fetch<{
       date: string
       contents: ArtworkRank[]
-    }>('/ranking.php', { params: searchParams })
+    }>(`/ranking.php?${params.toString()}`)
     // Date
     const rankingDate = data.date
     const listValue = {

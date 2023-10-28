@@ -7,9 +7,9 @@ footer.global-footer
         li
           ExternalLink(href='/api/random?format=image') 随机图片
         li
-          RouterLink(to='/ranking') 今日排行
+          NuxtLink(to='/ranking') 今日排行
         li
-          RouterLink(to='/about') 关于本站
+          NuxtLink(to='/about') 关于本站
     section.flex-1
       h4 关注我们
       ul
@@ -18,9 +18,9 @@ footer.global-footer
           ExternalLink(:href='`https://github.com/${config.GITHUB_OWNER}`') Free Now Tech.
         li
           | PixivNow 团队：
-          RouterLink.plain(to='/users/32338232') Dragon Fish
+          NuxtLink.plain(to='/users/32338232') Dragon Fish
           | 、
-          RouterLink.plain(to='/users/15552366') MysticNebula70
+          NuxtLink.plain(to='/users/15552366') MysticNebula70
     //- section.flex-1
     //-   h4 社交媒体
     //-     p Placeholder

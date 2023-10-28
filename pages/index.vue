@@ -1,13 +1,13 @@
 <template lang="pug">
 #home-view
   .top-slider.align-center(
-    :style='{ "background-image": `url(${randomBg.url})` }'
+    :style='topSliderStyles'
   )
     section.search-area.flex-1
       SearchBox.big.search
 
     .site-logo
-      img(:src='LogoH')
+      NuxtImg(src='/images/LogoH.png')
     .description Now, everyone can enjoy Pixiv
 
     .bg-info
@@ -29,12 +29,12 @@
   )
     .bg-info-modal
       .align-center
-        RouterLink.thumb(:to='"/artworks/" + randomBg.info.id')
-          img(:src='randomBg.url' lazyload)
+        NuxtLink.thumb(:to='"/artworks/" + randomBg.info.id')
+          NuxtImg(:src='randomBg.url' lazyload)
         .desc
           strong {{ randomBg.info.title }}
           | &ensp;&mdash;&ensp;
-          RouterLink(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
+          NuxtLink(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
           | 的作品 (ID: {{ randomBg.info.id }})
 
   .body-inner
@@ -59,8 +59,6 @@ import IFaSolidInfoCircle from '~icons/fa-solid/info-circle'
 import IFaSolidRandom from '~icons/fa-solid/random'
 import { formatInTimeZone } from 'date-fns-tz'
 
-import LogoH from '~/assets/LogoH.png'
-
 import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
 
 useHead({
@@ -74,8 +72,12 @@ const randomBg = ref<{
   url: string
   info: ArtworkInfo
 }>({
-  url: '',
+  url: '/images/spinner.svg',
   info: {} as ArtworkInfo,
+})
+const img = useImage()
+const topSliderStyles = computed(() => {
+  return { backgroundImage: `url('${img(randomBg.value.url)}')` }
 })
 
 async function setRandomBgNoCache(): Promise<void> {

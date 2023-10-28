@@ -4,7 +4,7 @@
   .flex.logged-in(v-if='store.isLoggedIn')
     .left
       .avatar
-        img(:src='store.userProfileImg')
+        NuxtImg(:src='store.profileImg')
     .right
       textarea(:disabled='loading' v-model='comment')
     .submit.align-right
@@ -12,14 +12,11 @@
   .flex.not-logged-in(v-if='!store.isLoggedIn')
     p
       | 您需要
-      RouterLink(:to='"/login?back=" + $route.path') 设置 Pixiv 令牌
+      NuxtLink(:to='"/login?back=" + $route.path') 设置 Pixiv 令牌
       | 以发表评论。
 </template>
 
 <script lang="ts" setup>
-import Cookies from 'js-cookie'
-import { useUserStore } from '@/composables/states'
-
 const store = useUserStore()
 
 const loading = ref(false)
@@ -41,23 +38,18 @@ async function submit(): Promise<void> {
   if (loading.value) return
   try {
     loading.value = true
-    const { data } = await axios.post(
-      `/ajax/illusts/comments/post`,
-      {
+    const { body: data } = await $fetch(`/ajax/illusts/comments/post`, {
+      method: 'post',
+      body: {
         type: 'comment',
         illust_id: props.id,
-        author_user_id: store.userId,
+        author_user_id: store.id,
         comment,
       },
-      {
-        headers: {
-          'X-CSRF-TOKEN': Cookies.get('csrf_token'),
-        },
-      }
-    )
+    })
     comment.value = ''
     emit('push-comment', {
-      img: store.userProfileImg,
+      img: store.profileImg,
       commentDate: new Date().toLocaleString(),
       ...data,
     })

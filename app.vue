@@ -1,6 +1,6 @@
 <template lang="pug">
 #app-full-container(
-  :data-env='ENV_MODE',
+  :data-env='config.public.mode',
   :data-locale='routeLocale',
   :data-route='routeName'
 )
@@ -40,7 +40,6 @@ const routeName = computed(() => (route.name as string).split('___')[0])
 const routeLocale = computed(
   () => (route.name as string)?.split('___')[1] ?? ''
 )
-const ENV_MODE = import.meta.env.MODE
 
 onMounted(async () => {})
 </script>

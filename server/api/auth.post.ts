@@ -1,5 +1,4 @@
 import { load } from 'cheerio'
-import { tr } from 'date-fns/locale'
 
 export default defineEventHandler(async (event) => {
   const data: { method: string; params: Record<string, string> } = JSON.parse(
