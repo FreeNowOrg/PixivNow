@@ -1,4 +1,6 @@
 {
+  "devCommand": "vite --port $PORT",
+  "framework": "vue",
   "rewrites": [
     {
       "source": "/:__PREFIX(~)/:__PATH(.+)",
