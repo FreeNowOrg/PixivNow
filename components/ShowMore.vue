@@ -9,7 +9,6 @@
 
 <script lang="ts" setup>
 import { useIntersectionObserver } from '@vueuse/core'
-
 import IFaSolidPlus from '~icons/fa-solid/plus'
 import IFaSolidSpinner from '~icons/fa-solid/spinner'
 

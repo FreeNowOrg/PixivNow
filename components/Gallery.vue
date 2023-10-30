@@ -21,11 +21,7 @@
         :title='`第${index + 1}张，共${pages.length}张`'
         @click='picShow = index'
       )
-        ImageLazy.pic(
-          :height='80',
-          :src='item.urls.thumb_mini',
-          :width='80'
-        )
+        ImageLazy.pic(:height='80', :src='item.urls.thumb_mini', :width='80')
 </template>
 
 <script lang="ts" setup>

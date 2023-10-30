@@ -138,15 +138,6 @@
 </template>
 
 <script lang="ts" setup>
-import IFaSolidBirthdayCake from '~icons/fa-solid/birthday-cake'
-import IFaSolidCheck from '~icons/fa-solid/check'
-import IFaSolidHome from '~icons/fa-solid/home'
-import IFaSolidMapMarkerAlt from '~icons/fa-solid/map-marker-alt'
-import IFaSolidParking from '~icons/fa-solid/parking'
-import IFaSolidPlus from '~icons/fa-solid/plus'
-import IFaSolidVenusMars from '~icons/fa-solid/venus-mars'
-
-import type { ArtworkInfo, User } from '~/types'
 import {
   NButton,
   NEmpty,
@@ -157,6 +148,15 @@ import {
   NTable,
   NTabs,
 } from 'naive-ui'
+import IFaSolidBirthdayCake from '~icons/fa-solid/birthday-cake'
+import IFaSolidCheck from '~icons/fa-solid/check'
+import IFaSolidHome from '~icons/fa-solid/home'
+import IFaSolidMapMarkerAlt from '~icons/fa-solid/map-marker-alt'
+import IFaSolidParking from '~icons/fa-solid/parking'
+import IFaSolidPlus from '~icons/fa-solid/plus'
+import IFaSolidVenusMars from '~icons/fa-solid/venus-mars'
+
+import type { ArtworkInfo, User } from '~/types'
 
 const loading = ref(true)
 const user = ref<User>()

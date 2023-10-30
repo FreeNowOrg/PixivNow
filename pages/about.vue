@@ -70,5 +70,4 @@ mixin repoLink
 
 <script lang="ts" setup>
 const config = useAppConfig()
-
 </script>

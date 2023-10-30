@@ -11,17 +11,14 @@ export default defineEventHandler(async (event) => {
     mode: (query.mode as string) ?? 'safe',
     max: requestingImage ? '1' : (query.max as string) ?? '8',
   })
-  const res = await fetch(
-    `/ajax/illust/discovery?${p.toString()}`,
-    {
-      headers: {
-        ...getProxyRequestHeaders(event),
-        Origin: 'https://www.pixiv.net',
-        Host: 'www.pixiv.net',
-        Referer: 'https://www.pixiv.net/',
-      },
-    }
-  )
+  const res = await fetch(`/ajax/illust/discovery?${p.toString()}`, {
+    headers: {
+      ...getProxyRequestHeaders(event),
+      Origin: 'https://www.pixiv.net',
+      Host: 'www.pixiv.net',
+      Referer: 'https://www.pixiv.net/',
+    },
+  })
   const data: { body: { illusts: (Artwork | { isAdContainer: true })[] } } =
     await res.json()
   const illusts = (data.body.illusts ?? []).filter((value): value is Artwork =>

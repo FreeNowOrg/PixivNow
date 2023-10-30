@@ -30,11 +30,7 @@
         )
           IFaSolidHeart(data-icon)
       NuxtLink(:to='"/artworks/" + item.id')
-        ImageLazy.img(
-          :alt='item.alt',
-          :src='item.url',
-          :title='item.alt'
-        )
+        ImageLazy.img(:alt='item.alt', :src='item.url', :title='item.alt')
         .hover-title {{ item.title }}
     .artwork-info
       .title

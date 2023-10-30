@@ -1,5 +1,11 @@
 <template lang="pug">
-NuxtImg(loading='lazy' :src='src' :width='width ?? 100' :height='height ?? 100' placeholder='/images/spinner.svg')
+NuxtImg(
+  :height='height ?? 100',
+  :src='src',
+  :width='width ?? 100'
+  loading='lazy'
+  placeholder='/images/spinner.svg'
+)
 </template>
 
 <script lang="ts" setup>

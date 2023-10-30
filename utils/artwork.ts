@@ -1,4 +1,4 @@
-import { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
+import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
 
 export const defaultArtwork: ArtworkInfo = {
   id: '0',
@@ -29,7 +29,6 @@ export const defaultArtwork: ArtworkInfo = {
   type: 'illust',
   aiType: 1,
 }
-
 
 export function sortArtList<T extends { id: number | `${number}` }>(
   obj: Record<string, T>

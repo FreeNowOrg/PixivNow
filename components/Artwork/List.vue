@@ -12,8 +12,9 @@ Component.artworks-list(
 </template>
 
 <script lang="ts" setup>
-import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
 import { NScrollbar } from 'naive-ui'
+
+import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
 
 const props = defineProps<{
   list: ArtworkInfoOrAd[]

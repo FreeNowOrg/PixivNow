@@ -6,6 +6,7 @@ a(:href='href' rel='nofollow' target='_blank')
 
 <script lang="ts" setup>
 import IFaSolidExternalLinkAlt from '~icons/fa-solid/external-link-alt'
+
 defineProps<{ href: string }>()
 </script>
 

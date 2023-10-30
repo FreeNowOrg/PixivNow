@@ -1,4 +1,4 @@
-import { Artwork, ArtworkInfo } from './Artworks'
+import type { Artwork, ArtworkInfo } from './Artworks'
 
 export type UserPrivacyLevel = '0' | '1' | '2'
 

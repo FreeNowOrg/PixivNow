@@ -36,9 +36,9 @@ mixin pagenator
 </template>
 
 <script setup lang="ts">
+import { NButton, NSpin } from 'naive-ui'
 import IFaSolidAngleLeft from '~icons/fa-solid/angle-left'
 import IFaSolidAngleRight from '~icons/fa-solid/angle-right'
-import { NButton, NSpin } from 'naive-ui'
 
 import type { ArtworkInfo } from '~/types'
 
@@ -50,7 +50,9 @@ const page = ref(1)
 const route = useRoute()
 const router = useRouter()
 const prevDisabled = computed(() => page.value <= 1)
-const noMoreArtworks = computed(() => !loading.value && resultList.value.length < 60)
+const noMoreArtworks = computed(
+  () => !loading.value && resultList.value.length < 60
+)
 
 async function makeSearch({
   keyword,
@@ -87,7 +89,8 @@ async function makeSearch({
 watch(page, (value) => {
   page.value = value < 1 ? 1 : value
   router.push(
-    `/search/${searchKeyword.value}/${page.value}${route.query.mode ? `?mode=${route.query.mode}` : ''
+    `/search/${searchKeyword.value}/${page.value}${
+      route.query.mode ? `?mode=${route.query.mode}` : ''
     }`
   )
 })

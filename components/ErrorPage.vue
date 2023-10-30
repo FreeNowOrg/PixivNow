@@ -12,7 +12,6 @@ section.error-page
 
 <script lang="ts" setup>
 import { NResult } from 'naive-ui'
-import { effect } from 'vue'
 
 const msgList = [
   // 正经向提示
@@ -81,9 +80,11 @@ function randomMsg(): void {
   }
 }
 
-effect(() => useHead({
-  title: `${props.title} | Error`
-}))
+effect(() =>
+  useHead({
+    title: `${props.title} | Error`,
+  })
+)
 
 onMounted(() => {
   randomMsg()

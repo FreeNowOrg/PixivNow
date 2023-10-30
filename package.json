@@ -14,6 +14,7 @@
     "changelog": "conventional-changelog -p jquery -i CHANGELOG.md -s -r 0",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
+    "pretty": "prettier -w components/ composables/ locales/ pages/ plugins/ server/ types/ utils/ app.config.ts app.vue nuxt.config.ts",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "serve": "vercel dev",

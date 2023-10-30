@@ -54,9 +54,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                     NuxtLink.plain.name(:to='"/users/" + userStore.id')
                       NuxtImg.avatar(:src='userStore.profileImgBig')
                   .details
-                    NuxtLink.plain.user-name(
-                      :to='"/users/" + userStore.id'
-                    ) {{ userStore.name }}
+                    NuxtLink.plain.user-name(:to='"/users/" + userStore.id') {{ userStore.name }}
                     .uid @{{ userStore.pixivId }}
 
               li(v-if='$route.path !== "/login"')
@@ -69,8 +67,6 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 import SearchBox from './SearchBox.vue'
 import IFaSolidBars from '~icons/fa-solid/bars'
 import IFaSolidSearch from '~icons/fa-solid/search'
-
-import LogoH from '~/assets/LogoH.png'
 
 const hidden = ref(false)
 const notAtTop = ref(false)

@@ -127,7 +127,7 @@
 
 <script lang="ts" setup>
 import { useIntersectionObserver } from '@vueuse/core'
-
+import { NButton, NSkeleton } from 'naive-ui'
 import IFaSolidArrowRight from '~icons/fa-solid/arrow-right'
 import IFaSolidEye from '~icons/fa-solid/eye'
 import IFaSolidHeart from '~icons/fa-solid/heart'
@@ -135,10 +135,7 @@ import IFaSolidImages from '~icons/fa-solid/images'
 import IFaSolidLaughWink from '~icons/fa-solid/laugh-wink'
 import IFaSolidThumbsUp from '~icons/fa-solid/thumbs-up'
 
-// Types
 import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '~/types'
-
-import { NButton, NSkeleton } from 'naive-ui'
 
 const loading = ref(true)
 const error = ref('')

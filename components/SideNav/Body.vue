@@ -31,7 +31,10 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
       .group
         .title PixivNow
         ul
-          SideNavListLink(externalLink='https://www.pixiv.net/' text='Pixiv.net')
+          SideNavListLink(
+            externalLink='https://www.pixiv.net/'
+            text='Pixiv.net'
+          )
             IFaSolidExternalLinkAlt.svg--SideNavListLink
           SideNavListLink(link='/about' text='关于我们')
             IFaSolidHeart.svg--SideNavListLink

@@ -1,8 +1,6 @@
 <template lang="pug">
 #home-view
-  .top-slider.align-center(
-    :style='topSliderStyles'
-  )
+  .top-slider.align-center(:style='topSliderStyles')
     section.search-area.flex-1
       SearchBox.big.search
 
@@ -54,10 +52,10 @@
 </template>
 
 <script lang="ts" setup>
+import { formatInTimeZone } from 'date-fns-tz'
 import { NH2, NButton, NIcon, NModal } from 'naive-ui'
 import IFaSolidInfoCircle from '~icons/fa-solid/info-circle'
 import IFaSolidRandom from '~icons/fa-solid/random'
-import { formatInTimeZone } from 'date-fns-tz'
 
 import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
 
