@@ -117,4 +117,23 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="sass"></style>
+<style lang="sass">
+.pagenator
+  text-align: center
+  margin: 1rem auto
+  
+  .page
+    display: inline-block
+    text-align: center
+    width: 3rem
+
+.no-more
+  text-align: center
+  padding: 1rem
+  opacity: 0.75
+
+.search-box
+  margin: 2rem auto
+  box-shadow: 0 0 8px #ddd
+  border-radius: 2em
+</style>
