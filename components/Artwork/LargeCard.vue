@@ -25,8 +25,8 @@
     h3.title.plain(:title='illust.title')
       NuxtLink(:to='"/artworks/" + illust.id') {{ illust.title }}
     .author(:title='illust.userName')
-      NuxtLink(:to='"/users/" + illust.id')
-        NuxtImg.avatar(:src='illust.profileImageUrl' lazyload)
+      NuxtLink(:to='"/users/" + illust.userId')
+        NuxtImg.avatar(:src='illust.profileImageUrl' loading='lazy')
         | {{ illust.userName }}
     .tags
       ArtTag(:key='_', :tag='item' v-for='(item, _) in illust.tags')

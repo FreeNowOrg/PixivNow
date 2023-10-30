@@ -1,6 +1,6 @@
 <template lang="pug">
 mixin repoLink
-  ExternalLink(:href='config.GITHUB_URL' target='_blank') FreeNowOrg / PixivNow
+  ExternalLink(:href='config.githubUrl' target='_blank') FreeNowOrg / PixivNow
 
 #about-view.body-inner
   h1#top 关于我们

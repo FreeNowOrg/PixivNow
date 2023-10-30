@@ -15,7 +15,7 @@ footer.global-footer
       ul
         li
           | FreeNow 团队：
-          ExternalLink(:href='`https://github.com/${config.GITHUB_OWNER}`') Free Now Tech.
+          ExternalLink(:href='`https://github.com/${config.githubOwner}`') Free Now Tech.
         li
           | PixivNow 团队：
           NuxtLink.plain(to='/users/32338232') Dragon Fish
@@ -34,9 +34,9 @@ footer.global-footer
     p.copyright
       | Copyright &copy; {{ yearStr }}
       |
-      a(:href='config.GITHUB_URL' target='_blank') PixivNow
+      a(:href='config.githubUrl' target='_blank') {{ config.projectName }}
       | &nbsp;
-      em v3.2.0
+      em v{{ config.version }}
     .dev-only(style='font-style: italic')
       | This is test site →&nbsp;
       a(:href='"https://pixiv.js.org" + $route.path' target='_blank') Go to Prod.
