@@ -29,7 +29,7 @@
     .user-info
       .bg-area(:class='{ "no-background": !user?.background }')
         .bg-container(
-          :style='{ backgroundImage: user?.background?.url ? `url("${user.background.url}")` : undefined }'
+          :style='topBackgroundStyles'
         )
           span(v-if='!user?.background') 用户未设置封面~
       .info-area
@@ -172,6 +172,14 @@ const showUserMore = ref(false)
 const route = useRoute()
 const userStore = useUserStore()
 const siteCache = useSiteCacheStore()
+const img = useImage()
+const topBackgroundStyles = computed(() => {
+  if (user.value?.background?.url) {
+    return { backgroundImage: `url('${img(user.value.background.url)}')` }
+  } else {
+    return {}
+  }
+})
 
 const workspaceNameMap = {
   userWorkspacePc: '个人电脑',
@@ -208,12 +216,14 @@ async function init(id: string | number): Promise<void> {
   }
   try {
     loading.value = true
-    const [data, profileData] = await Promise.all([
-      $fetch<User>(`/ajax/user/${id}?full=1`),
+    const [{ body: data }, { body: profileData }] = await Promise.all([
+      $fetch<{ body: User }>(`/ajax/user/${id}?full=1`),
       $fetch<{
-        illusts: Record<string, ArtworkInfo>
-        manga: Record<string, ArtworkInfo>
-        novels: Record<string, ArtworkInfo>
+        body: {
+          illusts: Record<string, ArtworkInfo>
+          manga: Record<string, ArtworkInfo>
+          novels: Record<string, ArtworkInfo>
+        }
       }>(`/ajax/user/${id}/profile/top`),
     ])
     const userValue = {
@@ -258,6 +268,11 @@ function userMore(): void {
 }
 
 async function getBookmarks(): Promise<void> {
+  if (!userStore.isLoggedIn) {
+    // TODO: temp solution, need a better way to implement
+    alert('You need to log in to view the bookmarks')
+    return
+  }
   const target = user.value
   if (!target) return
   if (loadingBookmarks.value) return
@@ -267,12 +282,12 @@ async function getBookmarks(): Promise<void> {
     const data = await $fetch<{ works: ArtworkInfo; total: number }>(
       `/ajax/user/${target.userId}/illusts/bookmarks`,
       {
-        params: new URLSearchParams({
+        params: {
           tag: '',
           offset: `${bookmarks.value.length}`,
           limit: '48',
           rest: 'show',
-        }),
+        },
       }
     )
     totalBookmarks.value = data.total
