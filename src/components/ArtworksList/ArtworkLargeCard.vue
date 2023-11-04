@@ -25,7 +25,7 @@
     h3.title.plain(:title='illust.title')
       RouterLink(:to='"/artworks/" + illust.id') {{ illust.title }}
     .author(:title='illust.userName')
-      RouterLink(:to='"/users/" + illust.id')
+      RouterLink(:to='"/users/" + illust.userId')
         img.avatar(:src='illust.profileImageUrl' lazyload)
         | {{ illust.userName }}
     .tags
