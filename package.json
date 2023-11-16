@@ -57,6 +57,6 @@
     "unplugin-auto-import": "^0.16.6",
     "unplugin-icons": "^0.17.0",
     "vercel": "^32.2.1",
-    "vite": "^4.4.9"
+    "vite": "^5.0.0"
   }
 }
