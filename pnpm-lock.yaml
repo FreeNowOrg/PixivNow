@@ -53,8 +53,8 @@ devDependencies:
     specifier: ^3.0.0
     version: 3.0.0(prettier@3.1.0)
   '@types/cookie':
-    specifier: ^0.5.4
-    version: 0.5.4
+    specifier: ^0.6.0
+    version: 0.6.0
   '@types/js-cookie':
     specifier: ^3.0.6
     version: 3.0.6
@@ -726,8 +726,8 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
-  /@types/cookie@0.5.4:
-    resolution: {integrity: sha512-7z/eR6O859gyWIAjuvBWFzNURmf2oPBmJlfVWkwehU5nzIyjwBsTh7WMmEEV4JFnHuQ3ex4oyTvfKzcyJVDBNA==}
+  /@types/cookie@0.6.0:
+    resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
     dev: true
 
   /@types/estree@1.0.5:
