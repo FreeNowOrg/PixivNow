@@ -62,8 +62,8 @@ devDependencies:
     specifier: ^4.1.9
     version: 4.1.9
   '@types/node':
-    specifier: ^18.19.2
-    version: 18.19.2
+    specifier: ^20.0.0
+    version: 20.10.3
   '@types/nprogress':
     specifier: ^0.2.3
     version: 0.2.3
@@ -120,7 +120,7 @@ devDependencies:
     version: 32.6.1
   vite:
     specifier: ^5.0.5
-    version: 5.0.5(@types/node@18.19.2)(sass@1.69.5)
+    version: 5.0.5(@types/node@20.10.3)(sass@1.69.5)
 
 packages:
 
@@ -771,8 +771,8 @@ packages:
     resolution: {integrity: sha512-qelS/Ra6sacc4loe/3MSjXNL1dNQ/GjxNHVzuChwMfmk7HuycRLVQN2qNY3XahK+fZc5E2szqQSKUyAF0E+2bg==}
     dev: true
 
-  /@types/node@18.19.2:
-    resolution: {integrity: sha512-6wzfBdbWpe8QykUkXBjtmO3zITA0A3FIjoy+in0Y2K4KrCiRhNYJIdwAPDffZ3G6GnaKaSLSEa9ZuORLfEoiwg==}
+  /@types/node@20.10.3:
+    resolution: {integrity: sha512-XJavIpZqiXID5Yxnxv3RUDKTN5b81ddNC3ecsA0SoFXz/QU8OGBwZGMomiq0zw+uuqbL/krztv/DINAQ/EV4gg==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -975,7 +975,7 @@ packages:
       vite: ^4.0.0 || ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.5(@types/node@18.19.2)(sass@1.69.5)
+      vite: 5.0.5(@types/node@20.10.3)(sass@1.69.5)
       vue: 3.3.10(typescript@5.3.2)
     dev: true
 
@@ -3975,7 +3975,7 @@ packages:
       - supports-color
     dev: true
 
-  /vite@5.0.5(@types/node@18.19.2)(sass@1.69.5):
+  /vite@5.0.5(@types/node@20.10.3)(sass@1.69.5):
     resolution: {integrity: sha512-OekeWqR9Ls56f3zd4CaxzbbS11gqYkEiBtnWFFgYR2WV8oPJRRKq0mpskYy/XaoCL3L7VINDhqqOMNDiYdGvGg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -4003,7 +4003,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 18.19.2
+      '@types/node': 20.10.3
       esbuild: 0.19.8
       postcss: 8.4.32
       rollup: 4.6.1

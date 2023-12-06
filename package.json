@@ -38,7 +38,7 @@
     "@types/cookie": "^0.6.0",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash.escaperegexp": "^4.1.9",
-    "@types/node": "^18.19.2",
+    "@types/node": "^20.0.0",
     "@types/nprogress": "^0.2.3",
     "@vercel/node": "^3.0.11",
     "@vitejs/plugin-vue": "^4.5.1",
