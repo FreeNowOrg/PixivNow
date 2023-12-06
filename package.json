@@ -54,8 +54,8 @@
     "sass": "^1.69.5",
     "tslib": "^2.6.2",
     "typescript": "^5.2.2",
-    "unplugin-auto-import": "^0.16.7",
-    "unplugin-icons": "^0.17.4",
+    "unplugin-auto-import": "^0.17.0",
+    "unplugin-icons": "^0.18.0",
     "vercel": "^32.5.5",
     "vite": "^5.0.0"
   }
