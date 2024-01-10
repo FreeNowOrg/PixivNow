@@ -6,7 +6,8 @@ img(
   :src='src',
   :width='width ?? 100'
   loading='lazy'
-  v-else
+  ref='imgRef'
+  v-show="!loading"
 )
 </template>
 
