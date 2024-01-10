@@ -28,14 +28,12 @@
   section.user(v-else-if='user')
     .user-info
       .bg-area(:class='{ "no-background": !user?.background }')
-        .bg-container(
-          :style='topBackgroundStyles'
-        )
+        .bg-container(:style='topBackgroundStyles')
           span(v-if='!user?.background') 用户未设置封面~
       .info-area
         .avatar-area
           a.plain.pointer(@click='showUserMore = true')
-            NuxtImg(:src='user.imageBig')
+            img(:src='user.imageBig')
         .username-header.flex
           h1.username {{ user.name }}
           .flex-1
@@ -73,7 +71,7 @@
         .top
           h3
             a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
-              NuxtImg(:src='user.imageBig')
+              img(:src='user.imageBig')
               .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
                 IFaSolidParking(data-icon)
             .title {{ user.name }}
@@ -172,10 +170,9 @@ const showUserMore = ref(false)
 const route = useRoute()
 const userStore = useUserStore()
 const siteCache = useSiteCacheStore()
-const img = useImage()
 const topBackgroundStyles = computed(() => {
   if (user.value?.background?.url) {
-    return { backgroundImage: `url('${img(user.value.background.url)}')` }
+    return { backgroundImage: `url('${user.value.background.url}')` }
   } else {
     return {}
   }

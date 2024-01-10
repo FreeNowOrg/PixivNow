@@ -37,7 +37,7 @@
         NuxtLink(:to='"/artworks/" + item.id') {{ item.title }}
       .author(:title='item.userName')
         NuxtLink(:to='"/users/" + item.userId')
-          NuxtImg.avatar(:src='item.profileImageUrl' lazyload)
+          img.avatar(:src='item.profileImageUrl' lazyload)
           | {{ item.userName }}
 </template>
 

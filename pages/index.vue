@@ -5,7 +5,7 @@
       SearchBox.big.search
 
     .site-logo
-      NuxtImg(src='/images/LogoH.png')
+      img(src='/images/LogoH.png')
     .description Now, everyone can enjoy Pixiv
 
     .bg-info
@@ -28,7 +28,7 @@
     .bg-info-modal
       .align-center
         NuxtLink.thumb(:to='"/artworks/" + randomBg.info.id')
-          NuxtImg(:src='randomBg.url' lazyload)
+          img(:src='randomBg.url' lazyload)
         .desc
           strong {{ randomBg.info.title }}
           | &ensp;&mdash;&ensp;
@@ -70,12 +70,12 @@ const randomBg = ref<{
   url: string
   info: ArtworkInfo
 }>({
-  url: '/images/spinner.svg',
+  url: '',
   info: {} as ArtworkInfo,
 })
-const img = useImage()
+
 const topSliderStyles = computed(() => {
-  return { backgroundImage: `url('${img(randomBg.value.url)}')` }
+  return { backgroundImage: `url('${randomBg.value.url}')` }
 })
 
 async function setRandomBgNoCache(): Promise<void> {

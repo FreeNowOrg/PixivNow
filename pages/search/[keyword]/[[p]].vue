@@ -121,7 +121,7 @@ onMounted(async () => {
 .pagenator
   text-align: center
   margin: 1rem auto
-  
+
   .page
     display: inline-block
     text-align: center

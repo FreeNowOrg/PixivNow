@@ -33,9 +33,9 @@ export default defineNuxtConfig({
   },
   modules: [
     '@nuxtjs/i18n',
-    '@nuxt/image',
     '@pinia/nuxt',
     'unplugin-icons/nuxt',
+    '@vueuse/nuxt',
   ],
   i18n: {
     locales: [
@@ -47,13 +47,6 @@ export default defineNuxtConfig({
     lazy: true,
     langDir: 'locales',
     defaultLocale: 'zh-Hans',
-  },
-  image: {
-    domains: ['https://s.pximg.net', 'https://pximg.wjghj.cn'],
-    alias: {
-      '~': 'https://s.pximg.net',
-      '-': 'https://pximg.wjghj.cn',
-    },
   },
   routeRules: {
     '/rpc_group_settings.php': {

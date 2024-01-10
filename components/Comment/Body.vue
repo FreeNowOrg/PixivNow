@@ -2,7 +2,7 @@
 li.comment-block
   .left
     NuxtLink.plain(:to='"/users/" + comment.userId')
-      NuxtImg.avatar(
+      img.avatar(
         :src='comment.img',
         :title='comment.userName + " (" + comment.userId + ")"'
       )
@@ -14,7 +14,7 @@ li.comment-block
       span.comment-reply(v-if='comment.replyToUserId') &emsp;▶&emsp;{{ comment.replyToUserName }}
     .content(v-html='replaceStamps(comment.comment)' v-if='!comment.stampId')
     .content(v-if='comment.stampId')
-      NuxtImg.big-stamp(
+      img.big-stamp(
         :src='`/~/common/images/stamp/generated-stamps/${comment.stampId}_s.jpg`'
         alt='表情包'
         lazyload

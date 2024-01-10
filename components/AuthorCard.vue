@@ -4,7 +4,7 @@
     .flex-center
       .left
         NuxtLink(:to='"/users/" + user.userId')
-          NuxtImg(:src='user.imageBig' alt='')
+          img(:src='user.imageBig' alt='')
       .right
         .flex
           h4.plain

@@ -6,7 +6,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 
     .logo-area
       NuxtLink.plain(to='/')
-        NuxtImg.site-logo(src='/images/LogoH.png')
+        img.site-logo(src='/images/LogoH.png')
 
     .flex.search-area(v-if='$route.name !== "search"')
       .search-full.align-right.flex-1
@@ -23,8 +23,8 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
           :class='{ "show-user": showUserDropdown }'
           @click.stop='showUserDropdown = !showUserDropdown'
         )
-          NuxtImg.avatar(
-            :src='userStore.isLoggedIn ? userStore.profileImg : "/~/common/images/no_profile.png"',
+          img.avatar(
+            :src='userStore.isLoggedIn ? userStore.profileImg : "/images/no_profile.png"',
             :title='userStore.isLoggedIn ? userStore.id + " (" + userStore.pixivId + ")" : "未登入"'
           )
 
@@ -41,7 +41,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                 .nav-user-card
                   .top
                     .banner-bg
-                    NuxtImg.avatar(:src='"/~/common/images/no_profile.png"')
+                    img.avatar(src='/images/no_profile.png')
                   .details
                     a.user-name 游客
                     .uid 绑定令牌，同步您的 Pixiv 信息！
@@ -52,7 +52,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                   .top
                     .banner-bg
                     NuxtLink.plain.name(:to='"/users/" + userStore.id')
-                      NuxtImg.avatar(:src='userStore.profileImgBig')
+                      img.avatar(:src='userStore.profileImgBig')
                   .details
                     NuxtLink.plain.user-name(:to='"/users/" + userStore.id') {{ userStore.name }}
                     .uid @{{ userStore.pixivId }}

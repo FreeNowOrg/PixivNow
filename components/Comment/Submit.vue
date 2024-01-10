@@ -4,7 +4,7 @@
   .flex.logged-in(v-if='store.isLoggedIn')
     .left
       .avatar
-        NuxtImg(:src='store.profileImg')
+        img(:src='store.profileImg')
     .right
       textarea(:disabled='loading' v-model='comment')
     .submit.align-right
