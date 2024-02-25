@@ -51,7 +51,7 @@ devDependencies:
     version: 1.1.7
   '@prettier/plugin-pug':
     specifier: ^3.0.0
-    version: 3.0.0(prettier@3.1.0)
+    version: 3.0.0(prettier@3.2.5)
   '@types/cookie':
     specifier: ^0.6.0
     version: 0.6.0
@@ -96,7 +96,7 @@ devDependencies:
     version: 1.0.0
   prettier:
     specifier: ^3.1.0
-    version: 3.1.0
+    version: 3.2.5
   pug:
     specifier: ^3.0.2
     version: 3.0.2
@@ -566,13 +566,13 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@prettier/plugin-pug@3.0.0(prettier@3.1.0):
+  /@prettier/plugin-pug@3.0.0(prettier@3.2.5):
     resolution: {integrity: sha512-ERMMvGSJK/7CTc8OT7W/dtlV43sytyNeiCWckN0DIFepqwXotU0+coKMv5Wx6IWSNj7ZSjdNGBAA1nMPi388xw==}
     engines: {node: ^16.13.0 || >=18.0.0, npm: '>=7.10.0'}
     peerDependencies:
       prettier: ^3.0.0
     dependencies:
-      prettier: 3.1.0
+      prettier: 3.2.5
       pug-lexer: 5.0.1
     dev: true
 
@@ -3192,8 +3192,8 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
-  /prettier@3.1.0:
-    resolution: {integrity: sha512-TQLvXjq5IAibjh8EpBIkNKxO749UEWABoiIZehEPiY4GNpVdhaFKqSTu+QrlU6D2dPAfubRmtJTi4K4YkQ5eXw==}
+  /prettier@3.2.5:
+    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
