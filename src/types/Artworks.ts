@@ -36,7 +36,7 @@ interface ArtworkCommon {
   description: string
   createDate: string
   updateDate: string
-  illustType: 0
+  illustType: IllustType
   restrict: 0
   xRestrict: 0 | 1 | 2
   sl: number
@@ -72,12 +72,18 @@ export type ArtworkInfoOrAd =
       isAdContainer: true
     }
 
+export enum IllustType {
+  ILLUST = 0,
+  MANGA = 1,
+  UGOIRA = 2,
+}
+
 export interface ArtworkRank {
   title: string
   date: string
   tags: string[]
   url: string
-  illust_type: '0' | '1' | '2'
+  illust_type: IllustType
   illust_book_style: '0'
   illust_page_count: `${number}`
   user_name: string

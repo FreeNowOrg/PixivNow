@@ -1,0 +1,19 @@
+{
+  "Init vue components": {
+    "scope": "vue",
+    "prefix": "vue",
+    "body": [
+      "<template lang=\"pug\">",
+      "$0",
+      "</template>",
+      "",
+      "<script setup lang=\"ts\">",
+      "import {} from 'vue'",
+      "",
+      "</script>",
+      "",
+      "<style scoped lang=\"sass\"></style>"
+    ],
+    "description": "Init vue components"
+  }
+}

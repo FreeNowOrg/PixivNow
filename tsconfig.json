@@ -29,7 +29,7 @@
     "auto-imports.d.ts",
     "middware.ts"
   ],
-  "exclude": ["node_modules/**", "**/dist"],
+  "exclude": ["**/dist"],
   "vueCompilerOptions": {
     "plugins": ["@vue/language-plugin-pug"]
   }

@@ -32,7 +32,9 @@
   //- Done
   section.illust-container(v-if='!error && illust')
     #top-area
-      Gallery(:pages='pages')
+      .align-center(:style='{ marginBottom: "1rem" }' v-if='isUgoira')
+        UgoiraViewer(:illust='illust')
+      Gallery(:pages='pages' v-else)
 
       .body-inner
         #meta-area
@@ -171,6 +173,24 @@ const store = useUserStore()
 
 const recommendRef = ref<HTMLDivElement | null>(null)
 const authorRef = ref<HTMLElement>()
+
+const isUgoira = computed(() => illust.value?.illustType === 2)
+const UgoiraViewer = defineAsyncComponent({
+  loader: () => import('@/components/UgoiraViewer.vue'),
+  loadingComponent: () =>
+    h('svg', {
+      width: illust.value?.width,
+      height: illust.value?.height,
+      style: {
+        width: 'auto',
+        height: 'auto',
+        maxWidth: '100%',
+        maxHeight: '60vh',
+        borderRadius: '4px',
+        backgroundColor: '#e8e8e8',
+      },
+    }),
+})
 
 function addObserver(elementRef: Ref, cb: () => any) {
   const unWatch = watch(loading, async (val) => {
