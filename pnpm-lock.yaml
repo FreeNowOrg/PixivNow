@@ -54,7 +54,7 @@ devDependencies:
     version: 2.0.1
   '@iconify-json/fa-solid':
     specifier: ^1.1.7
-    version: 1.1.7
+    version: 1.1.8
   '@prettier/plugin-pug':
     specifier: ^3.0.0
     version: 3.0.0(prettier@3.1.0)
@@ -473,8 +473,8 @@ packages:
     engines: {node: '>=10.13.0'}
     dev: true
 
-  /@iconify-json/fa-solid@1.1.7:
-    resolution: {integrity: sha512-1+fqOdX+DOZJpRFWb+TsmuDDIYk8wS1jw9Yh+qqpOa/kMvwjh2CYiN3ISetKmN/agWE2pZ3Ckt5B+sIB59mRsA==}
+  /@iconify-json/fa-solid@1.1.8:
+    resolution: {integrity: sha512-o1Z+pvz+bidq8lqXC8uOhBxlJ19NEH87TQ6JSXOQPQJ8zDIMpx2nbDFJjFtR5nTWQXLPRGEb0NO9NJAvalxeiw==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
