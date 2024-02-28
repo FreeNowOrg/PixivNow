@@ -24,6 +24,7 @@
         )
           IFasImages(data-icon)
           | {{ item.pageCount }}
+        .page-count(v-if='item.illustType === 2'): IFilm
         .bookmark(
           :class='{ bookmarked: item.bookmarkData, disabled: loadingBookmark }'
           @click='handleBookmark'
@@ -54,6 +55,7 @@ import IFasEye from '~icons/fa-solid/eye'
 import IFasHeart from '~icons/fa-solid/heart'
 import IFasImages from '~icons/fa-solid/images'
 import IFasRobot from '~icons/fa-solid/robot'
+import IFilm from '~icons/fa-solid/film'
 
 import type { ArtworkInfo } from '@/types'
 
