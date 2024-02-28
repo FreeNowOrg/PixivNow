@@ -21,6 +21,7 @@
     "axios": "^1.6.2",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
+    "fflate": "^0.8.2",
     "js-cookie": "^3.0.5",
     "naive-ui": "^2.35.0",
     "nprogress": "^0.2.0",

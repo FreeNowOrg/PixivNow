@@ -14,6 +14,9 @@ dependencies:
   date-fns-tz:
     specifier: ^2.0.0
     version: 2.0.0(date-fns@2.30.0)
+  fflate:
+    specifier: ^0.8.2
+    version: 0.8.2
   js-cookie:
     specifier: ^3.0.5
     version: 3.0.5
@@ -2150,6 +2153,10 @@ packages:
     dependencies:
       pend: 1.2.0
     dev: true
+
+  /fflate@0.8.2:
+    resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
+    dev: false
 
   /file-uri-to-path@1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}

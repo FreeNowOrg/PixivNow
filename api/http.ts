@@ -98,9 +98,14 @@ ajax.interceptors.response.use((ctx) => {
 })
 
 export function replaceUrlInString(str: string): string {
+  const { VITE_PXIMG_BASEURL_I: i, VITE_PXIMG_BASEURL_S: s } = process.env
+  if (i) {
+    str = str.replace(/https:\/\/i\.pximg\.net\//g, i.replace(/\/$/, '') + '/')
+  }
+  if (s) {
+    str = str.replace(/https:\/\/s\.pximg\.net\//g, s.replace(/\/$/, '') + '/')
+  }
   return str
-    .replace(/https:\/\/i\.pximg\.net\//g, '/-/')
-    .replace(/https:\/\/s\.pximg\.net\//g, '/~/')
 }
 
 export function replaceUrlInObject(
