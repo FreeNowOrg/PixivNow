@@ -32,6 +32,9 @@ export class UgoiraPlayer {
     this._canvas.height = this.initHeight
   }
 
+  get isReady() {
+    return !!this._meta && !!Object.keys(this.files).length
+  }
   get isUgoira() {
     return this._illust.illustType === 2
   }
@@ -140,11 +143,14 @@ export class UgoiraPlayer {
   }
 
   genGifEncoder() {
-    const firstFrame = this.getImage(this._meta.frames[0].file)
+    if (!this.isReady) {
+      throw new Error('Ugoira assets not ready, please fetch first')
+    }
+    const firstFrame = this.getImage(this.meta!.frames[0].file)
     const width = firstFrame.width
     const height = firstFrame.height
-    console.info({width,height})
-   return new Gif({
+    console.info({ width, height })
+    return new Gif({
       debug: import.meta.env.DEV,
       workers: 5,
       workerScript: gifWorker,
@@ -152,14 +158,20 @@ export class UgoiraPlayer {
       height,
     })
   }
-  async toGif():Promise<Blob> {
+  async toGif(): Promise<Blob> {
+    if (!this.isReady) {
+      throw new Error('Ugoira assets not ready, please fetch first')
+    }
     const encoder = this.genGifEncoder()
-    const imageList = await Promise.all(this._meta.frames.map(i=>{
-      return this.getImage(i.file)
-    }))
+    const frames = this._meta!.frames
+    const imageList = await Promise.all(
+      frames.map((i) => {
+        return this.getImage(i.file)
+      })
+    )
     return new Promise<Blob>((resolve, reject) => {
       imageList.forEach((item, index) => {
-        encoder.addFrame(item, { delay: this._meta.frames[index].delay })
+        encoder.addFrame(item, { delay: frames[index].delay })
       })
       encoder.on('finished', async (blob) => {
         console.info('[ENCODER]', 'render finished', encoder)

@@ -4,7 +4,6 @@
     :height='illust?.height',
     :width='illust.width'
     ref='canvasRef'
-    @click='handleJumpToCover'
     v-if='firstLoaded'
   )
   LazyLoad.media(
@@ -17,17 +16,18 @@
   )
   NFloatButton(
     :bottom='20',
+    :menu-trigger='firstLoaded ? "hover" : undefined',
     :right='20',
     :style='{ cursor: isLoading ? "wait" : "pointer", opacity: 0.75 }'
+    @click='firstLoaded ? void 0 : handleInit(false)'
     shape='circle'
-    :menu-trigger="firstLoaded ? 'hover':undefined"
   )
-    template( v-if='firstLoaded')
+    template(v-if='firstLoaded')
       NIcon: IDownload
-    template( v-else)
+    template(v-else)
       NSpin(size='small' v-if='isLoading')
       NIcon(v-else): IPlay
-    template(v-if='firstLoaded' #menu)
+    template(#menu v-if='firstLoaded')
       NFloatButton(@click='handleJumpToCover'): IImage
       NFloatButton(@click='handleDownloadGif')
         NSpin(size='small' v-if='isLoadingGif')
@@ -94,22 +94,35 @@ function handleJumpToCover() {
   a.target = '_blank'
   a.click()
 }
+
 const isLoadingGif = ref(false)
+const gifBlob = ref<Blob>()
 async function handleDownloadGif() {
+  const filename = `${props.illust.illustId}.ugoira.gif`
+
+  if (gifBlob.value) {
+    downloadBlob(gifBlob.value, filename)
+    return
+  }
+
   if (isLoadingGif.value) return
   isLoadingGif.value = true
+
   try {
-    
-  const blob = await player.value.toGif()
+    const blob = await player.value.toGif()
+    gifBlob.value = blob
+    downloadBlob(blob, filename)
+  } finally {
+    isLoadingGif.value = false
+  }
+}
+function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `${props.illust.illustId}.ugoira.gif`
+  a.download = filename
   a.click()
   URL.revokeObjectURL(url)
-  }finally{
-    isLoadingGif.value = false
-  }
 }
 </script>
 

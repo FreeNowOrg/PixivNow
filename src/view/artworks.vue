@@ -32,7 +32,7 @@
   //- Done
   section.illust-container(v-if='!error && illust')
     #top-area
-      .align-center(v-if='isUgoira' :style='{marginBottom:"1rem"}')
+      .align-center(:style='{ marginBottom: "1rem" }' v-if='isUgoira')
         UgoiraViewer(:illust='illust')
       Gallery(:pages='pages' v-else)
 
@@ -187,7 +187,7 @@ const UgoiraViewer = defineAsyncComponent({
         maxWidth: '100%',
         maxHeight: '60vh',
         borderRadius: '4px',
-        backgroundColor: '#e8e8e8'
+        backgroundColor: '#e8e8e8',
       },
     }),
 })
