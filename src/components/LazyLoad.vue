@@ -3,6 +3,7 @@ Component(
   :class='{ lazyload: true, isLoading: !loaded && !error, isLoaded: loaded, isError: error }',
   :height='height',
   :is='loaded ? "img" : "svg"',
+  :key='src',
   :src='src',
   :width='width'
   ref='imgRef'
@@ -50,4 +51,6 @@ function loadImage() {
 <style scoped lang="sass">
 .isLoading
   animation: imgProgress 0.6s ease infinite alternate
+.isError
+  background-color: #e8e8e8
 </style>
