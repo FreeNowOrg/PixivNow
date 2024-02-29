@@ -38,7 +38,6 @@ async function fetchList() {
   isLoading.value = true
 
   try {
-    // https://www.pixiv.net/ajax/follow_latest/illust?p=1&mode=all
     const { data } = await ajax.get<{
       page: {
         isLastPage: boolean

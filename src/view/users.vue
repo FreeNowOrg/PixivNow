@@ -109,22 +109,21 @@
     #user-artworks
       NTabs(
         :bar-width='32'
-        animated
         justify-content='space-evenly'
         type='line'
         v-model:value='tab'
       )
-        NTabPane(name='illust' tab='插画')
+        NTabPane(display-directive='show:lazy' name='illust' tab='插画')
           NEmpty(
             description='用户没有插画作品 (｡•́︿•̀｡)'
             v-if='user.illusts && !user.illusts.length'
           )
           .user-illust.body-inner(v-else)
-            ArtworkList(:list='user.illusts')
-        NTabPane(name='manga' tab='漫画')
+            ArtworksByUser(:user-id='user.userId' work-category='illust')
+        NTabPane(display-directive='show:lazy' name='manga' tab='漫画')
           NEmpty(description='用户没有漫画作品 (*/ω＼*)' v-if='!user.manga?.length')
           .user-manga.body-inner(v-else)
-            ArtworkList(:list='user.manga')
+            ArtworksByUser(:user-id='user.userId' work-category='manga')
         NTabPane(name='public-bookmarks' tab='公开收藏')
           ArtworkList(
             :list='[]',
