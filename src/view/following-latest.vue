@@ -30,7 +30,7 @@ const isLoading = ref(false)
 async function fetchList() {
   if (!userStore.isLoggedIn) {
     return router.push({
-      name: 'login',
+      name: 'user-login',
       query: { back: route.fullPath },
     })
   }
