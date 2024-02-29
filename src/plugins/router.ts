@@ -15,6 +15,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/view/artworks.vue'),
   },
   {
+    path: '/following/latest',
+    alias: ['/bookmark_new_illust'],
+    name: 'following-latest',
+    component: () => import('@/view/following-latest.vue'),
+  },
+  {
     path: '/users/:id',
     name: 'users',
     alias: ['/u/:id'],

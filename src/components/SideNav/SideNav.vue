@@ -12,7 +12,7 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
         ul
           ListLink(link='/' text='首页')
             IFasHome.link-icon
-          ListLink.not-allowed(link='' text='插画')
+          ListLink.not-allowed(link='' text='探索发现')
             IFasImage.link-icon
           ListLink(link='/ranking' text='排行榜')
             IFasCrown.link-icon
@@ -34,6 +34,8 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
             :link='userStore.isLoggedIn ? `/users/${userStore.userId}/following` : `/login?back=${$route.fullPath}`'
             text='我的关注'
           )
+            IFasUser.link-icon
+          ListLink(link='/following/latest' text='关注用户的作品')
             IFasUser.link-icon
 
       .group

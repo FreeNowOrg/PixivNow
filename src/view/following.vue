@@ -3,7 +3,7 @@
   h1
     .flex.gap-1
       NButton(
-        @click='$router.push({ name: "user", params: { id: targetUserId } })'
+        @click='$router.push({ name: "users", params: { id: targetUserId } })'
         circle
         secondary
       )

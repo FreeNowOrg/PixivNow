@@ -159,8 +159,6 @@ async function handleBookmark() {
 
   &:hover a,
   & a.router-link-active
-  &:hover a,
-  & a.router-link-active
     &::before
       background-color: rgba(0, 0, 0, 0.2)
     img

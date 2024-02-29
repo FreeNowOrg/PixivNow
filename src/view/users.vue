@@ -44,6 +44,8 @@
               :loading='loadingUserFollow',
               :type='user.isFollowed ? "success" : undefined'
               @click='handleUserFollow'
+              round
+              size='small'
             )
               template(#icon)
                 IFasCheck(v-if='user.isFollowed')
