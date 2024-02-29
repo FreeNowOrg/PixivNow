@@ -21,6 +21,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/view/users.vue'),
   },
   {
+    path: '/users/:id/following',
+    name: 'following',
+    component: () => import('@/view/following.vue'),
+  },
+  {
     path: '/search/:keyword',
     name: 'search-index-redirect',
     redirect: (to) => `/search/${to.params.keyword}/1`,

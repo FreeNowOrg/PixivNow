@@ -27,6 +27,7 @@
     "src/**/*.json",
     "vite.config.ts",
     "auto-imports.d.ts",
+    "components.d.ts",
     "middware.ts"
   ],
   "exclude": ["**/dist"],

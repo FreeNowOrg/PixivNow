@@ -62,6 +62,10 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
               li(v-if='$route.path !== "/login"')
                 RouterLink.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
               li(v-if='userStore.isLoggedIn')
+                RouterLink.plain(
+                  :to='{ name: "following", params: { id: userStore.userId } }'
+                ) 我的关注
+              li(v-if='userStore.isLoggedIn')
                 a.plain(@click='logoutUser') 用户登出
 </template>
 

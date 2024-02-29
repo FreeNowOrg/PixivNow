@@ -53,7 +53,7 @@
             NButton(round size='small' type='info')
               | 我真棒
         .following
-          | 关注了 <strong>{{ user.following }}</strong> 人
+          RouterLink(:to='{ name: "following", params: { id: user.userId } }') 关注了 <strong>{{ user.following }}</strong> 人
         .gender(v-if='user.gender?.name')
           IFasVenusMars(data-icon)
           | {{ user.gender.name }}
