@@ -21,6 +21,7 @@
         :class='{ gold: rank === 1, silver: rank === 2, bronze: rank === 3 }'
         v-if='rank !== 0'
       ) {{ rank }}
+      .type-ugoira(v-if='illust.illustType === IllustType.UGOIRA'): IPlayCircle
   .bottom
     h3.title.plain(:title='illust.title')
       RouterLink(:to='"/artworks/" + illust.id') {{ illust.title }}
@@ -33,12 +34,13 @@
 </template>
 
 <script lang="ts" setup>
-import type { ArtworkInfo } from '@/types'
+import { type ArtworkInfo, IllustType } from '@/types'
 import LazyLoad from '../LazyLoad.vue'
 import ArtTag from '../ArtTag.vue'
 import IFasEye from '~icons/fa-solid/eye'
 import IFasImages from '~icons/fa-solid/images'
 import IFasRobot from '~icons/fa-solid/robot'
+import IPlayCircle from '~icons/fa-solid/play-circle'
 
 defineProps<{
   illust: ArtworkInfo
@@ -138,6 +140,23 @@ h3
       --ring-color: darkgray
     &.bronze
       --ring-color: #b87333
+
+  .type-ugoira
+    pointer-events: none
+    position: absolute
+    width: 100%
+    height: 100%
+    left: 0
+    top: 0
+    svg
+      position: absolute
+      bottom: 50%
+      right: 50%
+      color: #fff
+      width: 35%
+      height: 35%
+      transform: translate(50%, 50%)
+      opacity: 0.75
 
 .bottom
   padding: 0.5rem
