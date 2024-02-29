@@ -342,7 +342,7 @@ async function getBookmarks(hidden?: boolean): Promise<void> {
   }
 }
 
-const stopBookmarksFirstInit = watch(tab, (newTab) => {
+watch(tab, (newTab) => {
   const isPublicBookmarkEmpty = !publicBookmarks.value.length
   const isHiddenBookmarkEmpty = !hiddenBookmarks.value.length
 
@@ -351,16 +351,6 @@ const stopBookmarksFirstInit = watch(tab, (newTab) => {
   }
   if (newTab === 'hidden-bookmarks' && isHiddenBookmarkEmpty) {
     getBookmarks(true)
-  }
-
-  if (isSelfUserPage) {
-    if (!isPublicBookmarkEmpty && !isHiddenBookmarkEmpty) {
-      stopBookmarksFirstInit()
-    }
-  } else {
-    if (!isPublicBookmarkEmpty) {
-      stopBookmarksFirstInit()
-    }
   }
 })
 

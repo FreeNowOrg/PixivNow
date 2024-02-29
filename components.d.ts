@@ -24,6 +24,7 @@ declare module 'vue' {
     LazyLoad: typeof import('./src/components/LazyLoad.vue')['default']
     ListLink: typeof import('./src/components/SideNav/ListLink.vue')['default']
     NaiveuiProvider: typeof import('./src/components/NaiveuiProvider.vue')['default']
+    NButton: typeof import('naive-ui')['NButton']
     NProgress: typeof import('./src/components/NProgress.vue')['default']
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']

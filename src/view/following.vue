@@ -1,15 +1,23 @@
 <template lang="pug">
 #about-view.body-inner
-  h1 {{ title }}
+  h1
+    .flex.gap-1
+      NButton(
+        @click='$router.push({ name: "user", params: { id: targetUserId } })'
+        circle
+        secondary
+      )
+        template(#icon)
+          IChevronLeft
+      .first-heading {{ title }}
 
   NTabs(
     :bar-width='32'
-    animated
     justify-content='space-evenly'
-    type='segment'
+    type='line'
     v-model:value='tab'
   )
-    NTabPane(name='public' tab='公开关注')
+    NTabPane(display-directive='show:lazy' name='public' tab='公开关注')
       .user-list
         Card(
           title=''
@@ -25,7 +33,12 @@
           :text='isLoadingPublic ? "加载中..." : "加载更多"'
           v-if='hasMorePublic'
         )
-    NTabPane(name='hidden' tab='私密关注' v-if='isSelfPage')
+    NTabPane(
+      :disabled='!isSelfPage'
+      display-directive='show:lazy'
+      name='hidden'
+      tab='私密关注'
+    )
       .user-list
         Card(
           title=''
@@ -45,21 +58,22 @@
 
 <script lang="ts" setup>
 import type { UserListItem } from '@/types'
+import IChevronLeft from '~icons/fa-solid/chevron-left'
 
 onMounted(() => {
   setTitle('Following')
-  resetAll()
+  resetAll('' + route.params.id)
   fetchList(false)
 })
 onBeforeRouteUpdate((to, from) => {
   if (to.name === from.name && to.params.id !== from.params.id) {
-    resetAll()
+    resetAll('' + to.params.id)
     fetchList(false)
   }
 })
 
 const route = useRoute()
-const targetUserId = computed(() => route.params.id)
+const targetUserId = ref(route.params.id)
 
 const tab = ref<'public' | 'hidden'>('public')
 
@@ -81,7 +95,8 @@ const userStore = useUserStore()
 const isSelfPage = computed(() => userStore.userId === targetUserId.value)
 const title = ref('Following')
 
-function resetAll() {
+function resetAll(userId: string) {
+  targetUserId.value = userId
   tab.value = 'public'
   publicList.value = []
   hiddenList.value = []
@@ -127,7 +142,7 @@ async function fetchList(hidden?: boolean) {
   }
 }
 
-const stopFirstInit = watch(tab, (newTab) => {
+watch(tab, (newTab) => {
   const isPublicEmpty = !publicList.value.length
   const isHiddenEmpty = !hiddenList.value.length
 
@@ -137,20 +152,16 @@ const stopFirstInit = watch(tab, (newTab) => {
   if (newTab === 'hidden' && isHiddenEmpty) {
     fetchList(true)
   }
-
-  if (isSelfPage) {
-    if (!isPublicEmpty && !isHiddenEmpty) {
-      stopFirstInit()
-    }
-  } else {
-    if (!isPublicEmpty) {
-      stopFirstInit()
-    }
-  }
 })
 </script>
 
 <style scoped lang="sass">
+#about-view
+  padding-top: 2rem
+
+h1
+  margin-top: 0
+
 .user-list
   .card:not(:first-of-type)
     margin-top: 1rem
