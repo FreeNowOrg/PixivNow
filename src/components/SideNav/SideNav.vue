@@ -11,30 +11,40 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
         .title 导航
         ul
           ListLink(link='/' text='首页')
-            IFasHome.svg--ListLink
-          ListLink.not-allowed(link='' text='插画')
-            IFasImage.svg--ListLink
-          ListLink(link='' text='用户')
-            IFasUser.svg--ListLink
+            IFasHome.link-icon
+          ListLink.not-allowed(link='' text='探索发现')
+            IFasImage.link-icon
           ListLink(link='/ranking' text='排行榜')
-            IFasCrown.svg--ListLink
+            IFasCrown.link-icon
 
       .group
-        .title Pixiv 令牌
+        .title 用户
         ul
           ListLink(
             :text='userStore.isLoggedIn ? "查看令牌" : "设置令牌"'
             link='/login'
           )
-            IFasFingerprint.svg--ListLink
+            IFasFingerprint.link-icon
+          ListLink(
+            :link='userStore.isLoggedIn ? `/users/${userStore.userId}` : `/login?back=${$route.fullPath}`'
+            text='我的页面'
+          )
+            IFasUser.link-icon
+          ListLink(
+            :link='userStore.isLoggedIn ? `/users/${userStore.userId}/following` : `/login?back=${$route.fullPath}`'
+            text='我的关注'
+          )
+            IFasUser.link-icon
+          ListLink(link='/following/latest' text='关注用户的作品')
+            IFasUser.link-icon
 
       .group
         .title PixivNow
         ul
           ListLink(externalLink='https://www.pixiv.net/' text='Pixiv.net')
-            IFasExternalLinkAlt.svg--ListLink
+            IFasExternalLinkAlt.link-icon
           ListLink(link='/about' text='关于我们')
-            IFasHeart.svg--ListLink
+            IFasHeart.link-icon
 </template>
 
 <script lang="ts" setup>
@@ -74,7 +84,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="sass">
-svg.svg--ListLink
+svg.link-icon
   width: 2em
 
 .global-side-nav
