@@ -175,6 +175,11 @@ export class UgoiraPlayer {
       })
       encoder.on('finished', async (blob) => {
         console.info('[ENCODER]', 'render finished', encoder)
+        // FIXME: 渲染结束时释放内存
+        // @ts-ignore
+        encoder.freeWorkers?.forEach((worker: Worker) => {
+          worker && worker.terminate()
+        })
         resolve(blob)
       })
       console.info('[ENCODER]', 'render start', encoder)
