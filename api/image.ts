@@ -1,5 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
+import { USER_AGENT } from './utils.js'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { __PREFIX, __PATH } = req.query
@@ -14,8 +15,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
           responseType: 'arraybuffer',
           headers: {
             referer: 'https://www.pixiv.net/',
-            'user-agent':
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:110.0) Gecko/20100101 Firefox/110.0',
+            'user-agent': USER_AGENT,
           },
         })
         .then(

@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { formatInTimeZone } from 'date-fns-tz'
-import { ajax } from './http.js'
+import { PXIMG_BASEURL_I, ajax } from './utils.js'
 import { Artwork } from '../src/types/Artworks.js'
 
 type ArtworkOrAd = Artwork | { isAdContainer: boolean }
@@ -30,11 +30,11 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         'yyyy/MM/dd/HH/mm/ss'
       )}/${value.id}`
       value.urls = {
-        mini: `/-/c/48x48/img-master/${middle}_p0_square1200.jpg`,
-        thumb: `/-/c/250x250_80_a2/img-master/${middle}_p0_square1200.jpg`,
-        small: `/-/c/540x540_70/img-master/${middle}_p0_master1200.jpg`,
-        regular: `/-/img-master/${middle}_p0_master1200.jpg`,
-        original: `/-/img-original/${middle}_p0.jpg`,
+        mini: `${PXIMG_BASEURL_I}c/48x48/img-master/${middle}_p0_square1200.jpg`,
+        thumb: `${PXIMG_BASEURL_I}c/250x250_80_a2/img-master/${middle}_p0_square1200.jpg`,
+        small: `${PXIMG_BASEURL_I}c/540x540_70/img-master/${middle}_p0_master1200.jpg`,
+        regular: `${PXIMG_BASEURL_I}img-master/${middle}_p0_master1200.jpg`,
+        original: `${PXIMG_BASEURL_I}img-original/${middle}_p0.jpg`,
       }
     })
     if (requestImage) {

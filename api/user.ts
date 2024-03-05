@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import { load } from 'cheerio'
-import { ajax, replaceUrlInObject } from './http.js'
+import { ajax, replacePximgUrlsInObject } from './utils.js'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const token = req.cookies.PHPSESSID || req.query.token
@@ -46,7 +46,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         'set-cookie',
         `CSRFTOKEN=${meta.token}; path=/; secure; sameSite=Lax`
       )
-      res.send(replaceUrlInObject(meta))
+      res.send(replacePximgUrlsInObject(meta))
     })
     .catch((err) => {
       return res
