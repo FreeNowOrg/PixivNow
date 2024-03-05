@@ -22,7 +22,7 @@
         IFasInfoCircle
 
   NModal(
-    :title='`背景图片：${randomBg.info.title}`'
+    :title='`背景图片：${randomBg.alt}`'
     closable
     preset='card'
     v-model:show='isShowBgInfo'
@@ -32,10 +32,16 @@
         RouterLink.thumb(:to='"/artworks/" + randomBg.id')
           img(:src='randomBg.urls?.regular || randomBg.url' lazyload)
         .desc
-          strong {{ randomBg.title }}
-          | &ensp;&mdash;&ensp;
-          RouterLink(:to='"/users/" + randomBg.userId') {{ randomBg.userName }}
-          | 的作品 (ID: {{ randomBg.id }})
+          .author
+            RouterLink(:to='"/users/" + randomBg.userId') {{ randomBg.userName }}
+            | 的作品 (ID: {{ randomBg.id }})
+        NSpace(justify='center' size='small' style='margin-top: 1rem')
+          NTag(
+            :key='tag'
+            @click='$router.push({ name: "search", params: { keyword: tag, p: 1 } })'
+            style='cursor: pointer'
+            v-for='tag in randomBg.tags'
+          ) {{ tag }}
 
   .body-inner
     section.discover
@@ -75,13 +81,12 @@ const randomBg = ref<Artwork>({ ...defaultArtwork, urls: {} } as any)
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const { data } = await ajax.get<{ illusts: Artwork[] }>('/api/random', {
+    const { data } = await ajax.get<Artwork[]>('/api/random', {
       params: {
-        mode: 'safe',
         max: '1',
       },
     })
-    const info = data.illusts[0]
+    const info = data[0]
     randomBg.value = info
     setCache('home.randomBg', info)
   } catch (err) {
