@@ -37,9 +37,9 @@ const containerRef = ref<HTMLElement>()
 const artworkIds = ref<string[]>([])
 const pageSize = 24
 const curPage = ref(1)
-const cachedArtworks = ref<Record<number, ArtworkInfo[]>>({})
+const cachedPages = ref<Record<number, ArtworkInfo[]>>({})
 const curArtworks = computed(() => {
-  return cachedArtworks.value[curPage.value] || []
+  return cachedPages.value[curPage.value] || []
 })
 
 onMounted(async () => {
@@ -62,7 +62,7 @@ function backToTop() {
 async function firstInit() {
   artworkIds.value = []
   curPage.value = 1
-  cachedArtworks.value = {}
+  cachedPages.value = {}
   artworkIds.value = await fetchAllArtworkIds()
   await fetchArtworksByPage(1)
 }
@@ -72,9 +72,11 @@ async function fetchAllArtworkIds() {
     illusts: Record<string, null>
     manga: Record<string, null>
   }>(`/ajax/user/${props.userId}/profile/all`)
-  return props.workCategory === 'illust'
-    ? Object.keys(data.illusts)
-    : Object.keys(data.manga)
+  const works =
+    props.workCategory === 'illust'
+      ? Object.keys(data.illusts)
+      : Object.keys(data.manga)
+  return works.sort((a, b) => Number(b) - Number(a))
 }
 
 function getArtworkIdsByPage(page: number) {
@@ -82,7 +84,7 @@ function getArtworkIdsByPage(page: number) {
 }
 
 async function fetchArtworksByPage(page: number) {
-  if (cachedArtworks.value[page]) return cachedArtworks.value[page]
+  if (cachedPages.value[page]) return cachedPages.value[page]
   const ids = getArtworkIdsByPage(page)
   const { data } = await ajax.get<{
     works: Record<string, ArtworkInfo>
@@ -93,7 +95,7 @@ async function fetchArtworksByPage(page: number) {
       is_first_page: 0,
     },
   })
-  cachedArtworks.value[page] = Object.values(data.works)
+  cachedPages.value[page] = Object.values(data.works)
   return data
 }
 </script>
