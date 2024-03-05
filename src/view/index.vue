@@ -1,7 +1,7 @@
 <template lang="pug">
 #home-view
   .top-slider.align-center(
-    :style='{ "background-image": `url(${randomBg.url})` }'
+    :style='{ "background-image": `url(${randomBg.urls?.regular || randomBg.url || ""})` }'
   )
     section.search-area.flex-1
       SearchBox.big.search
@@ -17,7 +17,7 @@
         @click='isShowBgInfo = true'
         style='margin-left: 0.5em'
         title='关于背景'
-        v-if='randomBg.info.id'
+        v-if='randomBg.id'
       )
         IFasInfoCircle
 
@@ -29,13 +29,13 @@
   )
     .bg-info-modal
       .align-center
-        RouterLink.thumb(:to='"/artworks/" + randomBg.info.id')
-          img(:src='randomBg.url' lazyload)
+        RouterLink.thumb(:to='"/artworks/" + randomBg.id')
+          img(:src='randomBg.urls?.regular || randomBg.url' lazyload)
         .desc
-          strong {{ randomBg.info.title }}
+          strong {{ randomBg.title }}
           | &ensp;&mdash;&ensp;
-          RouterLink(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
-          | 的作品 (ID: {{ randomBg.info.id }})
+          RouterLink(:to='"/users/" + randomBg.userId') {{ randomBg.userName }}
+          | 的作品 (ID: {{ randomBg.id }})
 
   .body-inner
     section.discover
@@ -66,40 +66,26 @@ import { defaultArtwork, isArtwork } from '@/utils'
 import { ajax } from '@/utils/ajax'
 
 import LogoH from '@/assets/LogoH.png'
-import type { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
+import type { Artwork, ArtworkInfo, ArtworkInfoOrAd } from '@/types'
 import { setTitle } from '@/utils/setTitle'
 
 const isShowBgInfo = ref(false)
 const discoveryList = ref<ArtworkInfo[]>([])
-const randomBg = ref<{
-  url: string
-  info: ArtworkInfo
-}>({
-  url: '',
-  info: {} as ArtworkInfo,
-})
+const randomBg = ref<Artwork>({ ...defaultArtwork, urls: {} } as any)
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const { data } = await ajax.get<{ illusts: ArtworkInfoOrAd[] }>(
-      '/ajax/illust/discovery',
-      { params: new URLSearchParams({ mode: 'safe', max: '1' }) }
-    )
-    const info =
-      data.illusts.find((item): item is ArtworkInfo => isArtwork(item)) ??
-      defaultArtwork
-    const middle = `img/${formatInTimeZone(
-      info.updateDate,
-      'Asia/Tokyo',
-      'yyyy/MM/dd/HH/mm/ss'
-    )}/${info.id}`
-    const url = `/-/img-master/${middle}_p0_master1200.jpg`
-    randomBg.value.info = info
-    randomBg.value.url = url
-    setCache('home.randomBg', { info, url })
+    const { data } = await ajax.get<{ illusts: Artwork[] }>('/api/random', {
+      params: {
+        mode: 'safe',
+        max: '1',
+      },
+    })
+    const info = data.illusts[0]
+    randomBg.value = info
+    setCache('home.randomBg', info)
   } catch (err) {
     console.error(err)
-    randomBg.value.url = 'https://api.daihan.top/api/acg'
   }
 }
 
