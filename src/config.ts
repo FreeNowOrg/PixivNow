@@ -1,8 +1,11 @@
 // Env
 import { version } from '../package.json'
-export { version } from '../package.json'
+export { version }
+
 export const SITE_ENV =
-  process.env.NODE_ENV === 'development' || version.includes('-')
+  import.meta.env.MODE === 'development' ||
+  version.includes('-') ||
+  location.hostname === 'pixiv-next.vercel.app'
     ? 'development'
     : 'production'
 
