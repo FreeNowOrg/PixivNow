@@ -78,7 +78,7 @@ devDependencies:
     version: 0.2.3
   '@vercel/node':
     specifier: ^3.0.20
-    version: 3.0.20
+    version: 3.0.21
   '@vitejs/plugin-vue':
     specifier: ^5.0.4
     version: 5.0.4(vite@5.1.4)(vue@3.4.21)
@@ -851,8 +851,8 @@ packages:
     resolution: {integrity: sha512-RJwqrGYSk75auHZqWmlSL+a5JsWv+4SF1AxNQJ+KpF3XWZ/8yThkN/jHBfNxMmW6VvNczSVtMaXI0/2Sess6Eg==}
     dev: true
 
-  /@vercel/build-utils@7.7.0:
-    resolution: {integrity: sha512-dYE0QKnRj9tN1F2AAKHagh3QkgQhz7AWcrRqnp5gjEp74EnxBKJIcZe5qqyKANMCLQ1e96RYy1pQB3zPMGeEzg==}
+  /@vercel/build-utils@7.7.1:
+    resolution: {integrity: sha512-TUO2sJiKHwF1CBZl9fP/Wof+IAMJ9QQEKU+RHzjNBedJmV/HolYIOAgW+jguQM7pOLz4cKbwcoPt+QltdHJ8Lw==}
     dev: true
 
   /@vercel/error-utils@2.0.2:
@@ -997,14 +997,14 @@ packages:
       - supports-color
     dev: true
 
-  /@vercel/node@3.0.20:
-    resolution: {integrity: sha512-J6EqkFczKJyLZFoMv863vBMsqJndisK4fQ6yz41VsBp5bfUo6v3KjNa5miRnLjeKUhrQYGbGQLG89Q6wO1jBVQ==}
+  /@vercel/node@3.0.21:
+    resolution: {integrity: sha512-Ie/1yC2rPYv5NkYqwTF2tWlwArjEPLwFwZ6Z2OMTxNaqivAkvODweAtrlLvilVESFDzdhkO50MCl5ettAZjIWA==}
     dependencies:
       '@edge-runtime/node-utils': 2.3.0
       '@edge-runtime/primitives': 4.1.0
       '@edge-runtime/vm': 3.2.0
       '@types/node': 14.18.33
-      '@vercel/build-utils': 7.7.0
+      '@vercel/build-utils': 7.7.1
       '@vercel/error-utils': 2.0.2
       '@vercel/nft': 0.26.4
       '@vercel/static-config': 3.0.0
