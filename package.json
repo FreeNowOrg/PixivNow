@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "axios": "^1.6.7",
-    "date-fns": "^2.30.0",
+    "date-fns": "^3.0.0",
     "date-fns-tz": "^2.0.0",
     "fflate": "^0.8.2",
     "gif.js": "^0.2.0",
