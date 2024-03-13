@@ -39,7 +39,9 @@ const pageSize = 24
 const curPage = ref(1)
 const cachedPages = ref<Record<number, ArtworkInfo[]>>({})
 const curArtworks = computed(() => {
-  return cachedPages.value[curPage.value] || []
+  return (cachedPages.value[curPage.value] || []).sort(
+    (a, b) => Number(b) - Number(a)
+  )
 })
 
 onMounted(async () => {
@@ -63,7 +65,9 @@ async function firstInit() {
   artworkIds.value = []
   curPage.value = 1
   cachedPages.value = {}
-  artworkIds.value = await fetchAllArtworkIds()
+  artworkIds.value = (await fetchAllArtworkIds()).sort(
+    (a, b) => Number(b) - Number(a)
+  )
   await fetchArtworksByPage(1)
 }
 
@@ -76,7 +80,7 @@ async function fetchAllArtworkIds() {
     props.workCategory === 'illust'
       ? Object.keys(data.illusts)
       : Object.keys(data.manga)
-  return works.sort((a, b) => Number(b) - Number(a))
+  return works
 }
 
 function getArtworkIdsByPage(page: number) {
