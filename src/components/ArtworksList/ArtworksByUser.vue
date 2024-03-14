@@ -40,7 +40,7 @@ const curPage = ref(1)
 const cachedPages = ref<Record<number, ArtworkInfo[]>>({})
 const curArtworks = computed(() => {
   return (cachedPages.value[curPage.value] || []).sort(
-    (a, b) => Number(b) - Number(a)
+    (a, b) => Number(b.id) - Number(a.id)
   )
 })
 
