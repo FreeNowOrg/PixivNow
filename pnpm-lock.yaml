@@ -81,7 +81,7 @@ devDependencies:
     version: 3.0.21
   '@vitejs/plugin-vue':
     specifier: ^5.0.4
-    version: 5.0.4(vite@5.1.6)(vue@3.4.21)
+    version: 5.0.4(vite@5.1.7)(vue@3.4.21)
   '@vue/language-plugin-pug':
     specifier: ^1.8.27
     version: 1.8.27
@@ -131,8 +131,8 @@ devDependencies:
     specifier: ^32.6.1
     version: 32.7.2
   vite:
-    specifier: ^5.1.4
-    version: 5.1.6(@types/node@20.11.27)(sass@1.72.0)
+    specifier: ^5.1.7
+    version: 5.1.7(@types/node@20.11.27)(sass@1.72.0)
 
 packages:
 
@@ -1100,14 +1100,14 @@ packages:
       ts-morph: 12.0.0
     dev: true
 
-  /@vitejs/plugin-vue@5.0.4(vite@5.1.6)(vue@3.4.21):
+  /@vitejs/plugin-vue@5.0.4(vite@5.1.7)(vue@3.4.21):
     resolution: {integrity: sha512-WS3hevEszI6CEVEx28F8RjTX97k3KsrcY6kvTg7+Whm5y3oYvcqzVeGCU3hxSAn4uY2CLCkeokkGKpoctccilQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.1.6(@types/node@20.11.27)(sass@1.72.0)
+      vite: 5.1.7(@types/node@20.11.27)(sass@1.72.0)
       vue: 3.4.21(typescript@5.4.2)
     dev: true
 
@@ -4220,8 +4220,8 @@ packages:
       - supports-color
     dev: true
 
-  /vite@5.1.6(@types/node@20.11.27)(sass@1.72.0):
-    resolution: {integrity: sha512-yYIAZs9nVfRJ/AiOLCA91zzhjsHUgMjB+EigzFb6W2XTLO8JixBCKCjvhKZaye+NKYHCrkv3Oh50dH9EdLU2RA==}
+  /vite@5.1.7(@types/node@20.11.27)(sass@1.72.0):
+    resolution: {integrity: sha512-sgnEEFTZYMui/sTlH1/XEnVNHMujOahPLGMxn1+5sIT45Xjng1Ec1K78jRP15dSmVgg5WBin9yO81j3o9OxofA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
