@@ -61,6 +61,14 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 
               li(v-if='userStore.isLoggedIn')
                 RouterLink.plain(
+                  :to='{ name: "users", params: { id: userStore.userId }, query: { tab: "public_bookmarks" } }'
+                ) 公开收藏
+              li(v-if='userStore.isLoggedIn')
+                RouterLink.plain(
+                  :to='{ name: "users", params: { id: userStore.userId }, query: { tab: "hidden_bookmarks" } }'
+                ) 私密收藏
+              li(v-if='userStore.isLoggedIn')
+                RouterLink.plain(
                   :to='{ name: "following", params: { id: userStore.userId } }'
                 ) 我的关注
               li(v-if='$route.path !== "/login"')
