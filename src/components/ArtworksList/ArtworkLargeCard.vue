@@ -58,18 +58,22 @@ h3
   background-color: var(--theme-background-color)
   border-radius: 0.5rem
   transition: all .24s ease-in-out
-  margin-bottom: 1rem
-  --parent-width: min(1200px, 90vw)
-  @media (max-width: 300px)
+  margin: 0.5rem auto
+  --parent-width: calc(100vw - 2rem)
+  --counts: 1
+  width: calc((var(--parent-width) - calc(var(--counts) - 1) * 2rem) / var(--counts))
+  @media (max-width: 380px)
     width: 100%
-  @media (min-width: 300px)
-    width: calc((var(--parent-width) - 1 * 16px) / 2)
-  @media (min-width: 600px)
-    width: calc((var(--parent-width) - 2 * 16px) / 3)
-  @media (min-width: 900px)
-    width: calc((var(--parent-width) - 3 * 16px) / 4)
+  @media (min-width: 380px)
+    --counts: 2
+  @media (min-width: 640px)
+    --counts: 3
+  @media (min-width: 750px)
+    --counts: 4
   @media (min-width: 1200px)
-    width: calc((var(--parent-width) - 4 * 16px) / 5)
+    --counts: 5
+  @media (min-width: 1600px)
+    --counts: 6
 
 .top
   position: relative

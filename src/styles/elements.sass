@@ -123,11 +123,13 @@ code
 // Responsive
 .responsive,
 .body-inner
-  padding-left: 5%
-  padding-right: 5%
-  max-width: 1200px
-  margin-left: auto
-  margin-right: auto
+  @media (min-width: 1280px)
+    margin-left: auto
+    margin-right: auto
+    width: 1200px
+  @media (max-width: 1280px)
+    margin-left: 1rem
+    margin-right: 1rem
 
 svg.svg--inline
   display: inline-block

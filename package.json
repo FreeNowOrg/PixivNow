@@ -31,7 +31,8 @@
     "vue-flex-waterfall": "^2.3.0",
     "vue-gtag": "^2.0.1",
     "vue-i18n": "^9.9.1",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vue-waterfall-plugin-next": "^2.4.3"
   },
   "devDependencies": {
     "@dragon-fish/sensitive-words-filter": "^2.0.1",
