@@ -1,21 +1,23 @@
 <template lang="pug">
 #ranking-view
-  .body-inner
-    //- Error
-    section(v-if='error')
+  //- Error
+  section(v-if='error')
+    .body-inner
       h1 排行榜加载失败
-      ErrorPage(:description='error' title='出大问题')
+    ErrorPage(:description='error' title='出大问题')
 
-    //- Loading
-    section(v-if='loading')
+  //- Loading
+  section(v-if='loading')
+    .body-inner
       h1 排行榜加载中……
-      .loading
-        Placeholder
+    .loading
+      Placeholder
 
-    //- Result
-    section(v-if='list')
+  //- Result
+  section(v-if='list')
+    .body-inner
       h1 {{ list.date.toLocaleDateString('zh', { dateStyle: 'long' }) }}排行榜
-      ArtworkLargeList(:rank-list='list.contents')
+    ArtworkLargeList(:rank-list='list.contents')
 </template>
 
 <script lang="ts" setup>

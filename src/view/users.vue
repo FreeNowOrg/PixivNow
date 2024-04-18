@@ -113,18 +113,18 @@
         type='line'
         v-model:value='tab'
       )
-        NTabPane(display-directive='show:lazy' name='illust' tab='插画')
+        NTabPane(display-directive='show:lazy' :name='UserTabs.illusts' tab='插画')
           NEmpty(
             description='用户没有插画作品 (｡•́︿•̀｡)'
             v-if='user.illusts && !user.illusts.length'
           )
           .user-illust.body-inner(v-else)
             ArtworksByUser(:user-id='user.userId' work-category='illust')
-        NTabPane(display-directive='show:lazy' name='manga' tab='漫画')
+        NTabPane(display-directive='show:lazy' :name='UserTabs.mangas' tab='漫画')
           NEmpty(description='用户没有漫画作品 (*/ω＼*)' v-if='!user.manga?.length')
           .user-manga.body-inner(v-else)
             ArtworksByUser(:user-id='user.userId' work-category='manga')
-        NTabPane(name='public-bookmarks' tab='公开收藏')
+        NTabPane(:name='UserTabs.public_bookmarks' tab='公开收藏')
           ArtworkList(
             :list='[]',
             :loading='8'
@@ -144,7 +144,7 @@
                 :method='() => getBookmarks(false)',
                 :text='loadingPublicBookmarks ? "正在加载" : "加载更多"'
               )
-        NTabPane(name='hidden-bookmarks' tab='秘密收藏' v-if='isSelfUserPage')
+        NTabPane(:name='UserTabs.hidden_bookmarks' tab='秘密收藏' v-if='isSelfUserPage')
           ArtworkList(
             :list='[]',
             :loading='8'
@@ -220,12 +220,17 @@ const hasMoreHiddenBookmarks = computed(
     hiddenBookmarks.value.length < totalHiddenBookmarks.value
 )
 
-const tab = ref<'illust' | 'manga' | 'public-bookmarks' | 'hidden-bookmarks'>(
-  'illust'
-)
+enum UserTabs {
+  illusts = 'illusts',
+  mangas = 'mangas',
+  public_bookmarks = 'public_bookmarks',
+  hidden_bookmarks = 'hidden_bookmarks'
+}
+const tab = ref<UserTabs>()
 const error = ref('')
 const showUserMore = ref(false)
 const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
 
 const workspaceNameMap = {
@@ -245,10 +250,10 @@ const workspaceNameMap = {
   wsBigUrl: '工作空间大图片URL',
 }
 
-async function init(id: string | number): Promise<void> {
+async function init(id: string | number, initTab?: UserTabs): Promise<void> {
   // reset states
   user.value = undefined
-  tab.value = 'illust'
+  tab.value = undefined
   error.value = ''
   publicBookmarks.value = []
   hiddenBookmarks.value = []
@@ -259,6 +264,7 @@ async function init(id: string | number): Promise<void> {
   if (cache) {
     loadingUser.value = false
     user.value = cache
+    tab.value = initTab || UserTabs.illusts
     return
   }
   try {
@@ -278,6 +284,7 @@ async function init(id: string | number): Promise<void> {
       novels: sortArtList(profileData.novels),
     }
     user.value = userValue
+    tab.value = initTab || UserTabs.illusts
     setCache(`users.${id}`, userValue)
   } catch (err) {
     if (err instanceof Error) {
@@ -344,13 +351,19 @@ async function getBookmarks(hidden?: boolean): Promise<void> {
 }
 
 watch(tab, (newTab) => {
+  if (!newTab) return
+
   const isPublicBookmarkEmpty = !publicBookmarks.value.length
   const isHiddenBookmarkEmpty = !hiddenBookmarks.value.length
 
-  if (newTab === 'public-bookmarks' && isPublicBookmarkEmpty) {
+  const url = new URL(location.href)
+  url.searchParams.set('tab', newTab)
+  history.replaceState(history.state, '', '' + url)
+
+  if (newTab === UserTabs.public_bookmarks && isPublicBookmarkEmpty) {
     getBookmarks(false)
   }
-  if (newTab === 'hidden-bookmarks' && isHiddenBookmarkEmpty) {
+  if (newTab === UserTabs.hidden_bookmarks && isHiddenBookmarkEmpty) {
     getBookmarks(true)
   }
 })
@@ -359,12 +372,12 @@ onBeforeRouteUpdate((to) => {
   if (to.name !== 'users') {
     return
   }
-  init(to.params.id as string)
+  init(to.params.id as string, to.query.tab as UserTabs)
 })
 
 effect(() => setTitle(user.value?.name, 'Users'))
 onMounted(async () => {
-  init(route.params.id as string)
+  init(route.params.id as string, route.query.tab as UserTabs)
 })
 </script>
 

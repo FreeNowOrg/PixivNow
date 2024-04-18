@@ -1,38 +1,28 @@
 <template lang="pug">
-mixin pagenator
-  .pagenator(v-if='resultList.length >= 60')
-    NButton.prev(
-      :disabled='page <= 1'
-      @click='page--'
-      circle
-      secondary
-      type='primary'
-    ): IFasAngleLeft
-    span.page {{ page }}
-    NButton.next(@click='page++' circle secondary type='primary'): IFasAngleRight
-
 #search-view
   .body-inner
     SearchBox.big
 
-    //- Error
-    section(v-if='error && !loading')
-      ErrorPage(:description='error' title='出大问题')
+  //- Error
+  section(v-if='error && !loading')
+    ErrorPage(:description='error' title='出大问题')
 
-    //- Result
-    section(v-if='!error')
-      +pagenator
+  //- Result
+  section(v-if='!error')
 
-      //- Loading
-      .loading-area(v-if='loading && !resultList.length')
-        ArtworkList(:list='[]', :loading='16')
+    //- Loading
+    .loading-area(v-if='loading && !resultList.length')
+      ArtworkList(:list='[]', :loading='16')
 
-      NSpin.result-area(:show='loading' v-if='resultList.length')
-        ArtworkLargeList(:artwork-list='resultList')
+    .no-more(v-if='!loading && !resultList.length')
+      NCard(style='padding: 15vh 0'): NEmpty(description='没有了，一滴都没有了……')
 
-      .no-more(v-if='!loading && resultList.length < 60') 没有了，一滴都没有了……
-
-      +pagenator
+    NSpin.result-area(:show='loading' v-if='resultList.length')
+      .pagenator
+        NPagination(v-model:page='page' :item-count='total' :page-size='resultList.length')
+      ArtworkLargeList(:artwork-list='resultList')
+      .pagenator
+        NPagination(v-model:page='page' :item-count='total' :page-size='resultList.length')
 </template>
 
 <script lang="ts" setup>
@@ -54,6 +44,7 @@ const loading = ref(true)
 const searchKeyword = ref('')
 const resultList = ref<ArtworkInfo[]>([])
 const page = ref(1)
+const total = ref(0)
 const route = useRoute()
 const router = useRouter()
 
@@ -77,6 +68,7 @@ async function makeSearch({
       { params: new URLSearchParams({ p: p ?? '1', mode: mode ?? 'text' }) }
     )
     resultList.value = data.illustManga?.data ?? []
+    total.value = data.illustManga?.total || 0
     console.info(data.illustManga?.data)
   } catch (err) {
     if (err instanceof Error) {
@@ -121,15 +113,10 @@ onMounted(async () => {
 </script>
 
 <style lang="sass" scoped>
-
 .pagenator
-  text-align: center
+  display: flex
+  justify-content: center
   margin: 1rem auto
-
-  .page
-    display: inline-block
-    text-align: center
-    width: 3rem
 
 .no-more
   text-align: center
@@ -137,7 +124,8 @@ onMounted(async () => {
   opacity: 0.75
 
 .search-box
-  margin: 2rem auto
+  margin: 1rem auto
+  margin-top: 2rem
   box-shadow: 0 0 8px #ddd
   border-radius: 2em
 </style>
