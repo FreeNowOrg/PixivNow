@@ -35,9 +35,6 @@ dependencies:
   vue:
     specifier: ^3.4.21
     version: 3.4.21(typescript@5.4.2)
-  vue-flex-waterfall:
-    specifier: ^2.3.0
-    version: 2.3.0
   vue-gtag:
     specifier: ^2.0.1
     version: 2.0.1(vue@3.4.21)
@@ -4474,10 +4471,6 @@ packages:
         optional: true
     dependencies:
       vue: 3.4.21(typescript@5.4.2)
-
-  /vue-flex-waterfall@2.3.0:
-    resolution: {integrity: sha512-nJz/PbiqGoO6o8hCNz6QoK+3XuSbkmVbw+FSqM+CaXRiTRvGk6AzmD2G05jSHqsgca+K0tWkz3Utxf0AA44UCA==}
-    dev: false
 
   /vue-gtag@2.0.1(vue@3.4.21):
     resolution: {integrity: sha512-aM4A58FVL0wV2ptYi+xzAjeg+pQVRyUcfBc5UkXAwQrR4t3WBhor50Izp2I+3Oo7+l+vWJ7u78DGcNzReb8S/A==}
