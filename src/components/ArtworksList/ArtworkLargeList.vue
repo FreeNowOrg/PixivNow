@@ -2,7 +2,7 @@
 Waterfall.artwork-large-list(
   ref='waterfallRef',
   :list='artworks',
-  :breakpoints='{ 9999: { rowPerView: 5 }, 1200: { rowPerView: 4 }, 750: { rowPerView: 3 }, 640: { rowPerView: 2 }, 380: { rowPerView: 1 } }'
+  :breakpoints='{ 9999: { rowPerView: 6 }, 1600: { rowPerView: 5 }, 1200: { rowPerView: 4 }, 750: { rowPerView: 3 }, 640: { rowPerView: 2 }, 380: { rowPerView: 1 } }'
 )
   template(#item='{ item, index }')
     ArtworkLargeCard(:illust='item[0]', :rank='item[1]' :key='index')
