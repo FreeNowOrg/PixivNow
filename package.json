@@ -18,19 +18,19 @@
     "changelog": "conventional-changelog -p jquery -i CHANGELOG.md -s -r 0"
   },
   "dependencies": {
-    "axios": "^1.6.7",
-    "date-fns": "^3.0.0",
-    "date-fns-tz": "^3.0.0",
+    "axios": "^1.6.8",
+    "date-fns": "^3.6.0",
+    "date-fns-tz": "^3.1.3",
     "fflate": "^0.8.2",
     "gif.js": "^0.2.0",
     "js-cookie": "^3.0.5",
     "naive-ui": "^2.38.1",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
-    "vue": "^3.4.21",
+    "vue": "^3.4.23",
     "vue-gtag": "^2.0.1",
-    "vue-i18n": "^9.9.1",
-    "vue-router": "^4.3.0",
+    "vue-i18n": "^9.13.0",
+    "vue-router": "^4.3.2",
     "vue-waterfall-plugin-next": "^2.4.3"
   },
   "devDependencies": {
@@ -41,9 +41,9 @@
     "@types/gif.js": "^0.2.5",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash.escaperegexp": "^4.1.9",
-    "@types/node": "^20.11.22",
+    "@types/node": "^20.12.7",
     "@types/nprogress": "^0.2.3",
-    "@vercel/node": "^3.0.20",
+    "@vercel/node": "^3.0.27",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/language-plugin-pug": "^1.8.27",
     "@vueuse/core": "^10.9.0",
@@ -54,13 +54,13 @@
     "picocolors": "^1.0.0",
     "prettier": "^3.2.5",
     "pug": "^3.0.2",
-    "sass": "^1.71.1",
+    "sass": "^1.75.0",
     "tslib": "^2.6.2",
-    "typescript": "^5.3.3",
+    "typescript": "^5.4.5",
     "unplugin-auto-import": "^0.17.5",
     "unplugin-icons": "^0.18.5",
     "unplugin-vue-components": "^0.26.0",
-    "vercel": "^32.6.1",
-    "vite": "^5.1.4"
+    "vercel": "^32.7.2",
+    "vite": "^5.2.9"
   }
 }
