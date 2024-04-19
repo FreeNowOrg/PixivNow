@@ -74,7 +74,7 @@ importers:
         version: 4.1.9
       '@types/node':
         specifier: ^20.11.22
-        version: 20.11.27
+        version: 20.12.7
       '@types/nprogress':
         specifier: ^0.2.3
         version: 0.2.3
@@ -83,7 +83,7 @@ importers:
         version: 3.0.21
       '@vitejs/plugin-vue':
         specifier: ^5.0.4
-        version: 5.0.4(vite@5.2.9(@types/node@20.11.27)(sass@1.75.0))(vue@3.4.21(typescript@5.4.5))
+        version: 5.0.4(vite@5.2.9(@types/node@20.12.7)(sass@1.75.0))(vue@3.4.21(typescript@5.4.5))
       '@vue/language-plugin-pug':
         specifier: ^1.8.27
         version: 1.8.27
@@ -134,7 +134,7 @@ importers:
         version: 32.7.2
       vite:
         specifier: ^5.1.4
-        version: 5.2.9(@types/node@20.11.27)(sass@1.75.0)
+        version: 5.2.9(@types/node@20.12.7)(sass@1.75.0)
 
 packages:
 
@@ -614,8 +614,8 @@ packages:
   '@types/node@14.18.33':
     resolution: {integrity: sha512-qelS/Ra6sacc4loe/3MSjXNL1dNQ/GjxNHVzuChwMfmk7HuycRLVQN2qNY3XahK+fZc5E2szqQSKUyAF0E+2bg==}
 
-  '@types/node@20.11.27':
-    resolution: {integrity: sha512-qyUZfMnCg1KEz57r7pzFtSGt49f6RPkPBis3Vo4PbS7roQEDn22hiHzl/Lo1q4i4hDEgBJmBF/NTNg2XR0HbFg==}
+  '@types/node@20.12.7':
+    resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -3041,7 +3041,7 @@ snapshots:
 
   '@types/node@14.18.33': {}
 
-  '@types/node@20.11.27':
+  '@types/node@20.12.7':
     dependencies:
       undici-types: 5.26.5
 
@@ -3243,9 +3243,9 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vitejs/plugin-vue@5.0.4(vite@5.2.9(@types/node@20.11.27)(sass@1.75.0))(vue@3.4.21(typescript@5.4.5))':
+  '@vitejs/plugin-vue@5.0.4(vite@5.2.9(@types/node@20.12.7)(sass@1.75.0))(vue@3.4.21(typescript@5.4.5))':
     dependencies:
-      vite: 5.2.9(@types/node@20.11.27)(sass@1.75.0)
+      vite: 5.2.9(@types/node@20.12.7)(sass@1.75.0)
       vue: 3.4.21(typescript@5.4.5)
 
   '@volar/language-core@1.11.1':
@@ -5108,13 +5108,13 @@ snapshots:
       - encoding
       - supports-color
 
-  vite@5.2.9(@types/node@20.11.27)(sass@1.75.0):
+  vite@5.2.9(@types/node@20.12.7)(sass@1.75.0):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.14.3
     optionalDependencies:
-      '@types/node': 20.11.27
+      '@types/node': 20.12.7
       fsevents: 2.3.3
       sass: 1.75.0
 
