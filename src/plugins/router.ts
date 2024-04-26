@@ -62,6 +62,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/view/about.vue'),
   },
   {
+    path: '/notifications/2024-04-26',
+    name: 'notification-2024-04-26',
+    component: () => import('@/view/notifications/2024-04-26.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('@/view/404.vue'),
