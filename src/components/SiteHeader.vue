@@ -142,7 +142,7 @@ onMounted(() => {
   color: var(--theme-background-color)
   display: flex
   align-items: center
-  position: fixed
+  position: sticky
   height: 50px
   width: 100%
   box-sizing: border-box

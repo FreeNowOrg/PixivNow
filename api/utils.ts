@@ -97,24 +97,47 @@ ajax.interceptors.response.use((ctx) => {
 export function replacePximgUrlsInString(str: string): string {
   if (!str.includes('pximg.net')) return str
   return str
-    .replace(/https:\/\/i\.pximg\.net\//g, PXIMG_BASEURL_I)
-    .replace(/https:\/\/s\.pximg\.net\//g, PXIMG_BASEURL_S)
+    .replaceAll('https://i.pximg.net/', PXIMG_BASEURL_I)
+    .replaceAll('https://s.pximg.net/', PXIMG_BASEURL_S)
 }
 
 export function replacePximgUrlsInObject(
   obj: Record<string, any> | string
 ): Record<string, any> | string {
   if (typeof obj === 'string') return replacePximgUrlsInString(obj)
-  if (['arraybuffer', 'blob'].includes(obj.constructor.name.toLowerCase())) {
-    return obj
-  }
 
-  return JSON.parse(safelyStringify(obj), (key: string, val: any) => {
-    if (typeof val === 'string' && val.includes('pximg.net')) {
-      return replacePximgUrlsInString(val)
+  return deepReplaceString(obj, replacePximgUrlsInString)
+}
+
+function isObject(value: any): value is Record<string, any> {
+  return typeof value === 'object' && value !== null
+}
+
+export function deepReplaceString<T>(
+  obj: T,
+  replacer: (value: string) => string
+): T {
+  if (Array.isArray(obj)) {
+    return obj.map((value) =>
+      deepReplaceString(value, replacer)
+    ) as unknown as T
+  } else if (isObject(obj)) {
+    if (
+      ['arraybuffer', 'blob', 'formdata'].includes(
+        obj.constructor.name.toLowerCase()
+      )
+    ) {
+      return obj
     }
-    return val
-  })
+    const result: Record<string, any> = {}
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = deepReplaceString(value, replacer)
+    }
+    return result as T
+  } else if (typeof obj === 'string') {
+    return replacer(obj) as unknown as T
+  }
+  return obj
 }
 
 export function safelyStringify(value: any, space?: number) {

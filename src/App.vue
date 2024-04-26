@@ -1,11 +1,13 @@
 <template lang="pug">
 NaiveuiProvider#app-full-container
+  SiteNoticeBanner
+  SiteHeader
+
   main
     article
       RouterView
 
   SideNav
-  SiteHeader
   SiteFooter
   NProgress
 </template>
@@ -51,7 +53,7 @@ onMounted(async () => {
   flex-direction: column
 
 main
-  padding-top: 50px
+  // padding-top: 50px
   position: relative
   flex: 1
   article
