@@ -3,14 +3,13 @@
   a(@click='method')
     | {{ text }}
     | &nbsp;
-    IFaSolidPlus(v-if='!loading')
-    IFaSolidSpinner.spin(v-else)
+    IPlus(v-if='!loading')
+    ISpinner.spin(v-else)
 </template>
 
 <script lang="ts" setup>
-import { useIntersectionObserver } from '@vueuse/core'
-import IFaSolidPlus from '~icons/fa-solid/plus'
-import IFaSolidSpinner from '~icons/fa-solid/spinner'
+import IPlus from '~icons/fa-solid/plus'
+import ISpinner from '~icons/fa-solid/spinner'
 
 const elRef = ref<HTMLDivElement | null>(null)
 

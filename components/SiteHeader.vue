@@ -2,7 +2,7 @@
 header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
   .flex
     a.side-nav-toggle.plain(@click='toggleSideNav')
-      IFaSolidBars(data-icon)
+      IBars(data-icon)
 
     .logo-area
       NuxtLink.plain(to='/')
@@ -13,7 +13,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
         SearchBox
       .search-icon.align-right.flex-1
         a.pointer.plain(@click='openSideNav')
-          IFaSolidSearch
+          ISearch
           | &nbsp;搜索
     .flex.search-area(v-else)
 
@@ -57,6 +57,18 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                     NuxtLink.plain.user-name(:to='"/users/" + userStore.id') {{ userStore.name }}
                     .uid @{{ userStore.pixivId }}
 
+              li(v-if='userStore.isLoggedIn')
+                RouterLink.plain(
+                  :to='{ name: "users", params: { id: userStore.id }, query: { tab: "public_bookmarks" } }'
+                ) 公开收藏
+              li(v-if='userStore.isLoggedIn')
+                RouterLink.plain(
+                  :to='{ name: "users", params: { id: userStore.id }, query: { tab: "hidden_bookmarks" } }'
+                ) 私密收藏
+              li(v-if='userStore.isLoggedIn')
+                RouterLink.plain(
+                  :to='{ name: "following", params: { id: userStore.id } }'
+                ) 我的关注
               li(v-if='$route.path !== "/login"')
                 NuxtLink.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
               li(v-if='userStore.isLoggedIn')
@@ -64,9 +76,8 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 </template>
 
 <script lang="ts" setup>
-import SearchBox from './SearchBox.vue'
-import IFaSolidBars from '~icons/fa-solid/bars'
-import IFaSolidSearch from '~icons/fa-solid/search'
+import IBars from '~icons/fa-solid/bars'
+import ISearch from '~icons/fa-solid/search'
 
 const hidden = ref(false)
 const notAtTop = ref(false)
@@ -124,7 +135,7 @@ onMounted(() => {
   color: var(--theme-background-color)
   display: flex
   align-items: center
-  position: fixed
+  position: sticky
   height: 50px
   width: 100%
   box-sizing: border-box

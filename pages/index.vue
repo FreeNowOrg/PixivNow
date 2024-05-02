@@ -10,30 +10,36 @@
 
     .bg-info
       a.pointer(@click='async () => await setRandomBgNoCache()' title='换一个~')
-        IFaSolidRandom
+        IRandom
       a.pointer(
         @click='isShowBgInfo = true'
         style='margin-left: 0.5em'
         title='关于背景'
-        v-if='randomBg.info.id'
+        v-if='randomBg.id'
       )
-        IFaSolidInfoCircle
+        IInfoCircle
 
   NModal(
-    :title='`背景图片：${randomBg.info.title}`'
+    :title='`背景图片：${randomBg.alt}`'
     closable
     preset='card'
     v-model:show='isShowBgInfo'
   )
     .bg-info-modal
       .align-center
-        NuxtLink.thumb(:to='"/artworks/" + randomBg.info.id')
-          img(:src='randomBg.url' lazyload)
+        NuxtLink.thumb(:to='"/artworks/" + randomBg.id')
+          img(:src='randomBg.urls?.regular || randomBg.url' lazyload)
         .desc
-          strong {{ randomBg.info.title }}
-          | &ensp;&mdash;&ensp;
-          NuxtLink(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
-          | 的作品 (ID: {{ randomBg.info.id }})
+          .author
+            NuxtLink(:to='"/users/" + randomBg.userId') {{ randomBg.userName }}
+            | 的作品 (ID: {{ randomBg.id }})
+        NSpace(justify='center' size='small' style='margin-top: 1rem')
+          NTag(
+            :key='tag'
+            @click='$router.push({ name: "search", params: { keyword: tag, p: 1 } })'
+            style='cursor: pointer'
+            v-for='tag in randomBg.tags'
+          ) {{ tag }}
 
   .body-inner
     section.discover
@@ -47,15 +53,15 @@
           size='small'
         )
           template(#default) {{ loadingDiscovery ? '加载中' : '换一批' }}
-          template(#icon): NIcon: IFaSolidRandom
+          template(#icon): NIcon: IRandom
       ArtworkList(:list='discoveryList', :loading='loadingDiscovery')
 </template>
 
 <script lang="ts" setup>
 import { formatInTimeZone } from 'date-fns-tz'
-import { NH2, NButton, NIcon, NModal } from 'naive-ui'
-import IFaSolidInfoCircle from '~icons/fa-solid/info-circle'
-import IFaSolidRandom from '~icons/fa-solid/random'
+import { NH2, NButton, NIcon, NModal, NTag, NSpace } from 'naive-ui'
+import IInfoCircle from '~icons/fa-solid/info-circle'
+import IRandom from '~icons/fa-solid/random'
 
 import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
 
@@ -102,7 +108,6 @@ async function setRandomBgNoCache(): Promise<void> {
     siteCache.set('home.randomBg', { info, url })
   } catch (err) {
     console.error(err)
-    randomBg.value.url = 'https://api.daihan.top/api/acg'
   }
 }
 

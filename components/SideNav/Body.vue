@@ -11,22 +11,22 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
         .title 导航
         ul
           SideNavListLink(link='/' text='首页')
-            IFaSolidHome.svg--SideNavListLink
+            IHome.svg--SideNavListLink
           SideNavListLink.not-allowed(link='' text='插画')
-            IFaSolidImage.svg--SideNavListLink
+            IImage.svg--SideNavListLink
           SideNavListLink(link='' text='用户')
-            IFaSolidUser.svg--SideNavListLink
+            IUser.svg--SideNavListLink
           SideNavListLink(link='/ranking' text='排行榜')
-            IFaSolidCrown.svg--SideNavListLink
+            ICrown.svg--SideNavListLink
 
       .group
-        .title Pixiv 令牌
+        .title 用户
         ul
           SideNavListLink(
             :text='userStore.isLoggedIn ? "查看令牌" : "设置令牌"'
             link='/login'
           )
-            IFaSolidFingerprint.svg--SideNavListLink
+            IFingerprint.svg--SideNavListLink
 
       .group
         .title PixivNow
@@ -35,19 +35,19 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
             externalLink='https://www.pixiv.net/'
             text='Pixiv.net'
           )
-            IFaSolidExternalLinkAlt.svg--SideNavListLink
+            IExternalLinkAlt.svg--SideNavListLink
           SideNavListLink(link='/about' text='关于我们')
-            IFaSolidHeart.svg--SideNavListLink
+            IHeart.svg--SideNavListLink
 </template>
 
 <script lang="ts" setup>
-import IFaSolidCrown from '~icons/fa-solid/crown'
-import IFaSolidExternalLinkAlt from '~icons/fa-solid/external-link-alt'
-import IFaSolidFingerprint from '~icons/fa-solid/fingerprint'
-import IFaSolidHeart from '~icons/fa-solid/heart'
-import IFaSolidHome from '~icons/fa-solid/home'
-import IFaSolidImage from '~icons/fa-solid/image'
-import IFaSolidUser from '~icons/fa-solid/user'
+import ICrown from '~icons/fa-solid/crown'
+import IExternalLinkAlt from '~icons/fa-solid/external-link-alt'
+import IFingerprint from '~icons/fa-solid/fingerprint'
+import IHeart from '~icons/fa-solid/heart'
+import IHome from '~icons/fa-solid/home'
+import IImage from '~icons/fa-solid/image'
+import IUser from '~icons/fa-solid/user'
 
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()

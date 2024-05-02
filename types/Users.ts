@@ -1,6 +1,10 @@
 import type { Artwork, ArtworkInfo } from './Artworks'
 
-export type UserPrivacyLevel = '0' | '1' | '2'
+export enum UserPrivacyLevel {
+  DEFAULT,
+  R18,
+  R18G,
+}
 
 export interface User {
   userId: `${number}`
@@ -89,4 +93,18 @@ export interface PixivUser {
   safeMode: boolean
   illustCreator: boolean
   novelCreator: boolean
+}
+
+export interface UserListItem {
+  userId: `${number}`
+  userName: string
+  profileImageUrl: string
+  userComment: string
+  following: boolean
+  followed: boolean
+  isBlocking: boolean
+  isMypixiv: boolean
+  illusts: ArtworkInfo[]
+  novels: any[]
+  acceptRequest: boolean
 }

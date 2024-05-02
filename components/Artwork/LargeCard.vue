@@ -8,19 +8,20 @@
           :src='illust.url.replace("p0_master", "p0_square")'
         )
       .restrict.x-restrict(title='R-18' v-if='illust.xRestrict === 2')
-        IFaSolidEye(data-icon)
+        IEye(data-icon)
       .restrict.ai-restrict(title='AI生成' v-if='illust.aiType === 2')
-        IFaSolidRobot(data-icon)
+        IRobot(data-icon)
       .page-count(
         :title='"共 " + illust.pageCount + " 张"'
         v-if='+illust.pageCount > 1'
       )
-        IFaSolidImages(data-icon)
+        IImages(data-icon)
         | {{ illust.pageCount }}
       .ranking(
         :class='{ gold: rank === 1, silver: rank === 2, bronze: rank === 3 }'
         v-if='rank !== 0'
       ) {{ rank }}
+      .type-ugoira(v-if='illust.illustType === IllustType.UGOIRA'): IPlayCircle
   .bottom
     h3.title.plain(:title='illust.title')
       NuxtLink(:to='"/artworks/" + illust.id') {{ illust.title }}
@@ -33,11 +34,12 @@
 </template>
 
 <script lang="ts" setup>
-import IFaSolidEye from '~icons/fa-solid/eye'
-import IFaSolidImages from '~icons/fa-solid/images'
-import IFaSolidRobot from '~icons/fa-solid/robot'
+import IEye from '~icons/fa-solid/eye'
+import IImages from '~icons/fa-solid/images'
+import IRobot from '~icons/fa-solid/robot'
+import IPlayCircle from '~icons/fa-solid/play-circle'
 
-import type { ArtworkInfo } from '~/types'
+import { type ArtworkInfo, IllustType } from '~/types'
 
 defineProps<{
   illust: ArtworkInfo
@@ -55,18 +57,22 @@ h3
   background-color: var(--theme-background-color)
   border-radius: 0.5rem
   transition: all .24s ease-in-out
-  margin-bottom: 1rem
-  --parent-width: min(1200px, 90vw)
-  @media (max-width: 300px)
+  margin: 0.5rem auto
+  --parent-width: calc(100vw - 2rem)
+  --counts: 1
+  width: calc((var(--parent-width) - calc(var(--counts) - 1) * 2rem) / var(--counts))
+  @media (max-width: 380px)
     width: 100%
-  @media (min-width: 300px)
-    width: calc((var(--parent-width) - 1 * 16px) / 2)
-  @media (min-width: 600px)
-    width: calc((var(--parent-width) - 2 * 16px) / 3)
-  @media (min-width: 900px)
-    width: calc((var(--parent-width) - 3 * 16px) / 4)
+  @media (min-width: 380px)
+    --counts: 2
+  @media (min-width: 640px)
+    --counts: 3
+  @media (min-width: 750px)
+    --counts: 4
   @media (min-width: 1200px)
-    width: calc((var(--parent-width) - 4 * 16px) / 5)
+    --counts: 5
+  @media (min-width: 1600px)
+    --counts: 6
 
 .top
   position: relative
@@ -137,6 +143,23 @@ h3
       --ring-color: darkgray
     &.bronze
       --ring-color: #b87333
+
+  .type-ugoira
+    pointer-events: none
+    position: absolute
+    width: 100%
+    height: 100%
+    left: 0
+    top: 0
+    svg
+      position: absolute
+      bottom: 50%
+      right: 50%
+      color: #fff
+      width: 35%
+      height: 35%
+      transform: translate(50%, 50%)
+      opacity: 0.75
 
 .bottom
   padding: 0.5rem

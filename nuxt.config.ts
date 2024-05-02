@@ -65,5 +65,15 @@ export default defineNuxtConfig({
         },
       },
     },
+    '/-/**': {
+      redirect: {
+        to: 'https://pximg.wjghj.cn/**'
+      }
+    },
+    '/~/**': {
+      proxy: {
+        to: 'https://s.pximg.net/**'
+      }
+    }
   },
 })

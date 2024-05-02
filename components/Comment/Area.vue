@@ -16,7 +16,7 @@
         v-if='comments.length && hasNext'
       )
         template(#icon)
-          IFaSolidPlus
+          IPlus
         | {{ loading ? '正在加载' : '查看更多' }}
   .align-center(v-if='!comments.length && loading')
     placeholder
@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import { useIntersectionObserver } from '@vueuse/core'
 import { NButton } from 'naive-ui'
-import IFaSolidPlus from '~icons/fa-solid/plus'
+import IPlus from '~icons/fa-solid/plus'
 
 import type { Comments } from '~/types'
 

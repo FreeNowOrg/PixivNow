@@ -1,7 +1,7 @@
 <template lang="pug">
 #user-view
   //- Loading
-  section.loading(v-if='loading')
+  section.loading(v-if='loadingUser')
     .bg-area.no-background
       .bg-container(style='background-color: #efefef')
     .user-info
@@ -37,29 +37,34 @@
         .username-header.flex
           h1.username {{ user.name }}
           .flex-1
-          .user-folow(v-if='user.userId !== userStore.id')
+          .user-folow(v-if='!isSelfUserPage')
             NButton(
               :loading='loadingUserFollow',
               :type='user.isFollowed ? "success" : undefined'
               @click='handleUserFollow'
+              round
+              size='small'
             )
               template(#icon)
-                IFaSolidCheck(v-if='user.isFollowed')
-                IFaSolidPlus(v-else)
+                ICheck(v-if='user.isFollowed')
+                IPlus(v-else)
               | {{ user.isFollowed ? '已关注' : '关注' }}
+          .user-folow(v-else)
+            NButton(round size='small' type='info')
+              | 我真棒
         .following
-          | 关注了 <strong>{{ user.following }}</strong> 人
+          RouterLink(:to='{ name: "following", params: { id: user.userId } }') 关注了 <strong>{{ user.following }}</strong> 人
         .gender(v-if='user.gender?.name')
-          IFaSolidVenusMars(data-icon)
+          IVenusMars(data-icon)
           | {{ user.gender.name }}
         .birthday(v-if='user.birthDay?.name')
-          IFaSolidBirthdayCake(data-icon)
+          IBirthdayCake(data-icon)
           | {{ user.birthDay?.name }}
         .region(v-if='user.region?.name')
-          IFaSolidMapMarkerAlt(data-icon)
+          IMapMarkerAlt(data-icon)
           | {{ user.region?.name }}
         .webpage(v-if='user.webpage')
-          IFaSolidHome(data-icon)
+          IHome(data-icon)
           a(:href='user.webpage' rel='noopener noreferrer' target='_blank') {{ user.webpage }}
         .flex
           .comment.flex-1 {{ user.comment }}
@@ -73,7 +78,7 @@
             a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
               img(:src='user.imageBig')
               .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
-                IFaSolidParking(data-icon)
+                IParking(data-icon)
             .title {{ user.name }}
         .bottom
           section.user-comment
@@ -102,36 +107,60 @@
     #user-artworks
       NTabs(
         :bar-width='32'
-        animated
         justify-content='space-evenly'
         type='line'
+        v-model:value='tab'
       )
-        NTabPane(name='illust' tab='插画')
+        NTabPane(display-directive='show:lazy' :name='UserTabs.illusts' tab='插画')
           NEmpty(
             description='用户没有插画作品 (｡•́︿•̀｡)'
             v-if='user.illusts && !user.illusts.length'
           )
           .user-illust.body-inner(v-else)
-            ArtworkList(:list='user.illusts')
-        NTabPane(name='manga' tab='漫画')
+            ArtworksByUser(:user-id='user.userId' work-category='illust')
+        NTabPane(display-directive='show:lazy' :name='UserTabs.mangas' tab='漫画')
           NEmpty(description='用户没有漫画作品 (*/ω＼*)' v-if='!user.manga?.length')
           .user-manga.body-inner(v-else)
-            ArtworkList(:list='user.manga')
-        NTabPane(
-          :tab='`${user.userId === userStore.id ? "我" : user.name}的收藏`'
-          name='bookmarks'
-        )
+            ArtworksByUser(:user-id='user.userId' work-category='manga')
+        NTabPane(:name='UserTabs.public_bookmarks' tab='公开收藏')
+          ArtworkList(
+            :list='[]',
+            :loading='8'
+            v-if='!publicBookmarks?.length && loadingPublicBookmarks'
+          )
           NEmpty(
-            :description='user.userId === userStore.id ? `收藏夹是空的 Σ(⊙▽⊙"a` : `${user.name}没有公开的收藏 ${"(❁´◡`❁)"}`'
-            v-if='!bookmarks?.length'
+            :description='isSelfUserPage ? `收藏夹是空的 Σ(⊙▽⊙"a` : `${user.name}没有公开的收藏 ${"(❁´◡`❁)"}`'
+            v-else-if='!publicBookmarks?.length'
           )
           .user-bookmarks.body-inner(v-else)
-            ArtworkList(:list='bookmarks')
-            .more-btn.align-center(v-if='bookmarks.length && hasMoreBookmarks')
+            ArtworkList(:list='publicBookmarks')
+            .more-btn.align-center(
+              v-if='publicBookmarks.length && hasMorePublicBookmarks'
+            )
               ShowMore(
-                :loading='loadingBookmarks',
-                :method='getBookmarks',
-                :text='loadingBookmarks ? "正在加载" : "加载更多"'
+                :loading='loadingPublicBookmarks',
+                :method='() => getBookmarks(false)',
+                :text='loadingPublicBookmarks ? "正在加载" : "加载更多"'
+              )
+        NTabPane(:name='UserTabs.hidden_bookmarks' tab='秘密收藏' v-if='isSelfUserPage')
+          ArtworkList(
+            :list='[]',
+            :loading='8'
+            v-if='!hiddenBookmarks?.length && loadingHiddenBookmarks'
+          )
+          NEmpty(
+            description='没有隐藏的小秘密 இ௰இ'
+            v-else-if='!hiddenBookmarks?.length'
+          )
+          .user-bookmarks.body-inner(v-else)
+            ArtworkList(:list='hiddenBookmarks')
+            .more-btn.align-center(
+              v-if='hiddenBookmarks.length && hasMoreHiddenBookmarks'
+            )
+              ShowMore(
+                :loading='loadingHiddenBookmarks',
+                :method='() => getBookmarks(true)',
+                :text='loadingHiddenBookmarks ? "正在加载" : "加载更多"'
               )
 </template>
 
@@ -146,28 +175,49 @@ import {
   NTable,
   NTabs,
 } from 'naive-ui'
-import IFaSolidBirthdayCake from '~icons/fa-solid/birthday-cake'
-import IFaSolidCheck from '~icons/fa-solid/check'
-import IFaSolidHome from '~icons/fa-solid/home'
-import IFaSolidMapMarkerAlt from '~icons/fa-solid/map-marker-alt'
-import IFaSolidParking from '~icons/fa-solid/parking'
-import IFaSolidPlus from '~icons/fa-solid/plus'
-import IFaSolidVenusMars from '~icons/fa-solid/venus-mars'
+import IBirthdayCake from '~icons/fa-solid/birthday-cake'
+import ICheck from '~icons/fa-solid/check'
+import IHome from '~icons/fa-solid/home'
+import IMapMarkerAlt from '~icons/fa-solid/map-marker-alt'
+import IParking from '~icons/fa-solid/parking'
+import IPlus from '~icons/fa-solid/plus'
+import IVenusMars from '~icons/fa-solid/venus-mars'
 
 import type { ArtworkInfo, User } from '~/types'
 
-const loading = ref(true)
+const loadingUser = ref(true)
 const user = ref<User>()
-const bookmarks = ref<ArtworkInfo[]>([])
-const loadingBookmarks = ref(false)
-const totalBookmarks = ref(0)
-const hasMoreBookmarks = computed(
-  () => bookmarks.value.length && bookmarks.value.length < totalBookmarks.value
+const isSelfUserPage = computed(() => user.value?.userId === userStore.userId)
+
+const publicBookmarks = ref<ArtworkInfo[]>([])
+const loadingPublicBookmarks = ref(false)
+const totalPublicBookmarks = ref(0)
+const hasMorePublicBookmarks = computed(
+  () =>
+    publicBookmarks.value.length &&
+    publicBookmarks.value.length < totalPublicBookmarks.value
 )
-const tab = ref<'illust' | 'manga' | 'bookmarks'>('illust')
+
+const hiddenBookmarks = ref<ArtworkInfo[]>([])
+const loadingHiddenBookmarks = ref(false)
+const totalHiddenBookmarks = ref(0)
+const hasMoreHiddenBookmarks = computed(
+  () =>
+    hiddenBookmarks.value.length &&
+    hiddenBookmarks.value.length < totalHiddenBookmarks.value
+)
+
+enum UserTabs {
+  illusts = 'illusts',
+  mangas = 'mangas',
+  public_bookmarks = 'public_bookmarks',
+  hidden_bookmarks = 'hidden_bookmarks'
+}
+const tab = ref<UserTabs>()
 const error = ref('')
 const showUserMore = ref(false)
 const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
 const siteCache = useSiteCacheStore()
 const topBackgroundStyles = computed(() => {
@@ -195,20 +245,21 @@ const workspaceNameMap = {
   wsBigUrl: '工作空间大图片URL',
 }
 
-async function init(id: string | number): Promise<void> {
+async function init(id: string | number, initTab?: UserTabs): Promise<void> {
   // reset states
   user.value = undefined
-  tab.value = 'illust'
+  tab.value = undefined
   error.value = ''
-  bookmarks.value = []
-  totalBookmarks.value = 0
+  publicBookmarks.value = []
+  hiddenBookmarks.value = []
+  totalPublicBookmarks.value = 0
+  totalHiddenBookmarks.value = 0
 
   const cache = siteCache.get(`users.${id}`)
   if (cache) {
-    loading.value = false
+    loadingUser.value = false
     user.value = cache
-    // Extra
-    await getBookmarks()
+    tab.value = initTab || UserTabs.illusts
     return
   }
   try {
@@ -230,7 +281,8 @@ async function init(id: string | number): Promise<void> {
       novels: sortArtList(profileData.novels),
     }
     user.value = userValue
-    siteCache.set(`users.${id}`, userValue)
+    tab.value = initTab || UserTabs.illusts
+    setCache(`users.${id}`, userValue)
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
@@ -238,8 +290,7 @@ async function init(id: string | number): Promise<void> {
       error.value = '未知错误'
     }
   } finally {
-    loading.value = false
-    getBookmarks()
+    loadingUser.value = false
   }
 }
 
@@ -296,16 +347,34 @@ async function getBookmarks(): Promise<void> {
   }
 }
 
+watch(tab, (newTab) => {
+  if (!newTab) return
+
+  const isPublicBookmarkEmpty = !publicBookmarks.value.length
+  const isHiddenBookmarkEmpty = !hiddenBookmarks.value.length
+
+  const url = new URL(location.href)
+  url.searchParams.set('tab', newTab)
+  history.replaceState(history.state, '', '' + url)
+
+  if (newTab === UserTabs.public_bookmarks && isPublicBookmarkEmpty) {
+    getBookmarks(false)
+  }
+  if (newTab === UserTabs.hidden_bookmarks && isHiddenBookmarkEmpty) {
+    getBookmarks(true)
+  }
+})
+
 onBeforeRouteUpdate((to) => {
   if (to.name !== 'users') {
     return
   }
-  init(to.params.id as string)
+  init(to.params.id as string, to.query.tab as UserTabs)
 })
 
 effect(() => useHead({ title: `${user.value?.name} | Users` }))
 onMounted(async () => {
-  init(route.params.id as string)
+  init(route.params.id as string, route.query.tab as UserTabs)
 })
 </script>
 

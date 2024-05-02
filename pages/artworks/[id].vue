@@ -32,7 +32,9 @@
   //- Done
   section.illust-container(v-if='!error && illust')
     #top-area
-      Gallery(:pages='pages')
+      .align-center(:style='{ marginBottom: "1rem" }' v-if='isUgoira')
+        UgoiraViewer(:illust='illust')
+      Gallery(:pages='pages' v-else)
 
       .body-inner
         #meta-area
@@ -47,7 +49,7 @@
 
               p.stats
                 span.like-count(title='点赞')
-                  IFaSolidThumbsUp(data-icon)
+                  IThumbsUp(data-icon)
                   | {{ illust.likeCount }}
 
                 //- 收藏
@@ -56,21 +58,21 @@
                   :title='!userSession.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
                   @click='illust?.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
                 )
-                  IFaSolidHeart(data-icon)
+                  IHeart(data-icon)
                   | {{ illust.bookmarkCount }}
 
                 span.view-count(title='浏览')
-                  IFaSolidEye(data-icon)
+                  IEye(data-icon)
                   | {{ illust.viewCount }}
                 span.count
-                  IFaSolidImages(data-icon)
+                  IImages(data-icon)
                   | {{ pages.length }}张
 
               p.create-date {{ new Date(illust.createDate).toLocaleString() }}
 
             .artwork-tags
               span.original-tag(v-if='illust.isOriginal')
-                IFaSolidLaughWink(data-icon)
+                ILaughWink(data-icon)
                 | 原创
               span.restrict-tag.x-restrict(
                 title='R-18'
@@ -96,7 +98,7 @@
                 target='_blank'
               )
                 template(#icon)
-                  IFaSolidArrowRight
+                  IArrowRight
                 | 前往 Pixiv 查看
 
         aside.author-area(ref='authorRef')
@@ -128,12 +130,12 @@
 <script lang="ts" setup>
 import { useIntersectionObserver } from '@vueuse/core'
 import { NButton, NSkeleton } from 'naive-ui'
-import IFaSolidArrowRight from '~icons/fa-solid/arrow-right'
-import IFaSolidEye from '~icons/fa-solid/eye'
-import IFaSolidHeart from '~icons/fa-solid/heart'
-import IFaSolidImages from '~icons/fa-solid/images'
-import IFaSolidLaughWink from '~icons/fa-solid/laugh-wink'
-import IFaSolidThumbsUp from '~icons/fa-solid/thumbs-up'
+import IArrowRight from '~icons/fa-solid/arrow-right'
+import IEye from '~icons/fa-solid/eye'
+import IHeart from '~icons/fa-solid/heart'
+import IImages from '~icons/fa-solid/images'
+import ILaughWink from '~icons/fa-solid/laugh-wink'
+import IThumbsUp from '~icons/fa-solid/thumbs-up'
 
 import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '~/types'
 
@@ -152,6 +154,24 @@ const siteCache = useSiteCacheStore()
 
 const recommendRef = ref<HTMLDivElement | null>(null)
 const authorRef = ref<HTMLElement>()
+
+const isUgoira = computed(() => illust.value?.illustType === 2)
+const UgoiraViewer = defineAsyncComponent({
+  loader: () => import('@/components/UgoiraViewer.vue'),
+  loadingComponent: () =>
+    h('svg', {
+      width: illust.value?.width,
+      height: illust.value?.height,
+      style: {
+        width: 'auto',
+        height: 'auto',
+        maxWidth: '100%',
+        maxHeight: '60vh',
+        borderRadius: '4px',
+        backgroundColor: '#e8e8e8',
+      },
+    }),
+})
 
 function addObserver(elementRef: Ref, cb: () => any) {
   const unWatch = watch(loading, async (val) => {

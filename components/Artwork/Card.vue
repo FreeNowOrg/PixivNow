@@ -12,26 +12,27 @@
     .artwork-image
       .side-tags
         .restrict.x-restrict(title='R-18' v-if='item.xRestrict')
-          IFaSolidEye(data-icon)
+          IEye(data-icon)
         .restrict.ai-restrict(
           :title='`AI生成(${item.aiType})`'
           v-if='item.aiType === 2'
         )
-          IFaSolidRobot(data-icon)
+          IRobot(data-icon)
         .page-count(
           :title='"共 " + item.pageCount + " 张"'
           v-if='item.pageCount > 1'
         )
-          IFaSolidImages(data-icon)
+          IImages(data-icon)
           | {{ item.pageCount }}
         .bookmark(
           :class='{ bookmarked: item.bookmarkData, disabled: loadingBookmark }'
           @click='handleBookmark'
         )
-          IFaSolidHeart(data-icon)
+          IHeart(data-icon)
       NuxtLink(:to='"/artworks/" + item.id')
         ImageLazy.img(:alt='item.alt', :src='item.url', :title='item.alt')
         .hover-title {{ item.title }}
+        .type-ugoira(v-if='item.illustType === IllustType.UGOIRA'): IPlayCircle
     .artwork-info
       .title
         NuxtLink(:to='"/artworks/" + item.id') {{ item.title }}
@@ -43,12 +44,13 @@
 
 <script lang="ts" setup>
 import { NSkeleton } from 'naive-ui'
-import IFaSolidEye from '~icons/fa-solid/eye'
-import IFaSolidHeart from '~icons/fa-solid/heart'
-import IFaSolidImages from '~icons/fa-solid/images'
-import IFaSolidRobot from '~icons/fa-solid/robot'
+import IEye from '~icons/fa-solid/eye'
+import IHeart from '~icons/fa-solid/heart'
+import IImages from '~icons/fa-solid/images'
+import IRobot from '~icons/fa-solid/robot'
+import IPlayCircle from '~icons/fa-solid/play-circle'
 
-import type { ArtworkInfo } from '~/types'
+import { type ArtworkInfo, IllustType } from '~/types'
 
 const props = defineProps<{
   item?: ArtworkInfo
@@ -116,7 +118,7 @@ async function handleBookmark() {
     top: 0
     width: 100%
     height: 100%
-    transition: all 0.4s ease-in-out
+    transition: all 0.25s ease-in-out
 
   .bookmark
     cursor: pointer
@@ -134,18 +136,30 @@ async function handleBookmark() {
     font-weight: 600
     pointer-events: none
     opacity: 0
-    transition: all 0.4s ease-in-out
+    transition: all 0.25s ease-in-out
+
+  .type-ugoira
+    position: absolute
+    pointer-events: none
+    top: 50%
+    left: 50%
+    font-size: 2.5rem
+    color: #fff
+    opacity: 0.75
+    transform: translate(-50%, -50%)
+    transition: all 0.25s ease-in-out
 
   &:hover a,
   & a.router-link-active
     &::before
       background-color: rgba(0, 0, 0, 0.2)
-
     img
-      transform: scale(1.1)
-
+      transform: scale(1.2)
     .hover-title
       opacity: 1
+    .type-ugoira
+      opacity: 0
+      transform: translate(-50%, -50%) scale(1.5)
 
   .router-link-active
     cursor: default

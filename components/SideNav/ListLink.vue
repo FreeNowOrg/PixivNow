@@ -1,7 +1,7 @@
 <template lang="pug">
 mixin content
   slot
-    IFaSolidListUl.svg--ListLink
+    IListUl.svg--ListLink
   | {{ text }}
 
 li
@@ -14,7 +14,7 @@ li
 </template>
 
 <script lang="ts" setup>
-import IFaSolidListUl from '~icons/fa-solid/list-ul'
+import IListUl from '~icons/fa-solid/list-ul'
 defineProps<{
   text: string
   externalLink?: string

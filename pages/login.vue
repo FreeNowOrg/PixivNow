@@ -1,7 +1,7 @@
 <template lang="pug">
 NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
   NuxtLink.button(:to='$route.query.back.toString()' v-if='$route.query.back')
-    IFaSolidAngleLeft
+    IAngleLeft
     | &nbsp;取消
   h1.title 设置 Pixiv 令牌
   NFormItem(
@@ -34,7 +34,7 @@ NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
 
 #login-form.logged-in(v-if='userStore.isLoggedIn')
   NuxtLink.button(:to='$route.query.back.toString()' v-if='$route.query.back')
-    IFaSolidAngleLeft
+    IAngleLeft
     | &nbsp;返回
   h1 已登录
   #submit
@@ -43,7 +43,7 @@ NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
 
 <script lang="ts" setup>
 import { NButton, NForm, NFormItem, NInput } from 'naive-ui'
-import IFaSolidAngleLeft from '~icons/fa-solid/angle-left'
+import IAngleLeft from '~icons/fa-solid/angle-left'
 
 const example = ref('')
 const sessionIdInput = ref('')

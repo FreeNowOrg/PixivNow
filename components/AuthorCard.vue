@@ -19,8 +19,8 @@
             v-if='user.userId !== userStore.id'
           )
             template(#icon)
-              IFaSolidCheck(v-if='user.isFollowed')
-              IFaSolidPlus(v-else)
+              ICheck(v-if='user.isFollowed')
+              IPlus(v-else)
             | {{ user.isFollowed ? '已关注' : '关注' }}
         NEllipsis.description.pre(:line-clamp='3', :tooltip='false') {{ user.comment }}
     ArtworkList.tiny(:list='user.illusts' inline)
@@ -36,8 +36,8 @@
 
 <script lang="ts" setup>
 import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
-import IFaSolidCheck from '~icons/fa-solid/check'
-import IFaSolidPlus from '~icons/fa-solid/plus'
+import ICheck from '~icons/fa-solid/check'
+import IPlus from '~icons/fa-solid/plus'
 
 import type { User } from '~/types'
 
