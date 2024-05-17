@@ -25,7 +25,7 @@ async function handleInit(originalQuality?: boolean) {
   meta.value = undefined
   isLoading.value = true
 
-  illust.value = await $fetch(`/ajax/illust/${illustId.value}?full=1`)
+  illust.value = await useAjaxResponse(`/ajax/illust/${illustId.value}?full=1`)
 
   isLoading.value = false
 }

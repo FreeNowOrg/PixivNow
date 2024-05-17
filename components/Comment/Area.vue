@@ -49,8 +49,9 @@ async function init(id: string | number): Promise<void> {
 
   try {
     loading.value = true
-    const { body: data } = await $fetch<{
-      body: { hasNext: boolean; comments: Comments[] }
+    const data = await useAjaxResponse<{
+      hasNext: boolean
+      comments: Comments[]
     }>(`/ajax/illusts/comments/roots`, {
       params: {
         illust_id: `${id}`,

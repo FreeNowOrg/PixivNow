@@ -57,11 +57,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { UserListItem } from '@/types'
+import type { UserListItem } from '~/types'
 import IChevronLeft from '~icons/fa-solid/chevron-left'
 
 onMounted(() => {
-  setTitle('Following')
+  useHead({ title: 'Following' })
   resetAll('' + route.params.id)
   fetchList(false)
 })
@@ -92,7 +92,7 @@ const hasMoreHidden = computed(
 )
 
 const userStore = useUserStore()
-const isSelfPage = computed(() => userStore.userId === targetUserId.value)
+const isSelfPage = computed(() => userStore.id === targetUserId.value)
 const title = ref('Following')
 
 function resetAll(userId: string) {
@@ -114,7 +114,7 @@ async function fetchList(hidden?: boolean) {
   isLoading.value = true
 
   try {
-    const { data } = await ajax.get<{
+    const data = await useAjaxResponse<{
       total: number
       users: UserListItem[]
       extraData: {
@@ -136,7 +136,7 @@ async function fetchList(hidden?: boolean) {
     list.value.push(...data.users)
     total.value = data.total
     title.value = data.extraData.meta.ogp.title || 'Following'
-    setTitle(title.value)
+    useHead({ title: title.value })
   } finally {
     isLoading.value = false
   }

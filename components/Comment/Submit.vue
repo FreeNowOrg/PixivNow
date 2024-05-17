@@ -38,7 +38,7 @@ async function submit(): Promise<void> {
   if (loading.value) return
   try {
     loading.value = true
-    const { body: data } = await $fetch(`/ajax/illusts/comments/post`, {
+    const data = await useAjaxResponse<any>(`/ajax/illusts/comments/post`, {
       method: 'post',
       body: {
         type: 'comment',

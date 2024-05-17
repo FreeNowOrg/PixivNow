@@ -15,30 +15,30 @@
         @click='isShowBgInfo = true'
         style='margin-left: 0.5em'
         title='关于背景'
-        v-if='randomBg.id'
+        v-if='randomBg.info.id'
       )
         IInfoCircle
 
   NModal(
-    :title='`背景图片：${randomBg.alt}`'
+    :title='`背景图片：${randomBg.info.alt}`'
     closable
     preset='card'
     v-model:show='isShowBgInfo'
   )
     .bg-info-modal
       .align-center
-        NuxtLink.thumb(:to='"/artworks/" + randomBg.id')
-          img(:src='randomBg.urls?.regular || randomBg.url' lazyload)
+        NuxtLink.thumb(:to='"/artworks/" + randomBg.info.id')
+          img(:src='randomBg.info.url || randomBg.url' lazyload)
         .desc
           .author
-            NuxtLink(:to='"/users/" + randomBg.userId') {{ randomBg.userName }}
-            | 的作品 (ID: {{ randomBg.id }})
+            NuxtLink(:to='"/users/" + randomBg.info.userId') {{ randomBg.info.userName }}
+            | 的作品 (ID: {{ randomBg.info.id }})
         NSpace(justify='center' size='small' style='margin-top: 1rem')
           NTag(
             :key='tag'
             @click='$router.push({ name: "search", params: { keyword: tag, p: 1 } })'
             style='cursor: pointer'
-            v-for='tag in randomBg.tags'
+            v-for='tag in randomBg.info.tags'
           ) {{ tag }}
 
   .body-inner
@@ -86,14 +86,15 @@ const topSliderStyles = computed(() => {
 
 async function setRandomBgNoCache(): Promise<void> {
   try {
-    const { body: data } = await $fetch<{
-      body: { illusts: ArtworkInfoOrAd[] }
-    }>('/ajax/illust/discovery', {
-      query: {
-        mode: 'safe',
-        max: '1',
-      },
-    })
+    const data = await useAjaxResponse<{ illusts: ArtworkInfoOrAd[] }>(
+      '/ajax/illust/discovery',
+      {
+        query: {
+          mode: 'safe',
+          max: '1',
+        },
+      }
+    )
     const info =
       data.illusts.find((item): item is ArtworkInfo => isArtwork(item)) ??
       defaultArtwork
@@ -126,8 +127,8 @@ async function setDiscoveryNoCache(): Promise<void> {
   try {
     loadingDiscovery.value = true
     // discoveryList.value = []
-    const { body: data } = await $fetch<{
-      body: { illusts: ArtworkInfoOrAd[] }
+    const data = await useAjaxResponse<{
+      illusts: ArtworkInfoOrAd[]
     }>('/ajax/illust/discovery', {
       query: {
         mode: 'all',

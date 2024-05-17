@@ -1,7 +1,7 @@
 <template lang="pug">
 #notification-view.body-inner
   h1.align-center 关于 PixivNow 将可能停止服务的通知（2024年4月26日）
-  Card
+  Card(title='')
     p 各位，早上好中午好晚上好：
     p 我们希望通知您，由于 Vercel 在 2024年4月4日 对其<a href="https://vercel.com/blog/improved-infrastructure-pricing" target="_blank">定价策略</a>进行了修改，细化了收费指标，这对我们的项目产生了重大影响。特别是，我们的项目在部分指标上的用量<strong>已经远超过了</strong>免费计划的限额。由于 PixivNow 是一个开源项目，并且到目前为止我们<strong>没有任何盈利</strong>，我们很难为了这个兴趣使然的项目自掏腰包。
     p 幸运的是，Vercel 为现有的免费计划用户提供了 6 个月的缓冲期，这意味着我们的服务在接下来的六个月内不会受到影响。但是在此之后（大约是 2024年9月），我们的服务有极大概率将被迫中断。

@@ -44,7 +44,7 @@ export async function addBookmark(
   illust_id: number | `${number}`
 ): Promise<any> {
   return (
-    await $fetch<{ data: any }>('/ajax/illusts/bookmarks/add', {
+    await useAjaxResponse<any>('/ajax/illusts/bookmarks/add', {
       method: 'POST',
       headers: { 'Content-Type': 'applicaion/json' },
       body: { illust_id, restrict: 0, comment: '', tags: [] },
@@ -56,7 +56,7 @@ export async function removeBookmark(
   bookmark_id: number | `${number}`
 ): Promise<any> {
   return (
-    await $fetch<{ data: any }>('/ajax/illusts/bookmarks/delete', {
+    await useAjaxResponse<any>('/ajax/illusts/bookmarks/delete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',

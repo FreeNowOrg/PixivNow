@@ -157,7 +157,7 @@ const authorRef = ref<HTMLElement>()
 
 const isUgoira = computed(() => illust.value?.illustType === 2)
 const UgoiraViewer = defineAsyncComponent({
-  loader: () => import('@/components/UgoiraViewer.vue'),
+  loader: () => import('~/components/UgoiraViewer.vue'),
   loadingComponent: () =>
     h('svg', {
       width: illust.value?.width,
@@ -215,9 +215,9 @@ async function init(id: string): Promise<void> {
   }
 
   try {
-    const [{ body: illustData }, { body: illustPage }] = await Promise.all([
-      $fetch<{ body: Artwork }>(`/ajax/illust/${id}?full=1`),
-      $fetch<{ body: ArtworkGallery[] }>(`/ajax/illust/${id}/pages`),
+    const [illustData, illustPage] = await Promise.all([
+      useAjaxResponse<Artwork>(`/ajax/illust/${id}?full=1`),
+      useAjaxResponse<ArtworkGallery[]>(`/ajax/illust/${id}/pages`),
     ])
     siteCache.set(`illust.${id}`, illustData)
     siteCache.set(`illust.${id}.page`, illustPage)
@@ -243,9 +243,9 @@ async function handleUserInit(userId: string): Promise<void> {
   }
 
   try {
-    const [{ body: userData }, { body: profileData }] = await Promise.all([
-      $fetch<{ body: User }>(`/ajax/user/${userId}?full=1`),
-      $fetch<{ body: { illusts: Record<string, ArtworkInfo> } }>(
+    const [userData, profileData] = await Promise.all([
+      useAjaxResponse<User>(`/ajax/user/${userId}?full=1`),
+      useAjaxResponse<{ illusts: Record<string, ArtworkInfo> }>(
         `/ajax/user/${userId}/profile/top`
       ),
     ])
@@ -266,11 +266,9 @@ async function handleRecommendInit(id: string): Promise<void> {
   try {
     recommendLoading.value = true
     console.log('init recommend')
-    const { body: data } = await $fetch<{
-      body: {
-        illusts: ArtworkInfo[]
-        nextIds: string[]
-      }
+    const data = await useAjaxResponse<{
+      illusts: ArtworkInfo[]
+      nextIds: string[]
     }>(`/ajax/illust/${id}/recommend/init?limit=18`)
     recommend.value = data.illusts
     recommendNextIds.value = data.nextIds
@@ -291,11 +289,9 @@ async function handleMoreRecommend(): Promise<void> {
     recommendLoading.value = true
     console.log('get more recommend')
     const requestIds = recommendNextIds.value.splice(0, 18)
-    const { body: data } = await $fetch<{
-      body: {
-        illusts: ArtworkInfo[]
-        nextIds: string[]
-      }
+    const data = await useAjaxResponse<{
+      illusts: ArtworkInfo[]
+      nextIds: string[]
     }>('/ajax/illust/recommend/illusts', { params: { illust_ids: requestIds } })
     recommend.value = recommend.value.concat(data.illusts)
     recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)

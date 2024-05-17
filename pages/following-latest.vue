@@ -11,10 +11,10 @@
 </template>
 
 <script lang="ts" setup>
-import { type ArtworkInfo } from '@/types'
+import { type ArtworkInfo } from '~/types'
 
 onMounted(() => {
-  setTitle('New Artworks from Following Users')
+  useHead({ title: 'New Artworks from Following Users' })
   fetchList()
 })
 
@@ -38,7 +38,7 @@ async function fetchList() {
   isLoading.value = true
 
   try {
-    const { data } = await ajax.get<{
+    const data = await useAjaxResponse<{
       page: {
         isLastPage: boolean
       }

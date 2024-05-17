@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { PixivUser } from '@/types'
+import type { PixivUser } from '~/types'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<PixivUser | null>(null)

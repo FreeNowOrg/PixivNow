@@ -9,7 +9,6 @@
 
   //- Result
   section(v-if='!error')
-
     //- Loading
     .loading-area(v-if='loading && !resultList.length')
       ArtworkList(:list='[]', :loading='16')
@@ -19,10 +18,18 @@
 
     NSpin.result-area(:show='loading' v-if='resultList.length')
       .pagenator
-        NPagination(v-model:page='page' :item-count='total' :page-size='resultList.length')
+        NPagination(
+          :item-count='total',
+          :page-size='resultList.length'
+          v-model:page='page'
+        )
       ArtworkLargeList(:artwork-list='resultList')
       .pagenator
-        NPagination(v-model:page='page' :item-count='total' :page-size='resultList.length')
+        NPagination(
+          :item-count='total',
+          :page-size='resultList.length'
+          v-model:page='page'
+        )
 </template>
 
 <script setup lang="ts">
@@ -30,7 +37,7 @@ import { NButton, NSpin } from 'naive-ui'
 import IAngleLeft from '~icons/fa-solid/angle-left'
 import IAngleRight from '~icons/fa-solid/angle-right'
 
-import type { ArtworkInfo } from '~/types'
+import type { AjaxResponse, ArtworkInfo } from '~/types'
 
 const error = ref('')
 const loading = ref(true)
@@ -60,10 +67,11 @@ async function makeSearch({
   if (!searchKeyword.value) return
   try {
     loading.value = true
-    const data = await $fetch<{ illustManga: { data: ArtworkInfo[] } }>(
-      `/ajax/search/artworks/${encodeURIComponent(keyword)}`,
-      { params: new URLSearchParams({ p: p ?? '1', mode: mode ?? 'text' }) }
-    )
+    const data = await useAjaxResponse<{
+      illustManga: { data: ArtworkInfo[]; total: number }
+    }>(`/ajax/search/artworks/${encodeURIComponent(keyword)}`, {
+      params: new URLSearchParams({ p: p ?? '1', mode: mode ?? 'text' }),
+    })
     resultList.value = data.illustManga?.data ?? []
     total.value = data.illustManga?.total || 0
     console.info(data.illustManga?.data)

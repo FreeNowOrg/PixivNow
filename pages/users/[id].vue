@@ -111,14 +111,22 @@
         type='line'
         v-model:value='tab'
       )
-        NTabPane(display-directive='show:lazy' :name='UserTabs.illusts' tab='插画')
+        NTabPane(
+          :name='UserTabs.illusts'
+          display-directive='show:lazy'
+          tab='插画'
+        )
           NEmpty(
             description='用户没有插画作品 (｡•́︿•̀｡)'
             v-if='user.illusts && !user.illusts.length'
           )
           .user-illust.body-inner(v-else)
             ArtworksByUser(:user-id='user.userId' work-category='illust')
-        NTabPane(display-directive='show:lazy' :name='UserTabs.mangas' tab='漫画')
+        NTabPane(
+          :name='UserTabs.mangas'
+          display-directive='show:lazy'
+          tab='漫画'
+        )
           NEmpty(description='用户没有漫画作品 (*/ω＼*)' v-if='!user.manga?.length')
           .user-manga.body-inner(v-else)
             ArtworksByUser(:user-id='user.userId' work-category='manga')
@@ -139,10 +147,14 @@
             )
               ShowMore(
                 :loading='loadingPublicBookmarks',
-                :method='() => getBookmarks(false)',
+                :method='() => getPublicBookmarks()',
                 :text='loadingPublicBookmarks ? "正在加载" : "加载更多"'
               )
-        NTabPane(:name='UserTabs.hidden_bookmarks' tab='秘密收藏' v-if='isSelfUserPage')
+        NTabPane(
+          :name='UserTabs.hidden_bookmarks'
+          tab='秘密收藏'
+          v-if='isSelfUserPage'
+        )
           ArtworkList(
             :list='[]',
             :loading='8'
@@ -159,7 +171,7 @@
             )
               ShowMore(
                 :loading='loadingHiddenBookmarks',
-                :method='() => getBookmarks(true)',
+                :method='() => getHiddenBookmarks()',
                 :text='loadingHiddenBookmarks ? "正在加载" : "加载更多"'
               )
 </template>
@@ -187,7 +199,7 @@ import type { ArtworkInfo, User } from '~/types'
 
 const loadingUser = ref(true)
 const user = ref<User>()
-const isSelfUserPage = computed(() => user.value?.userId === userStore.userId)
+const isSelfUserPage = computed(() => user.value?.userId === userStore.id)
 
 const publicBookmarks = ref<ArtworkInfo[]>([])
 const loadingPublicBookmarks = ref(false)
@@ -206,18 +218,20 @@ const hasMoreHiddenBookmarks = computed(
     hiddenBookmarks.value.length &&
     hiddenBookmarks.value.length < totalHiddenBookmarks.value
 )
+const loadingBookmarks = computed(
+  () => loadingHiddenBookmarks.value || loadingPublicBookmarks.value
+)
 
 enum UserTabs {
   illusts = 'illusts',
   mangas = 'mangas',
   public_bookmarks = 'public_bookmarks',
-  hidden_bookmarks = 'hidden_bookmarks'
+  hidden_bookmarks = 'hidden_bookmarks',
 }
 const tab = ref<UserTabs>()
 const error = ref('')
 const showUserMore = ref(false)
 const route = useRoute()
-const router = useRouter()
 const userStore = useUserStore()
 const siteCache = useSiteCacheStore()
 const topBackgroundStyles = computed(() => {
@@ -263,15 +277,13 @@ async function init(id: string | number, initTab?: UserTabs): Promise<void> {
     return
   }
   try {
-    loading.value = true
-    const [{ body: data }, { body: profileData }] = await Promise.all([
-      $fetch<{ body: User }>(`/ajax/user/${id}?full=1`),
-      $fetch<{
-        body: {
-          illusts: Record<string, ArtworkInfo>
-          manga: Record<string, ArtworkInfo>
-          novels: Record<string, ArtworkInfo>
-        }
+    loadingUser.value = true
+    const [data, profileData] = await Promise.all([
+      useAjaxResponse<User>(`/ajax/user/${id}?full=1`),
+      useAjaxResponse<{
+        illusts: Record<string, ArtworkInfo>
+        manga: Record<string, ArtworkInfo>
+        novels: Record<string, ArtworkInfo>
       }>(`/ajax/user/${id}/profile/top`),
     ])
     const userValue = {
@@ -282,7 +294,7 @@ async function init(id: string | number, initTab?: UserTabs): Promise<void> {
     }
     user.value = userValue
     tab.value = initTab || UserTabs.illusts
-    setCache(`users.${id}`, userValue)
+    siteCache.set(`users.${id}`, userValue)
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
@@ -315,14 +327,22 @@ function userMore(): void {
   showUserMore.value = true
 }
 
-async function getBookmarks(): Promise<void> {
+async function getHiddenBookmarks() {}
+
+async function getPublicBookmarks() {}
+
+function canViewBookmarks() {
   if (!userStore.isLoggedIn) {
     // TODO: temp solution, need a better way to implement
     alert('You need to log in to view the bookmarks')
-    return
+    return false
   }
   const target = user.value
-  if (!target) return
+  if (!target) return false
+  return true
+}
+
+async function fetchBookmarks(): Promise<void> {
   if (loadingBookmarks.value) return
 
   try {

@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ArtworkInfo } from '@/types'
+import { type ArtworkInfo } from '~/types'
 import { NPagination } from 'naive-ui'
 import {} from 'vue'
 
@@ -72,7 +72,7 @@ async function firstInit() {
 }
 
 async function fetchAllArtworkIds() {
-  const data = await $fetch<{
+  const data = await useAjaxResponse<{
     illusts: Record<string, unknown>
     manga: Record<string, unknown>
   }>(`/ajax/user/${props.userId}/profile/all`)
@@ -90,7 +90,7 @@ function getArtworkIdsByPage(page: number) {
 async function fetchArtworksByPage(page: number) {
   if (cachedPages.value[page]) return cachedPages.value[page]
   const ids = getArtworkIdsByPage(page)
-  const data = await $fetch<{
+  const data = await useAjaxResponse<{
     works: Record<string, ArtworkInfo>
   }>(`/ajax/user/${props.userId}/profile/illusts`, {
     params: {
