@@ -1,11 +1,17 @@
 import { load } from 'cheerio'
 
 export default defineEventHandler(async (event) => {
-  const data: { method: string; params: Record<string, string> } = JSON.parse(
+  const data: { method: string; params: Record<string, string> } =
     await readBody(event)
-  )
+
   const reqHeaders = getProxyRequestHeaders(event)
   switch (data.method) {
+    case 'init': {
+      data.params ||= {}
+      data.params.sessionId = getCookie(event, 'PHPSESSID') || ''
+      // break intentionally omitted
+      // eslint-disable-next-line no-case-declarations
+    }
     case 'login': {
       if (!data.params.sessionId) {
         setResponseStatus(event, 400)

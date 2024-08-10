@@ -41,7 +41,11 @@ const routeLocale = computed(
   () => (route.name as string)?.split('___')[1] ?? ''
 )
 
-onMounted(async () => {})
+const user = useUserStore()
+
+onMounted(async () => {
+  user.initUser()
+})
 </script>
 
 <style scoped lang="sass">
@@ -51,7 +55,7 @@ onMounted(async () => {})
   flex-direction: column
 
 main
-  padding-top: 50px
+  // padding-top: 50px
   position: relative
   flex: 1
   article

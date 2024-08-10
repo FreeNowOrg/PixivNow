@@ -58,17 +58,15 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                     .uid @{{ userStore.pixivId }}
 
               li(v-if='userStore.isLoggedIn')
-                RouterLink.plain(
-                  :to='{ name: "users", params: { id: userStore.id }, query: { tab: "public_bookmarks" } }'
+                NuxtLink.plain(
+                  :to='`/users/${userStore.id}?tab=public_bookmarks`'
                 ) 公开收藏
               li(v-if='userStore.isLoggedIn')
-                RouterLink.plain(
-                  :to='{ name: "users", params: { id: userStore.id }, query: { tab: "hidden_bookmarks" } }'
+                NuxtLink.plain(
+                  :to='`/users/${userStore.id}?tab=hidden_bookmarks`'
                 ) 私密收藏
               li(v-if='userStore.isLoggedIn')
-                RouterLink.plain(
-                  :to='{ name: "following", params: { id: userStore.id } }'
-                ) 我的关注
+                NuxtLink.plain(:to='`/following/${userStore.id}`') 我的关注
               li(v-if='$route.path !== "/login"')
                 NuxtLink.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
               li(v-if='userStore.isLoggedIn')

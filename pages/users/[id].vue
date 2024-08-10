@@ -28,7 +28,9 @@
   section.user(v-else-if='user')
     .user-info
       .bg-area(:class='{ "no-background": !user?.background }')
-        .bg-container(:style='topBackgroundStyles')
+        .bg-container(
+          :style='{ backgroundImage: user?.background?.url ? `url("${user.background.url}")` : undefined }'
+        )
           span(v-if='!user?.background') 用户未设置封面~
       .info-area
         .avatar-area
@@ -53,7 +55,7 @@
             NButton(round size='small' type='info')
               | 我真棒
         .following
-          RouterLink(:to='{ name: "following", params: { id: user.userId } }') 关注了 <strong>{{ user.following }}</strong> 人
+          NuxtLink(:to='`/following/${user.id}`') 关注了 <strong>{{ user.following }}</strong> 人
         .gender(v-if='user.gender?.name')
           IVenusMars(data-icon)
           | {{ user.gender.name }}
@@ -147,7 +149,7 @@
             )
               ShowMore(
                 :loading='loadingPublicBookmarks',
-                :method='() => getPublicBookmarks()',
+                :method='() => getBookmarks(false)',
                 :text='loadingPublicBookmarks ? "正在加载" : "加载更多"'
               )
         NTabPane(
@@ -171,7 +173,7 @@
             )
               ShowMore(
                 :loading='loadingHiddenBookmarks',
-                :method='() => getHiddenBookmarks()',
+                :method='() => getBookmarks(true)',
                 :text='loadingHiddenBookmarks ? "正在加载" : "加载更多"'
               )
 </template>
@@ -342,28 +344,35 @@ function canViewBookmarks() {
   return true
 }
 
-async function fetchBookmarks(): Promise<void> {
-  if (loadingBookmarks.value) return
+async function getBookmarks(hidden?: boolean): Promise<void> {
+  const curUser = user.value
+  if (!curUser) return
+
+  const curLoading = hidden ? loadingHiddenBookmarks : loadingPublicBookmarks
+  const curList = hidden ? hiddenBookmarks : publicBookmarks
+  const curTotal = hidden ? totalHiddenBookmarks : totalPublicBookmarks
+
+  if (curLoading.value) return
 
   try {
-    loadingBookmarks.value = true
-    const data = await $fetch<{ works: ArtworkInfo; total: number }>(
-      `/ajax/user/${target.userId}/illusts/bookmarks`,
+    curLoading.value = true
+    const data = await $fetch<{ body: { works: ArtworkInfo; total: number } }>(
+      `/ajax/user/${curUser.userId}/illusts/bookmarks`,
       {
         params: {
           tag: '',
-          offset: `${bookmarks.value.length}`,
+          offset: `${curList.value.length}`,
           limit: '48',
-          rest: 'show',
+          rest: hidden ? 'hide' : 'show',
         },
       }
     )
-    totalBookmarks.value = data.total
-    bookmarks.value = bookmarks.value.concat(data.works)
+    curTotal.value = data.body.total
+    curList.value = curList.value.concat(data.body.works)
   } catch (err) {
     console.warn('failed to fetch bookmarks', err)
   } finally {
-    loadingBookmarks.value = false
+    curLoading.value = false
   }
 }
 

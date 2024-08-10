@@ -30,7 +30,7 @@ export const useUserStore = defineStore('user', () => {
           },
         }
       )
-      if (data.status === 'success') {
+      if (data.userData?.id) {
         console.log('session id success')
         user.value = data.userData
       } else {
@@ -44,7 +44,7 @@ export const useUserStore = defineStore('user', () => {
   }
   async function logout() {
     try {
-      const data = await $fetch<{ status: string }>('/api/auth', {
+      await $fetch('/api/auth', {
         method: 'POST',
         headers: {
           'Cache-Control': 'no-store',
@@ -54,14 +54,34 @@ export const useUserStore = defineStore('user', () => {
           params: {},
         },
       })
-      if (data.status === 'success') {
-        user.value = null
-      } else {
-        console.error('an error occurred')
-      }
+      user.value = null
     } catch (e) {
       console.error(e)
     }
+  }
+  function initUser() {
+    return $fetch<{ userData: PixivUser }>('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Cache-Control': 'no-store',
+      },
+      body: {
+        method: 'init',
+        params: {},
+      },
+    })
+      .then((data) => {
+        if (data.userData?.id) {
+          user.value = data.userData
+          return data.userData
+        } else {
+          return null
+        }
+      })
+      .catch((err) => {
+        console.error('faied to init userData', err)
+        return null
+      })
   }
   return {
     isLoggedIn,
@@ -72,5 +92,6 @@ export const useUserStore = defineStore('user', () => {
     profileImgBig,
     login,
     logout,
+    initUser,
   }
 })
