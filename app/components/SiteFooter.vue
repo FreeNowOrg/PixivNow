@@ -39,12 +39,13 @@ footer.global-footer
       em v{{ config.version }}
     .dev-only(style='font-style: italic')
       | This is test site →&nbsp;
-      a(:href='"https://pixiv.js.org" + $route.path' target='_blank') Go to Prod.
+      a(:href='"https://pixiv.js.org" + route.path' target='_blank') Go to Prod.
 </template>
 
 <script lang="ts" setup>
 const config = useAppConfig()
-const yearStr = computed(() => `2021 - ${new Date().getFullYear()}`)
+const route = useRoute()
+const yearStr = `2021 - ${new Date().getFullYear()}`
 </script>
 <style scoped lang="sass">
 

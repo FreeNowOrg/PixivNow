@@ -12,11 +12,12 @@
   .flex.not-logged-in(v-if='!store.isLoggedIn')
     p
       | 您需要
-      NuxtLink(:to='"/login?back=" + $route.path') 设置 Pixiv 令牌
+      NuxtLink(:to='"/login?back=" + route.path') 设置 Pixiv 令牌
       | 以发表评论。
 </template>
 
 <script lang="ts" setup>
+const route = useRoute()
 const store = useUserStore()
 
 const loading = ref(false)

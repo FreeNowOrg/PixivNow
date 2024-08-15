@@ -1,4 +1,4 @@
-import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
+import type { ArtworkInfo, ArtworkInfoOrAd } from '../types'
 
 export const defaultArtwork: ArtworkInfo = {
   id: '0',

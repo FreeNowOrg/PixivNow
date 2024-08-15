@@ -1,4 +1,4 @@
-import type { Artwork } from '~/types'
+import type { Artwork } from '../types'
 import { unzip } from 'fflate'
 import Gif from 'gif.js'
 import gifWorker from 'gif.js/dist/gif.worker.js?url'

@@ -19,7 +19,6 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@css-render/vue3-ssr": "^0.15.14",
     "@dragon-fish/sensitive-words-filter": "^2.0.1",
     "@iconify-json/fa-solid": "^1.1.9",
     "@nuxt/devtools": "latest",
@@ -44,6 +43,7 @@
     "naive-ui": "^2.39.0",
     "nprogress": "^0.2.0",
     "nuxt": "^3.12.4",
+    "nuxtjs-naive-ui": "^1.0.2",
     "pinia": "^2.2.1",
     "prettier": "^3.3.3",
     "pug": "^3.0.3",
@@ -52,12 +52,12 @@
     "typescript": "^5.5.4",
     "unplugin-icons": "^0.18.5",
     "vite": "^5.4.0",
-    "vue": "^3.4.37",
+    "vue": "^3.4.38",
     "vue-flex-waterfall": "^2.3.0",
     "vue-gtag": "^2.0.1",
     "vue-i18n": "^9.13.1",
     "vue-router": "^4.4.3",
     "vue-waterfall-plugin-next": "^2.4.3"
   },
-  "packageManager": "pnpm@9.7.0"
+  "packageManager": "pnpm@9.7.1"
 }

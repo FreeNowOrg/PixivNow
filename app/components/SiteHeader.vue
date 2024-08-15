@@ -8,7 +8,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
       NuxtLink.plain(to='/')
         img.site-logo(src='/images/LogoH.png')
 
-    .flex.search-area(v-if='$route.name !== "search"')
+    .flex.search-area(v-if='route.name !== "search"')
       .search-full.align-right.flex-1
         SearchBox
       .search-icon.align-right.flex-1
@@ -82,6 +82,7 @@ const notAtTop = ref(false)
 const showUserDropdown = ref(false)
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()
+const route = useRoute()
 
 function toggleSideNav() {
   sideNavStore.toggle()
