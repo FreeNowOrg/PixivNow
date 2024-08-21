@@ -45,8 +45,8 @@
     "@types/nprogress": "^0.2.3",
     "@vercel/node": "^3.0.27",
     "@vitejs/plugin-vue": "^5.0.4",
-    "@vue/language-plugin-pug": "^1.8.27",
-    "@vueuse/core": "^10.9.0",
+    "@vue/language-plugin-pug": "^2.0.0",
+    "@vueuse/core": "^11.0.0",
     "cheerio": "1.0.0-rc.12",
     "conventional-changelog-cli": "^4.1.0",
     "cookie": "^0.6.0",
@@ -60,7 +60,7 @@
     "unplugin-auto-import": "^0.17.5",
     "unplugin-icons": "^0.18.5",
     "unplugin-vue-components": "^0.26.0",
-    "vercel": "^32.7.2",
+    "vercel": "^37.0.0",
     "vite": "^5.2.9"
   }
 }
