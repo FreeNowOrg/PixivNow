@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     query.image !== 'json'
   const p = new URLSearchParams({
     mode: (query.mode as string) ?? 'safe',
-    max: requestingImage ? '1' : (query.max as string) ?? '8',
+    max: requestingImage ? '1' : ((query.max as string) ?? '8'),
   })
   const res = await fetch(`/ajax/illust/discovery?${p.toString()}`, {
     headers: {
