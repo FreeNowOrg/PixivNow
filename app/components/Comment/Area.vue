@@ -33,14 +33,14 @@ const loading = ref(false)
 const comments = ref<Comments[]>([])
 const hasNext = ref(false)
 
-const props = defineProps<{
+const { id, count } = defineProps<{
   id: string
   count: number
 }>()
 
 async function init(id: string | number): Promise<void> {
   if (loading.value) return
-  if (!props.count) {
+  if (!count) {
     hasNext.value = false
     comments.value = []
     loading.value = false
@@ -73,18 +73,15 @@ function pushComment(data: Comments) {
   comments.value.unshift(data)
 }
 
-const commentsArea = ref<HTMLDivElement | null>(null)
+const commentsArea = useTemplateRef<HTMLDivElement>('commentsArea')
 
-const ob = useIntersectionObserver(
-  commentsArea,
-  async ([{ isIntersecting }]) => {
-    if (isIntersecting) {
-      await nextTick()
-      init(props.id)
-      ob.stop()
-    }
+const ob = useIntersectionObserver(commentsArea, async ([entry]) => {
+  if (entry?.isIntersecting) {
+    await nextTick()
+    init(id)
+    ob.stop()
   }
-)
+})
 </script>
 
 <style scoped lang="sass">

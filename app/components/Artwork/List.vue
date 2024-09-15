@@ -16,18 +16,18 @@ import { NScrollbar } from 'naive-ui'
 
 import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
 
-const props = defineProps<{
+const { loading, list } = defineProps<{
   list: ArtworkInfoOrAd[]
   loading?: boolean | number
   inline?: boolean
 }>()
 
 const skeletonNumber = computed(() =>
-  typeof props.loading === 'number' ? props.loading : 8
+  typeof loading === 'number' ? loading : 8
 )
 
 const artworks = computed(() => {
-  return props.list.filter((item): item is ArtworkInfo => isArtwork(item))
+  return list.filter((item): item is ArtworkInfo => isArtwork(item))
 })
 </script>
 

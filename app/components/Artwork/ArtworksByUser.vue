@@ -23,17 +23,12 @@ import { type ArtworkInfo } from '~/types'
 import { NPagination } from 'naive-ui'
 import {} from 'vue'
 
-const props = withDefaults(
-  defineProps<{
-    userId: string
-    workCategory?: 'illust' | 'manga'
-  }>(),
-  {
-    workCategory: 'illust',
-  }
-)
+const { userId, workCategory = 'illust' } = defineProps<{
+  userId: string
+  workCategory?: 'illust' | 'manga'
+}>()
 
-const containerRef = ref<HTMLElement>()
+const containerRef = useTemplateRef<HTMLDivElement>('containerRef')
 const artworkIds = ref<string[]>([])
 const pageSize = 24
 const curPage = ref(1)
@@ -75,9 +70,9 @@ async function fetchAllArtworkIds() {
   const data = await useAjaxResponse<{
     illusts: Record<string, unknown>
     manga: Record<string, unknown>
-  }>(`/ajax/user/${props.userId}/profile/all`)
+  }>(`/ajax/user/${userId}/profile/all`)
   const works =
-    props.workCategory === 'illust'
+    workCategory === 'illust'
       ? Object.keys(data.illusts)
       : Object.keys(data.manga)
   return works
@@ -92,10 +87,10 @@ async function fetchArtworksByPage(page: number) {
   const ids = getArtworkIdsByPage(page)
   const data = await useAjaxResponse<{
     works: Record<string, ArtworkInfo>
-  }>(`/ajax/user/${props.userId}/profile/illusts`, {
+  }>(`/ajax/user/${userId}/profile/illusts`, {
     params: {
       ids,
-      work_category: props.workCategory,
+      work_category: workCategory,
       is_first_page: 0,
     },
   })

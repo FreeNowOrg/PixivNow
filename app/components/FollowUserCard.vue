@@ -42,14 +42,11 @@ import IFasPlus from '~icons/fa-solid/plus'
 
 const userStore = useUserStore()
 
-const props = defineProps<{
-  user?: UserListItem
-}>()
+const { user } = defineProps<{ user?: UserListItem }>()
 
 const loadingUserFollow = ref(false)
 function handleUserFollow() {
-  if (!props.user || loadingUserFollow.value) return
-  const user = props.user
+  if (!user || loadingUserFollow.value) return
 
   loadingUserFollow.value = true
   const isFollowing = user.following

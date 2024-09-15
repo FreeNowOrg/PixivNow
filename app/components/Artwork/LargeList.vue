@@ -12,15 +12,15 @@ Waterfall.artwork-large-list(
 import { Waterfall } from 'vue-waterfall-plugin-next'
 import type { ArtworkInfo, ArtworkRank } from '~/types'
 
-const props = defineProps<{
+const { rankList, artworkList } = defineProps<{
   rankList?: ArtworkRank[]
   artworkList?: ArtworkInfo[]
 }>()
 const artworks = computed(() => {
-  if (props.rankList) {
-    return convertRankToInfo(props.rankList)
-  } else if (props.artworkList) {
-    return props.artworkList.map((item): [ArtworkInfo, number] => {
+  if (rankList) {
+    return convertRankToInfo(rankList)
+  } else if (artworkList) {
+    return artworkList.map((item): [ArtworkInfo, number] => {
       return [item, 0]
     })
   } else {

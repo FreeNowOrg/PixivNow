@@ -52,7 +52,7 @@ import IPlayCircle from '~icons/fa-solid/play-circle'
 
 import { type ArtworkInfo, IllustType } from '~/types'
 
-const props = defineProps<{
+const { item } = defineProps<{
   item?: ArtworkInfo
   loading?: boolean
 }>()
@@ -61,16 +61,15 @@ const loadingBookmark = ref(false)
 async function handleBookmark() {
   if (loadingBookmark.value) return
   loadingBookmark.value = true
-  const item = props.item!
   try {
-    if (item.bookmarkData) {
-      await removeBookmark(item.bookmarkData.id).then(() => {
-        item.bookmarkData = null
+    if (item!.bookmarkData) {
+      await removeBookmark(item!.bookmarkData.id).then(() => {
+        item!.bookmarkData = null
       })
     } else {
-      await addBookmark(item.id).then((data) => {
+      await addBookmark(item!.id).then((data) => {
         if (data.last_bookmark_id) {
-          item.bookmarkData = { id: data.last_bookmark_id, private: false }
+          item!.bookmarkData = { id: data.last_bookmark_id, private: false }
         }
       })
     }

@@ -11,18 +11,18 @@
 import IPlus from '~icons/fa-solid/plus'
 import ISpinner from '~icons/fa-solid/spinner'
 
-const elRef = ref<HTMLDivElement | null>(null)
+const elRef = useTemplateRef<HTMLDivElement>('elRef')
 
-const props = defineProps<{
+const { method } = defineProps<{
   text: string
   method: () => any | Promise<any>
   loading: boolean
 }>()
 
-useIntersectionObserver(elRef, async ([{ isIntersecting }]) => {
-  if (isIntersecting) {
+useIntersectionObserver(elRef, async ([entry]) => {
+  if (entry?.isIntersecting) {
     await nextTick()
-    props.method()
+    method()
   }
 })
 </script>

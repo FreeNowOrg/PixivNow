@@ -57,7 +57,7 @@ const msgList = [
   '这像劲爆纵连一样没有人喜欢！',
 ]
 
-const props = defineProps<{
+const { title } = defineProps<{
   title?: string
   description?: string
   status?:
@@ -74,7 +74,7 @@ const msg = ref('')
 function randomMsg(): void {
   const newValue = msgList[Math.floor(Math.random() * msgList.length)]
   if (newValue !== msg.value) {
-    msg.value = newValue
+    msg.value = newValue!
   } else {
     randomMsg()
   }
@@ -82,7 +82,7 @@ function randomMsg(): void {
 
 effect(() =>
   useHead({
-    title: `${props.title} | Error`,
+    title: `${title} | Error`,
   })
 )
 

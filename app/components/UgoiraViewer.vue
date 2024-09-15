@@ -43,18 +43,16 @@ import IDownload from '~icons/fa-solid/download'
 import IFilm from '~icons/fa-solid/film'
 import IImage from '~icons/fa-solid/image'
 
-const props = defineProps<{
-  illust: Artwork
-}>()
+const { illust } = defineProps<{ illust: Artwork }>()
 const emit = defineEmits<{
   'on:player': [UgoiraPlayer]
 }>()
 
 const firstLoaded = ref(false)
 const isLoading = ref(false)
-const canvasRef = ref<HTMLCanvasElement>()
+const canvasRef = useTemplateRef<HTMLCanvasElement>('canvasRef')
 const player = computed(() => {
-  const p = new UgoiraPlayer(props.illust)
+  const p = new UgoiraPlayer(illust)
   emit('on:player', p)
   return p
 })
@@ -88,7 +86,7 @@ function handlePause() {
 
 function handleJumpToCover() {
   const a = document.createElement('a')
-  a.href = props.illust.urls.original
+  a.href = illust.urls.original
   a.target = '_blank'
   a.click()
 }
@@ -96,7 +94,7 @@ function handleJumpToCover() {
 const isLoadingGif = ref(false)
 const gifBlob = ref<Blob>()
 async function handleDownloadGif() {
-  const filename = `${props.illust.illustId}.ugoira.gif`
+  const filename = `${illust.illustId}.ugoira.gif`
 
   if (gifBlob.value) {
     downloadBlob(gifBlob.value, filename)

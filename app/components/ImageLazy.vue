@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+const { src, width, height } = defineProps<{
   alt?: string
   src: string
   width?: number
@@ -24,29 +24,26 @@ const loading = ref(true)
 const loaded = computed(() => !loading.value)
 const error = ref(false)
 
-const containerRef = ref<HTMLDivElement>()
+const containerRef = useTemplateRef<HTMLDivElement>('containerRef')
 const imgRef = ref<HTMLImageElement>()
 
-const ob = useIntersectionObserver(
-  containerRef,
-  async ([{ isIntersecting }]) => {
-    if (isIntersecting) {
-      await nextTick()
-      const img = new Image(props.width, props.height)
-      img.addEventListener('load', () => {
-        loading.value = false
-        imgRef.value = img
-      })
-      img.addEventListener('error', () => {
-        loading.value = false
-        error.value = true
-        imgRef.value = img
-      })
-      img.src = props.src
-      ob.stop()
-    }
+const ob = useIntersectionObserver(containerRef, async ([entry]) => {
+  if (entry?.isIntersecting) {
+    await nextTick()
+    const img = new Image(width, height)
+    img.addEventListener('load', () => {
+      loading.value = false
+      imgRef.value = img
+    })
+    img.addEventListener('error', () => {
+      loading.value = false
+      error.value = true
+      imgRef.value = img
+    })
+    img.src = src
+    ob.stop()
   }
-)
+})
 </script>
 
 <style scoped lang="sass">

@@ -43,14 +43,11 @@ import type { User } from '~/types'
 
 const userStore = useUserStore()
 
-const props = defineProps<{
-  user?: User
-}>()
+const { user } = defineProps<{ user?: User }>()
 
 const loadingUserFollow = ref(false)
 function handleUserFollow() {
-  if (!props.user || loadingUserFollow.value) return
-  const user = props.user
+  if (!user || loadingUserFollow.value) return
 
   loadingUserFollow.value = true
   const isFollowed = user.isFollowed

@@ -152,8 +152,8 @@ const route = useRoute()
 const userSession = useUserStore()
 const siteCache = useSiteCacheStore()
 
-const recommendRef = ref<HTMLDivElement | null>(null)
-const authorRef = ref<HTMLElement>()
+const recommendRef = useTemplateRef<HTMLDivElement | null>('recommendRef')
+const authorRef = useTemplateRef<HTMLElement>('authorRef')
 
 const isUgoira = computed(() => illust.value?.illustType === 2)
 const UgoiraViewer = defineAsyncComponent({
@@ -173,21 +173,18 @@ const UgoiraViewer = defineAsyncComponent({
     }),
 })
 
-function addObserver(elementRef: Ref, cb: () => any) {
+function addObserver(elementRef: Ref<HTMLElement | null>, cb: () => any) {
   const unWatch = watch(loading, async (val) => {
     if (val) return
     await nextTick()
     if (illust.value?.illustId) {
       unWatch()
-      const ob = useIntersectionObserver(
-        elementRef.value,
-        ([{ isIntersecting }]) => {
-          if (isIntersecting) {
-            cb()
-            ob.stop()
-          }
+      const ob = useIntersectionObserver(elementRef, ([entry]) => {
+        if (entry?.isIntersecting) {
+          cb()
+          ob.stop()
         }
-      )
+      })
     }
   })
 }

@@ -23,7 +23,7 @@ const store = useUserStore()
 const loading = ref(false)
 const comment = ref('')
 
-const props = defineProps<{ id: string }>()
+const { id } = defineProps<{ id: string }>()
 const emit = defineEmits<{
   (
     e: 'push-comment',
@@ -43,7 +43,7 @@ async function submit(): Promise<void> {
       method: 'post',
       body: {
         type: 'comment',
-        illust_id: props.id,
+        illust_id: id,
         author_user_id: store.id,
         comment,
       },
