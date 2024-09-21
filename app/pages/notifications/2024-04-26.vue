@@ -26,7 +26,7 @@
         frameborder='0'
         height='200'
         scrolling='no'
-        src='https://afdian.net/leaflet?slug=dragon-fish'
+        src='https://afdian.com/leaflet?slug=dragon-fish'
         width='640'
       )
 
