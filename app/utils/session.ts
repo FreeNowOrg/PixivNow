@@ -17,5 +17,5 @@ export function getExampleSessionId(): string {
 }
 
 export function isValidSessionId(sessionId: string) {
-  return !/^\d{2,10}_[0-9A-Za-z]{32}$/.test(sessionId)
+  return /^\d{2,10}_[0-9A-Za-z]{32}$/.test(sessionId)
 }
