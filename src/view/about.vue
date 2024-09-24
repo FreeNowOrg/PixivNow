@@ -44,6 +44,11 @@ mixin repoLink
         li <strong>GitHub</strong> 提供了源码托管和版本管控服务
         li <s>Vercel</s> 提供了页面托管和 serverless 计算服务（但是现在白嫖的额度用完了）
         li <strong>JS.ORG</strong> 提供了域名服务
+      h3 Pixiv.cat
+      p
+        | 我们使用
+        a(href='https://pixiv.cat/' target='_blank') Pixiv.cat
+        | 提供的图片服务。
       h3 个人
       p
         | 感谢为

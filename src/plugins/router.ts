@@ -52,11 +52,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/view/login.vue'),
   },
   {
-    path: '/ugoira',
-    name: 'ugoira-test',
-    component: () => import('@/view/ugoira.vue'),
-  },
-  {
     path: '/about',
     name: 'about-us',
     component: () => import('@/view/about.vue'),
