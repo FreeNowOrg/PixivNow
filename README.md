@@ -1,6 +1,6 @@
-<div align="center">
+<div style="text-align: center">
 
-![PixivNow Logo](src/assets/LogoH.png)
+![PixivNow Logo](public/images/LogoH.png)
 
 Pixiv Service Proxy
 
