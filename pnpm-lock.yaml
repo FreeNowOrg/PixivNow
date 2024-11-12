@@ -26,6 +26,9 @@ importers:
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
+      modern-mp4:
+        specifier: ^0.1.1
+        version: 0.1.1(mp4box@0.5.3)
       naive-ui:
         specifier: ^2.38.1
         version: 2.38.1(vue@3.4.23(typescript@5.4.5))
@@ -60,6 +63,9 @@ importers:
       '@prettier/plugin-pug':
         specifier: ^3.0.0
         version: 3.0.0(prettier@3.2.5)
+      '@tabler/icons-vue':
+        specifier: ^3.21.0
+        version: 3.21.0(vue@3.4.23(typescript@5.4.5))
       '@types/cookie':
         specifier: ^0.6.0
         version: 0.6.0
@@ -556,6 +562,14 @@ packages:
 
   '@sinclair/typebox@0.25.24':
     resolution: {integrity: sha512-XJfwUVUKDHF5ugKwIcxEgc9k8b7HbznCp6eUfWgu710hMPNIO4aw4/zB5RogDQz8nd6gyCDpU9O/m6qYEWY6yQ==}
+
+  '@tabler/icons-vue@3.21.0':
+    resolution: {integrity: sha512-+ttGl/IsGsZIa8oenoSS+iHSjVdXnissblYhVY5WbZv6UfWvnOkSlJnuOAlUwd/GEwQA2U+IyzpnHxGoCaWDAQ==}
+    peerDependencies:
+      vue: '>=3.0.1'
+
+  '@tabler/icons@3.21.0':
+    resolution: {integrity: sha512-5+GkkmWCr1wgMor5cOF1/YYflTQdc15y10FUikJ3HW8hDiFjfbuoAHJi17FT1vwsr1sA78rkJMn+fDoOOjnnPA==}
 
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
@@ -1830,6 +1844,14 @@ packages:
   mlly@1.6.1:
     resolution: {integrity: sha512-vLgaHvaeunuOXHSmEbZ9izxPx3USsk8KCQ8iC+aTlp5sKRSoZvwhHh5L9VbKSaVC6sJDqbyohIS76E2VmHIPAA==}
 
+  modern-mp4@0.1.1:
+    resolution: {integrity: sha512-Q3XE676vWly3PMVSIR7c0SlSakWPWXngBGXgHbIiWW5DLt6xs3jOd+vgLwOJJUHoWW4yCwqA5uNfRiX/2cxO3w==}
+    peerDependencies:
+      mp4box: '*'
+
+  mp4box@0.5.3:
+    resolution: {integrity: sha512-RIvyFZdPDIg3+mL6vUdPBSyQRrEfKO3ryAeJ4xJJV7HBHQUH3KfLlZRzfSpBHCd/HqR63HfbrWQI/CwXDvYENQ==}
+
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
@@ -2972,6 +2994,13 @@ snapshots:
     optional: true
 
   '@sinclair/typebox@0.25.24': {}
+
+  '@tabler/icons-vue@3.21.0(vue@3.4.23(typescript@5.4.5))':
+    dependencies:
+      '@tabler/icons': 3.21.0
+      vue: 3.4.23(typescript@5.4.5)
+
+  '@tabler/icons@3.21.0': {}
 
   '@tootallnate/once@2.0.0': {}
 
@@ -4394,6 +4423,12 @@ snapshots:
       pathe: 1.1.2
       pkg-types: 1.1.0
       ufo: 1.5.3
+
+  modern-mp4@0.1.1(mp4box@0.5.3):
+    dependencies:
+      mp4box: 0.5.3
+
+  mp4box@0.5.3: {}
 
   mri@1.2.0: {}
 
