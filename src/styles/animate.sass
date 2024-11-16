@@ -1,3 +1,5 @@
+@use "sass:color"
+
 .fade-in-up
   animation: fadeInUp 0.24s ease
 
@@ -26,7 +28,7 @@ svg.spin
 
 @keyframes imgProgress
   from
-    background-color: lighten(#e8e8e8, 4%)
+    background-color: color.adjust(#e8e8e8, $lightness: 4%)
   to
     background-color: #e8e8e8
 

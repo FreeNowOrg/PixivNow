@@ -37,6 +37,17 @@ export default defineConfig({
     }),
   ],
   build: {},
+  css: {
+    preprocessorOptions: {
+      sass: {
+        /**
+         * vite 还没有跟进这个，我们先手动设置
+         * @see https://sass-lang.com/d/legacy-js-api
+         */
+        api: 'modern',
+      },
+    },
+  },
   esbuild: {
     drop: PROD ? ['console'] : [],
   },
