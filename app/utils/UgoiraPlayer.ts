@@ -1,7 +1,8 @@
 import type { Artwork } from '../types'
 import { unzip } from 'fflate'
 import Gif from 'gif.js'
-import gifWorker from 'gif.js/dist/gif.worker.js?url'
+import gifWorkerUrl from 'gif.js/dist/gif.worker.js?url'
+import { encode as encodeMp4 } from 'modern-mp4'
 
 /**
  * UgoiraPlayer
@@ -99,12 +100,25 @@ export class UgoiraPlayer {
     if (this.cachedImages.has(fileName)) {
       return this.cachedImages.get(fileName)!
     }
+    const buf = this.files[fileName]
+    if (!buf) {
+      throw new Error(`File ${fileName} not found`)
+    }
     const img = new Image()
-    img.src = URL.createObjectURL(
-      new Blob([this.files[fileName]], { type: this.mimeType })
-    )
+    img.src = URL.createObjectURL(new Blob([buf], { type: this.mimeType }))
     this.cachedImages.set(fileName, img)
     return img
+  }
+
+  getRealFrameSize() {
+    if (!this.isReady) {
+      throw new Error('Ugoira assets not ready, please fetch first')
+    }
+    const firstFrame = this.getImage(this.meta!.frames[0].file)
+    return {
+      width: firstFrame.width,
+      height: firstFrame.height,
+    }
   }
 
   private drawFrame() {
@@ -142,26 +156,17 @@ export class UgoiraPlayer {
     this._meta = undefined
   }
 
-  genGifEncoder() {
-    if (!this.isReady) {
-      throw new Error('Ugoira assets not ready, please fetch first')
-    }
-    const firstFrame = this.getImage(this.meta!.frames[0].file)
-    const width = firstFrame.width
-    const height = firstFrame.height
-    console.info({ width, height })
+  private genGifEncoder() {
+    const { width, height } = this.getRealFrameSize()
     return new Gif({
       debug: import.meta.env.DEV,
       workers: 5,
-      workerScript: gifWorker,
+      workerScript: gifWorkerUrl,
       width,
       height,
     })
   }
-  async toGif(): Promise<Blob> {
-    if (!this.isReady) {
-      throw new Error('Ugoira assets not ready, please fetch first')
-    }
+  async renderGif(): Promise<Blob> {
     const encoder = this.genGifEncoder()
     const frames = this._meta!.frames
     const imageList = await Promise.all(
@@ -185,6 +190,25 @@ export class UgoiraPlayer {
       console.info('[ENCODER]', 'render start', encoder)
       encoder.render()
     })
+  }
+
+  async renderMp4() {
+    const { width, height } = this.getRealFrameSize()
+    const frames = this._meta!.frames.map((i) => {
+      return {
+        data: this.getImage(i.file).src!,
+        duration: i.delay,
+      }
+    })
+    console.info({ width, height, frames })
+    const buf = await encodeMp4({
+      frames,
+      width,
+      height,
+      audio: false,
+    })
+    const blob = new Blob([buf], { type: 'video/mp4' })
+    return blob
   }
 
   async unzipAsync(payload: Uint8Array) {
