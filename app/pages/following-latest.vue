@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { type ArtworkInfo } from '~/types'
+import type { ArtworkInfo } from '~/types'
 
 onMounted(() => {
   useHead({ title: 'New Artworks from Following Users' })

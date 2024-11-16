@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
       data.params ||= {}
       data.params.sessionId = getCookie(event, 'PHPSESSID') || ''
       // break intentionally omitted
-      // eslint-disable-next-line no-case-declarations
+       
     }
     case 'login': {
       if (!data.params.sessionId) {
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
           message: 'invalid session id',
         }
       }
-      let metadata = JSON.parse($meta.attr('content') ?? '{}')
+      const metadata = JSON.parse($meta.attr('content') ?? '{}')
       if (!metadata.userData) {
         setResponseStatus(event, 400)
         return {
