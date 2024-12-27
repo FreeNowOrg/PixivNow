@@ -1,12 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ],
+  "extends": ["config:recommended"],
   "labels": ["dependencies"],
-  "baseBranches": [
-    "dev"
-  ],
+  "baseBranches": ["dev"],
   "packageRules": [
     {
       "groupName": "framework",
@@ -25,10 +21,8 @@
         "naive-ui",
         "vue-flex-waterfall",
         "vue-gtag",
-        "nprogress"
-      ],
-      "matchPackagePrefixes": [
-        "@iconify"
+        "nprogress",
+        "@iconify{/,}**"
       ]
     },
     {
@@ -40,19 +34,15 @@
         "sass",
         "tslib",
         "vercel",
-        "@vue/language-plugin-pug"
-      ],
-      "matchPackagePrefixes": [
-        "@vitejs",
-        "unplugin",
-        "@vueuse"
+        "@vue/language-plugin-pug",
+        "@vitejs{/,}**",
+        "unplugin{/,}**",
+        "@vueuse{/,}**"
       ]
     },
     {
       "groupName": "types",
-      "matchPackagePrefixes": [
-        "@types"
-      ]
+      "matchPackageNames": ["@types{/,}**"]
     },
     {
       "groupName": "utils",
@@ -61,11 +51,9 @@
         "js-cookie",
         "cookie",
         "cheerio",
-        "conventional-changelog-cli"
-      ],
-      "matchPackagePrefixes": [
-        "lodash",
-        "date"
+        "conventional-changelog-cli",
+        "lodash{/,}**",
+        "date{/,}**"
       ]
     }
   ]
