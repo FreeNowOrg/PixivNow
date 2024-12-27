@@ -1,5 +1,5 @@
 // @ts-check
-/// <reference types="@prettier/plugin-pug/src/prettier" />
+/// <reference types="@prettier/plugin-pug" />
 /**
  * @type {import("prettier").Config}
  */
