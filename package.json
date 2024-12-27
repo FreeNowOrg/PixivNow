@@ -48,7 +48,7 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/language-plugin-pug": "^2.2.0",
     "@vueuse/core": "^12.2.0",
-    "cheerio": "1.0.0-rc.12",
+    "cheerio": "1.0.0",
     "conventional-changelog-cli": "^4.1.0",
     "cookie": "^1.0.2",
     "lodash.escaperegexp": "^4.1.2",
