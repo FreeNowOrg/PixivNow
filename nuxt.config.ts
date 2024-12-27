@@ -8,6 +8,15 @@ export default defineNuxtConfig({
   typescript: {
     shim: false,
   },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        sass: {
+          api: 'modern',
+        },
+      },
+    },
+  },
   runtimeConfig: {
     public: {
       adsensePubId: '',
@@ -31,7 +40,6 @@ export default defineNuxtConfig({
       },
     ],
     lazy: true,
-    langDir: 'locales',
     defaultLocale: 'zh-Hans',
   },
   routeRules: {
@@ -63,7 +71,7 @@ export default defineNuxtConfig({
     },
     '/-/**': {
       redirect: {
-        to: 'https://pximg.wjghj.cn/**',
+        to: 'https://pixiv.cat/**',
       },
     },
     '/~/**': {

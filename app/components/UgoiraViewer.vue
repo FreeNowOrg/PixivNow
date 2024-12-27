@@ -30,21 +30,21 @@
     //- menu
     template(#menu v-if='!firstLoaded')
       NFloatButton(@click='handleInit(true)' title='加载原画' v-if='!isLoading')
-        IconPhotoSpark
+        IPhotoSpark
       NFloatButton(@click='handleInit(false)' title='加载普通画质')
         NSpin(size='small' v-if='isLoading')
-        IconPhotoScan(v-else)
+        IPhotoScan(v-else)
     template(#menu v-if='firstLoaded')
       NFloatButton(@click='handleJumpToCover' title='查看封面'): IconPhotoDown
       NFloatButton(@click='handleDownloadGif' title='下载GIF')
         NSpin(size='small' v-if='isLoadingGif')
-        template(v-else): IconGif
+        template(v-else): IGif
       NFloatButton(@click='handleDownloadMp4' title='下载MP4')
         NSpin(size='small' v-if='isLoadingMp4')
-        template(v-else): IconMovie
+        template(v-else): IMovie
       NFloatButton(@click='handleInit(true)' title='加载原画' v-if='!isHQLoaded') 
         NSpin(size='small' v-if='isLoading')
-        template(v-else): IconPhotoSpark
+        template(v-else): IPhotoSpark
 
   .badge {{ firstLoaded ? (isHQLoaded ? 'HQ' : 'LQ') : 'Cover' }}
 </template>
@@ -55,14 +55,10 @@ import { NSpin, NIcon, NFloatButton } from 'naive-ui'
 import { UgoiraPlayer } from '~/utils/UgoiraPlayer'
 import IPlay from '~icons/fa-solid/play'
 import IDownload from '~icons/fa-solid/download'
-import {
-  IconCamera,
-  IconGif,
-  IconMovie,
-  IconPhotoScan,
-  IconPhotoSpark,
-  IconPhotoDown,
-} from '@tabler/icons-vue'
+import IGif from '~icons/tabler/gif'
+import IMovie from '~icons/tabler/movie'
+import IPhotoScan from '~icons/tabler/photo-scan'
+import IPhotoSpark from '~icons/tabler/photo-spark'
 
 const { illust } = defineProps<{ illust: Artwork }>()
 const emit = defineEmits<{
@@ -139,7 +135,7 @@ async function handleDownloadGif() {
 const isLoadingMp4 = ref(false)
 const mp4Blob = ref<Blob>()
 async function handleDownloadMp4() {
-  const filename = `${props.illust.illustId}.ugoira.mp4`
+  const filename = `${illust.illustId}.ugoira.mp4`
 
   if (mp4Blob.value) {
     downloadBlob(mp4Blob.value, filename)

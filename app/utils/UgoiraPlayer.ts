@@ -10,9 +10,9 @@ import { encode as encodeMp4 } from 'modern-mp4'
  * @license MIT
  */
 export class UgoiraPlayer {
-  private _canvas?: HTMLCanvasElement
-  private _illust!: Artwork
-  private _meta?: UgoiraMeta
+  #canvas?: HTMLCanvasElement
+  #illust!: Artwork
+  #meta?: UgoiraMeta
   private isPlaying = false
   private curFrame = 0
   private lastFrameTime = 0
@@ -24,73 +24,74 @@ export class UgoiraPlayer {
   }
   reset(illust: Artwork) {
     this.destroy()
-    this._canvas = undefined
-    this._illust = illust
+    this.#canvas = undefined
+    this.#illust = illust
   }
   setupCanvas(canvas: HTMLCanvasElement) {
-    this._canvas = canvas
-    this._canvas.width = this.initWidth
-    this._canvas.height = this.initHeight
+    this.#canvas = canvas
+    this.#canvas.width = this.initWidth
+    this.#canvas.height = this.initHeight
   }
 
   get isReady() {
-    return !!this._meta && !!Object.keys(this.files).length
+    return !!this.#meta && !!Object.keys(this.files).length
   }
   get isUgoira() {
-    return this._illust.illustType === 2
+    return this.#illust.illustType === 2
   }
   get canvas() {
-    return this._canvas
+    return this.#canvas
   }
   get illust() {
-    return this._illust
+    return this.#illust
   }
   get meta() {
-    return this._meta
+    return this.#meta
   }
   get totalFrames() {
-    return this._meta?.frames.length ?? 0
+    return this.#meta?.frames.length ?? 0
   }
   get now() {
     return performance.now()
   }
   get initWidth() {
-    return this._illust.width
+    return this.#illust.width
   }
   get initHeight() {
-    return this._illust.height
+    return this.#illust.height
   }
   get mimeType() {
-    return this._meta?.mime_type ?? ''
+    return this.#meta?.mime_type ?? ''
   }
 
   async fetchMeta() {
-    this._meta = await fetch(
-      new URL(`/ajax/illust/${this._illust.id}/ugoira_meta`, location.href)
+    this.#meta = await $fetch(
+      new URL(`/ajax/illust/${this.#illust.id}/ugoira#meta`, location.href)
         .href,
       {
         cache: 'default',
       }
-    ).then((res) => res.json())
+    )
     return this
   }
 
   async fetchFrames(originalQuality = false) {
-    if (!this._meta) {
+    if (!this.#meta) {
       await this.fetchMeta()
     }
-    if (!this._meta) {
+    if (!this.#meta) {
       throw new Error('Failed to fetch meta')
     }
-    const buf = await fetch(
+    const buf = await $fetch<ArrayBuffer>(
       new URL(
-        this._meta[originalQuality ? 'originalSrc' : 'src'],
+        this.#meta[originalQuality ? 'originalSrc' : 'src'],
         location.href
-      ),
+      ).href,
       {
         cache: 'default',
+        responseType: 'arrayBuffer',
       }
-    ).then((res) => res.arrayBuffer())
+    )
     const files = await this.unzipAsync(new Uint8Array(buf))
     this.files = files
     return this
@@ -114,7 +115,7 @@ export class UgoiraPlayer {
     if (!this.isReady) {
       throw new Error('Ugoira assets not ready, please fetch first')
     }
-    const firstFrame = this.getImage(this.meta!.frames[0].file)
+    const firstFrame = this.getImage(this.meta!.frames[0]!.file)
     return {
       width: firstFrame.width,
       height: firstFrame.height,
@@ -122,11 +123,11 @@ export class UgoiraPlayer {
   }
 
   private drawFrame() {
-    if (!this.canvas || !this._meta || !this.isPlaying) {
+    if (!this.canvas || !this.#meta || !this.isPlaying) {
       return
     }
     const ctx = this.canvas.getContext('2d')!
-    const frame = this._meta.frames[this.curFrame]
+    const frame = this.#meta.frames[this.curFrame]!
     const delay = frame.delay
     const now = this.now
     const delta = now - this.lastFrameTime
@@ -153,7 +154,7 @@ export class UgoiraPlayer {
     this.pause()
     this.cachedImages.clear()
     this.files = {}
-    this._meta = undefined
+    this.#meta = undefined
   }
 
   private genGifEncoder() {
@@ -168,7 +169,7 @@ export class UgoiraPlayer {
   }
   async renderGif(): Promise<Blob> {
     const encoder = this.genGifEncoder()
-    const frames = this._meta!.frames
+    const frames = this.#meta!.frames
     const imageList = await Promise.all(
       frames.map((i) => {
         return this.getImage(i.file)
@@ -176,7 +177,7 @@ export class UgoiraPlayer {
     )
     return new Promise<Blob>((resolve, reject) => {
       imageList.forEach((item, index) => {
-        encoder.addFrame(item, { delay: frames[index].delay })
+        encoder.addFrame(item, { delay: frames[index]!.delay })
       })
       encoder.on('finished', async (blob) => {
         console.info('[ENCODER]', 'render finished', encoder)
@@ -194,7 +195,7 @@ export class UgoiraPlayer {
 
   async renderMp4() {
     const { width, height } = this.getRealFrameSize()
-    const frames = this._meta!.frames.map((i) => {
+    const frames = this.#meta!.frames.map((i) => {
       return {
         data: this.getImage(i.file).src!,
         duration: i.delay,
