@@ -1,0 +1,75 @@
+<template lang="pug">
+.comment-submit(:data-illust_id='id')
+  em 发表评论
+  .flex.logged-in(v-if='store.isLoggedIn')
+    .left
+      .avatar
+        img(:src='store.profileImg')
+    .right
+      textarea(:disabled='loading' v-model='comment')
+    .submit.align-right
+    button(:disabled='loading' @click='async () => await submit()') 发送
+  .flex.not-logged-in(v-if='!store.isLoggedIn')
+    p
+      | 您需要
+      NuxtLink(:to='"/login?back=" + route.path') 设置 Pixiv 令牌
+      | 以发表评论。
+</template>
+
+<script lang="ts" setup>
+const route = useRoute()
+const store = useUserStore()
+
+const loading = ref(false)
+const comment = ref('')
+
+const { id } = defineProps<{ id: string }>()
+const emit = defineEmits<{
+  (
+    e: 'push-comment',
+    value: {
+      img: string
+      commentDate: string
+      [key: string]: any
+    }
+  ): void
+}>()
+
+async function submit(): Promise<void> {
+  if (loading.value) return
+  try {
+    loading.value = true
+    const data = await useAjaxResponse<any>(`/ajax/illusts/comments/post`, {
+      method: 'post',
+      body: {
+        type: 'comment',
+        illust_id: id,
+        author_user_id: store.id,
+        comment,
+      },
+    })
+    comment.value = ''
+    emit('push-comment', {
+      img: store.profileImg,
+      commentDate: new Date().toLocaleString(),
+      ...data,
+    })
+  } catch (err) {
+    console.warn('Comment submit error', err)
+  } finally {
+    loading.value = false
+  }
+}
+</script>
+
+<style scoped lang="sass">
+
+.right
+  flex: 1
+
+textarea
+  width: 100%
+
+.not-logged-in
+  color: #888
+</style>
