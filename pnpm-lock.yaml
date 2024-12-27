@@ -59,7 +59,7 @@ importers:
         version: 2.0.1
       '@iconify-json/fa-solid':
         specifier: ^1.2.0
-        version: 1.2.0
+        version: 1.2.1
       '@prettier/plugin-pug':
         specifier: ^3.2.0
         version: 3.2.0(prettier@3.2.5)
@@ -411,8 +411,8 @@ packages:
     resolution: {integrity: sha512-e5+YUKENATs1JgYHMzTr2MW/NDcXGfYFAuOQU8gJgF/kEh4EqKgfGrfLI67bMD4tbhZVlkigz/9YYwWcbOFthg==}
     engines: {node: '>=10.13.0'}
 
-  '@iconify-json/fa-solid@1.2.0':
-    resolution: {integrity: sha512-8WV0gViiLN7WK150B9Ub+2nzqOmdmhMAKZAO9JqRDGhO07GEH4T/FYlKXK2zlF51C6HAx8fXV8pDapDX3TBavg==}
+  '@iconify-json/fa-solid@1.2.1':
+    resolution: {integrity: sha512-eEcnCb6yjRJ0bZrQQZOvO9P5PYCGujz2V8PpiIxBSlm6xqoVLNtOfUyPr6xZD4zWeW7H3cmWi2ZXSzqxQ5e4lw==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -2984,7 +2984,7 @@ snapshots:
 
   '@hutson/parse-repository-url@5.0.0': {}
 
-  '@iconify-json/fa-solid@1.2.0':
+  '@iconify-json/fa-solid@1.2.1':
     dependencies:
       '@iconify/types': 2.0.0
 
