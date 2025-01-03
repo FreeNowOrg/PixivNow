@@ -83,7 +83,7 @@ importers:
         version: 0.2.3
       '@vercel/node':
         specifier: ^5.0.0
-        version: 5.0.0
+        version: 5.0.1
       '@vitejs/plugin-vue':
         specifier: ^5.2.1
         version: 5.2.1(vite@6.0.6(@types/node@22.10.2)(sass@1.83.0))(vue@3.5.13(typescript@5.7.2))
@@ -721,6 +721,9 @@ packages:
   '@vercel/build-utils@8.8.0':
     resolution: {integrity: sha512-4jkeJ/Xr0epojgfiyQufB8vC0ubE9SCfA9I2BGcOIKcf65C25juSvuYwaLixnjZXHUTO4Y9W7fdgiLUk55MgbA==}
 
+  '@vercel/build-utils@9.0.0':
+    resolution: {integrity: sha512-uOUC25R+KdwCpfwgHZlL7GTp1RD2AFkmS9lfEEGeNv3OUrBo7XPX2EnI1jsoWs/VFjJ9TGZLx177qBH8IGCoMw==}
+
   '@vercel/error-utils@2.0.3':
     resolution: {integrity: sha512-CqC01WZxbLUxoiVdh9B/poPbNpY9U+tO1N9oWHwTl5YAZxcqXmmWJ8KNMFItJCUUWdY3J3xv8LvAuQv2KZ5YdQ==}
 
@@ -750,6 +753,9 @@ packages:
 
   '@vercel/node@5.0.0':
     resolution: {integrity: sha512-l917aGyDkaOhqfDrYSqy9sjd+Pv6K8mCsVyxzGv4kwmbhERpi8rS6aBmfIf4fDevEPYiOasftPHASbdnyHOe/g==}
+
+  '@vercel/node@5.0.1':
+    resolution: {integrity: sha512-Udl2TGDdAMH2Od54ARJWyKwFFHy9z1GaS8B2T3UKH1V8gz32SAOe47x9PzP+hWKNOj5xjrdwPAtm3lE7bU6TcQ==}
 
   '@vercel/python@4.5.1':
     resolution: {integrity: sha512-nZX1oezs5E+Un5Pw21P7cEXV9WBohRSq8gDAqipu7KHFfdAQ7ubfBclRmDTGaHOiYvdLsJPiE599vsUfKKob/w==}
@@ -3008,6 +3014,8 @@ snapshots:
 
   '@vercel/build-utils@8.8.0': {}
 
+  '@vercel/build-utils@9.0.0': {}
+
   '@vercel/error-utils@2.0.3': {}
 
   '@vercel/fun@1.1.0':
@@ -3088,6 +3096,34 @@ snapshots:
       '@edge-runtime/vm': 3.2.0
       '@types/node': 16.18.11
       '@vercel/build-utils': 8.8.0
+      '@vercel/error-utils': 2.0.3
+      '@vercel/nft': 0.27.3
+      '@vercel/static-config': 3.0.0
+      async-listen: 3.0.0
+      cjs-module-lexer: 1.2.3
+      edge-runtime: 2.5.9
+      es-module-lexer: 1.4.1
+      esbuild: 0.14.47
+      etag: 1.8.1
+      node-fetch: 2.6.9
+      path-to-regexp: 6.2.1
+      ts-morph: 12.0.0
+      ts-node: 10.9.1(@types/node@16.18.11)(typescript@4.9.5)
+      typescript: 4.9.5
+      undici: 5.28.4
+    transitivePeerDependencies:
+      - '@swc/core'
+      - '@swc/wasm'
+      - encoding
+      - supports-color
+
+  '@vercel/node@5.0.1':
+    dependencies:
+      '@edge-runtime/node-utils': 2.3.0
+      '@edge-runtime/primitives': 4.1.0
+      '@edge-runtime/vm': 3.2.0
+      '@types/node': 16.18.11
+      '@vercel/build-utils': 9.0.0
       '@vercel/error-utils': 2.0.3
       '@vercel/nft': 0.27.3
       '@vercel/static-config': 3.0.0
