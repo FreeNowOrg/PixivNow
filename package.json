@@ -62,7 +62,7 @@
     "unplugin-icons": "^0.22.0",
     "unplugin-vue-components": "^0.28.0",
     "vercel": "^39.2.2",
-    "vite": "^6.0.6"
+    "vite": "^6.0.9"
   },
   "packageManager": "pnpm@9.15.2"
 }
