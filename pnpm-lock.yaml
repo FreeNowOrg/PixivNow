@@ -31,7 +31,7 @@ importers:
         version: 0.1.2(mp4box@0.5.3)
       naive-ui:
         specifier: ^2.40.4
-        version: 2.40.4(vue@3.5.13(typescript@5.7.2))
+        version: 2.41.0(vue@3.5.13(typescript@5.7.2))
       nprogress:
         specifier: ^0.2.0
         version: 0.2.0
@@ -699,6 +699,9 @@ packages:
 
   '@types/lodash@4.17.13':
     resolution: {integrity: sha512-lfx+dftrEZcdBPczf9d0Qv0x+j/rfNCMuC6OcfXmO8gkfeNAY88PgKUbvG56whcN23gc27yenwF6oJZXGFpYxg==}
+
+  '@types/lodash@4.17.14':
+    resolution: {integrity: sha512-jsxagdikDiDBeIRaPYtArcT8my4tN1og7MtMRquFT3XNA6axxyHDRUemqDz/taRDdOUn0GnGHRCuff4q48sW9A==}
 
   '@types/node@16.18.11':
     resolution: {integrity: sha512-3oJbGBUWuS6ahSnEq1eN2XrCyf4YsWI8OyCvo7c64zQJNplk3mO84t53o8lfTk+2ji59g5ycfc6qQ3fdHliHuA==}
@@ -1798,8 +1801,8 @@ packages:
   muggle-string@0.4.1:
     resolution: {integrity: sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==}
 
-  naive-ui@2.40.4:
-    resolution: {integrity: sha512-SDFbW9/VEZix/gmzj54jH6c0YDBVM6o0mG1520RAWKtPSqVrAp5r8qLi8dYvvDmcs/qoRbzM3QGuA4GxQJ/iEg==}
+  naive-ui@2.41.0:
+    resolution: {integrity: sha512-KnmLg+xPLwXV8QVR7ZZ69eCjvel7R5vru8+eFe4VoAJHEgqAJgVph6Zno9K2IVQRpSF3GBGea3tjavslOR4FAA==}
     peerDependencies:
       vue: ^3.0.0
 
@@ -2984,13 +2987,15 @@ snapshots:
 
   '@types/lodash-es@4.17.12':
     dependencies:
-      '@types/lodash': 4.17.13
+      '@types/lodash': 4.17.14
 
   '@types/lodash.escaperegexp@4.1.9':
     dependencies:
       '@types/lodash': 4.17.13
 
   '@types/lodash@4.17.13': {}
+
+  '@types/lodash@4.17.14': {}
 
   '@types/node@16.18.11': {}
 
@@ -4204,12 +4209,12 @@ snapshots:
 
   muggle-string@0.4.1: {}
 
-  naive-ui@2.40.4(vue@3.5.13(typescript@5.7.2)):
+  naive-ui@2.41.0(vue@3.5.13(typescript@5.7.2)):
     dependencies:
       '@css-render/plugin-bem': 0.15.14(css-render@0.15.14)
       '@css-render/vue3-ssr': 0.15.14(vue@3.5.13(typescript@5.7.2))
       '@types/katex': 0.16.7
-      '@types/lodash': 4.17.13
+      '@types/lodash': 4.17.14
       '@types/lodash-es': 4.17.12
       async-validator: 4.2.5
       css-render: 0.15.14
