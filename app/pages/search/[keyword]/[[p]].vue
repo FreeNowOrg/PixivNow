@@ -33,11 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { NButton, NSpin } from 'naive-ui'
-import IAngleLeft from '~icons/fa-solid/angle-left'
-import IAngleRight from '~icons/fa-solid/angle-right'
-
-import type { AjaxResponse, ArtworkInfo } from '~/types'
+import { NCard, NPagination, NSpin } from 'naive-ui'
+import type { ArtworkInfo } from '~/types'
 
 const error = ref('')
 const loading = ref(true)
@@ -47,10 +44,6 @@ const page = ref(1)
 const total = ref(0)
 const route = useRoute()
 const router = useRouter()
-const prevDisabled = computed(() => page.value <= 1)
-const noMoreArtworks = computed(
-  () => !loading.value && resultList.value.length < 60
-)
 
 async function makeSearch({
   keyword,

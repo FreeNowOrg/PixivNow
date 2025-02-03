@@ -1,4 +1,4 @@
-import type { ArtworkInfo, ArtworkInfoOrAd } from '../types'
+import type { ArtworkInfo, ArtworkInfoOrAd, NumberLike } from '../types'
 
 export const defaultArtwork: ArtworkInfo = {
   id: '0',
@@ -30,7 +30,7 @@ export const defaultArtwork: ArtworkInfo = {
   aiType: 1,
 }
 
-export function sortArtList<T extends { id: number | `${number}` }>(
+export function sortArtList<T extends { id: NumberLike }>(
   obj: Record<string, T>
 ): T[] {
   return Object.values(obj).sort((a, b) => +b.id - +a.id)
@@ -40,9 +40,7 @@ export function isArtwork(item: ArtworkInfoOrAd): item is ArtworkInfo {
   return Object.keys(item).includes('id')
 }
 
-export async function addBookmark(
-  illust_id: number | `${number}`
-): Promise<any> {
+export async function addBookmark(illust_id: NumberLike): Promise<any> {
   return (
     await useAjaxResponse<any>('/ajax/illusts/bookmarks/add', {
       method: 'POST',
@@ -52,9 +50,7 @@ export async function addBookmark(
   ).data
 }
 
-export async function removeBookmark(
-  bookmark_id: number | `${number}`
-): Promise<any> {
+export async function removeBookmark(bookmark_id: NumberLike): Promise<any> {
   return (
     await useAjaxResponse<any>('/ajax/illusts/bookmarks/delete', {
       method: 'POST',

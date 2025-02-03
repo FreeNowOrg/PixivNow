@@ -27,18 +27,18 @@ import { useIntersectionObserver } from '@vueuse/core'
 import { NButton } from 'naive-ui'
 import IPlus from '~icons/fa-solid/plus'
 
-import type { Comments } from '~/types'
+import type { Comments, NumberLike } from '~/types'
 
 const loading = ref(false)
 const comments = ref<Comments[]>([])
 const hasNext = ref(false)
 
 const { id, count } = defineProps<{
-  id: string
+  id: NumberLike
   count: number
 }>()
 
-async function init(id: string | number): Promise<void> {
+async function init(id: NumberLike): Promise<void> {
   if (loading.value) return
   if (!count) {
     hasNext.value = false

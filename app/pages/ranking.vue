@@ -23,13 +23,20 @@
 <script lang="ts" setup>
 import type { ArtworkRank } from '~/types'
 
+type ArtworkRawRanking = {
+  date: string
+  contents: ArtworkRank[]
+}
+
+type ArtworkRanking = {
+  date: Date
+  contents: ArtworkRank[]
+}
+
 const siteCache = useSiteCacheStore()
 const error = ref('')
 const loading = ref(true)
-const list = ref<{
-  date: Date
-  contents: ArtworkRank[]
-} | null>(null)
+const list = ref<ArtworkRanking | null>(null)
 const route = useRoute()
 
 async function init(): Promise<void> {
@@ -45,10 +52,9 @@ async function init(): Promise<void> {
     if (p && typeof p === 'string') params.append('p', p)
     if (mode && typeof mode === 'string') params.append('mode', mode)
     if (date && typeof date === 'string') params.append('date', date)
-    const data = await $fetch<{
-      date: string
-      contents: ArtworkRank[]
-    }>(`/ranking.php?${params.toString()}`)
+    const data = await $fetch<ArtworkRawRanking>(
+      `/ranking.php?${params.toString()}`
+    )
     // Date
     const rankingDate = data.date
     const listValue = {

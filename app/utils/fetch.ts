@@ -1,5 +1,9 @@
 import type { AjaxResponse } from '../types'
+import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack/types'
 
-export async function useAjaxResponse<T>(url: string, opts?: any) {
+export async function useAjaxResponse<T>(
+  url: string,
+  opts?: NitroFetchOptions<NitroFetchRequest>
+) {
   return (await $fetch<AjaxResponse<T>>(url, opts)).body
 }

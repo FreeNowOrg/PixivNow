@@ -5,18 +5,18 @@ NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
     | &nbsp;取消
   h1.title 设置 Pixiv 令牌
   NFormItem(
-    :feedback='sessionIdInput && !isValidSessionId(sessionIdInput) ? "哎呀，这个格式看上去不太对……" : error ? error : "这个格式看上去没问题，点击保存试试"',
-    :validation-status='(sessionIdInput && !isValidSessionId(sessionIdInput)) || error ? "error" : "success"'
+    :feedback='sessionIdInput && !validSessionId ? "哎呀，这个格式看上去不太对……" : error ? error : "这个格式看上去没问题，点击保存试试"',
+    :validation-status='(sessionIdInput && !validSessionId) || error ? "error" : "success"'
     label='PHPSESSID'
     required
   )
     NInput(
-      :class='isValidSessionId(sessionIdInput) ? "valid" : "invalid"'
+      :class='validSessionId ? "valid" : "invalid"'
       v-model:value='sessionIdInput'
     )
   #submit
     NButton(
-      :disabled='!!error || loading || !isValidSessionId(sessionIdInput)'
+      :disabled='!!error || loading || !validSessionId'
       @click='async () => await submit()'
       block
       type='primary'
@@ -52,6 +52,7 @@ const loading = ref(false)
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const validSessionId = computed(() => isValidSessionId(sessionIdInput.value))
 
 onMounted(() => {
   example.value = getExampleSessionId()
@@ -67,7 +68,7 @@ function goBack(): void {
 }
 
 async function submit(): Promise<void> {
-  if (!isValidSessionId(sessionIdInput.value)) {
+  if (!validSessionId.value) {
     error.value = '哎呀，这个格式看上去不太对……'
     console.warn(error.value)
     return

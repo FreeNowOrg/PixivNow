@@ -1,13 +1,15 @@
 import { defineStore } from 'pinia'
 
+export type SiteCacheKey = string | number
+
 export const useSiteCacheStore = defineStore('siteCache', () => {
-  const siteCacheData = ref(new Map<string | number, any>())
-  function get(key: string | number) {
+  const siteCacheData = ref(new Map<SiteCacheKey, any>())
+  function get(key: SiteCacheKey) {
     const value = siteCacheData.value.get(key)
     console.log('getCache', key, value)
     return value
   }
-  function set(key: string | number, value: any) {
+  function set(key: SiteCacheKey, value: any) {
     console.log('setCache', key, value)
     siteCacheData.value.set(key, value)
   }

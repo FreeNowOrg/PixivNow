@@ -55,7 +55,7 @@
             NButton(round size='small' type='info')
               | 我真棒
         .following
-          NuxtLink(:to='`/following/${user.id}`') 关注了 <strong>{{ user.following }}</strong> 人
+          NuxtLink(:to='`/following/${user.userId}`') 关注了 <strong>{{ user.following }}</strong> 人
         .gender(v-if='user.gender?.name')
           IVenusMars(data-icon)
           | {{ user.gender.name }}
@@ -123,7 +123,10 @@
             v-if='user.illusts && !user.illusts.length'
           )
           .user-illust.body-inner(v-else)
-            ArtworksByUser(:user-id='user.userId' work-category='illust')
+            ArtworkArtworksByUser(
+              :user-id='user.userId'
+              work-category='illust'
+            )
         NTabPane(
           :name='UserTabs.mangas'
           display-directive='show:lazy'
@@ -131,7 +134,7 @@
         )
           NEmpty(description='用户没有漫画作品 (*/ω＼*)' v-if='!user.manga?.length')
           .user-manga.body-inner(v-else)
-            ArtworksByUser(:user-id='user.userId' work-category='manga')
+            ArtworkArtworksByUser(:user-id='user.userId' work-category='manga')
         NTabPane(:name='UserTabs.public_bookmarks' tab='公开收藏')
           ArtworkList(
             :list='[]',
@@ -197,7 +200,7 @@ import IParking from '~icons/fa-solid/parking'
 import IPlus from '~icons/fa-solid/plus'
 import IVenusMars from '~icons/fa-solid/venus-mars'
 
-import type { ArtworkInfo, User } from '~/types'
+import type { ArtworkInfo, NumberLike, User } from '~/types'
 
 const loadingUser = ref(true)
 const user = ref<User>()
@@ -220,9 +223,6 @@ const hasMoreHiddenBookmarks = computed(
     hiddenBookmarks.value.length &&
     hiddenBookmarks.value.length < totalHiddenBookmarks.value
 )
-const loadingBookmarks = computed(
-  () => loadingHiddenBookmarks.value || loadingPublicBookmarks.value
-)
 
 enum UserTabs {
   illusts = 'illusts',
@@ -236,13 +236,6 @@ const showUserMore = ref(false)
 const route = useRoute()
 const userStore = useUserStore()
 const siteCache = useSiteCacheStore()
-const topBackgroundStyles = computed(() => {
-  if (user.value?.background?.url) {
-    return { backgroundImage: `url('${user.value.background.url}')` }
-  } else {
-    return {}
-  }
-})
 
 const workspaceNameMap = {
   userWorkspacePc: '个人电脑',
@@ -261,7 +254,7 @@ const workspaceNameMap = {
   wsBigUrl: '工作空间大图片URL',
 }
 
-async function init(id: string | number, initTab?: UserTabs): Promise<void> {
+async function init(id: NumberLike, initTab?: UserTabs): Promise<void> {
   // reset states
   user.value = undefined
   tab.value = undefined
@@ -394,16 +387,22 @@ watch(tab, (newTab) => {
   }
 })
 
+function isValidId(id?: string | string[]): id is `${number}` {
+  if (Array.isArray(id)) return false
+  return !!id && /^\d+$/.test(id)
+}
+
 onBeforeRouteUpdate((to) => {
-  if (to.name !== 'users') {
+  if (to.name !== 'users' || !isValidId(to.params.id)) {
     return
   }
-  init(to.params.id as string, to.query.tab as UserTabs)
+  init(to.params.id, to.query.tab as UserTabs)
 })
 
 effect(() => useHead({ title: `${user.value?.name} | Users` }))
 onMounted(async () => {
-  init(route.params.id as string, route.query.tab as UserTabs)
+  const id = isValidId(route.params.id) ? route.params.id : '0'
+  init(id, route.query.tab as UserTabs)
 })
 </script>
 

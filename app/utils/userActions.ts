@@ -1,6 +1,6 @@
-export async function addUserFollow(
-  user_id: number | `${number}`
-): Promise<any> {
+import type { NumberLike } from '~/types'
+
+export async function addUserFollow(user_id: NumberLike): Promise<any> {
   return (
     await $fetch<{ data: any }>('/bookmark_add.php', {
       method: 'POST',
@@ -19,9 +19,7 @@ export async function addUserFollow(
   ).data
 }
 
-export async function removeUserFollow(
-  user_id: number | `${number}`
-): Promise<any> {
+export async function removeUserFollow(user_id: NumberLike): Promise<any> {
   return (
     await $fetch<{ data: any }>('/rpc_group_setting.php', {
       method: 'POST',
