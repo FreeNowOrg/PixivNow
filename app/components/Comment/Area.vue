@@ -29,6 +29,11 @@ import IPlus from '~icons/fa-solid/plus'
 
 import type { Comments, NumberLike } from '~/types'
 
+type CommentsRoot = {
+  hasNext: boolean
+  comments: Comments[]
+}
+
 const loading = ref(false)
 const comments = ref<Comments[]>([])
 const hasNext = ref(false)
@@ -49,16 +54,16 @@ async function init(id: NumberLike): Promise<void> {
 
   try {
     loading.value = true
-    const data = await useAjaxResponse<{
-      hasNext: boolean
-      comments: Comments[]
-    }>(`/ajax/illusts/comments/roots`, {
-      params: {
-        illust_id: `${id}`,
-        limit: comments.value.length ? '30' : '3',
-        offset: `${comments.value.length}`,
-      },
-    })
+    const data = await useAjaxResponse<CommentsRoot>(
+      `/ajax/illusts/comments/roots`,
+      {
+        params: {
+          illust_id: `${id}`,
+          limit: comments.value.length ? '30' : '3',
+          offset: `${comments.value.length}`,
+        },
+      }
+    )
     hasNext.value = data.hasNext
     comments.value = comments.value.concat(data.comments)
   } catch (err) {

@@ -21,7 +21,6 @@
 <script setup lang="ts">
 import type { ArtworkInfo } from '~/types'
 import { NPagination } from 'naive-ui'
-import {} from 'vue'
 
 const { userId, workCategory = 'illust' } = defineProps<{
   userId: string

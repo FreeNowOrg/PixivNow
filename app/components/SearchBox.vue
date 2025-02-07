@@ -13,14 +13,26 @@ import ISearch from '~icons/fa-solid/search'
 
 const route = useRoute()
 const router = useRouter()
-const keyword = ref((route.params.keyword as string) || '')
+const keyword = ref(extractKeyword())
+
+function extractKeyword(): string {
+  if (!route.params.keyword) {
+    return ''
+  }
+  if (Array.isArray(route.params.keyword)) {
+    return route.params.keyword[0] ?? ''
+  } else {
+    return route.params.keyword
+  }
+}
 
 function makeSearch(): void {
   if (!keyword.value) {
     return
   }
-  if (/^id:(\d+)$/.test(keyword.value)) {
-    router.push(`/artworks/${/^id:(\d+)$/.exec(keyword.value)?.[1]}`)
+  const regResult = /^id:(\d+)$/.exec(keyword.value)
+  if (regResult) {
+    router.push(`/artworks/${regResult[1]}`)
     return
   }
   router.push(`/search/${encodeURIComponent(keyword.value)}/1`)
