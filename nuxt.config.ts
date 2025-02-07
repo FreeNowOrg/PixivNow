@@ -67,7 +67,7 @@ export default defineNuxtConfig({
     },
     '/-/**': {
       redirect: {
-        to: 'https://pixiv.cat/**',
+        to: 'https://i.pixiv.re/**',
       },
     },
     '/~/**': {
