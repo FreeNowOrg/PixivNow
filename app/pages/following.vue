@@ -60,17 +60,19 @@
 import type { UserListItem } from '~/types'
 import IChevronLeft from '~icons/fa-solid/chevron-left'
 
-onMounted(() => {
-  useHead({ title: 'Following' })
-  resetAll('' + route.params.id)
-  fetchList(false)
-})
-onBeforeRouteUpdate((to, from) => {
-  if (to.name === from.name && to.params.id !== from.params.id) {
-    resetAll('' + to.params.id)
-    fetchList(false)
+type FollowList = {
+  total: number
+  users: UserListItem[]
+  extraData: {
+    meta: {
+      ogp: {
+        title: string
+        image: string
+        description: string
+      }
+    }
   }
-})
+}
 
 const route = useRoute()
 const targetUserId = ref(route.params.id)
@@ -105,6 +107,7 @@ function resetAll(userId: string) {
   isLoadingPublic.value = false
   isLoadingHidden.value = false
 }
+
 async function fetchList(hidden?: boolean) {
   const list = hidden ? hiddenList : publicList
   const isLoading = hidden ? isLoadingHidden : isLoadingPublic
@@ -114,25 +117,16 @@ async function fetchList(hidden?: boolean) {
   isLoading.value = true
 
   try {
-    const data = await useAjaxResponse<{
-      total: number
-      users: UserListItem[]
-      extraData: {
-        meta: {
-          ogp: {
-            title: string
-            image: string
-            description: string
-          }
-        }
+    const data = await useAjaxResponse<FollowList>(
+      `/ajax/user/${targetUserId.value}/following`,
+      {
+        params: {
+          offset: list.value.length,
+          limit: 24,
+          rest: hidden ? 'hide' : 'show',
+        },
       }
-    }>(`/ajax/user/${targetUserId.value}/following`, {
-      params: {
-        offset: list.value.length,
-        limit: 24,
-        rest: hidden ? 'hide' : 'show',
-      },
-    })
+    )
     list.value.push(...data.users)
     total.value = data.total
     title.value = data.extraData.meta.ogp.title || 'Following'
@@ -151,6 +145,19 @@ watch(tab, (newTab) => {
   }
   if (newTab === 'hidden' && isHiddenEmpty) {
     fetchList(true)
+  }
+})
+
+onMounted(() => {
+  useHead({ title: 'Following' })
+  resetAll('' + route.params.id)
+  fetchList(false)
+})
+
+onBeforeRouteUpdate((to, from) => {
+  if (to.name === from.name && to.params.id !== from.params.id) {
+    resetAll('' + to.params.id)
+    fetchList(false)
   }
 })
 </script>

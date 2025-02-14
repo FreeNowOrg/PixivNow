@@ -13,10 +13,14 @@
 <script lang="ts" setup>
 import type { ArtworkInfo } from '~/types'
 
-onMounted(() => {
-  useHead({ title: 'New Artworks from Following Users' })
-  fetchList()
-})
+type FollowLatest = {
+  page: {
+    isLastPage: boolean
+  }
+  thumbnails: {
+    illust: ArtworkInfo[]
+  }
+}
 
 const illusts = ref<ArtworkInfo[]>([])
 const userStore = useUserStore()
@@ -38,16 +42,12 @@ async function fetchList() {
   isLoading.value = true
 
   try {
-    const data = await useAjaxResponse<{
-      page: {
-        isLastPage: boolean
+    const data = await useAjaxResponse<FollowLatest>(
+      `/ajax/follow_latest/illust`,
+      {
+        params: { p: nextPage.value, mode: 'all' },
       }
-      thumbnails: {
-        illust: ArtworkInfo[]
-      }
-    }>(`/ajax/follow_latest/illust`, {
-      params: { p: nextPage.value, mode: 'all' },
-    })
+    )
     illusts.value.push(...data.thumbnails.illust)
     nextPage.value++
     hasNextPage.value = !data.page.isLastPage
@@ -55,4 +55,9 @@ async function fetchList() {
     isLoading.value = false
   }
 }
+
+onMounted(() => {
+  useHead({ title: 'New Artworks from Following Users' })
+  fetchList()
+})
 </script>

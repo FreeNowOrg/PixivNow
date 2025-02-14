@@ -1,4 +1,5 @@
-import type { Artwork, ArtworkInfo } from './Artworks'
+import type { NumberString } from './index'
+import type { ArtworkInfo } from './Artworks'
 
 export enum UserPrivacyLevel {
   DEFAULT,
@@ -7,7 +8,7 @@ export enum UserPrivacyLevel {
 }
 
 export interface User {
-  userId: `${number}`
+  userId: NumberString
   name: string
   image: string
   imageBig: string
@@ -96,7 +97,7 @@ export interface PixivUser {
 }
 
 export interface UserListItem {
-  userId: `${number}`
+  userId: NumberString
   userName: string
   profileImageUrl: string
   userComment: string

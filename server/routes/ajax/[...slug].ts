@@ -21,8 +21,6 @@ export default defineEventHandler(async (event) => {
       Referer: 'https://www.pixiv.net/',
     },
   })
-  const body = await res.text()
-  const r = replaceUrl(body)
   for (const c of res.headers.getSetCookie()) {
     const nv = /^([^=]+)=([^;]+);/.exec(c) ?? []
     const age = /;\s[Mm]ax-[Aa]ge=(\d+)/.exec(c) ?? []
@@ -35,5 +33,6 @@ export default defineEventHandler(async (event) => {
       expires: age[1] && !exp[1] ? undefined : new Date(exp[1]),
     })
   }
-  return JSON.parse(r)
+  const body = await res.text()
+  return JSON.parse(replaceUrl(body))
 })

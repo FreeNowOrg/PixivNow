@@ -1,3 +1,5 @@
+import type { NumberString } from './index'
+
 export interface ArtworkUrls {
   mini: string
   thumb: string
@@ -17,7 +19,7 @@ export interface ArtworkTag {
   tag: string
   locked: boolean
   deletable: boolean
-  userId: `${number}`
+  userId: NumberString
   translation?: {
     en?: string
   }
@@ -31,7 +33,7 @@ export interface ArtworkGallery {
 }
 
 interface ArtworkCommon {
-  id: `${number}`
+  id: NumberString
   title: string
   description: string
   createDate: string
@@ -40,7 +42,7 @@ interface ArtworkCommon {
   restrict: 0
   xRestrict: 0 | 1 | 2
   sl: number
-  userId: `${number}`
+  userId: NumberString
   userName: string
   alt: string
   width: number
@@ -48,7 +50,7 @@ interface ArtworkCommon {
   pageCount: number
   isBookmarkable: boolean
   bookmarkData: {
-    id: `${number}`
+    id: NumberString
     private: boolean
   } | null
   titleCaptionTranslation: {
@@ -78,6 +80,34 @@ export enum IllustType {
   UGOIRA = 2,
 }
 
+interface IllustContentType {
+  sexual: 0 | 1 | 2
+  lo: boolean
+  grotesque: boolean
+  violent: boolean
+  homosexual: boolean
+  drug: boolean
+  thoughts: boolean
+  antisocial: boolean
+  religional: boolean
+  original: boolean
+  furry: boolean
+  bl: boolean
+  yuri: boolean
+}
+
+interface IllustSeries {
+  illustSeriesId: NumberString
+  illustSeriesUserId: NumberString
+  illustSeriesTitle: string
+  illustSeriesCaption: string
+  illustSeriesContentCount: NumberString
+  illustSeriesCreateDatetime: string
+  illustSeriesContentIllustId: NumberString
+  illustSeriesContentOrder: NumberString
+  pageUrl: string
+}
+
 export interface ArtworkRank {
   title: string
   date: string
@@ -85,37 +115,11 @@ export interface ArtworkRank {
   url: string
   illust_type: IllustType
   illust_book_style: '0'
-  illust_page_count: `${number}`
+  illust_page_count: NumberString
   user_name: string
   profile_img: string
-  illust_content_type: {
-    sexual: 0 | 1 | 2
-    lo: boolean
-    grotesque: boolean
-    violent: boolean
-    homosexual: boolean
-    drug: boolean
-    thoughts: boolean
-    antisocial: boolean
-    religional: boolean
-    original: boolean
-    furry: boolean
-    bl: boolean
-    yuri: boolean
-  }
-  illust_series:
-    | {
-        illustSeriesId: `${number}`
-        illustSeriesUserId: `${number}`
-        illustSeriesTitle: string
-        illustSeriesCaption: string
-        illustSeriesContentCount: `${number}`
-        illustSeriesCreateDatetime: string
-        illustSeriesContentIllustId: `${number}`
-        illustSeriesContentOrder: `${number}`
-        pageUrl: string
-      }
-    | false
+  illust_content_type: IllustContentType
+  illust_series: IllustSeries | false
   illust_id: number
   width: number
   height: number
@@ -129,19 +133,19 @@ export interface ArtworkRank {
 }
 
 export interface Artwork extends ArtworkCommon {
-  illustId: `${number}`
+  illustId: NumberString
   illustTitle: string
   illustComment: string
   urls: ArtworkUrls
   tags: {
-    authorId: `${number}`
+    authorId: NumberString
     isLocked: boolean
     tags: ArtworkTag[]
     writable: boolean
   }
   storableTags: string[]
   userAccount: string
-  userIllusts: Record<`${number}`, ArtworkInfo | null>
+  userIllusts: Record<NumberString, ArtworkInfo | null>
   likeData: boolean
   bookmarkCount: number
   likeCount: number
@@ -197,11 +201,11 @@ export interface Artwork extends ArtworkCommon {
     zengoIdWorks: ArtworkInfo[]
     zengoWorkData: {
       nextWork: {
-        id: `${number}`
+        id: NumberString
         title: string
       }
       prevWork: {
-        id: `${number}`
+        id: NumberString
         title: string
       }
     }

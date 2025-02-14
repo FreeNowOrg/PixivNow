@@ -1,7 +1,7 @@
 import type { AjaxResponse } from '../types'
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack/types'
 
-export async function useAjaxResponse<T>(
+export async function useAjaxResponse<T extends {}>(
   url: string,
   opts?: NitroFetchOptions<NitroFetchRequest>
 ) {

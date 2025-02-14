@@ -1,16 +1,18 @@
+import type { NumberString } from './index'
+
 export interface Comments {
-  userId: `${number}`
+  userId: NumberString
   userName: string
   isDeletedUser: boolean
   img: string
-  id: `${number}`
+  id: NumberString
   comment: string
   stampId: number | null
   stampLink: null
   commentDate: string
   commentRootId: string | null
   commentParentId: string | null
-  commentUserId: `${number}`
+  commentUserId: NumberString
   replyToUserId: string | null
   replyToUserName: string | null
   editable: boolean

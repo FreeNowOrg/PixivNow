@@ -44,7 +44,7 @@ export async function addBookmark(illust_id: NumberLike): Promise<any> {
   return (
     await useAjaxResponse<any>('/ajax/illusts/bookmarks/add', {
       method: 'POST',
-      headers: { 'Content-Type': 'applicaion/json' },
+      headers: { 'Content-Type': 'application/json' },
       body: { illust_id, restrict: 0, comment: '', tags: [] },
     })
   ).data
