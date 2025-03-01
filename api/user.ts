@@ -56,7 +56,7 @@ function resolveLegacyGlobalMeta($: CheerioAPI): {
   token: string
 } {
   const $meta = $('meta[name="global-data"]')
-  if ($meta.length < 0 || !$meta.attr('content')) {
+  if ($meta.length === 0 || !$meta.attr('content')) {
     throw new Error('无效的用户密钥', {
       cause: {
         error: new TypeError('No global-data meta found'),
