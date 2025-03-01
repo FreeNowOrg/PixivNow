@@ -5,6 +5,11 @@ export enum UserPrivacyLevel {
   R18,
   R18G,
 }
+export enum UserXRestrict {
+  DEFAULT,
+  R18,
+  R18G,
+}
 
 export interface User {
   userId: `${number}`
@@ -82,17 +87,21 @@ export interface User {
 }
 
 export interface PixivUser {
-  id: string
+  id: `${number}`
   pixivId: string
   name: string
   profileImg: string
   profileImgBig: string
   premium: boolean
-  xRestrict: 0 | 1 | 2
+  xRestrict: UserXRestrict
   adult: boolean
-  safeMode: boolean
   illustCreator: boolean
   novelCreator: boolean
+  hideAiWorks: boolean
+  readingStatusEnabled: boolean
+  illustMaskRules: any[]
+  location: string
+  isSensitiveViewable: boolean
 }
 
 export interface UserListItem {
