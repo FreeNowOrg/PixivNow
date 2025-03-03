@@ -1,11 +1,11 @@
 import { Artwork, ArtworkInfo } from './Artworks'
 
-export enum UserPrivacyLevel {
+export enum UserXRestrict {
   SAFE,
   R18,
   R18G,
 }
-export enum UserXRestrict {
+export enum UserPrivacyLevel {
   PUBLIC_FOR_ALL,
   PUBLIC_FOR_FRIENDS,
   PRIVATE,
