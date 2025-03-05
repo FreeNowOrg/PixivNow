@@ -249,7 +249,7 @@ async function handleUserInit(userId: string): Promise<void> {
     const { illusts } = profileData
     const userValue = {
       ...userData,
-      illusts: sortArtList(illusts),
+      illusts: sortById(illusts),
     }
     user.value = userValue
     siteCache.set(`user.${userId}`, userValue)

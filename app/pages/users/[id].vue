@@ -283,9 +283,9 @@ async function init(id: NumberLike, initTab?: UserTabs): Promise<void> {
     ])
     const userValue = {
       ...data,
-      illusts: sortArtList(profileData.illusts),
-      manga: sortArtList(profileData.manga),
-      novels: sortArtList(profileData.novels),
+      illusts: sortById(profileData.illusts),
+      manga: sortById(profileData.manga),
+      novels: sortById(profileData.novels),
     }
     user.value = userValue
     tab.value = initTab || UserTabs.illusts

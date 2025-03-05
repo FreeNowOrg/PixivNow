@@ -30,14 +30,14 @@ export const defaultArtwork: ArtworkInfo = {
   aiType: 1,
 }
 
-export function sortArtList<T extends { id: NumberLike }>(
+export function sortById<T extends { id: NumberLike }>(
   obj: Record<string, T>
 ): T[] {
   return Object.values(obj).sort((a, b) => +b.id - +a.id)
 }
 
 export function isArtwork(item: ArtworkInfoOrAd): item is ArtworkInfo {
-  return Object.keys(item).includes('id')
+  return Object.hasOwn(item, 'id')
 }
 
 export async function addBookmark(illust_id: NumberLike): Promise<any> {
