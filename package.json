@@ -18,7 +18,7 @@
     "changelog": "conventional-changelog -p jquery -i CHANGELOG.md -s -r 0"
   },
   "dependencies": {
-    "axios": "^1.8.1",
+    "axios": "^1.8.2",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "fflate": "^0.8.2",
@@ -30,7 +30,7 @@
     "pinia": "^3.0.1",
     "vue": "^3.5.13",
     "vue-gtag": "^2.1.0",
-    "vue-i18n": "^11.1.1",
+    "vue-i18n": "^11.1.2",
     "vue-router": "^4.5.0",
     "vue-waterfall-plugin-next": "^2.6.5"
   },
@@ -44,10 +44,10 @@
     "@types/lodash.escaperegexp": "^4.1.9",
     "@types/node": "^22.13.9",
     "@types/nprogress": "^0.2.3",
-    "@vercel/node": "^5.1.11",
+    "@vercel/node": "^5.1.12",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/language-plugin-pug": "^2.2.8",
-    "@vueuse/core": "^12.8.1",
+    "@vueuse/core": "^12.8.2",
     "cheerio": "^1.0.0",
     "conventional-changelog-cli": "^5.0.0",
     "cookie": "^1.0.2",
@@ -61,8 +61,8 @@
     "unplugin-auto-import": "^19.1.1",
     "unplugin-icons": "^22.1.0",
     "unplugin-vue-components": "^28.4.1",
-    "vercel": "^41.3.1",
-    "vite": "^6.2.0"
+    "vercel": "^41.3.2",
+    "vite": "^6.2.1"
   },
-  "packageManager": "pnpm@10.5.2"
+  "packageManager": "pnpm@10.6.1"
 }
