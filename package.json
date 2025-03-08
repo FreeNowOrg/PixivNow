@@ -64,5 +64,5 @@
     "vercel": "^41.3.2",
     "vite": "^6.2.1"
   },
-  "packageManager": "pnpm@10.5.2"
+  "packageManager": "pnpm@10.6.1"
 }
