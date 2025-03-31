@@ -124,8 +124,8 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1
       vue-gtag:
-        specifier: ^2.1.2
-        version: 2.1.2(vue@3.5.13(typescript@5.8.2))
+        specifier: ^3.1.1
+        version: 3.1.1(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
       vue-i18n:
         specifier: ^11.1.2
         version: 11.1.2(vue@3.5.13(typescript@5.8.2))
@@ -4115,10 +4115,14 @@ packages:
   vue-flex-waterfall@2.3.1:
     resolution: {integrity: sha512-FX+TKhMIOqVSHfNZixPLRxrezdwPlt+b+WOJAzLG8a10btW0jGqLWIW589rWHMc/UIYeYKvx/pqOp6DUwn9v7A==}
 
-  vue-gtag@2.1.2:
-    resolution: {integrity: sha512-9eTGfIApQ3XpsxJjLNiRP51x0v3c93YJxVO8rKWSLJwbUuICwTMGGfB7x0RLEijFoK3lakgFvR5pR+JF5la2KA==}
+  vue-gtag@3.1.1:
+    resolution: {integrity: sha512-8n31qQ4Qiyn8IenzDWp6A9oq9dPhHUCxFtXJHK0smq+sftiW4S4jTfZeGNCRJZrHLo8ybpso7Br6Go7GB5CmPQ==}
     peerDependencies:
-      vue: ^3.0.0
+      vue: ^3.5.13
+      vue-router: ^4.5.0
+    peerDependenciesMeta:
+      vue-router:
+        optional: true
 
   vue-i18n@10.0.6:
     resolution: {integrity: sha512-pQPspK5H4srzlu+47+HEY2tmiY3GyYIvSPgSBdQaYVWv7t1zj1t9p1FvHlxBXyJ17t9stG/Vxj+pykrvPWBLeQ==}
@@ -8570,9 +8574,11 @@ snapshots:
 
   vue-flex-waterfall@2.3.1: {}
 
-  vue-gtag@2.1.2(vue@3.5.13(typescript@5.8.2)):
+  vue-gtag@3.1.1(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2)):
     dependencies:
       vue: 3.5.13(typescript@5.8.2)
+    optionalDependencies:
+      vue-router: 4.5.0(vue@3.5.13(typescript@5.8.2))
 
   vue-i18n@10.0.6(vue@3.5.13(typescript@5.8.2)):
     dependencies:

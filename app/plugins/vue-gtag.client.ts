@@ -1,13 +1,12 @@
-import VueGtag from 'vue-gtag'
+import { createGtag } from 'vue-gtag'
+
+const gtag = createGtag({
+  tagId: useRuntimeConfig().public.googleAnalyticsId,
+  pageTracker: {
+    router: useRouter(),
+  },
+})
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(
-    VueGtag,
-    {
-      config: {
-        id: useRuntimeConfig().public.googleAnalyticsId,
-      },
-    },
-    useRouter()
-  )
+  nuxtApp.vueApp.use(gtag)
 })
