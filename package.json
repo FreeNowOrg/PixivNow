@@ -47,7 +47,7 @@
     "@vercel/node": "^5.1.12",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/language-plugin-pug": "^2.2.8",
-    "@vueuse/core": "^12.8.2",
+    "@vueuse/core": "^13.0.0",
     "cheerio": "^1.0.0",
     "conventional-changelog-cli": "^5.0.0",
     "cookie": "^1.0.2",
