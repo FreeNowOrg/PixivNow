@@ -86,7 +86,7 @@ importers:
         version: 5.1.14(rollup@4.40.0)
       '@vitejs/plugin-vue':
         specifier: ^5.2.1
-        version: 5.2.3(vite@6.2.6(@types/node@22.14.1)(sass@1.86.3))(vue@3.5.13(typescript@5.8.3))
+        version: 5.2.3(vite@6.3.2(@types/node@22.14.1)(sass@1.86.3))(vue@3.5.13(typescript@5.8.3))
       '@vue/language-plugin-pug':
         specifier: ^2.2.8
         version: 2.2.8
@@ -134,10 +134,10 @@ importers:
         version: 28.5.0(@babel/parser@7.26.9)(vue@3.5.13(typescript@5.8.3))
       vercel:
         specifier: ^41.3.2
-        version: 41.6.0(rollup@4.40.0)
+        version: 41.6.1(rollup@4.40.0)
       vite:
         specifier: ^6.2.1
-        version: 6.2.6(@types/node@22.14.1)(sass@1.86.3)
+        version: 6.3.2(@types/node@22.14.1)(sass@1.86.3)
 
 packages:
 
@@ -2318,13 +2318,13 @@ packages:
     peerDependencies:
       vue: ^3.0.11
 
-  vercel@41.6.0:
-    resolution: {integrity: sha512-wig7fUZqU6Xb5/CdW49NUrwssA5GuG18WUP5vxl84KZigUcmQM5CKySyxgeFcugBtqelQSlg1+4ytfjcfQxQuw==}
+  vercel@41.6.1:
+    resolution: {integrity: sha512-Xly6uozzOHm6VT2nB6l0IydEyhRNGvxU7aBnIA5CD2rt+HjLq+Dz9qIYC6XmcpBbR1EWkG2uCyM11k7pt+uHXA==}
     engines: {node: '>= 18'}
     hasBin: true
 
-  vite@6.2.6:
-    resolution: {integrity: sha512-9xpjNl3kR4rVDZgPNdTL0/c6ao4km69a/2ihNQbcANz8RuCOK3hQBmLSJf3bRKVQjVMda+YvizNE8AwvogcPbw==}
+  vite@6.3.2:
+    resolution: {integrity: sha512-ZSvGOXKGceizRQIZSz7TGJ0pS3QLlVY/9hwxVh17W3re67je1RKYzFHivZ/t0tubU78Vkyb9WnHPENSBCzbckg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -3059,9 +3059,9 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vitejs/plugin-vue@5.2.3(vite@6.2.6(@types/node@22.14.1)(sass@1.86.3))(vue@3.5.13(typescript@5.8.3))':
+  '@vitejs/plugin-vue@5.2.3(vite@6.3.2(@types/node@22.14.1)(sass@1.86.3))(vue@3.5.13(typescript@5.8.3))':
     dependencies:
-      vite: 6.2.6(@types/node@22.14.1)(sass@1.86.3)
+      vite: 6.3.2(@types/node@22.14.1)(sass@1.86.3)
       vue: 3.5.13(typescript@5.8.3)
 
   '@volar/language-core@2.4.12':
@@ -4618,7 +4618,7 @@ snapshots:
       evtd: 0.2.4
       vue: 3.5.13(typescript@5.8.3)
 
-  vercel@41.6.0(rollup@4.40.0):
+  vercel@41.6.1(rollup@4.40.0):
     dependencies:
       '@vercel/build-utils': 10.5.1
       '@vercel/fun': 1.1.5
@@ -4640,11 +4640,14 @@ snapshots:
       - rollup
       - supports-color
 
-  vite@6.2.6(@types/node@22.14.1)(sass@1.86.3):
+  vite@6.3.2(@types/node@22.14.1)(sass@1.86.3):
     dependencies:
       esbuild: 0.25.2
+      fdir: 6.4.3(picomatch@4.0.2)
+      picomatch: 4.0.2
       postcss: 8.5.3
       rollup: 4.40.0
+      tinyglobby: 0.2.12
     optionalDependencies:
       '@types/node': 22.14.1
       fsevents: 2.3.3
