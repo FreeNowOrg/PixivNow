@@ -62,7 +62,7 @@ importers:
         version: 1.2.1
       '@prettier/plugin-pug':
         specifier: ^3.3.0
-        version: 3.3.0(prettier@3.5.3)
+        version: 3.4.0(prettier@3.5.3)
       '@tabler/icons-vue':
         specifier: ^3.31.0
         version: 3.31.0(vue@3.5.13(typescript@5.8.3))
@@ -521,8 +521,8 @@ packages:
     resolution: {integrity: sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg==}
     engines: {node: '>= 10.0.0'}
 
-  '@prettier/plugin-pug@3.3.0':
-    resolution: {integrity: sha512-fO8lko9JbrU+lP9B/EMKcqYptTDaHHnwDpkhmOSiSgcavqAG3mQetpBuAD7+dIOBmTIdkCquteC+CDuxGCfVKg==}
+  '@prettier/plugin-pug@3.4.0':
+    resolution: {integrity: sha512-Jzd5rE/ellJz3vqfxyVewPsCHXw1dmIzJ3AXhAnqVBKQOj2u73ZS2oUacji8CbQSsYyCy7GXFjXWDlDTMG1x2g==}
     engines: {node: '>=18.0.0', npm: '>=9.0.0'}
     peerDependencies:
       prettier: ^3.0.0
@@ -2776,7 +2776,7 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.1
     optional: true
 
-  '@prettier/plugin-pug@3.3.0(prettier@3.5.3)':
+  '@prettier/plugin-pug@3.4.0(prettier@3.5.3)':
     dependencies:
       prettier: 3.5.3
       pug-lexer: 5.0.1
