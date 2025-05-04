@@ -109,3 +109,4 @@ dev-test
 *.dev.*
 .vercel
 .output
+.vs
