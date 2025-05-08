@@ -43,7 +43,7 @@ importers:
         version: 3.5.13(typescript@5.8.3)
       vue-gtag:
         specifier: ^3.4.0
-        version: 3.4.0(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
+        version: 3.5.0(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
       vue-i18n:
         specifier: ^11.1.3
         version: 11.1.3(vue@3.5.13(typescript@5.8.3))
@@ -77,7 +77,7 @@ importers:
         version: 4.1.9
       '@types/node':
         specifier: ^22.15.3
-        version: 22.15.3
+        version: 22.15.17
       '@types/nprogress':
         specifier: ^0.2.3
         version: 0.2.3
@@ -86,7 +86,7 @@ importers:
         version: 5.1.15(rollup@4.40.1)
       '@vitejs/plugin-vue':
         specifier: ^5.2.3
-        version: 5.2.3(vite@6.3.4(@types/node@22.15.3)(sass@1.87.0))(vue@3.5.13(typescript@5.8.3))
+        version: 5.2.3(vite@6.3.5(@types/node@22.15.17)(sass@1.87.0))(vue@3.5.13(typescript@5.8.3))
       '@vue/language-plugin-pug':
         specifier: ^2.2.10
         version: 2.2.10
@@ -125,7 +125,7 @@ importers:
         version: 5.8.3
       unplugin-auto-import:
         specifier: ^19.1.2
-        version: 19.1.2(@vueuse/core@13.1.0(vue@3.5.13(typescript@5.8.3)))
+        version: 19.2.0(@vueuse/core@13.1.0(vue@3.5.13(typescript@5.8.3)))
       unplugin-icons:
         specifier: ^22.1.0
         version: 22.1.0(@vue/compiler-sfc@3.5.13)
@@ -134,10 +134,10 @@ importers:
         version: 28.5.0(@babel/parser@7.27.0)(vue@3.5.13(typescript@5.8.3))
       vercel:
         specifier: ^41.6.2
-        version: 41.7.0(rollup@4.40.1)
+        version: 41.7.2(rollup@4.40.1)
       vite:
         specifier: ^6.3.3
-        version: 6.3.4(@types/node@22.15.3)(sass@1.87.0)
+        version: 6.3.5(@types/node@22.15.17)(sass@1.87.0)
 
 packages:
 
@@ -707,8 +707,8 @@ packages:
   '@types/node@16.18.11':
     resolution: {integrity: sha512-3oJbGBUWuS6ahSnEq1eN2XrCyf4YsWI8OyCvo7c64zQJNplk3mO84t53o8lfTk+2ji59g5ycfc6qQ3fdHliHuA==}
 
-  '@types/node@22.15.3':
-    resolution: {integrity: sha512-lX7HFZeHf4QG/J7tBZqrCAXwz9J5RD56Y6MpP0eJkka8p+K0RY/yBTW7CYFJ4VGCclxqOLKmiGP5juQc6MKgcw==}
+  '@types/node@22.15.17':
+    resolution: {integrity: sha512-wIX2aSZL5FE+MR0JlvF87BNVrtFWf6AE6rxSE9X7OwnVvoyCQjpzSRJ+M87se/4QCkCiebQAqrJ0y6fwIyi7nw==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -744,8 +744,8 @@ packages:
   '@vercel/hydrogen@1.2.0':
     resolution: {integrity: sha512-kdZp8cTVLoNmnu24wtoQPu9ZO+uB00zvDMTOXlQmNdq/V3k0mQa/Q5k2B8nliBQ3BMiBasoXxMKv59+F8rYvDw==}
 
-  '@vercel/next@4.7.9':
-    resolution: {integrity: sha512-zwm4IKrtWaBlPKU6isGwRg/+i/Do+QVdnXTRKaDeYnMAI703cysqOr1VE1rWBSJCzmUUOJkeJdXidBaMpGgRaw==}
+  '@vercel/next@4.7.10':
+    resolution: {integrity: sha512-IC3z3TbFpvaeZirPjk0E6eyB1XQqzEc2kLlN5kF9PPFHgcBL4ktEgnJanCg3RzOnRf2jc169MryD4DIErZ9OuA==}
 
   '@vercel/nft@0.27.10':
     resolution: {integrity: sha512-zbaF9Wp/NsZtKLE4uVmL3FyfFwlpDyuymQM1kPbeT0mVOHKDQQNjnnfslB3REg3oZprmNFJuh3pkHBk2qAaizg==}
@@ -2243,8 +2243,8 @@ packages:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
-  unplugin-auto-import@19.1.2:
-    resolution: {integrity: sha512-EkxNIJm4ZPYtV7rRaPBKnsscgTaifIZNrJF5DkMffTxkUOJOlJuKVypA6YBSBOjzPJDTFPjfVmCQPoBuOO+YYQ==}
+  unplugin-auto-import@19.2.0:
+    resolution: {integrity: sha512-DGRHg86nUDKEYpny1p2kFZjeLg7kHQmknsPQ8krAshvpeypps7dFxNBsAqhBaxYINjetbgQilF8wbjuZxpdomg==}
     engines: {node: '>=14'}
     peerDependencies:
       '@nuxt/kit': ^3.2.2
@@ -2318,13 +2318,13 @@ packages:
     peerDependencies:
       vue: ^3.0.11
 
-  vercel@41.7.0:
-    resolution: {integrity: sha512-71yoAOnzGzIBNTmsX3rfPKD03dSLA1cIu09rwulJDqARctfmJj8t+AmOC5jtpczOj7Z5HGgZMaLIrXrv220lcQ==}
+  vercel@41.7.2:
+    resolution: {integrity: sha512-XL62xOTXSU2AucAWWNrNaY98M6UQyzPCKMeaTTbAdk42bgcmiL/3GKyKJs0T+li0aFp7w4QPZyB/9+Ll0qRzEw==}
     engines: {node: '>= 18'}
     hasBin: true
 
-  vite@6.3.4:
-    resolution: {integrity: sha512-BiReIiMS2fyFqbqNT/Qqt4CVITDU9M9vE+DKcVAsB+ZV0wvTKd+3hMbkpxz1b+NmEDMegpVbisKiAZOnvO92Sw==}
+  vite@6.3.5:
+    resolution: {integrity: sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -2402,8 +2402,8 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
-  vue-gtag@3.4.0:
-    resolution: {integrity: sha512-i/eAIICqWy2iK+QHxA5zAMzwQTcC/8cUeBwr5wk4CgehcSEooxymgn8QYeMnE+rwQWXYfQ0FB1U8Ur4ITJNjSw==}
+  vue-gtag@3.5.0:
+    resolution: {integrity: sha512-eycDX/wg0iQSxSMn8dm+oQ7HxfHxzMxF7UPzqVlE8MaDqS8p9iTmjIyZfurMN5Jb8n4bcZMK08pEydSu2wR22w==}
     peerDependencies:
       vue: ^3.5.13
       vue-router: ^4.5.0
@@ -2901,7 +2901,7 @@ snapshots:
 
   '@types/node@16.18.11': {}
 
-  '@types/node@22.15.3':
+  '@types/node@22.15.17':
     dependencies:
       undici-types: 6.21.0
 
@@ -2961,7 +2961,7 @@ snapshots:
       '@vercel/static-config': 3.0.0
       ts-morph: 12.0.0
 
-  '@vercel/next@4.7.9(rollup@4.40.1)':
+  '@vercel/next@4.7.10(rollup@4.40.1)':
     dependencies:
       '@vercel/nft': 0.27.10(rollup@4.40.1)
     transitivePeerDependencies:
@@ -3059,9 +3059,9 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vitejs/plugin-vue@5.2.3(vite@6.3.4(@types/node@22.15.3)(sass@1.87.0))(vue@3.5.13(typescript@5.8.3))':
+  '@vitejs/plugin-vue@5.2.3(vite@6.3.5(@types/node@22.15.17)(sass@1.87.0))(vue@3.5.13(typescript@5.8.3))':
     dependencies:
-      vite: 6.3.4(@types/node@22.15.3)(sass@1.87.0)
+      vite: 6.3.5(@types/node@22.15.17)(sass@1.87.0)
       vue: 3.5.13(typescript@5.8.3)
 
   '@volar/language-core@2.4.13':
@@ -4547,7 +4547,7 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unplugin-auto-import@19.1.2(@vueuse/core@13.1.0(vue@3.5.13(typescript@5.8.3))):
+  unplugin-auto-import@19.2.0(@vueuse/core@13.1.0(vue@3.5.13(typescript@5.8.3))):
     dependencies:
       local-pkg: 1.1.1
       magic-string: 0.30.17
@@ -4615,13 +4615,13 @@ snapshots:
       evtd: 0.2.4
       vue: 3.5.13(typescript@5.8.3)
 
-  vercel@41.7.0(rollup@4.40.1):
+  vercel@41.7.2(rollup@4.40.1):
     dependencies:
       '@vercel/build-utils': 10.5.1
       '@vercel/fun': 1.1.5
       '@vercel/go': 3.2.1
       '@vercel/hydrogen': 1.2.0
-      '@vercel/next': 4.7.9(rollup@4.40.1)
+      '@vercel/next': 4.7.10(rollup@4.40.1)
       '@vercel/node': 5.1.15(rollup@4.40.1)
       '@vercel/python': 4.7.2
       '@vercel/redwood': 2.3.0(rollup@4.40.1)
@@ -4637,7 +4637,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite@6.3.4(@types/node@22.15.3)(sass@1.87.0):
+  vite@6.3.5(@types/node@22.15.17)(sass@1.87.0):
     dependencies:
       esbuild: 0.25.3
       fdir: 6.4.4(picomatch@4.0.2)
@@ -4646,7 +4646,7 @@ snapshots:
       rollup: 4.40.1
       tinyglobby: 0.2.13
     optionalDependencies:
-      '@types/node': 22.15.3
+      '@types/node': 22.15.17
       fsevents: 2.3.3
       sass: 1.87.0
 
@@ -4695,7 +4695,7 @@ snapshots:
 
   vscode-uri@3.1.0: {}
 
-  vue-gtag@3.4.0(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3)):
+  vue-gtag@3.5.0(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3)):
     dependencies:
       vue: 3.5.13(typescript@5.8.3)
     optionalDependencies:
