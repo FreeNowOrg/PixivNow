@@ -7,6 +7,48 @@ export enum UserPrivacyLevel {
   R18G,
 }
 
+export interface UserBackground {
+  url: string | null
+  color: string | null
+  repeat: string | null
+  isPrivate: boolean
+}
+
+export interface UserSocial {
+  twitter?: {
+    url: string
+  }
+  facebook?: {
+    url: string
+  }
+  instagram?: {
+    url: string
+  }
+  [key: string]: any
+}
+
+export interface UserWorkspace {
+  userWorkspacePc?: string
+  userWorkspaceMonitor?: string
+  userWorkspaceTool?: string
+  userWorkspaceScanner?: string
+  userWorkspaceTablet?: string
+  userWorkspaceMouse?: string
+  userWorkspacePrinter?: string
+  userWorkspaceDesktop?: string
+  userWorkspaceMusic?: string
+  userWorkspaceDesk?: string
+  userWorkspaceChair?: string
+  userWorkspaceComment?: string
+  wsUrl?: string
+  wsBigUrl?: string
+}
+
+export interface UserGeneralInfo {
+  name: string
+  privacyLevel: UserPrivacyLevel
+}
+
 export interface User {
   userId: NumberString
   name: string
@@ -16,12 +58,7 @@ export interface User {
   isFollowed: boolean
   isMypixiv: boolean
   isBlocking: boolean
-  background: {
-    url: string | null
-    color: string | null
-    repeat: string | null
-    isPrivate: boolean
-  } | null
+  background: UserBackground | null
   sketchLiveId: {} | null
   partial: number
   acceptRequest: boolean
@@ -31,50 +68,12 @@ export interface User {
   comment: string
   commentHtml: string
   webpage: string | null
-  social: {
-    twitter?: {
-      url: string
-    }
-    facebook?: {
-      url: string
-    }
-    instagram?: {
-      url: string
-    }
-    [key: string]: any
-  }
-  region: {
-    name: string
-    privacyLevel: UserPrivacyLevel
-  } | null
-  birthDay: {
-    name: string
-    privacyLevel: UserPrivacyLevel
-  } | null
-  gender: {
-    name: string
-    privacyLevel: UserPrivacyLevel
-  } | null
-  job: {
-    name: string
-    privacyLevel: UserPrivacyLevel
-  } | null
-  workspace: {
-    userWorkspacePc?: string
-    userWorkspaceMonitor?: string
-    userWorkspaceTool?: string
-    userWorkspaceScanner?: string
-    userWorkspaceTablet?: string
-    userWorkspaceMouse?: string
-    userWorkspacePrinter?: string
-    userWorkspaceDesktop?: string
-    userWorkspaceMusic?: string
-    userWorkspaceDesk?: string
-    userWorkspaceChair?: string
-    userWorkspaceComment?: string
-    wsUrl?: string
-    wsBigUrl?: string
-  }
+  social: UserSocial
+  region: UserGeneralInfo | null
+  birthDay: UserGeneralInfo | null
+  gender: UserGeneralInfo | null
+  job: UserGeneralInfo | null
+  workspace: UserWorkspace
   official: boolean
   group: null
   illusts: ArtworkInfo[]

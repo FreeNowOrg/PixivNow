@@ -10,7 +10,6 @@ Waterfall.artwork-large-list(
 
 <script lang="ts" setup>
 import { Waterfall } from 'vue-waterfall-plugin-next'
-import type { ArtworkInfo, ArtworkRank } from '~/types'
 
 const { rankList, artworkList } = defineProps<{
   rankList?: ArtworkRank[]

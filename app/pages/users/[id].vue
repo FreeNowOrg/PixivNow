@@ -200,8 +200,6 @@ import IParking from '~icons/fa-solid/parking'
 import IPlus from '~icons/fa-solid/plus'
 import IVenusMars from '~icons/fa-solid/venus-mars'
 
-import type { ArtworkInfo, NumberLike, User } from '~/types'
-
 const loadingUser = ref(true)
 const user = ref<User>()
 const isSelfUserPage = computed(() => user.value?.userId === userStore.id)

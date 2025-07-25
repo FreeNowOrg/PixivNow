@@ -19,7 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import type { ArtworkInfo } from '~/types'
 import { NPagination } from 'naive-ui'
 
 const { userId, workCategory = 'illust' } = defineProps<{

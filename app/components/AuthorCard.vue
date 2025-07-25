@@ -39,8 +39,6 @@ import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
 import ICheck from '~icons/fa-solid/check'
 import IPlus from '~icons/fa-solid/plus'
 
-import type { User } from '~/types'
-
 const userStore = useUserStore()
 
 const { user } = defineProps<{ user?: User }>()

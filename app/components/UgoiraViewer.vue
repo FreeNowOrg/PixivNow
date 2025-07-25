@@ -50,7 +50,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { Artwork } from '~/types'
 import { NSpin, NIcon, NFloatButton } from 'naive-ui'
 import { UgoiraPlayer } from '~/utils/UgoiraPlayer'
 import IPlay from '~icons/fa-solid/play'

@@ -11,8 +11,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { ArtworkInfo } from '~/types'
-
 type FollowLatest = {
   page: {
     isLastPage: boolean

@@ -34,7 +34,6 @@
 
 <script setup lang="ts">
 import { NCard, NPagination, NSpin } from 'naive-ui'
-import type { ArtworkInfo } from '~/types'
 
 const error = ref('')
 const loading = ref(true)

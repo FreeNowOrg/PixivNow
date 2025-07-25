@@ -25,8 +25,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { ArtworkGallery } from '~/types'
-
 defineProps<{ pages: ArtworkGallery[] }>()
 const showAll = ref(false)
 const picShow = ref(0)

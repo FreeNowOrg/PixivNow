@@ -1,4 +1,3 @@
-import type { Artwork } from '~/types'
 import { formatInTimeZone } from 'date-fns-tz'
 
 export default defineEventHandler(async (event) => {

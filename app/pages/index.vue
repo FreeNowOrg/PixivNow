@@ -63,8 +63,6 @@ import { NH2, NButton, NIcon, NModal, NTag, NSpace } from 'naive-ui'
 import IInfoCircle from '~icons/fa-solid/info-circle'
 import IRandom from '~icons/fa-solid/random'
 
-import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
-
 useHead({
   title: null,
 })

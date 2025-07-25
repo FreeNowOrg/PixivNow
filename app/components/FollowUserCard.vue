@@ -35,7 +35,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { UserListItem } from '~/types'
 import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasPlus from '~icons/fa-solid/plus'

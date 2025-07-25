@@ -137,8 +137,6 @@ import IImages from '~icons/fa-solid/images'
 import ILaughWink from '~icons/fa-solid/laugh-wink'
 import IThumbsUp from '~icons/fa-solid/thumbs-up'
 
-import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '~/types'
-
 const loading = ref(true)
 const error = ref('')
 const illust = ref<Artwork>()

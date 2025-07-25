@@ -1,5 +1,3 @@
-import type { NumberLike } from '~/types'
-
 export async function addUserFollow(user_id: NumberLike): Promise<any> {
   return (
     await $fetch<{ data: any }>('/bookmark_add.php', {

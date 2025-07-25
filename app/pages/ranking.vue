@@ -21,8 +21,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { ArtworkRank } from '~/types'
-
 type ArtworkRawRanking = {
   date: string
   contents: ArtworkRank[]

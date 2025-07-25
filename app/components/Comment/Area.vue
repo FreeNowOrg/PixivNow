@@ -27,8 +27,6 @@ import { useIntersectionObserver } from '@vueuse/core'
 import { NButton } from 'naive-ui'
 import IPlus from '~icons/fa-solid/plus'
 
-import type { Comments, NumberLike } from '~/types'
-
 type CommentsRoot = {
   hasNext: boolean
   comments: Comments[]

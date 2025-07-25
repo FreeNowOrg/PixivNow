@@ -14,8 +14,6 @@ Component.artworks-list(
 <script lang="ts" setup>
 import { NScrollbar } from 'naive-ui'
 
-import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
-
 const { loading, list } = defineProps<{
   list: ArtworkInfoOrAd[]
   loading?: boolean | number

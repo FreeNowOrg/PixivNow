@@ -50,8 +50,6 @@ import IImages from '~icons/fa-solid/images'
 import IRobot from '~icons/fa-solid/robot'
 import IPlayCircle from '~icons/fa-solid/play-circle'
 
-import { type ArtworkInfo, IllustType } from '~/types'
-
 const { item } = defineProps<{
   item?: ArtworkInfo
   loading?: boolean

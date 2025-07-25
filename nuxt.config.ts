@@ -1,10 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  future: {
-    compatibilityVersion: 4,
-  },
   typescript: {
     shim: false,
     tsConfig: {
@@ -35,7 +31,6 @@ export default defineNuxtConfig({
         file: 'zh-Hans.json',
       },
     ],
-    lazy: true,
     defaultLocale: 'zh-Hans',
   },
   routeRules: {

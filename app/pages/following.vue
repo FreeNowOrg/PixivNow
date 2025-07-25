@@ -57,7 +57,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { UserListItem } from '~/types'
 import IChevronLeft from '~icons/fa-solid/chevron-left'
 
 type FollowList = {
