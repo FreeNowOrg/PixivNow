@@ -83,7 +83,7 @@ importers:
         version: 0.2.3
       '@vercel/node':
         specifier: ^5.1.14
-        version: 5.3.10(rollup@4.40.1)
+        version: 5.3.11(rollup@4.40.1)
       '@vitejs/plugin-vue':
         specifier: ^5.2.3
         version: 5.2.4(vite@6.3.5(@types/node@22.17.0)(sass@1.89.2))(vue@3.5.18(typescript@5.9.2))
@@ -789,8 +789,8 @@ packages:
   '@vercel/node@5.1.16':
     resolution: {integrity: sha512-jz44zZDlDICAX2+JHs3ekTP1l9RJC5MkHRdkQiWvSgaNufoRxOo4nDkmFTiT53HeZCq+S2FYimn92n+prDh3QQ==}
 
-  '@vercel/node@5.3.10':
-    resolution: {integrity: sha512-hJuCwPpv7EDZnmHLtAV6GdpTkGlUcRrcRLhnJ0Ma1uOMhx7ZYudOhnfusUW3D60+kY9KgvABi+Ox1U43Gq0ofg==}
+  '@vercel/node@5.3.11':
+    resolution: {integrity: sha512-mXywAl778oXpuQZgdqf8SSO/AH+fwQ2x89ucbbm72Xa+pXhvMKorkxZ10Modo2wQAIta9xRoL9l5tkbC8ESi0g==}
 
   '@vercel/python@4.7.2':
     resolution: {integrity: sha512-i2QBNMvNxUZQ2e5vLIL7mUkLg5Qkl9nqxUNXCYezdyvk2Ql6xYKjg7tMhpK/uiy094KfZSOECpDbDxkIN0jUSw==}
@@ -3214,7 +3214,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/node@5.3.10(rollup@4.40.1)':
+  '@vercel/node@5.3.11(rollup@4.40.1)':
     dependencies:
       '@edge-runtime/node-utils': 2.3.0
       '@edge-runtime/primitives': 4.1.0
