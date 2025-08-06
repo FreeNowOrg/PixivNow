@@ -86,7 +86,7 @@ importers:
         version: 5.3.11(rollup@4.40.1)
       '@vitejs/plugin-vue':
         specifier: ^5.2.3
-        version: 5.2.4(vite@6.3.5(@types/node@22.17.0)(sass@1.89.2))(vue@3.5.18(typescript@5.9.2))
+        version: 5.2.4(vite@6.3.5(@types/node@22.17.0)(sass@1.90.0))(vue@3.5.18(typescript@5.9.2))
       '@vue/language-plugin-pug':
         specifier: ^2.2.10
         version: 2.2.12
@@ -116,7 +116,7 @@ importers:
         version: 3.0.3
       sass:
         specifier: ^1.87.0
-        version: 1.89.2
+        version: 1.90.0
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -137,7 +137,7 @@ importers:
         version: 41.7.8(rollup@4.40.1)
       vite:
         specifier: ^6.3.3
-        version: 6.3.5(@types/node@22.17.0)(sass@1.89.2)
+        version: 6.3.5(@types/node@22.17.0)(sass@1.90.0)
 
 packages:
 
@@ -1657,8 +1657,8 @@ packages:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
 
-  immutable@5.1.1:
-    resolution: {integrity: sha512-3jatXi9ObIsPGr3N5hGw/vWWcTkq6hUYhpQz4k0wLC+owqWi/LiugIw9x0EdNZ2yGedKN/HzePiBvaJRXa0Ujg==}
+  immutable@5.1.3:
+    resolution: {integrity: sha512-+chQdDfvscSF1SJqv2gn4SRO2ZyS3xL3r7IW/wWEEzrzLisnOlKiQu5ytC/BVNcS15C39WT2Hg/bjKjDMcu+zg==}
 
   index-to-position@1.1.0:
     resolution: {integrity: sha512-XPdx9Dq4t9Qk1mTMbWONJqU7boCoumEH7fRET37HX5+khDUl3J2W6PdALxhILYlIYx2amlwYcRPp28p0tSiojg==}
@@ -2163,8 +2163,8 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  sass@1.89.2:
-    resolution: {integrity: sha512-xCmtksBKd/jdJ9Bt9p7nPKiuqrlBMBuuGkQlkhZjjQk3Ty48lv93k5Dq6OPkKt4XwxDJ7tvlfrTa1MPA9bf+QA==}
+  sass@1.90.0:
+    resolution: {integrity: sha512-9GUyuksjw70uNpb1MTYWsH9MQHOHY6kwfnkafC24+7aOMZn9+rVMBxRbLvw756mrBFbIsFg6Xw9IkR2Fnn3k+Q==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -3291,9 +3291,9 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vitejs/plugin-vue@5.2.4(vite@6.3.5(@types/node@22.17.0)(sass@1.89.2))(vue@3.5.18(typescript@5.9.2))':
+  '@vitejs/plugin-vue@5.2.4(vite@6.3.5(@types/node@22.17.0)(sass@1.90.0))(vue@3.5.18(typescript@5.9.2))':
     dependencies:
-      vite: 6.3.5(@types/node@22.17.0)(sass@1.89.2)
+      vite: 6.3.5(@types/node@22.17.0)(sass@1.90.0)
       vue: 3.5.18(typescript@5.9.2)
 
   '@volar/language-core@2.4.22':
@@ -4144,7 +4144,7 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
-  immutable@5.1.1: {}
+  immutable@5.1.3: {}
 
   index-to-position@1.1.0: {}
 
@@ -4655,10 +4655,10 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  sass@1.89.2:
+  sass@1.90.0:
     dependencies:
       chokidar: 4.0.3
-      immutable: 5.1.1
+      immutable: 5.1.3
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.1
@@ -4966,7 +4966,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite@6.3.5(@types/node@22.17.0)(sass@1.89.2):
+  vite@6.3.5(@types/node@22.17.0)(sass@1.90.0):
     dependencies:
       esbuild: 0.25.3
       fdir: 6.4.4(picomatch@4.0.2)
@@ -4977,7 +4977,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.17.0
       fsevents: 2.3.3
-      sass: 1.89.2
+      sass: 1.90.0
 
   void-elements@3.1.0: {}
 
