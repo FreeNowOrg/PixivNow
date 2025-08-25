@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -37,17 +37,6 @@ export default defineConfig({
     }),
   ],
   build: {},
-  css: {
-    preprocessorOptions: {
-      sass: {
-        /**
-         * vite 还没有跟进这个，我们先手动设置
-         * @see https://sass-lang.com/d/legacy-js-api
-         */
-        api: 'modern',
-      },
-    },
-  },
   esbuild: {
     drop: PROD ? ['console'] : [],
   },
