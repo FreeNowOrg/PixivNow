@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
     "skipLibCheck": true,
     "jsx": "preserve",
@@ -29,7 +29,7 @@
     "vite.config.ts",
     "auto-imports.d.ts",
     "components.d.ts",
-    "middware.ts"
+    "middleware.ts"
   ],
   "exclude": ["**/dist"],
   "vueCompilerOptions": {
