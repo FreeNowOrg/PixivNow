@@ -68,6 +68,20 @@ const routes: RouteRecordRaw[] = [
   },
 ]
 
+if (import.meta.env.DEV) {
+  routes.push({
+    path: '/_debug',
+    name: 'debug',
+    children: [
+      {
+        path: 'zip',
+        name: 'debug-zip',
+        component: () => import('@/view/_debug/zip.vue'),
+      },
+    ],
+  })
+}
+
 export const router = createRouter({
   history: createWebHistory(),
   routes,
