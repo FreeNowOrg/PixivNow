@@ -30,6 +30,7 @@ declare global {
   const createEventHook: typeof import('@vueuse/core')['createEventHook']
   const createGlobalState: typeof import('@vueuse/core')['createGlobalState']
   const createInjectionState: typeof import('@vueuse/core')['createInjectionState']
+  const createOptimizedUgoiraPlayer: typeof import('./src/utils/UgoiraPlayerExample')['createOptimizedUgoiraPlayer']
   const createReactiveFn: typeof import('@vueuse/core')['createReactiveFn']
   const createRef: typeof import('@vueuse/core')['createRef']
   const createReusableTemplate: typeof import('@vueuse/core')['createReusableTemplate']
@@ -42,6 +43,7 @@ declare global {
   const defaultArtwork: typeof import('./src/utils/index')['defaultArtwork']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
+  const demonstrateOptimizedPlayer: typeof import('./src/utils/UgoiraPlayerExample')['demonstrateOptimizedPlayer']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
   const exampleSessionId: typeof import('./src/components/userData')['exampleSessionId']
@@ -325,7 +327,7 @@ declare global {
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
-  export type { UgoiraPlayer, UgoiraFrame, UgoiraMeta } from './src/utils/UgoiraPlayer'
+  export type { UgoiraPlayer, UgoiraPlayerOptions, UgoiraFrame, UgoiraMeta } from './src/utils/UgoiraPlayer'
   import('./src/utils/UgoiraPlayer')
   // @ts-ignore
   export type { ZipDownloader, ZipDownloaderOptions, ZipEntry, ZipOverview, DataRange } from './src/utils/ZipDownloader'
