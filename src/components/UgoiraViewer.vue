@@ -17,7 +17,8 @@
   )
   NProgress(
     :height='6',
-    :percentage='downloadProgress',
+    :percentage='+downloadProgress.toFixed(2)',
+    :processing='isLoading',
     :style='{ left: 0, right: 0, position: "absolute", ...(isLoading ? { top: "calc(100% + 4px)", opacity: "1", transitionDuration: "0.25s" } : { top: "calc(100% - 4px)", opacity: "0", transitionDelay: "3s", transitionDuration: "0.5s" }) }'
     show-value
     status='default'
@@ -56,7 +57,7 @@
         NSpin(size='small' v-if='isLoading')
         template(v-else): IconPhotoSpark
 
-  .badge {{ firstLoaded ? (isHQLoaded ? 'HQ' : 'LQ') : 'Cover' }}
+  .badge {{ firstLoaded ? (isHQLoaded ? 'HQ' : 'NQ') : 'Cover' }}
 </template>
 
 <script lang="ts" setup>
@@ -277,7 +278,7 @@ onBeforeUnmount(() => {
   border-radius: 0.2rem
   position: absolute
   right: 0.25rem
-  bottom: 0.25rem
+  top: 0.25rem
   line-height: 1
   user-select: none
   pointer-events: none

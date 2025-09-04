@@ -1,10 +1,10 @@
 import { Artwork } from '@/types'
-import { unzip } from 'fflate'
-import Gif from 'gif.js'
 import gifWorkerUrl from 'gif.js/dist/gif.worker.js?url'
-import { encode as encodeMp4 } from 'modern-mp4'
 import { ZipDownloader, ZipDownloaderOptions } from './ZipDownloader'
 
+/**
+ * Public options
+ */
 export interface UgoiraPlayerOptions {
   onDownloadProgress?: (
     progress: number,
@@ -14,6 +14,43 @@ export interface UgoiraPlayerOptions {
   onDownloadComplete?: () => void
   onDownloadError?: (error: Error) => void
   zipDownloaderOptions?: ZipDownloaderOptions
+  requestTimeoutMs?: number
+  preferImageBitmap?: boolean
+  playbackRate?: number
+  progressiveRender?: boolean
+}
+
+export interface UgoiraFrame {
+  file: string
+  delay: number
+}
+export interface UgoiraMeta {
+  frames: UgoiraFrame[]
+  mime_type: string
+  originalSrc: string
+  src: string
+}
+
+/** Internal structures */
+interface CachedVisual {
+  /** kept for backward-compat paths (gif/mp4) */
+  img?: HTMLImageElement
+  /** preferred for runtime drawing */
+  bitmap?: ImageBitmap
+  /** object URL for cleanup */
+  url: string
+  /** raw bytes for re-encode */
+  buf: Uint8Array
+}
+
+/** Player state */
+const enum PlayerState {
+  Idle,
+  Downloading,
+  Ready,
+  Playing,
+  Paused,
+  Destroyed,
 }
 
 /**
@@ -22,37 +59,56 @@ export interface UgoiraPlayerOptions {
  * @license MIT
  */
 export class UgoiraPlayer {
+  // ====== private fields ======
   private _canvas?: HTMLCanvasElement
   private _illust!: Artwork
   private _meta?: UgoiraMeta
+
+  private state: PlayerState = PlayerState.Idle
   private isPlaying = false
+
   private curFrame = 0
   private lastFrameTime = 0
-  private cachedImages: Map<string, HTMLImageElement> = new Map()
-  private objectURLs: Set<string> = new Set() // 跟踪所有创建的 objectURL
+  private nextFrameDue = 0
+
+  private cached: Map<string, CachedVisual> = new Map()
+  private objectURLs: Set<string> = new Set()
   private files: Record<string, Uint8Array> = {}
+
   private zipDownloader?: ZipDownloader
+  private aborter?: AbortController
+
   private downloadProgress = 0
   private isDownloading = false
   private isDownloadComplete = false
   private downloadStartTime = 0
   private frameDownloadTimes: number[] = []
   private frameReady: boolean[] = []
-  // 新增: 上一次已经渲染的帧索引（初始为 -1）
+
   private lastRenderedFrameIndex = -1
-  // 新增: 当前顺序播放的定时器 id
   private renderTimer: number | undefined
+
+  // New: runtime settings
+  private _playbackRate = 1
+  private _preferImageBitmap = true
+  private _progressiveRender = true
 
   constructor(
     illust: Artwork,
     public options: UgoiraPlayerOptions = {}
   ) {
+    this._preferImageBitmap = options.preferImageBitmap ?? true
+    this._playbackRate = options.playbackRate ?? 1
+    this._progressiveRender = options.progressiveRender ?? true
     this.reset(illust)
   }
+
+  // ====== lifecycle ======
   reset(illust: Artwork) {
     this.destroy()
     this._canvas = undefined
     this._illust = illust
+
     this.downloadProgress = 0
     this.isDownloading = false
     this.isDownloadComplete = false
@@ -60,19 +116,27 @@ export class UgoiraPlayer {
     this.frameDownloadTimes = []
     this.frameReady = []
     this.lastRenderedFrameIndex = -1
+    this.curFrame = 0
+    this.lastFrameTime = 0
+    this.nextFrameDue = 0
+
     if (this.renderTimer) {
       clearTimeout(this.renderTimer)
       this.renderTimer = undefined
     }
+
+    this.state = PlayerState.Idle
   }
+
   setupCanvas(canvas: HTMLCanvasElement) {
     this._canvas = canvas
     this._canvas.width = this.initWidth
     this._canvas.height = this.initHeight
   }
 
+  // ====== getters (public API preserved) ======
   get isReady() {
-    return !!this._meta && !!Object.keys(this.files).length
+    return !!this._meta && Object.keys(this.files).length > 0
   }
   get canExport() {
     return this.isDownloadComplete && this.isReady
@@ -84,7 +148,6 @@ export class UgoiraPlayer {
     if (!this.isDownloadComplete && this.frameDownloadTimes.length === 0) {
       return null
     }
-
     const totalTime = performance.now() - this.downloadStartTime
     const avgFrameTime =
       this.frameDownloadTimes.length > 0
@@ -127,7 +190,15 @@ export class UgoiraPlayer {
   get mimeType() {
     return this._meta?.mime_type ?? ''
   }
+  /** New: playbackRate getter/setter */
+  get playbackRate() {
+    return this._playbackRate
+  }
+  set playbackRate(v: number) {
+    this._playbackRate = Math.max(0.1, v || 1)
+  }
 
+  // ====== network / assets ======
   async fetchMeta() {
     this._meta = await fetch(
       new URL(`/ajax/illust/${this._illust.id}/ugoira_meta`, location.href)
@@ -146,27 +217,26 @@ export class UgoiraPlayer {
     if (!this._meta) {
       throw new Error('Failed to fetch meta')
     }
-
-    // 使用 ZipDownloader 进行优化下载
-    return this.fetchFramesOptimized(originalQuality)
+    return this.streamingFetchAndDrawFrames(originalQuality)
   }
 
   /**
-   * 使用 ZipDownloader.streamingDownload 优化的帧下载方法
-   * 1. 使用流式下载模式，从头开始下载整个zip
-   * 2. 每完成一个文件就触发回调，立即处理该帧
-   * 3. 根据下载时间与delay比较决定立即渲染或等待
-   * 4. 全部帧下载完毕，标记为可以导出为gif或mp4
+   * Optimized streaming download
    */
-  private async fetchFramesOptimized(originalQuality = false) {
+  private async streamingFetchAndDrawFrames(originalQuality = false) {
     if (this.isDownloading) {
       throw new Error('Download already in progress')
     }
 
     this.isDownloading = true
+    this.state = PlayerState.Downloading
     this.downloadStartTime = performance.now()
     this.downloadProgress = 0
     this.frameDownloadTimes = []
+
+    // Abort any previous network work
+    this.aborter?.abort()
+    this.aborter = new AbortController()
 
     try {
       const zipUrl = new URL(
@@ -178,242 +248,218 @@ export class UgoiraPlayer {
         this.zipDownloader = new ZipDownloader('')
       }
       this.zipDownloader.setUrl(zipUrl).setOptions({
-        chunkSize: 512 * 1024,
-        maxConcurrentRequests: 4,
+        chunkSize: 256 * 1024,
+        maxConcurrentRequests: 3,
         tryDecompress: true,
-        timeoutMs: 10000,
+        timeoutMs: this.options.requestTimeoutMs ?? 10000,
         retries: 2,
         ...this.options.zipDownloaderOptions,
       })
 
-      console.log('[UgoiraPlayer] 开始流式下载 ZIP...')
-
-      // 2. 使用流式下载，按物理顺序获取所有文件
       const { frames } = this._meta!
       const totalFrames = frames.length
       let processedFrames = 0
-      // 初始化 frameReady 状态数组
+
       this.frameReady = new Array(totalFrames).fill(false)
       this.lastRenderedFrameIndex = -1
 
       const result = await this.zipDownloader.streamingDownload({
+        signal: this.aborter.signal,
         onFileComplete: (entryWithData, info) => {
-          // 查找对应的帧信息
+          if (this.state === PlayerState.Destroyed) return
+
           const frameIndex = frames.findIndex(
             (f) => f.file === entryWithData.fileName
           )
           if (frameIndex === -1) {
             console.warn(
-              `[UgoiraPlayer] 未找到对应帧: ${entryWithData.fileName}`
+              `[UgoiraPlayer] Unknown frame: ${entryWithData.fileName}`
             )
             return
           }
 
           const frame = frames[frameIndex]
 
-          // 存储文件数据
+          // Store bytes & prepare visual cache lazily
           this.files[frame.file] = entryWithData.data
-
-          // 记录下载时间
-          const frameDownloadTime = info.downloadTime
-          this.frameDownloadTimes[frameIndex] = frameDownloadTime
+          this.frameDownloadTimes[frameIndex] = info.downloadTime
           processedFrames++
 
-          // 更新下载进度
+          // update progress
           this.downloadProgress = (processedFrames / totalFrames) * 100
-
-          console.log(
-            `[UgoiraPlayer] 帧 ${frameIndex + 1}/${totalFrames} 下载完成:`,
-            {
-              fileName: frame.file,
-              downloadTime: frameDownloadTime,
-              delay: frame.delay,
-              progress: this.downloadProgress.toFixed(1) + '%',
-              mimeType: info.mimeType,
-            }
-          )
-
-          // 触发进度回调
           this.options.onDownloadProgress?.(
             this.downloadProgress,
             frameIndex,
             totalFrames
           )
-          // 标记该帧已就绪并尝试调度渲染
+
+          // flag ready and optionally schedule render
           this.frameReady[frameIndex] = true
-          this.scheduleNextFrame()
-        },
-        onProgress: (downloadedBytes, contentLength) => {
-          // 可以在这里添加更细粒度的下载进度回调
-          console.log(
-            `[UgoiraPlayer] ZIP 下载进度: ${((downloadedBytes / contentLength) * 100).toFixed(1)}%`
-          )
+          if (this._progressiveRender) this.scheduleNextFrame()
         },
       })
 
-      console.log(`[UgoiraPlayer] 流式下载完成:`, {
-        totalFiles: result.totalFiles,
-        completedFiles: result.completedFiles,
-        entries: result.entries.length,
-      })
+      console.info('[UgoiraPlayer] download complete', result)
 
-      // 4. 全部帧下载完毕，标记为可以导出
+      // completed
       this.isDownloadComplete = true
       this.isDownloading = false
+      this.state = PlayerState.Ready
 
-      const totalDownloadTime = performance.now() - this.downloadStartTime
-      console.log('[UgoiraPlayer] 所有帧下载完成:', {
-        totalFrames: processedFrames,
-        totalDownloadTime: totalDownloadTime.toFixed(2) + 'ms',
-        averageFrameTime:
-          processedFrames > 0
-            ? (totalDownloadTime / processedFrames).toFixed(2) + 'ms'
-            : '0ms',
-        canExport: this.canExport,
-      })
-
-      // 触发完成回调
       this.options.onDownloadComplete?.()
 
       return this
     } catch (error) {
       this.isDownloading = false
-      console.error('[UgoiraPlayer] 下载过程出错:', error)
-
-      // 触发错误回调
+      this.state = PlayerState.Idle
       this.options.onDownloadError?.(error as Error)
-
       throw error
     }
   }
 
   /**
-   * 处理帧渲染逻辑
-   * 如果下载用时大于前一帧的delay，立即渲染到canvas，否则等待delay后渲染到canvas
-   */
-  private async handleFrameRender(
-    frameIndex: number,
-    frame: UgoiraFrame,
-    downloadTime: number
-  ) {
-    // 已弃用的即时/等待渲染逻辑，保留方法签名避免外部引用报错
-    console.warn('[UgoiraPlayer] handleFrameRender 已被顺序调度替换')
-  }
-
-  /**
-   * 顺序调度渲染：
-   * 从 lastRenderedFrameIndex + 1 开始，找到第一个未渲染但已就绪的连续帧，
-   * 逐帧按其自身 delay 排队渲染，中途如果有缺失（未下载的帧）则暂停等待。
+   * Sequential scheduler: render frames 0..N in order as soon as each is ready.
+   * If a gap is encountered, pause until the missing frame arrives.
    */
   private scheduleNextFrame() {
     if (!this._canvas || !this._meta) return
-    // 如果已有定时器在等待，不重复调度
     if (this.renderTimer) return
 
     const { frames } = this._meta
     const nextIndex = this.lastRenderedFrameIndex + 1
-    // 如果下一帧未准备好，等待其就绪（由 onFileComplete 再次调用）
     if (!this.frameReady[nextIndex]) return
 
     const renderSequential = async () => {
       while (true) {
         const idx = this.lastRenderedFrameIndex + 1
         if (idx >= frames.length) {
-          // 所有帧已渲染
           this.renderTimer = undefined
           return
         }
         if (!this.frameReady[idx]) {
-          // 遇到缺口，停止循环，等待后续下载完成再调度
           this.renderTimer = undefined
           return
         }
         const frame = frames[idx]
         await this.renderFrameToCanvas(idx, frame)
         this.lastRenderedFrameIndex = idx
-        // 安排下一帧的 delay
+
         await new Promise<void>((resolve) => {
-          this.renderTimer = window.setTimeout(() => {
-            this.renderTimer = undefined
-            resolve()
-          }, frame.delay)
+          this.renderTimer = window.setTimeout(
+            () => {
+              this.renderTimer = undefined
+              resolve()
+            },
+            Math.max(0, frame.delay / this._playbackRate)
+          )
         })
       }
     }
 
     renderSequential().catch((e) => {
-      console.error('[UgoiraPlayer] 顺序渲染出错:', e)
+      console.error('[UgoiraPlayer] sequential render error:', e)
       this.renderTimer = undefined
     })
   }
 
-  /**
-   * 将指定帧渲染到canvas
-   */
+  /** Render a single frame to the canvas */
   private async renderFrameToCanvas(frameIndex: number, frame: UgoiraFrame) {
     if (!this._canvas) return
-
     const ctx = this._canvas.getContext('2d')
     if (!ctx) return
 
     try {
-      const img = await this.getImageAsync(frame.file)
-      ctx.drawImage(img, 0, 0, this.initWidth, this.initHeight)
-      console.log(`[UgoiraPlayer] 帧 ${frameIndex + 1} 已渲染到canvas`)
+      const visual = await this.getVisual(frame.file)
+      const source = visual.bitmap ?? visual.img!
+      // drawImage supports both HTMLImageElement and ImageBitmap
+      ctx.drawImage(source as any, 0, 0, this.initWidth, this.initHeight)
+      // console.debug(`[UgoiraPlayer] rendered frame ${frameIndex+1}`)
     } catch (error) {
-      console.error(`[UgoiraPlayer] 帧 ${frameIndex + 1} 渲染失败:`, error)
+      console.error(
+        `[UgoiraPlayer] frame ${frameIndex + 1} render failed:`,
+        error
+      )
     }
   }
 
-  private getImage(fileName: string): HTMLImageElement {
-    if (this.cachedImages.has(fileName)) {
-      return this.cachedImages.get(fileName)!
+  // ====== caching primitives ======
+  private async getVisual(fileName: string): Promise<CachedVisual> {
+    const hit = this.cached.get(fileName)
+    if (hit) {
+      // Ensure image element fully loaded if present
+      if (hit.img && !(hit.img.complete && hit.img.naturalWidth > 0)) {
+        await new Promise<void>((resolve, reject) => {
+          hit.img!.onload = () => resolve()
+          hit.img!.onerror = () => reject(new Error('image load error'))
+        })
+      }
+      return hit
     }
+
     const buf = this.files[fileName]
-    if (!buf) {
-      throw new Error(`File ${fileName} not found`)
+    if (!buf) throw new Error(`File ${fileName} not found`)
+
+    const blob = new Blob([new Uint8Array(buf)], { type: this.mimeType })
+    const url = URL.createObjectURL(blob)
+    this.objectURLs.add(url)
+
+    const visual: CachedVisual = { url, buf, img: undefined, bitmap: undefined }
+
+    // Prefer ImageBitmap for runtime rendering; keep HTMLImageElement for encoders
+    if (this._preferImageBitmap && 'createImageBitmap' in window) {
+      try {
+        visual.bitmap = await createImageBitmap(blob)
+      } catch {
+        // Fallback to HTMLImageElement
+      }
     }
+
+    if (!visual.bitmap) {
+      const img = new Image()
+      img.src = url
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve()
+        img.onerror = () => reject(new Error('image load error'))
+      })
+      visual.img = img
+    }
+
+    this.cached.set(fileName, visual)
+    return visual
+  }
+
+  /** Back-compat helper returning HTMLImageElement (may synthesize from cache) */
+  private getImage(fileName: string): HTMLImageElement {
+    const cached = this.cached.get(fileName)
+    if (cached?.img) return cached.img
+
+    const buf = this.files[fileName]
+    if (!buf) throw new Error(`File ${fileName} not found`)
+
+    const blob = new Blob([new Uint8Array(buf)], { type: this.mimeType })
+    const url = URL.createObjectURL(blob)
+    this.objectURLs.add(url)
+
     const img = new Image()
-    const objectURL = URL.createObjectURL(
-      new Blob([new Uint8Array(buf)], { type: this.mimeType })
-    )
-    this.objectURLs.add(objectURL)
-    img.src = objectURL
-    this.cachedImages.set(fileName, img)
+    img.src = url
+
+    this.cached.set(fileName, { url, buf, img, bitmap: undefined })
     return img
   }
 
+  /** Back-compat async image getter */
   private async getImageAsync(fileName: string): Promise<HTMLImageElement> {
-    if (this.cachedImages.has(fileName)) {
-      const img = this.cachedImages.get(fileName)!
-      // 如果图片已经加载完成，直接返回
-      if (img.complete && img.naturalWidth > 0) {
-        return img
-      }
-      // 否则等待加载完成
-      return new Promise((resolve, reject) => {
-        img.onload = () => resolve(img)
-        img.onerror = reject
-      })
-    }
-
-    const buf = this.files[fileName]
-    if (!buf) {
-      throw new Error(`File ${fileName} not found`)
-    }
-
+    const v = await this.getVisual(fileName)
+    if (v.img) return v.img
+    // need to synthesize <img> from existing blob URL for encoders
     const img = new Image()
-    const objectURL = URL.createObjectURL(
-      new Blob([new Uint8Array(buf)], { type: this.mimeType })
-    )
-    this.objectURLs.add(objectURL)
-    img.src = objectURL
-    this.cachedImages.set(fileName, img)
-
-    return new Promise((resolve, reject) => {
-      img.onload = () => resolve(img)
-      img.onerror = reject
+    img.src = v.url
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve()
+      img.onerror = () => reject(new Error('image load error'))
     })
+    v.img = img
+    return img
   }
 
   getRealFrameSize() {
@@ -421,38 +467,50 @@ export class UgoiraPlayer {
       throw new Error('Ugoira assets not ready, please fetch first')
     }
     const firstFrame = this.getImage(this.meta!.frames[0].file)
-    return {
-      width: firstFrame.width,
-      height: firstFrame.height,
-    }
+    return { width: firstFrame.width, height: firstFrame.height }
   }
 
+  // ====== classic playback loop (preserved) ======
   private drawFrame() {
-    if (!this.canvas || !this._meta || !this.isPlaying) {
-      return
-    }
+    if (!this.canvas || !this._meta || !this.isPlaying) return
+
     const ctx = this.canvas.getContext('2d')!
     const frame = this._meta.frames[this.curFrame]
-    const delay = frame.delay
+    const delay = Math.max(0, frame.delay / this._playbackRate)
+
     const now = this.now
-    const delta = now - this.lastFrameTime
-    if (delta > delay) {
+    if (this.nextFrameDue === 0) this.nextFrameDue = now + delay
+
+    if (now >= this.nextFrameDue) {
       this.lastFrameTime = now
       this.curFrame = (this.curFrame + 1) % this.totalFrames
+      this.nextFrameDue = now + delay
     }
+
+    // Render current frame
     const img = this.getImage(frame.file)
     ctx.drawImage(img, 0, 0, this.initWidth, this.initHeight)
+
     requestAnimationFrame(() => this.drawFrame())
   }
 
+  // ====== controls ======
   play() {
     this.isPlaying = true
     this.lastFrameTime = this.now
+    this.nextFrameDue = 0
+    this.state = PlayerState.Playing
     this.drawFrame()
   }
 
   pause() {
     this.isPlaying = false
+    if (this.state !== PlayerState.Destroyed) this.state = PlayerState.Paused
+  }
+
+  /** Cancel any in-flight downloads */
+  cancelDownload() {
+    this.aborter?.abort()
   }
 
   destroy() {
@@ -463,14 +521,15 @@ export class UgoiraPlayer {
       this.renderTimer = undefined
     }
 
-    // 清理所有 objectURL 防止内存泄漏
-    this.objectURLs.forEach((url) => {
-      URL.revokeObjectURL(url)
-    })
+    this.cancelDownload()
+
+    // Revoke URLs & clear caches
+    this.objectURLs.forEach((url) => URL.revokeObjectURL(url))
     this.objectURLs.clear()
 
-    this.cachedImages.clear()
+    this.cached.clear()
     this.files = {}
+
     this._meta = undefined
     this.zipDownloader = undefined
     this.isDownloading = false
@@ -480,11 +539,15 @@ export class UgoiraPlayer {
     this.frameDownloadTimes = []
     this.frameReady = []
     this.lastRenderedFrameIndex = -1
+
+    this.state = PlayerState.Destroyed
   }
 
-  private genGifEncoder() {
+  // ====== encoders ======
+  private async genGifEncoder() {
     const { width, height } = this.getRealFrameSize()
-    return new Gif({
+    const GifJs = (await import('gif.js')).default
+    return new GifJs({
       debug: import.meta.env.DEV,
       workers: 5,
       workerScript: gifWorkerUrl,
@@ -492,6 +555,7 @@ export class UgoiraPlayer {
       height,
     })
   }
+
   async renderGif(): Promise<Blob> {
     if (!this.canExport) {
       throw new Error(
@@ -499,28 +563,30 @@ export class UgoiraPlayer {
       )
     }
 
-    const encoder = this.genGifEncoder()
+    const encoder = await this.genGifEncoder()
     const frames = this._meta!.frames
+
+    // Prepare HTMLImageElements for gif.js
     const imageList = await Promise.all(
-      frames.map((i) => {
-        return this.getImage(i.file)
-      })
+      frames.map((f) => this.getImageAsync(f.file))
     )
+
     return new Promise<Blob>((resolve, reject) => {
-      imageList.forEach((item, index) => {
-        encoder.addFrame(item, { delay: frames[index].delay })
-      })
-      encoder.on('finished', async (blob) => {
-        console.info('[ENCODER]', 'render finished', encoder)
-        // FIXME: 渲染结束时释放内存
-        // @ts-ignore
-        encoder.freeWorkers?.forEach((worker: Worker) => {
-          worker && worker.terminate()
+      try {
+        imageList.forEach((img, idx) => {
+          encoder.addFrame(img, { delay: Math.max(0, frames[idx].delay) })
         })
-        resolve(blob)
-      })
-      console.info('[ENCODER]', 'render start', encoder)
-      encoder.render()
+        encoder.on('finished', (blob: Blob) => {
+          // Best-effort worker cleanup (gif.js specific)
+          // @ts-ignore
+          encoder.freeWorkers?.forEach?.((w: Worker) => w?.terminate?.())
+          resolve(blob)
+        })
+        encoder.on('abort', () => reject(new Error('GIF encoding aborted')))
+        encoder.render()
+      } catch (e) {
+        reject(e as Error)
+      }
     })
   }
 
@@ -532,42 +598,13 @@ export class UgoiraPlayer {
     }
 
     const { width, height } = this.getRealFrameSize()
-    const frames = this._meta!.frames.map((i) => {
-      return {
-        data: this.getImage(i.file).src!,
-        duration: i.delay,
-      }
-    })
-    console.info({ width, height, frames })
-    const buf = await encodeMp4({
-      frames,
-      width,
-      height,
-      audio: false,
-    })
-    const blob = new Blob([buf], { type: 'video/mp4' })
-    return blob
-  }
+    const frames = this._meta!.frames.map((i) => ({
+      data: this.getImage(i.file).src!,
+      duration: Math.max(0, i.delay),
+    }))
 
-  async unzipAsync(payload: Uint8Array) {
-    return new Promise<Record<string, Uint8Array>>((resolve, reject) => {
-      unzip(payload, (err, data) => {
-        if (err) {
-          return reject(err)
-        }
-        resolve(data)
-      })
-    })
+    const { encode } = await import('modern-mp4')
+    const buf = await encode({ frames, width, height, audio: false })
+    return new Blob([buf], { type: 'video/mp4' })
   }
-}
-
-export interface UgoiraFrame {
-  file: string
-  delay: number
-}
-export interface UgoiraMeta {
-  frames: UgoiraFrame[]
-  mime_type: string
-  originalSrc: string
-  src: string
 }

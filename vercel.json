@@ -3,7 +3,7 @@
   "framework": "vue",
   "rewrites": [
     {
-      "source": "/:__PREFIX(~)/:__PATH(.+)",
+      "source": "/:__PREFIX(~|-)/:__PATH(.+)",
       "destination": "/api/image"
     },
     {
@@ -13,12 +13,6 @@
     {
       "source": "/api/illust/random",
       "destination": "/api/random"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/-/:__PATH*",
-      "destination": "https://pximg.wjghj.cn/:__PATH"
     }
   ],
   "headers": []
