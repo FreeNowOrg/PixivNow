@@ -1,0 +1,15 @@
+{
+  "include": ["api", "script", "*.config.*"],
+  "compilerOptions": {
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+    "types": ["node"],
+    "lib": ["ESNext"],
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "importHelpers": true
+  }
+}

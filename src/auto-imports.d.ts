@@ -51,6 +51,7 @@ declare global {
   const extendRef: typeof import('@vueuse/core')['extendRef']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getCurrentWatcher: typeof import('vue')['getCurrentWatcher']
   const h: typeof import('vue')['h']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
   const initUser: typeof import('./src/components/userData')['initUser']
@@ -62,6 +63,7 @@ declare global {
   const isReactive: typeof import('vue')['isReactive']
   const isReadonly: typeof import('vue')['isReadonly']
   const isRef: typeof import('vue')['isRef']
+  const isShallow: typeof import('vue')['isShallow']
   const login: typeof import('./src/components/userData')['login']
   const logout: typeof import('./src/components/userData')['logout']
   const makeDestructurable: typeof import('@vueuse/core')['makeDestructurable']
@@ -279,6 +281,7 @@ declare global {
   const useThrottleFn: typeof import('@vueuse/core')['useThrottleFn']
   const useThrottledRefHistory: typeof import('@vueuse/core')['useThrottledRefHistory']
   const useTimeAgo: typeof import('@vueuse/core')['useTimeAgo']
+  const useTimeAgoIntl: typeof import('@vueuse/core')['useTimeAgoIntl']
   const useTimeout: typeof import('@vueuse/core')['useTimeout']
   const useTimeoutFn: typeof import('@vueuse/core')['useTimeoutFn']
   const useTimeoutPoll: typeof import('@vueuse/core')['useTimeoutPoll']
@@ -324,13 +327,13 @@ declare global {
 // for type re-export
 declare global {
   // @ts-ignore
-  export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
+  export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
   export type { UgoiraPlayer, UgoiraPlayerOptions, UgoiraFrame, UgoiraMeta } from './src/utils/UgoiraPlayer'
   import('./src/utils/UgoiraPlayer')
   // @ts-ignore
-  export type { ZipDownloader, ZipDownloaderOptions, ZipEntry, ZipOverview, DataRange } from './src/utils/ZipDownloader'
+  export type { ZipDownloader, ZipDownloaderOptions, ZipEntry, ZipEntryWithData, ZipOverview, DataRange } from './src/utils/ZipDownloader'
   import('./src/utils/ZipDownloader')
   // @ts-ignore
   export type { IllustType, ArtworkUrls, ArtworkPageUrls, ArtworkTag, ArtworkGallery, ArtworkInfo, ArtworkInfoOrAd, ArtworkRank, Artwork, IllustType } from './src/types/Artworks'
