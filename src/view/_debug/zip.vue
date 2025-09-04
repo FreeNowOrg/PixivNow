@@ -148,7 +148,7 @@ const chunkSize = ref(512 * 1024)
 watch(
   chunkSize,
   (newVal) => {
-    downloader.options.chunkSize = newVal
+    downloader.setOptions({ chunkSize: newVal })
   },
   { immediate: true }
 )
@@ -171,7 +171,9 @@ function getCentralDirectory() {
 function downloadByIndex(index: number) {
   setUrl(urlInput.value)
   downloader.downloadByIndex(index).then((result) => {
-    const blob = new Blob([result.bytes], { type: result.mimeType })
+    const blob = new Blob([result.bytes as Uint8Array<ArrayBuffer>], {
+      type: result.mimeType,
+    })
     console.log('下载结果:', result, blob)
 
     const url = URL.createObjectURL(blob)

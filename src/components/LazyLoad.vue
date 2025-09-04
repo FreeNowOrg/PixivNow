@@ -1,13 +1,13 @@
 <template lang="pug">
-Component(
+img(
   :class='{ lazyload: true, isLoading: !loaded && !error, isLoaded: loaded, isError: error }',
   :height='height',
-  :is='loaded ? "img" : "svg"',
+  :is='error ? "svg" : "img"',
   :key='src',
   :src='src',
   :width='width'
+  loading='lazy'
   ref='imgRef'
-  role='img'
 )
 </template>
 
@@ -20,32 +20,25 @@ const props = defineProps<{
 
 const loaded = ref(false)
 const error = ref(false)
-const imgRef = ref<HTMLImageElement | null>(null)
+const imgRef = useTemplateRef('imgRef')
 
-const ob = useIntersectionObserver(imgRef, async ([{ isIntersecting }]) => {
-  if (isIntersecting) {
-    await nextTick()
-    loadImage()
-    ob.stop()
-  }
-})
-
-function loadImage() {
-  loaded.value = false
-  error.value = false
-
-  const img = new Image(props.width, props.height)
-  img.src = props.src
-  img.onload = () => {
-    loaded.value = true
-    error.value = false
-    imgRef.value = img
-  }
-  img.onerror = () => {
+watch(
+  () => props.src,
+  () => {
     loaded.value = false
-    error.value = true
+    error.value = false
   }
-}
+)
+
+useEventListener(imgRef, 'load', () => {
+  loaded.value = true
+  error.value = false
+})
+useEventListener(imgRef, 'error', (e) => {
+  console.warn('error', e)
+  loaded.value = false
+  error.value = true
+})
 </script>
 
 <style scoped lang="sass">

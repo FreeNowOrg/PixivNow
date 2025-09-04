@@ -25,6 +25,20 @@
  * // 下载单个文件
  * const result = await downloader.downloadByIndex(0)
  * const fileData = result.bytes
+ *
+ * // 流式下载模式（从头开始下载整个zip，每完成一个文件就回调）
+ * const result = await downloader.streamingDownload({
+ *   onFileComplete: (entryWithData, info) => {
+ *     console.log(`文件完成: ${entryWithData.fileName}`)
+ *     console.log(`MIME类型: ${info.mimeType}`)
+ *     console.log(`数据大小: ${entryWithData.data.length} 字节`)
+ *     // 处理文件数据 entryWithData.data
+ *   },
+ *   onProgress: (downloaded, total) => {
+ *     console.log(`下载进度: ${(downloaded / total * 100).toFixed(2)}%`)
+ *   }
+ * })
+ * // result.entries 包含所有完成下载的文件数据
  */
 
 type FetchLike = (
@@ -32,7 +46,7 @@ type FetchLike = (
   init?: RequestInit
 ) => Promise<Response>
 
-export type ZipDownloaderOptions = {
+export interface ZipDownloaderOptions {
   fetch?: FetchLike // 替换 fetch（Node 可注入 node-fetch/undici）
   timeoutMs?: number // 单请求超时
   retries?: number // 失败重试次数（指数退避）
@@ -45,7 +59,7 @@ export type ZipDownloaderOptions = {
   maxTailSize?: number // 最大尾部抓取大小（字节），默认 70KB
 }
 
-export type ZipEntry = {
+export interface ZipEntry {
   index: number
   fileName: string
   compressedSize: number
@@ -59,7 +73,11 @@ export type ZipEntry = {
   mimeType?: string // 通过扩展名推断的MIME类型
 }
 
-export type ZipOverview = {
+export interface ZipEntryWithData extends ZipEntry {
+  data: Uint8Array
+}
+
+export interface ZipOverview {
   url: string
   contentLength: number
   centralDirectoryOffset: number
@@ -68,7 +86,7 @@ export type ZipOverview = {
   entries: ZipEntry[]
 }
 
-export type DataRange = {
+export interface DataRange {
   index: number
   fileName: string
   dataStart: number // 压缩数据起点（不含本地头/文件名/extra）
@@ -391,7 +409,9 @@ async function streamDecompressIfPossible(
   ) {
     // ZIP 的 deflate 是 raw（不带 zlib 头）
     const ds = new (globalThis as any).DecompressionStream('deflate-raw')
-    const r = new Response(new Blob([data]).stream().pipeThrough(ds))
+    const r = new Response(
+      new Blob([data as Uint8Array<ArrayBuffer>]).stream().pipeThrough(ds)
+    )
     const ab = await r.arrayBuffer()
     return { bytes: new Uint8Array(ab), isDecompressed: true, method }
   }
@@ -400,7 +420,7 @@ async function streamDecompressIfPossible(
 }
 
 export class ZipDownloader {
-  public options: Required<ZipDownloaderOptions>
+  private options: Required<ZipDownloaderOptions>
   private inflight = new Map<string, Promise<any>>() // 统一去重：range/元数据/条目
   private rangeCache: ByteLRU
   private overview?: ZipOverview
@@ -428,6 +448,42 @@ export class ZipDownloader {
     this.concurrencyLimiter = new ConcurrencyLimiter(
       this.options.maxConcurrentRequests
     )
+  }
+
+  /**
+   * 动态更新配置并按需重建内部状态（不清理已下载的 range 缓存，除非相关设置变化）
+   * 可用于在同一实例上调整并发、重试、分片大小等参数。
+   */
+  setOptions(partial: ZipDownloaderOptions): this {
+    const old = this.options
+    // 合并新配置（保持现有 fetch 绑定）
+    this.options = {
+      ...old,
+      ...partial,
+      fetch: partial.fetch ?? old.fetch,
+      timeoutMs: partial.timeoutMs ?? old.timeoutMs,
+      retries: partial.retries ?? old.retries,
+      lruBytes: partial.lruBytes ?? old.lruBytes,
+      parallelProbe: partial.parallelProbe ?? old.parallelProbe,
+      maxConcurrentRequests:
+        partial.maxConcurrentRequests ?? old.maxConcurrentRequests,
+      tryDecompress: partial.tryDecompress ?? old.tryDecompress,
+      chunkSize: partial.chunkSize ?? old.chunkSize,
+      initialTailSize: partial.initialTailSize ?? old.initialTailSize,
+      maxTailSize: partial.maxTailSize ?? old.maxTailSize,
+    }
+
+    // 如果缓存大小发生变化重建 LRU
+    if (old.lruBytes !== this.options.lruBytes) {
+      this.rangeCache = new ByteLRU(this.options.lruBytes)
+    }
+    // 并发相关变动则重建 limiter
+    if (old.maxConcurrentRequests !== this.options.maxConcurrentRequests) {
+      this.concurrencyLimiter = new ConcurrencyLimiter(
+        this.options.maxConcurrentRequests
+      )
+    }
+    return this
   }
 
   /** 获取文件总长度（Content-Length） */
@@ -961,7 +1017,7 @@ export class ZipDownloader {
     return buf
   }
 
-  clearAll() {
+  cleanup() {
     this.inflight.clear()
     this.rangeCache = new ByteLRU(this.options.lruBytes)
     this.overview = undefined
@@ -977,7 +1033,190 @@ export class ZipDownloader {
   setUrl(url: string) {
     if (this.url === url) return this
     this.url = url
-    this.clearAll()
+    this.cleanup()
     return this
+  }
+
+  /**
+   * 暴露内部解析好的数据范围（每个 entry 的压缩数据段起止与长度）。
+   * 仅做读取，不会触发额外网络请求（除非首次解析）。
+   * 用于顺序整包下载逻辑，根据 dataStart + dataLength 判断某个文件数据是否已经完整到达。
+   */
+  async getDataRanges(signal?: AbortSignal) {
+    // 复用内部缓存逻辑
+    // @ts-ignore 私有方法受控调用（保持最小侵入，不改变原有可见性）
+    return this._ensureDataRanges(signal)
+  }
+
+  /**
+   * 真正的流式下载方法（完全避免预探测，适合大型ZIP文件）
+   * 从头开始顺序下载，动态解析本地头，边下载边提取完整文件
+   */
+  async streamingDownload(params: {
+    onFileComplete?: (
+      entry: ZipEntryWithData,
+      info: {
+        downloadTime: number
+        method: number
+        isDecompressed: boolean
+        mimeType: string
+        physicalIndex: number
+      }
+    ) => void
+    onProgress?: (downloadedBytes: number, contentLength: number) => void
+    chunkSize?: number
+    signal?: AbortSignal
+  }): Promise<{
+    totalFiles: number
+    completedFiles: number
+    entries: ZipEntryWithData[]
+  }> {
+    const {
+      onFileComplete,
+      onProgress,
+      chunkSize = this.options.chunkSize,
+      signal,
+    } = params
+
+    const startTime = performance.now()
+    const ov = await this.getCentralDirectory(signal)
+    const completedEntries: ZipEntryWithData[] = []
+    let completedFiles = 0
+
+    // 按物理位置排序中央目录条目
+    const sortedEntries = ov.entries
+      .filter((entry) => entry.compressedSize > 0) // 只处理有数据的文件
+      .sort((a, b) => a.localHeaderOffset - b.localHeaderOffset)
+
+    if (sortedEntries.length === 0) {
+      return { totalFiles: 0, completedFiles: 0, entries: [] }
+    }
+
+    let downloadedBytes = 0
+    const chunks: { start: number; end: number; data: Uint8Array }[] = []
+    const processedEntries = new Set<number>()
+
+    // 连续的已下载数据缓冲区
+    const extractRange = (start: number, length: number): Uint8Array => {
+      const out = new Uint8Array(length)
+      let written = 0
+      let cursor = start
+
+      for (const chunk of chunks) {
+        if (chunk.end < cursor) continue
+        if (chunk.start > cursor + (length - written - 1)) break
+
+        const segStart = Math.max(chunk.start, cursor)
+        const segEnd = Math.min(chunk.end, start + length - 1)
+        const offsetInChunk = segStart - chunk.start
+        const sliceLen = segEnd - segStart + 1
+
+        out.set(
+          chunk.data.subarray(offsetInChunk, offsetInChunk + sliceLen),
+          written
+        )
+        written += sliceLen
+        cursor += sliceLen
+
+        if (written >= length) break
+      }
+
+      return out
+    }
+
+    // 解析本地头信息
+    const parseLocalHeader = (data: Uint8Array, offset: number) => {
+      const dv = new DataView(data.buffer, data.byteOffset + offset)
+      if (dv.getUint32(0, true) !== SIG.LOCAL_FILE_HEADER) {
+        return null
+      }
+      const fnLen = dv.getUint16(26, true)
+      const extraLen = dv.getUint16(28, true)
+      return {
+        headerSize: 30 + fnLen + extraLen,
+        fileNameLength: fnLen,
+        extraFieldLength: extraLen,
+      }
+    }
+
+    // 按块下载并动态处理文件
+    while (downloadedBytes < ov.contentLength) {
+      if (signal?.aborted) throw new Error('Aborted')
+
+      const rangeStart = downloadedBytes
+      const rangeEnd = Math.min(
+        rangeStart + chunkSize - 1,
+        ov.contentLength - 1
+      )
+
+      const buf = await this._fetchRange(rangeStart, rangeEnd, signal)
+      chunks.push({ start: rangeStart, end: rangeEnd, data: buf })
+      downloadedBytes = rangeEnd + 1
+
+      onProgress?.(downloadedBytes, ov.contentLength)
+
+      // 检查是否有新的完整文件可以提取
+      for (const entry of sortedEntries) {
+        if (processedEntries.has(entry.index)) continue
+
+        // 检查是否已下载到本地头位置
+        const localHeaderEnd = entry.localHeaderOffset + 30
+        if (downloadedBytes < localHeaderEnd) continue
+
+        // 尝试解析本地头
+        const headerData = extractRange(
+          entry.localHeaderOffset,
+          Math.min(30 + 1024, downloadedBytes - entry.localHeaderOffset)
+        )
+        const headerInfo = parseLocalHeader(headerData, 0)
+        if (!headerInfo) continue
+
+        const dataStart = entry.localHeaderOffset + headerInfo.headerSize
+        const dataEnd = dataStart + entry.compressedSize
+
+        // 检查文件数据是否完整下载
+        if (downloadedBytes < dataEnd) continue
+
+        // 提取文件数据
+        const compressedData = extractRange(dataStart, entry.compressedSize)
+
+        // 尝试解压
+        const {
+          bytes: decompressed,
+          isDecompressed,
+          method,
+        } = await streamDecompressIfPossible(
+          entry.compressionMethod,
+          compressedData,
+          this.options.tryDecompress
+        )
+
+        const mimeType = getMimeType(entry.fileName, decompressed)
+        const now = performance.now()
+
+        const entryWithData: ZipEntryWithData = {
+          ...entry,
+          data: decompressed,
+        }
+
+        onFileComplete?.(entryWithData, {
+          downloadTime: now - startTime,
+          method,
+          isDecompressed,
+          mimeType,
+          physicalIndex: entry.index,
+        })
+
+        processedEntries.add(entry.index)
+        completedFiles++
+        completedEntries.push(entryWithData)
+      }
+    }
+
+    return {
+      totalFiles: sortedEntries.length,
+      completedFiles,
+      entries: completedEntries,
+    }
   }
 }

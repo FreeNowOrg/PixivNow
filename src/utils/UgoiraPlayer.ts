@@ -37,6 +37,11 @@ export class UgoiraPlayer {
   private isDownloadComplete = false
   private downloadStartTime = 0
   private frameDownloadTimes: number[] = []
+  private frameReady: boolean[] = []
+  // 新增: 上一次已经渲染的帧索引（初始为 -1）
+  private lastRenderedFrameIndex = -1
+  // 新增: 当前顺序播放的定时器 id
+  private renderTimer: number | undefined
 
   constructor(
     illust: Artwork,
@@ -53,6 +58,12 @@ export class UgoiraPlayer {
     this.isDownloadComplete = false
     this.downloadStartTime = 0
     this.frameDownloadTimes = []
+    this.frameReady = []
+    this.lastRenderedFrameIndex = -1
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer)
+      this.renderTimer = undefined
+    }
   }
   setupCanvas(canvas: HTMLCanvasElement) {
     this._canvas = canvas
@@ -141,11 +152,11 @@ export class UgoiraPlayer {
   }
 
   /**
-   * 使用 ZipDownloader 优化的帧下载方法
-   * 1. 首先拉取zip的元信息，确定文件分片情况
-   * 2. 根据UgoiraMeta的frame信息，依次下载文件
-   * 3. 下载完一张图片时：如果下载用时大于前一帧的delay，立即渲染到canvas，否则等待delay后渲染到canvas
-   * 4. 全部帧下载完毕，开始按照frame的定义正常循环播放动画，标记为可以导出为gif或mp4
+   * 使用 ZipDownloader.streamingDownload 优化的帧下载方法
+   * 1. 使用流式下载模式，从头开始下载整个zip
+   * 2. 每完成一个文件就触发回调，立即处理该帧
+   * 3. 根据下载时间与delay比较决定立即渲染或等待
+   * 4. 全部帧下载完毕，标记为可以导出为gif或mp4
    */
   private async fetchFramesOptimized(originalQuality = false) {
     if (this.isDownloading) {
@@ -163,65 +174,88 @@ export class UgoiraPlayer {
         location.href
       ).href
 
-      // 1. 创建 ZipDownloader 并获取元信息
-      this.zipDownloader = new ZipDownloader(zipUrl, {
-        chunkSize: 128 * 1024,
-        maxConcurrentRequests: 3,
+      if (!this.zipDownloader) {
+        this.zipDownloader = new ZipDownloader('')
+      }
+      this.zipDownloader.setUrl(zipUrl).setOptions({
+        chunkSize: 512 * 1024,
+        maxConcurrentRequests: 4,
         tryDecompress: true,
         timeoutMs: 10000,
         retries: 2,
         ...this.options.zipDownloaderOptions,
       })
 
-      console.log('[UgoiraPlayer] 开始获取 ZIP 元信息...')
-      const overview = await this.zipDownloader.getCentralDirectory()
-      console.log('[UgoiraPlayer] ZIP 元信息获取完成:', {
-        entryCount: overview.entryCount,
-        entries: overview.entries.map((e) => e.fileName),
-      })
+      console.log('[UgoiraPlayer] 开始流式下载 ZIP...')
 
-      // 2. 根据 UgoiraMeta 的 frame 信息，依次下载文件
+      // 2. 使用流式下载，按物理顺序获取所有文件
       const { frames } = this._meta!
       const totalFrames = frames.length
+      let processedFrames = 0
+      // 初始化 frameReady 状态数组
+      this.frameReady = new Array(totalFrames).fill(false)
+      this.lastRenderedFrameIndex = -1
 
-      for (let i = 0; i < totalFrames; i++) {
-        const frame = frames[i]
-        const frameStartTime = performance.now()
+      const result = await this.zipDownloader.streamingDownload({
+        onFileComplete: (entryWithData, info) => {
+          // 查找对应的帧信息
+          const frameIndex = frames.findIndex(
+            (f) => f.file === entryWithData.fileName
+          )
+          if (frameIndex === -1) {
+            console.warn(
+              `[UgoiraPlayer] 未找到对应帧: ${entryWithData.fileName}`
+            )
+            return
+          }
 
-        try {
-          // 下载单个帧文件
-          const result = await this.zipDownloader.downloadByPath(frame.file)
-          this.files[frame.file] = result.bytes
+          const frame = frames[frameIndex]
 
-          const frameDownloadTime = performance.now() - frameStartTime
-          this.frameDownloadTimes[i] = frameDownloadTime
+          // 存储文件数据
+          this.files[frame.file] = entryWithData.data
+
+          // 记录下载时间
+          const frameDownloadTime = info.downloadTime
+          this.frameDownloadTimes[frameIndex] = frameDownloadTime
+          processedFrames++
 
           // 更新下载进度
-          this.downloadProgress = ((i + 1) / totalFrames) * 100
+          this.downloadProgress = (processedFrames / totalFrames) * 100
 
-          console.log(`[UgoiraPlayer] 帧 ${i + 1}/${totalFrames} 下载完成:`, {
-            fileName: frame.file,
-            downloadTime: frameDownloadTime,
-            delay: frame.delay,
-            progress: this.downloadProgress.toFixed(1) + '%',
-          })
+          console.log(
+            `[UgoiraPlayer] 帧 ${frameIndex + 1}/${totalFrames} 下载完成:`,
+            {
+              fileName: frame.file,
+              downloadTime: frameDownloadTime,
+              delay: frame.delay,
+              progress: this.downloadProgress.toFixed(1) + '%',
+              mimeType: info.mimeType,
+            }
+          )
 
           // 触发进度回调
           this.options.onDownloadProgress?.(
             this.downloadProgress,
-            i,
+            frameIndex,
             totalFrames
           )
+          // 标记该帧已就绪并尝试调度渲染
+          this.frameReady[frameIndex] = true
+          this.scheduleNextFrame()
+        },
+        onProgress: (downloadedBytes, contentLength) => {
+          // 可以在这里添加更细粒度的下载进度回调
+          console.log(
+            `[UgoiraPlayer] ZIP 下载进度: ${((downloadedBytes / contentLength) * 100).toFixed(1)}%`
+          )
+        },
+      })
 
-          // 3. 智能渲染逻辑：根据下载时间与delay比较决定立即渲染或等待
-          await this.handleFrameRender(i, frame, frameDownloadTime)
-        } catch (error) {
-          console.error(`[UgoiraPlayer] 帧 ${i + 1} 下载失败:`, error)
-          throw new Error(`Failed to download frame ${i + 1}: ${frame.file}`, {
-            cause: error,
-          })
-        }
-      }
+      console.log(`[UgoiraPlayer] 流式下载完成:`, {
+        totalFiles: result.totalFiles,
+        completedFiles: result.completedFiles,
+        entries: result.entries.length,
+      })
 
       // 4. 全部帧下载完毕，标记为可以导出
       this.isDownloadComplete = true
@@ -229,9 +263,12 @@ export class UgoiraPlayer {
 
       const totalDownloadTime = performance.now() - this.downloadStartTime
       console.log('[UgoiraPlayer] 所有帧下载完成:', {
-        totalFrames,
+        totalFrames: processedFrames,
         totalDownloadTime: totalDownloadTime.toFixed(2) + 'ms',
-        averageFrameTime: (totalDownloadTime / totalFrames).toFixed(2) + 'ms',
+        averageFrameTime:
+          processedFrames > 0
+            ? (totalDownloadTime / processedFrames).toFixed(2) + 'ms'
+            : '0ms',
         canExport: this.canExport,
       })
 
@@ -259,35 +296,55 @@ export class UgoiraPlayer {
     frame: UgoiraFrame,
     downloadTime: number
   ) {
-    if (!this._canvas) {
-      return // 没有canvas，跳过渲染
+    // 已弃用的即时/等待渲染逻辑，保留方法签名避免外部引用报错
+    console.warn('[UgoiraPlayer] handleFrameRender 已被顺序调度替换')
+  }
+
+  /**
+   * 顺序调度渲染：
+   * 从 lastRenderedFrameIndex + 1 开始，找到第一个未渲染但已就绪的连续帧，
+   * 逐帧按其自身 delay 排队渲染，中途如果有缺失（未下载的帧）则暂停等待。
+   */
+  private scheduleNextFrame() {
+    if (!this._canvas || !this._meta) return
+    // 如果已有定时器在等待，不重复调度
+    if (this.renderTimer) return
+
+    const { frames } = this._meta
+    const nextIndex = this.lastRenderedFrameIndex + 1
+    // 如果下一帧未准备好，等待其就绪（由 onFileComplete 再次调用）
+    if (!this.frameReady[nextIndex]) return
+
+    const renderSequential = async () => {
+      while (true) {
+        const idx = this.lastRenderedFrameIndex + 1
+        if (idx >= frames.length) {
+          // 所有帧已渲染
+          this.renderTimer = undefined
+          return
+        }
+        if (!this.frameReady[idx]) {
+          // 遇到缺口，停止循环，等待后续下载完成再调度
+          this.renderTimer = undefined
+          return
+        }
+        const frame = frames[idx]
+        await this.renderFrameToCanvas(idx, frame)
+        this.lastRenderedFrameIndex = idx
+        // 安排下一帧的 delay
+        await new Promise<void>((resolve) => {
+          this.renderTimer = window.setTimeout(() => {
+            this.renderTimer = undefined
+            resolve()
+          }, frame.delay)
+        })
+      }
     }
 
-    const ctx = this._canvas.getContext('2d')
-    if (!ctx) {
-      return
-    }
-
-    // 获取前一帧的delay（第一帧没有前一帧，使用当前帧的delay）
-    const previousDelay =
-      frameIndex > 0 ? this._meta!.frames[frameIndex - 1].delay : frame.delay
-
-    // 如果下载时间大于前一帧的delay，立即渲染
-    if (downloadTime > previousDelay) {
-      console.log(
-        `[UgoiraPlayer] 帧 ${frameIndex + 1} 下载时间(${downloadTime.toFixed(2)}ms) > 前一帧delay(${previousDelay}ms)，立即渲染`
-      )
-      await this.renderFrameToCanvas(frameIndex, frame)
-    } else {
-      // 否则等待delay后渲染
-      const waitTime = previousDelay - downloadTime
-      console.log(
-        `[UgoiraPlayer] 帧 ${frameIndex + 1} 下载时间(${downloadTime.toFixed(2)}ms) <= 前一帧delay(${previousDelay}ms)，等待${waitTime.toFixed(2)}ms后渲染`
-      )
-
-      await new Promise((resolve) => setTimeout(resolve, waitTime))
-      await this.renderFrameToCanvas(frameIndex, frame)
-    }
+    renderSequential().catch((e) => {
+      console.error('[UgoiraPlayer] 顺序渲染出错:', e)
+      this.renderTimer = undefined
+    })
   }
 
   /**
@@ -318,7 +375,7 @@ export class UgoiraPlayer {
     }
     const img = new Image()
     const objectURL = URL.createObjectURL(
-      new Blob([buf], { type: this.mimeType })
+      new Blob([new Uint8Array(buf)], { type: this.mimeType })
     )
     this.objectURLs.add(objectURL)
     img.src = objectURL
@@ -347,7 +404,7 @@ export class UgoiraPlayer {
 
     const img = new Image()
     const objectURL = URL.createObjectURL(
-      new Blob([buf], { type: this.mimeType })
+      new Blob([new Uint8Array(buf)], { type: this.mimeType })
     )
     this.objectURLs.add(objectURL)
     img.src = objectURL
@@ -401,6 +458,11 @@ export class UgoiraPlayer {
   destroy() {
     this.pause()
 
+    if (this.renderTimer) {
+      clearTimeout(this.renderTimer)
+      this.renderTimer = undefined
+    }
+
     // 清理所有 objectURL 防止内存泄漏
     this.objectURLs.forEach((url) => {
       URL.revokeObjectURL(url)
@@ -416,6 +478,8 @@ export class UgoiraPlayer {
     this.downloadProgress = 0
     this.downloadStartTime = 0
     this.frameDownloadTimes = []
+    this.frameReady = []
+    this.lastRenderedFrameIndex = -1
   }
 
   private genGifEncoder() {
