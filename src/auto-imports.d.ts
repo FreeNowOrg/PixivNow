@@ -7,15 +7,15 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
-  const IllustType: typeof import('./src/types/Artworks')['IllustType']
-  const UgoiraPlayer: typeof import('./src/utils/UgoiraPlayer')['UgoiraPlayer']
-  const UserPrivacyLevel: typeof import('./src/types/Users')['UserPrivacyLevel']
-  const UserXRestrict: typeof import('./src/types/Users')['UserXRestrict']
-  const ZipDownloader: typeof import('./src/utils/ZipDownloader')['ZipDownloader']
-  const addBookmark: typeof import('./src/utils/artworkActions')['addBookmark']
-  const addUserFollow: typeof import('./src/utils/userActions')['addUserFollow']
-  const ajax: typeof import('./src/utils/ajax')['ajax']
-  const ajaxPostWithFormData: typeof import('./src/utils/ajax')['ajaxPostWithFormData']
+  const IllustType: typeof import('./types/Artworks')['IllustType']
+  const UgoiraPlayer: typeof import('./utils/UgoiraPlayer')['UgoiraPlayer']
+  const UserPrivacyLevel: typeof import('./types/Users')['UserPrivacyLevel']
+  const UserXRestrict: typeof import('./types/Users')['UserXRestrict']
+  const ZipDownloader: typeof import('./utils/ZipDownloader')['ZipDownloader']
+  const addBookmark: typeof import('./utils/artworkActions')['addBookmark']
+  const addUserFollow: typeof import('./utils/userActions')['addUserFollow']
+  const ajax: typeof import('./utils/ajax')['ajax']
+  const ajaxPostWithFormData: typeof import('./utils/ajax')['ajaxPostWithFormData']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
   const axios: typeof import('axios')['default']
@@ -40,32 +40,32 @@ declare global {
   const customRef: typeof import('vue')['customRef']
   const debouncedRef: typeof import('@vueuse/core')['debouncedRef']
   const debouncedWatch: typeof import('@vueuse/core')['debouncedWatch']
-  const defaultArtwork: typeof import('./src/utils/index')['defaultArtwork']
+  const defaultArtwork: typeof import('./utils/index')['defaultArtwork']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
   const demonstrateOptimizedPlayer: typeof import('./src/utils/UgoiraPlayerExample')['demonstrateOptimizedPlayer']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
-  const exampleSessionId: typeof import('./src/components/userData')['exampleSessionId']
-  const existsSessionId: typeof import('./src/components/userData')['existsSessionId']
+  const exampleSessionId: typeof import('./components/userData')['exampleSessionId']
+  const existsSessionId: typeof import('./components/userData')['existsSessionId']
   const extendRef: typeof import('@vueuse/core')['extendRef']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
   const getCurrentWatcher: typeof import('vue')['getCurrentWatcher']
   const h: typeof import('vue')['h']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
-  const initUser: typeof import('./src/components/userData')['initUser']
+  const initUser: typeof import('./components/userData')['initUser']
   const inject: typeof import('vue')['inject']
   const injectLocal: typeof import('@vueuse/core')['injectLocal']
-  const isArtwork: typeof import('./src/utils/artworkActions')['isArtwork']
+  const isArtwork: typeof import('./utils/artworkActions')['isArtwork']
   const isDefined: typeof import('@vueuse/core')['isDefined']
   const isProxy: typeof import('vue')['isProxy']
   const isReactive: typeof import('vue')['isReactive']
   const isReadonly: typeof import('vue')['isReadonly']
   const isRef: typeof import('vue')['isRef']
   const isShallow: typeof import('vue')['isShallow']
-  const login: typeof import('./src/components/userData')['login']
-  const logout: typeof import('./src/components/userData')['logout']
+  const login: typeof import('./components/userData')['login']
+  const logout: typeof import('./components/userData')['logout']
   const makeDestructurable: typeof import('@vueuse/core')['makeDestructurable']
   const markRaw: typeof import('vue')['markRaw']
   const nextTick: typeof import('vue')['nextTick']
@@ -106,16 +106,16 @@ declare global {
   const refDefault: typeof import('@vueuse/core')['refDefault']
   const refThrottled: typeof import('@vueuse/core')['refThrottled']
   const refWithControl: typeof import('@vueuse/core')['refWithControl']
-  const removeBookmark: typeof import('./src/utils/artworkActions')['removeBookmark']
-  const removeUserFollow: typeof import('./src/utils/userActions')['removeUserFollow']
+  const removeBookmark: typeof import('./utils/artworkActions')['removeBookmark']
+  const removeUserFollow: typeof import('./utils/userActions')['removeUserFollow']
   const resolveComponent: typeof import('vue')['resolveComponent']
   const resolveRef: typeof import('@vueuse/core')['resolveRef']
   const resolveUnref: typeof import('@vueuse/core')['resolveUnref']
-  const setTitle: typeof import('./src/utils/setTitle')['setTitle']
+  const setTitle: typeof import('./utils/setTitle')['setTitle']
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
-  const sortArtList: typeof import('./src/utils/artworkActions')['sortArtList']
+  const sortArtList: typeof import('./utils/artworkActions')['sortArtList']
   const syncRef: typeof import('@vueuse/core')['syncRef']
   const syncRefs: typeof import('@vueuse/core')['syncRefs']
   const templateRef: typeof import('@vueuse/core')['templateRef']
@@ -261,7 +261,7 @@ declare global {
   const useScrollLock: typeof import('@vueuse/core')['useScrollLock']
   const useSessionStorage: typeof import('@vueuse/core')['useSessionStorage']
   const useShare: typeof import('@vueuse/core')['useShare']
-  const useSideNavStore: typeof import('./src/composables/states')['useSideNavStore']
+  const useSideNavStore: typeof import('./composables/states')['useSideNavStore']
   const useSlots: typeof import('vue')['useSlots']
   const useSorted: typeof import('@vueuse/core')['useSorted']
   const useSpeechRecognition: typeof import('@vueuse/core')['useSpeechRecognition']
@@ -293,7 +293,7 @@ declare global {
   const useTransition: typeof import('@vueuse/core')['useTransition']
   const useUrlSearchParams: typeof import('@vueuse/core')['useUrlSearchParams']
   const useUserMedia: typeof import('@vueuse/core')['useUserMedia']
-  const useUserStore: typeof import('./src/composables/states')['useUserStore']
+  const useUserStore: typeof import('./composables/states')['useUserStore']
   const useVModel: typeof import('@vueuse/core')['useVModel']
   const useVModels: typeof import('@vueuse/core')['useVModels']
   const useVibrate: typeof import('@vueuse/core')['useVibrate']
@@ -306,7 +306,7 @@ declare global {
   const useWindowFocus: typeof import('@vueuse/core')['useWindowFocus']
   const useWindowScroll: typeof import('@vueuse/core')['useWindowScroll']
   const useWindowSize: typeof import('@vueuse/core')['useWindowSize']
-  const validateSessionId: typeof import('./src/components/userData')['validateSessionId']
+  const validateSessionId: typeof import('./components/userData')['validateSessionId']
   const watch: typeof import('vue')['watch']
   const watchArray: typeof import('@vueuse/core')['watchArray']
   const watchAtMost: typeof import('@vueuse/core')['watchAtMost']
@@ -330,18 +330,18 @@ declare global {
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
-  export type { UgoiraPlayer, UgoiraPlayerOptions, UgoiraFrame, UgoiraMeta } from './src/utils/UgoiraPlayer'
-  import('./src/utils/UgoiraPlayer')
+  export type { UgoiraPlayer, UgoiraPlayerOptions, UgoiraFrame, UgoiraMeta } from './utils/UgoiraPlayer'
+  import('./utils/UgoiraPlayer')
   // @ts-ignore
-  export type { ZipDownloader, ZipDownloaderOptions, ZipEntry, ZipEntryWithData, ZipOverview, DataRange } from './src/utils/ZipDownloader'
-  import('./src/utils/ZipDownloader')
+  export type { ZipDownloader, FetchLike, ZipDownloaderOptions, ZipEntry, ZipEntryWithData, ZipOverview, DataRange } from './utils/ZipDownloader'
+  import('./utils/ZipDownloader')
   // @ts-ignore
-  export type { IllustType, ArtworkUrls, ArtworkPageUrls, ArtworkTag, ArtworkGallery, ArtworkInfo, ArtworkInfoOrAd, ArtworkRank, Artwork, IllustType } from './src/types/Artworks'
-  import('./src/types/Artworks')
+  export type { IllustType, ArtworkUrls, ArtworkPageUrls, ArtworkTag, ArtworkGallery, ArtworkInfo, ArtworkInfoOrAd, ArtworkRank, Artwork, IllustType } from './types/Artworks'
+  import('./types/Artworks')
   // @ts-ignore
-  export type { Comments } from './src/types/Comment'
-  import('./src/types/Comment')
+  export type { Comments } from './types/Comment'
+  import('./types/Comment')
   // @ts-ignore
-  export type { UserXRestrict, UserPrivacyLevel, User, PixivUser, UserListItem, UserXRestrict, UserPrivacyLevel } from './src/types/Users'
-  import('./src/types/Users')
+  export type { UserXRestrict, UserPrivacyLevel, User, PixivUser, UserListItem, UserXRestrict, UserPrivacyLevel } from './types/Users'
+  import('./types/Users')
 }
