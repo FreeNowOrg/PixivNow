@@ -43,9 +43,6 @@ export class UgoiraPlayer {
     public options: UgoiraPlayerOptions = {}
   ) {
     this.reset(illust)
-    if (options) {
-      this.options = options
-    }
   }
   reset(illust: Artwork) {
     this.destroy()
@@ -184,7 +181,7 @@ export class UgoiraPlayer {
       })
 
       // 2. 根据 UgoiraMeta 的 frame 信息，依次下载文件
-      const frames = this._meta!.frames
+      const { frames } = this._meta!
       const totalFrames = frames.length
 
       for (let i = 0; i < totalFrames; i++) {
@@ -220,7 +217,9 @@ export class UgoiraPlayer {
           await this.handleFrameRender(i, frame, frameDownloadTime)
         } catch (error) {
           console.error(`[UgoiraPlayer] 帧 ${i + 1} 下载失败:`, error)
-          throw new Error(`Failed to download frame ${i + 1}: ${frame.file}`)
+          throw new Error(`Failed to download frame ${i + 1}: ${frame.file}`, {
+            cause: error,
+          })
         }
       }
 
