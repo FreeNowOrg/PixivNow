@@ -10,6 +10,8 @@ declare global {
   const IllustType: typeof import('./src/types/Artworks')['IllustType']
   const UgoiraPlayer: typeof import('./src/utils/UgoiraPlayer')['UgoiraPlayer']
   const UserPrivacyLevel: typeof import('./src/types/Users')['UserPrivacyLevel']
+  const UserXRestrict: typeof import('./src/types/Users')['UserXRestrict']
+  const ZipDownloader: typeof import('./src/utils/ZipDownloader')['ZipDownloader']
   const addBookmark: typeof import('./src/utils/artworkActions')['addBookmark']
   const addUserFollow: typeof import('./src/utils/userActions')['addUserFollow']
   const ajax: typeof import('./src/utils/ajax')['ajax']
@@ -29,6 +31,7 @@ declare global {
   const createGlobalState: typeof import('@vueuse/core')['createGlobalState']
   const createInjectionState: typeof import('@vueuse/core')['createInjectionState']
   const createReactiveFn: typeof import('@vueuse/core')['createReactiveFn']
+  const createRef: typeof import('@vueuse/core')['createRef']
   const createReusableTemplate: typeof import('@vueuse/core')['createReusableTemplate']
   const createSharedComposable: typeof import('@vueuse/core')['createSharedComposable']
   const createTemplatePromise: typeof import('@vueuse/core')['createTemplatePromise']
@@ -319,11 +322,14 @@ declare global {
 // for type re-export
 declare global {
   // @ts-ignore
-  export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
+  export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
   export type { UgoiraPlayer, UgoiraFrame, UgoiraMeta } from './src/utils/UgoiraPlayer'
   import('./src/utils/UgoiraPlayer')
+  // @ts-ignore
+  export type { ZipDownloader, ZipDownloaderOptions, ZipEntry, ZipOverview, DataRange } from './src/utils/ZipDownloader'
+  import('./src/utils/ZipDownloader')
   // @ts-ignore
   export type { IllustType, ArtworkUrls, ArtworkPageUrls, ArtworkTag, ArtworkGallery, ArtworkInfo, ArtworkInfoOrAd, ArtworkRank, Artwork, IllustType } from './src/types/Artworks'
   import('./src/types/Artworks')
@@ -331,6 +337,6 @@ declare global {
   export type { Comments } from './src/types/Comment'
   import('./src/types/Comment')
   // @ts-ignore
-  export type { UserPrivacyLevel, User, PixivUser, UserListItem, UserPrivacyLevel } from './src/types/Users'
+  export type { UserXRestrict, UserPrivacyLevel, User, PixivUser, UserListItem, UserXRestrict, UserPrivacyLevel } from './src/types/Users'
   import('./src/types/Users')
 }
