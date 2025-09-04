@@ -29,6 +29,7 @@ export class UgoiraPlayer {
   private curFrame = 0
   private lastFrameTime = 0
   private cachedImages: Map<string, HTMLImageElement> = new Map()
+  private objectURLs: Set<string> = new Set() // 跟踪所有创建的 objectURL
   private files: Record<string, Uint8Array> = {}
   private zipDownloader?: ZipDownloader
   private downloadProgress = 0
@@ -317,7 +318,11 @@ export class UgoiraPlayer {
       throw new Error(`File ${fileName} not found`)
     }
     const img = new Image()
-    img.src = URL.createObjectURL(new Blob([buf], { type: this.mimeType }))
+    const objectURL = URL.createObjectURL(
+      new Blob([buf], { type: this.mimeType })
+    )
+    this.objectURLs.add(objectURL)
+    img.src = objectURL
     this.cachedImages.set(fileName, img)
     return img
   }
@@ -342,7 +347,11 @@ export class UgoiraPlayer {
     }
 
     const img = new Image()
-    img.src = URL.createObjectURL(new Blob([buf], { type: this.mimeType }))
+    const objectURL = URL.createObjectURL(
+      new Blob([buf], { type: this.mimeType })
+    )
+    this.objectURLs.add(objectURL)
+    img.src = objectURL
     this.cachedImages.set(fileName, img)
 
     return new Promise((resolve, reject) => {
@@ -392,6 +401,13 @@ export class UgoiraPlayer {
 
   destroy() {
     this.pause()
+
+    // 清理所有 objectURL 防止内存泄漏
+    this.objectURLs.forEach((url) => {
+      URL.revokeObjectURL(url)
+    })
+    this.objectURLs.clear()
+
     this.cachedImages.clear()
     this.files = {}
     this._meta = undefined
