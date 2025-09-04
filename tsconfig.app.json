@@ -1,0 +1,25 @@
+{
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "importHelpers": true,
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["unplugin-icons/types/vue"]
+  },
+  "vueCompilerOptions": {
+    "plugins": ["@vue/language-plugin-pug"]
+  }
+}

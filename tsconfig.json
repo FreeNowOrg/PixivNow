@@ -1,38 +1,11 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "sourceMap": true,
-    "lib": ["esnext", "dom", "dom.iterable"],
-    "plugins": [],
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "isolatedModules": true,
-    "importHelpers": true,
-    "paths": {
-      "@/*": ["src/*"]
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
     },
-    "types": ["unplugin-icons/types/vue"]
-  },
-  "include": [
-    "api/**/*.ts",
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "src/**/*.json",
-    "vite.config.ts",
-    "auto-imports.d.ts",
-    "components.d.ts",
-    "middleware.ts"
-  ],
-  "exclude": ["**/dist"],
-  "vueCompilerOptions": {
-    "plugins": ["@vue/language-plugin-pug"]
-  }
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

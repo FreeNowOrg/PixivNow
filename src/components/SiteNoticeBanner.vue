@@ -16,10 +16,7 @@ Transition(name='fade')
 import {} from 'vue'
 
 const alreadyShown = ref(false)
-const forceShow = computed(
-  () =>
-    route.name === 'about-us' || Date.now() > new Date('2024-09-01').getTime()
-)
+const forceShow = computed(() => route.name === 'about-us')
 const isShow = computed(() => {
   if (route.path === '/notifications/2024-04-26') {
     return false
@@ -36,7 +33,7 @@ onMounted(() => {
 
 function handleClose() {
   localStorage.setItem(key, '1')
-  alreadyShown.value = 1
+  alreadyShown.value = true
 }
 </script>
 

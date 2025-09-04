@@ -12,7 +12,17 @@
     :style='{ cursor: isLoading ? "wait" : "pointer" }',
     :width='illust.width'
     @click='handleInit(false)'
+    loading='lazy'
     v-else
+  )
+  NProgress(
+    :height='6',
+    :percentage='downloadProgress',
+    :style='{ left: 0, right: 0, position: "absolute", ...(isLoading ? { top: "calc(100% + 4px)", opacity: "1", transitionDuration: "0.25s" } : { top: "calc(100% - 4px)", opacity: "0", transitionDelay: "3s", transitionDuration: "0.5s" }) }'
+    show-value
+    status='default'
+    transition='all ease-in-out'
+    type='line'
   )
   NFloatButton(
     :bottom='20',
@@ -46,16 +56,12 @@
         NSpin(size='small' v-if='isLoading')
         template(v-else): IconPhotoSpark
 
-  .badge
-    template(v-if='isLoading && firstLoaded')
-      | {{ downloadProgress.toFixed(1) }}%
-    template(v-else)
-      | {{ firstLoaded ? (isHQLoaded ? 'HQ' : 'LQ') : 'Cover' }}
+  .badge {{ firstLoaded ? (isHQLoaded ? 'HQ' : 'LQ') : 'Cover' }}
 </template>
 
 <script lang="ts" setup>
 import type { Artwork } from '@/types'
-import { NSpin, NIcon, NFloatButton, useMessage } from 'naive-ui'
+import { NSpin, NIcon, NFloatButton, useMessage, NProgress } from 'naive-ui'
 import { UgoiraPlayer } from '@/utils/UgoiraPlayer'
 import LazyLoad from './LazyLoad.vue'
 import IPlay from '~icons/fa-solid/play'
@@ -105,7 +111,7 @@ const player = computed(() => {
       // 清理播放器状态
       p.destroy()
 
-      console.warn('Ugoira 下载失败，请重试')
+      message.warning('Ugoira 下载失败，请重试')
     },
   })
   emit('on:player', p)

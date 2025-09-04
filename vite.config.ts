@@ -13,7 +13,7 @@ export default defineConfig({
   plugins: [
     vue(),
     AutoImport({
-      dts: true,
+      dts: 'src/auto-imports.d.ts',
       imports: [
         'vue',
         'vue-router',
@@ -30,7 +30,7 @@ export default defineConfig({
       ],
       dirs: ['src/components/**', 'src/composables', 'src/utils', 'src/types'],
     }),
-    Components({ dts: true, resolvers: [NaiveUiResolver()] }),
+    Components({ dts: 'src/components.d.ts', resolvers: [NaiveUiResolver()] }),
     Icons({
       scale: 1,
       defaultClass: 'svg--inline',
