@@ -234,6 +234,10 @@ function downloadBlob(blob: Blob, filename: string) {
   a.click()
   URL.revokeObjectURL(url)
 }
+
+onBeforeUnmount(() => {
+  player.value.destroy()
+})
 </script>
 
 <style scoped lang="sass">
