@@ -14,10 +14,7 @@ Transition(name='fade')
 
 <script setup lang="ts">
 const alreadyShown = ref(false)
-const forceShow = computed(
-  () =>
-    route.name === 'about-us' || Date.now() > new Date('2024-09-01').getTime()
-)
+const forceShow = computed(() => route.name === 'about-us')
 const isShow = computed(() => {
   if (route.path === '/notifications/2024-04-26') {
     return false

@@ -1,5 +1,3 @@
-import type { ArtworkInfo, ArtworkInfoOrAd, NumberLike } from '../types'
-
 export const defaultArtwork: ArtworkInfo = {
   id: '0',
   title: '',
