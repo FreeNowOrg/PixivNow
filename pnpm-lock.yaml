@@ -83,7 +83,7 @@ importers:
         version: 0.2.3
       '@vercel/node':
         specifier: ^5.3.13
-        version: 5.3.20(rollup@4.50.0)
+        version: 5.3.21(rollup@4.50.0)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.1(vite@7.1.4(@types/node@22.18.1)(sass@1.92.0))(vue@3.5.21(typescript@5.9.2))
@@ -553,8 +553,8 @@ packages:
   '@rolldown/pluginutils@1.0.0-beta.29':
     resolution: {integrity: sha512-NIJgOsMjbxAXvoGq/X0gD7VPMQ8j9g0BiDaNjVNVjvl+iKXxL3Jre0v31RmBYeLEmkbj2s02v8vFTbUXi5XS2Q==}
 
-  '@rollup/pluginutils@5.2.0':
-    resolution: {integrity: sha512-qWJ2ZTbmumwiLFomfzTyt5Kng4hwPi9rwCYN4SHb6eaRU1KNO4ccxINHr/VhH4GgPlt1XfSTLX2LBTme8ne4Zw==}
+  '@rollup/pluginutils@5.3.0':
+    resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
@@ -802,8 +802,8 @@ packages:
   '@vercel/node@5.3.17':
     resolution: {integrity: sha512-quNnXO1XuMMid9MXJKPDtpwiNZUFrJgTvdcUu+AXRZg99rOw9N5pk+M0rM4+0FwVXVCIlXzjfKelEOXC8SxGQw==}
 
-  '@vercel/node@5.3.20':
-    resolution: {integrity: sha512-mlcqRQxrjpEVi80Wr3+oED+IbzGdYsY80h23REjqJC27n9cHwPctx9UBvZlko2E7H8CLxd6NaP+PiMF7d0rbvg==}
+  '@vercel/node@5.3.21':
+    resolution: {integrity: sha512-rtyylPomqpMFQu5DcAqXYf+J3gvboakpBewpjWUgSrkSwtu0mqgpYFjys6VaXb55qePhH9K6HYARaYLEuo9OLw==}
 
   '@vercel/python@5.0.0':
     resolution: {integrity: sha512-JHpYKQ8d478REzmF7NcJTJcncFziJhVOwzan8wW4F1RJOHGDBTPkATAgi4CPQIijToRamPCkgeECzNOvLUDR+w==}
@@ -2984,7 +2984,7 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.0-beta.29': {}
 
-  '@rollup/pluginutils@5.2.0(rollup@4.50.0)':
+  '@rollup/pluginutils@5.3.0(rollup@4.50.0)':
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
@@ -3213,7 +3213,7 @@ snapshots:
   '@vercel/nft@0.30.1(rollup@4.50.0)':
     dependencies:
       '@mapbox/node-pre-gyp': 2.0.0
-      '@rollup/pluginutils': 5.2.0(rollup@4.50.0)
+      '@rollup/pluginutils': 5.3.0(rollup@4.50.0)
       acorn: 8.15.0
       acorn-import-attributes: 1.9.5(acorn@8.15.0)
       async-sema: 3.1.1
@@ -3259,7 +3259,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/node@5.3.20(rollup@4.50.0)':
+  '@vercel/node@5.3.21(rollup@4.50.0)':
     dependencies:
       '@edge-runtime/node-utils': 2.3.0
       '@edge-runtime/primitives': 4.1.0
@@ -3275,6 +3275,7 @@ snapshots:
       es-module-lexer: 1.4.1
       esbuild: 0.14.47
       etag: 1.8.1
+      mime-types: 2.1.35
       node-fetch: 2.6.9
       path-to-regexp: 6.1.0
       path-to-regexp-updated: path-to-regexp@6.3.0
