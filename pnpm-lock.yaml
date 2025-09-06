@@ -86,7 +86,7 @@ importers:
         version: 5.3.21(rollup@4.50.0)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
-        version: 6.0.1(vite@7.1.4(@types/node@22.18.1)(sass@1.92.0))(vue@3.5.21(typescript@5.9.2))
+        version: 6.0.1(vite@7.1.4(@types/node@22.18.1)(sass@1.92.1))(vue@3.5.21(typescript@5.9.2))
       '@vue/language-plugin-pug':
         specifier: ^3.0.6
         version: 3.0.6
@@ -116,7 +116,7 @@ importers:
         version: 3.0.3
       sass:
         specifier: ^1.90.0
-        version: 1.92.0
+        version: 1.92.1
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -137,7 +137,7 @@ importers:
         version: 46.1.1(rollup@4.50.0)
       vite:
         specifier: ^7.1.3
-        version: 7.1.4(@types/node@22.18.1)(sass@1.92.0)
+        version: 7.1.4(@types/node@22.18.1)(sass@1.92.1)
 
 packages:
 
@@ -2160,8 +2160,8 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  sass@1.92.0:
-    resolution: {integrity: sha512-KDNI0BxgIRDAfJgzNm5wuy+4yOCIZyrUbjSpiU/JItfih+KGXAVefKL53MTml054MmBA3DDKIBMSI/7XLxZJ3A==}
+  sass@1.92.1:
+    resolution: {integrity: sha512-ffmsdbwqb3XeyR8jJR6KelIXARM9bFQe8A6Q3W4Klmwy5Ckd5gz7jgUNHo4UOqutU5Sk1DtKLbpDP0nLCg1xqQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
 
@@ -3331,10 +3331,10 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vitejs/plugin-vue@6.0.1(vite@7.1.4(@types/node@22.18.1)(sass@1.92.0))(vue@3.5.21(typescript@5.9.2))':
+  '@vitejs/plugin-vue@6.0.1(vite@7.1.4(@types/node@22.18.1)(sass@1.92.1))(vue@3.5.21(typescript@5.9.2))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.29
-      vite: 7.1.4(@types/node@22.18.1)(sass@1.92.0)
+      vite: 7.1.4(@types/node@22.18.1)(sass@1.92.1)
       vue: 3.5.21(typescript@5.9.2)
 
   '@volar/language-core@2.4.23':
@@ -4690,7 +4690,7 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  sass@1.92.0:
+  sass@1.92.1:
     dependencies:
       chokidar: 4.0.3
       immutable: 5.1.3
@@ -5012,7 +5012,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite@7.1.4(@types/node@22.18.1)(sass@1.92.0):
+  vite@7.1.4(@types/node@22.18.1)(sass@1.92.1):
     dependencies:
       esbuild: 0.25.9
       fdir: 6.5.0(picomatch@4.0.3)
@@ -5023,7 +5023,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.18.1
       fsevents: 2.3.3
-      sass: 1.92.0
+      sass: 1.92.1
 
   void-elements@3.1.0: {}
 
