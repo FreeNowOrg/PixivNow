@@ -89,7 +89,7 @@ importers:
         version: 6.0.1(vite@7.1.7(@types/node@22.18.6)(sass@1.93.2))(vue@3.5.22(typescript@5.9.2))
       '@vue/language-plugin-pug':
         specifier: ^3.0.6
-        version: 3.0.8
+        version: 3.1.0
       '@vueuse/core':
         specifier: ^13.7.0
         version: 13.9.0(vue@3.5.22(typescript@5.9.2))
@@ -875,8 +875,8 @@ packages:
   '@vue/devtools-shared@7.7.7':
     resolution: {integrity: sha512-+udSj47aRl5aKb0memBvcUG9koarqnxNM5yjuREvqwK6T3ap4mn3Zqqc17QrBFTqSMjr3HK1cvStEZpMDpfdyw==}
 
-  '@vue/language-plugin-pug@3.0.8':
-    resolution: {integrity: sha512-NxbPHoZq+dQLyU0A1yaK4dMBey4VH93WJusXO2MNDVrGSM9WdWIC3n72J+o7yGZvjv8aqKVrzHyQ8Q65zYkyvg==}
+  '@vue/language-plugin-pug@3.1.0':
+    resolution: {integrity: sha512-X4UqrOAXtnkJ351JDnnTQHSfmPdWiFqLnxbxyUhk7Pe+6WSv73AH9dMbULzLcAqCOBoHPp7JnefRfKEuZwmzNw==}
 
   '@vue/reactivity@3.5.22':
     resolution: {integrity: sha512-f2Wux4v/Z2pqc9+4SmgZC1p73Z53fyD90NFWXiX9AKVnVBEvLFOWCEgJD3GdGnlxPZt01PSlfmLqbLYzY/Fw4A==}
@@ -3419,7 +3419,7 @@ snapshots:
     dependencies:
       rfdc: 1.4.1
 
-  '@vue/language-plugin-pug@3.0.8':
+  '@vue/language-plugin-pug@3.1.0':
     dependencies:
       '@volar/source-map': 2.4.23
       volar-service-pug: 0.0.65
