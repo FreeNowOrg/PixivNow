@@ -43,7 +43,7 @@ importers:
         version: 3.5.22(typescript@5.9.3)
       vue-gtag:
         specifier: ^3.5.2
-        version: 3.6.1(vue-router@4.5.1(vue@3.5.22(typescript@5.9.3)))(vue@3.5.22(typescript@5.9.3))
+        version: 3.6.2(vue-router@4.5.1(vue@3.5.22(typescript@5.9.3)))(vue@3.5.22(typescript@5.9.3))
       vue-i18n:
         specifier: ^11.1.11
         version: 11.1.12(vue@3.5.22(typescript@5.9.3))
@@ -2560,8 +2560,8 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
-  vue-gtag@3.6.1:
-    resolution: {integrity: sha512-gsEt3vconVtZlYJTel9B/qVjdmW87XMl2KDrz0ds1sGSHjzqZ1c6KXl4M/Qjiem57FixQR8RDTDDX7MTKa3rFw==}
+  vue-gtag@3.6.2:
+    resolution: {integrity: sha512-6uBjncUSVc5Jal/Bg11bnGYL9sezor+GlvcJoInK+DAhPDpHMh8D2S6IbHTSAsKSaUFSuCgFNWxxayFvYItcXg==}
     peerDependencies:
       vue: ^3.5.13
       vue-router: ^4.5.0
@@ -5071,7 +5071,7 @@ snapshots:
 
   vscode-uri@3.1.0: {}
 
-  vue-gtag@3.6.1(vue-router@4.5.1(vue@3.5.22(typescript@5.9.3)))(vue@3.5.22(typescript@5.9.3)):
+  vue-gtag@3.6.2(vue-router@4.5.1(vue@3.5.22(typescript@5.9.3)))(vue@3.5.22(typescript@5.9.3)):
     dependencies:
       vue: 3.5.22(typescript@5.9.3)
     optionalDependencies:
