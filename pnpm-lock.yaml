@@ -43,13 +43,13 @@ importers:
         version: 3.5.22(typescript@5.9.3)
       vue-gtag:
         specifier: ^3.5.2
-        version: 3.6.2(vue-router@4.6.2(vue@3.5.22(typescript@5.9.3)))(vue@3.5.22(typescript@5.9.3))
+        version: 3.6.2(vue-router@4.6.3(vue@3.5.22(typescript@5.9.3)))(vue@3.5.22(typescript@5.9.3))
       vue-i18n:
         specifier: ^11.1.11
         version: 11.1.12(vue@3.5.22(typescript@5.9.3))
       vue-router:
         specifier: ^4.5.1
-        version: 4.6.2(vue@3.5.22(typescript@5.9.3))
+        version: 4.6.3(vue@3.5.22(typescript@5.9.3))
       vue-waterfall-plugin-next:
         specifier: ^2.6.9
         version: 2.6.9
@@ -2575,8 +2575,8 @@ packages:
     peerDependencies:
       vue: ^3.0.0
 
-  vue-router@4.6.2:
-    resolution: {integrity: sha512-my83mxQKXyCms9EegBXZldehOihxBjgSjZqrZwgg4vBacNGl0oBCO+xT//wgOYpLV1RW93ZfqxrjTozd+82nbA==}
+  vue-router@4.6.3:
+    resolution: {integrity: sha512-ARBedLm9YlbvQomnmq91Os7ck6efydTSpRP3nuOKCvgJOHNrhRoJDSKtee8kcL1Vf7nz6U+PMBL+hTvR3bTVQg==}
     peerDependencies:
       vue: ^3.5.0
 
@@ -5071,11 +5071,11 @@ snapshots:
 
   vscode-uri@3.1.0: {}
 
-  vue-gtag@3.6.2(vue-router@4.6.2(vue@3.5.22(typescript@5.9.3)))(vue@3.5.22(typescript@5.9.3)):
+  vue-gtag@3.6.2(vue-router@4.6.3(vue@3.5.22(typescript@5.9.3)))(vue@3.5.22(typescript@5.9.3)):
     dependencies:
       vue: 3.5.22(typescript@5.9.3)
     optionalDependencies:
-      vue-router: 4.6.2(vue@3.5.22(typescript@5.9.3))
+      vue-router: 4.6.3(vue@3.5.22(typescript@5.9.3))
 
   vue-i18n@11.1.12(vue@3.5.22(typescript@5.9.3)):
     dependencies:
@@ -5084,7 +5084,7 @@ snapshots:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.22(typescript@5.9.3)
 
-  vue-router@4.6.2(vue@3.5.22(typescript@5.9.3)):
+  vue-router@4.6.3(vue@3.5.22(typescript@5.9.3)):
     dependencies:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.22(typescript@5.9.3)
