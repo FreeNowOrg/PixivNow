@@ -89,7 +89,7 @@ importers:
         version: 6.0.1(vite@7.1.12(@types/node@22.18.12)(sass@1.93.2))(vue@3.5.22(typescript@5.9.3))
       '@vue/language-plugin-pug':
         specifier: ^3.0.6
-        version: 3.1.1
+        version: 3.1.2
       '@vueuse/core':
         specifier: ^13.7.0
         version: 13.9.0(vue@3.5.22(typescript@5.9.3))
@@ -875,8 +875,8 @@ packages:
   '@vue/devtools-shared@7.7.7':
     resolution: {integrity: sha512-+udSj47aRl5aKb0memBvcUG9koarqnxNM5yjuREvqwK6T3ap4mn3Zqqc17QrBFTqSMjr3HK1cvStEZpMDpfdyw==}
 
-  '@vue/language-plugin-pug@3.1.1':
-    resolution: {integrity: sha512-o9Y+vUPaDtSvjpQrY5ay0dhokwaTkdjKpaJ03nyT+Z5FgwVzK3cCMdwZoHxTwG3EDDa7n31Lnu3VEerCBXTAtw==}
+  '@vue/language-plugin-pug@3.1.2':
+    resolution: {integrity: sha512-n3FpO8NfC74qALogmF1VqiLww5ayoeVYC4PS2eNH5W4463UG/PGRCZlXx07Kux2j7zVYKpeM5yyPmb3R/zD07g==}
 
   '@vue/reactivity@3.5.22':
     resolution: {integrity: sha512-f2Wux4v/Z2pqc9+4SmgZC1p73Z53fyD90NFWXiX9AKVnVBEvLFOWCEgJD3GdGnlxPZt01PSlfmLqbLYzY/Fw4A==}
@@ -2545,8 +2545,8 @@ packages:
     peerDependencies:
       vue: ^3.0.0
 
-  vscode-html-languageservice@5.5.2:
-    resolution: {integrity: sha512-QpaUhCjvb7U/qThOzo4V6grwsRE62Jk/vf8BRJZoABlMw3oplLB5uovrvcrLO9vYhkeMiSjyqLnCxbfHzzZqmw==}
+  vscode-html-languageservice@5.6.0:
+    resolution: {integrity: sha512-FIVz83oGw2tBkOr8gQPeiREInnineCKGCz3ZD1Pi6opOuX3nSRkc4y4zLLWsuop+6ttYX//XZCI6SLzGhRzLmA==}
 
   vscode-jsonrpc@8.2.0:
     resolution: {integrity: sha512-C+r0eKJUIfiDIfwJhria30+TYWPtuHJXHtI7J0YlOmKAo7ogxP20T0zxB7HZQIFhIyvoBPwWskjxrvAtfjyZfA==}
@@ -3414,7 +3414,7 @@ snapshots:
     dependencies:
       rfdc: 1.4.1
 
-  '@vue/language-plugin-pug@3.1.1':
+  '@vue/language-plugin-pug@3.1.2':
     dependencies:
       '@volar/source-map': 2.4.23
       volar-service-pug: 0.0.65
@@ -5039,7 +5039,7 @@ snapshots:
 
   volar-service-html@0.0.65(@volar/language-service@2.4.23):
     dependencies:
-      vscode-html-languageservice: 5.5.2
+      vscode-html-languageservice: 5.6.0
       vscode-languageserver-textdocument: 1.0.12
       vscode-uri: 3.1.0
     optionalDependencies:
@@ -5052,7 +5052,7 @@ snapshots:
       pug-lexer: 5.0.1
       pug-parser: 6.0.0
       volar-service-html: 0.0.65(@volar/language-service@2.4.23)
-      vscode-html-languageservice: 5.5.2
+      vscode-html-languageservice: 5.6.0
       vscode-languageserver-textdocument: 1.0.12
 
   vooks@0.2.12(vue@3.5.22(typescript@5.9.3)):
@@ -5060,7 +5060,7 @@ snapshots:
       evtd: 0.2.4
       vue: 3.5.22(typescript@5.9.3)
 
-  vscode-html-languageservice@5.5.2:
+  vscode-html-languageservice@5.6.0:
     dependencies:
       '@vscode/l10n': 0.0.18
       vscode-languageserver-textdocument: 1.0.12
