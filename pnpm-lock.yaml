@@ -10,7 +10,7 @@ importers:
     dependencies:
       axios:
         specifier: ^1.11.0
-        version: 1.13.0
+        version: 1.13.1
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -83,7 +83,7 @@ importers:
         version: 0.2.3
       '@vercel/node':
         specifier: ^5.3.13
-        version: 5.5.0(rollup@4.52.5)
+        version: 5.5.1(rollup@4.52.5)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.1(vite@7.1.12(@types/node@22.18.13)(sass@1.93.2))(vue@3.5.22(typescript@5.9.3))
@@ -769,8 +769,8 @@ packages:
   '@vercel/build-utils@11.0.2':
     resolution: {integrity: sha512-Y48OT9IsvAFU21LJ3m5SbrXpQaD++h4v4nQoQjCUDZORxXzPf3doVQfrQBBIX45xoSkfq/Fuq0VNF0yRbJw/aA==}
 
-  '@vercel/build-utils@12.2.0':
-    resolution: {integrity: sha512-6gcZ8mA/pW/mD/uUVEGHf+Y2i0Lfm+1qx/eol59SNftoce26LQhsGnz7fnBzspIJTjUbk7iB+gSm9ybe457FYQ==}
+  '@vercel/build-utils@12.2.1':
+    resolution: {integrity: sha512-IomevtBkebGsdSklmugLO2ECiqRUpFR9wLVbjYlyjDtcx67UGMtgdjhfxXSOIYcGzJFiOxy820YI4ajUq88qUg==}
 
   '@vercel/detect-agent@0.2.0':
     resolution: {integrity: sha512-qf10Q2UwlbJAcWVqQGkyp9OlLBn9Aj2VVE0M4mTDe0gpB7Fo8qycTJLccDbHeyLrWnT6Q12sVy9ZYHas7B+rwg==}
@@ -811,8 +811,8 @@ packages:
   '@vercel/node@5.3.17':
     resolution: {integrity: sha512-quNnXO1XuMMid9MXJKPDtpwiNZUFrJgTvdcUu+AXRZg99rOw9N5pk+M0rM4+0FwVXVCIlXzjfKelEOXC8SxGQw==}
 
-  '@vercel/node@5.5.0':
-    resolution: {integrity: sha512-jMDsJYf1Xf3FZoH/kAsjcHlv33jxyXlBGOCrOe3Ns9tnqlkobbXnkrkQR8JRUcnHCiAoQt4ia8uYgzGDFAAQUw==}
+  '@vercel/node@5.5.1':
+    resolution: {integrity: sha512-KOu2VrBkybnR7kpulzNBZeDd+VV++oRd/dIs5Fx84syw3MKJbqczvX1/EBNsaSX6rC8W2XSwdTSDTqfZF13l/g==}
 
   '@vercel/python@5.0.0':
     resolution: {integrity: sha512-JHpYKQ8d478REzmF7NcJTJcncFziJhVOwzan8wW4F1RJOHGDBTPkATAgi4CPQIijToRamPCkgeECzNOvLUDR+w==}
@@ -1002,8 +1002,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.13.0:
-    resolution: {integrity: sha512-zt40Pz4zcRXra9CVV31KeyofwiNvAbJ5B6YPz9pMJ+yOSLikvPT4Yi5LjfgjRa9CawVYBaD1JQzIVcIvBejKeA==}
+  axios@1.13.1:
+    resolution: {integrity: sha512-hU4EGxxt+j7TQijx1oYdAjw4xuIp1wRQSsbMFwSthCWeBQur1eF+qJ5iQ5sN3Tw8YRzQNKb8jszgBdMDVqwJcw==}
 
   babel-walk@3.0.0-canary-5:
     resolution: {integrity: sha512-GAwkz0AihzY5bkwIY5QDR+LvsRQgB/B+1foMPvi0FZPMl5fjD7ICiznUiBdLYMH1QYe6vqu4gWYytZOccLouFw==}
@@ -3141,7 +3141,7 @@ snapshots:
 
   '@vercel/build-utils@11.0.2': {}
 
-  '@vercel/build-utils@12.2.0': {}
+  '@vercel/build-utils@12.2.1': {}
 
   '@vercel/detect-agent@0.2.0': {}
 
@@ -3271,13 +3271,13 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/node@5.5.0(rollup@4.52.5)':
+  '@vercel/node@5.5.1(rollup@4.52.5)':
     dependencies:
       '@edge-runtime/node-utils': 2.3.0
       '@edge-runtime/primitives': 4.1.0
       '@edge-runtime/vm': 3.2.0
       '@types/node': 16.18.11
-      '@vercel/build-utils': 12.2.0
+      '@vercel/build-utils': 12.2.1
       '@vercel/error-utils': 2.0.3
       '@vercel/nft': 0.30.1(rollup@4.52.5)
       '@vercel/static-config': 3.1.2
@@ -3524,7 +3524,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.13.0:
+  axios@1.13.1:
     dependencies:
       follow-redirects: 1.15.11
       form-data: 4.0.4
