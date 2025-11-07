@@ -83,7 +83,7 @@ importers:
         version: 0.2.3
       '@vercel/node':
         specifier: ^5.3.13
-        version: 5.5.4(rollup@4.52.5)
+        version: 5.5.5(rollup@4.52.5)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.1(vite@7.2.2(@types/node@22.19.0)(sass@1.93.3))(vue@3.5.24(typescript@5.9.3))
@@ -773,8 +773,8 @@ packages:
   '@vercel/build-utils@11.0.2':
     resolution: {integrity: sha512-Y48OT9IsvAFU21LJ3m5SbrXpQaD++h4v4nQoQjCUDZORxXzPf3doVQfrQBBIX45xoSkfq/Fuq0VNF0yRbJw/aA==}
 
-  '@vercel/build-utils@12.2.4':
-    resolution: {integrity: sha512-/Dt94nn6+LRCnhNzCLM7W/1/Rc7N+VQME9ibplh203HBZU0FLSmdjSNrB2iyV5aZkSlPEnohmY4HniTm5vMPyA==}
+  '@vercel/build-utils@13.0.0':
+    resolution: {integrity: sha512-rtO2PJy4mzZCIdXz9EUbo5ehl2u7kt6CEXvcHKTPwDa9/3tTpTf43tN61OxE1hNf/8fLA/o/goX9TwwWIJGAHw==}
 
   '@vercel/detect-agent@0.2.0':
     resolution: {integrity: sha512-qf10Q2UwlbJAcWVqQGkyp9OlLBn9Aj2VVE0M4mTDe0gpB7Fo8qycTJLccDbHeyLrWnT6Q12sVy9ZYHas7B+rwg==}
@@ -815,8 +815,8 @@ packages:
   '@vercel/node@5.3.17':
     resolution: {integrity: sha512-quNnXO1XuMMid9MXJKPDtpwiNZUFrJgTvdcUu+AXRZg99rOw9N5pk+M0rM4+0FwVXVCIlXzjfKelEOXC8SxGQw==}
 
-  '@vercel/node@5.5.4':
-    resolution: {integrity: sha512-JunVzycaByoSTi8PeCGLnllblRsn3O4V8D+P/S/NOw3et6eOhw761hGDAzIZURYlQYPifIioZKsUI30nOxFy8Q==}
+  '@vercel/node@5.5.5':
+    resolution: {integrity: sha512-g08FoUe2YbrwDRlws88kGgFINMXFvzJSMRUcgjpFQFLIfuiG58jVEqbRhCEt5Fa/goAyHQEzBVrEHttKbi3/sg==}
 
   '@vercel/python@5.0.0':
     resolution: {integrity: sha512-JHpYKQ8d478REzmF7NcJTJcncFziJhVOwzan8wW4F1RJOHGDBTPkATAgi4CPQIijToRamPCkgeECzNOvLUDR+w==}
@@ -3150,7 +3150,7 @@ snapshots:
 
   '@vercel/build-utils@11.0.2': {}
 
-  '@vercel/build-utils@12.2.4': {}
+  '@vercel/build-utils@13.0.0': {}
 
   '@vercel/detect-agent@0.2.0': {}
 
@@ -3280,13 +3280,13 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/node@5.5.4(rollup@4.52.5)':
+  '@vercel/node@5.5.5(rollup@4.52.5)':
     dependencies:
       '@edge-runtime/node-utils': 2.3.0
       '@edge-runtime/primitives': 4.1.0
       '@edge-runtime/vm': 3.2.0
       '@types/node': 16.18.11
-      '@vercel/build-utils': 12.2.4
+      '@vercel/build-utils': 13.0.0
       '@vercel/error-utils': 2.0.3
       '@vercel/nft': 0.30.1(rollup@4.52.5)
       '@vercel/static-config': 3.1.2
