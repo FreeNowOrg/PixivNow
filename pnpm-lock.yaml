@@ -101,7 +101,7 @@ importers:
         version: 5.0.0(conventional-commits-filter@5.0.0)
       cookie:
         specifier: ^1.0.2
-        version: 1.0.2
+        version: 1.1.0
       lodash.escaperegexp:
         specifier: ^4.1.2
         version: 4.1.2
@@ -1195,8 +1195,8 @@ packages:
     resolution: {integrity: sha512-7V+KqSvMiHp8yWDuwfww06XleMWVVB9b9tURBx+G7UTADuo5hYPuowKloz4OzOqbPezxgo+fdQ1522WzPG4OeA==}
     engines: {node: '>=8'}
 
-  cookie@1.0.2:
-    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+  cookie@1.1.0:
+    resolution: {integrity: sha512-vXiThu1/rlos7EGu8TuNZQEg2e9TvhH9dmS4T4ZVzB7Ao1agEZ6EG3sn5n+hZRYUgduISd1HpngFzAZiDGm5vQ==}
     engines: {node: '>=18'}
 
   copy-anything@4.0.5:
@@ -3751,7 +3751,7 @@ snapshots:
 
   convert-hrtime@3.0.0: {}
 
-  cookie@1.0.2: {}
+  cookie@1.1.0: {}
 
   copy-anything@4.0.5:
     dependencies:
