@@ -83,7 +83,7 @@ importers:
         version: 0.2.3
       '@vercel/node':
         specifier: ^5.3.13
-        version: 5.5.12(rollup@4.53.3)
+        version: 5.5.13(rollup@4.53.3)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.2(vite@7.2.4(@types/node@22.19.1)(sass@1.94.2))(vue@3.5.25(typescript@5.9.3))
@@ -451,8 +451,8 @@ packages:
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
 
-  '@mapbox/node-pre-gyp@2.0.0':
-    resolution: {integrity: sha512-llMXd39jtP0HpQLVI37Bf1m2ADlEb35GYSh1SDSLsBhR+5iCxiNGlT31yqbNtVHygHAtMy6dWFERpU2JgufhPg==}
+  '@mapbox/node-pre-gyp@2.0.3':
+    resolution: {integrity: sha512-uwPAhccfFJlsfCxMYTwOdVfOz3xqyj8xYL3zJj8f0pb30tLohnnFPhLuqp4/qoEz8sNxe4SESZedcBojRefIzg==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -781,8 +781,8 @@ packages:
   '@vercel/build-utils@11.0.2':
     resolution: {integrity: sha512-Y48OT9IsvAFU21LJ3m5SbrXpQaD++h4v4nQoQjCUDZORxXzPf3doVQfrQBBIX45xoSkfq/Fuq0VNF0yRbJw/aA==}
 
-  '@vercel/build-utils@13.2.0':
-    resolution: {integrity: sha512-dTbgdpAUdBXSFLJFnKley7wKZLNx19FjrXfqHk1/wp4z2t0sVmCBpWPdf/V4FIa/tcyuaIQE4AczDrbvt0lmog==}
+  '@vercel/build-utils@13.2.1':
+    resolution: {integrity: sha512-LI5GDvAyHvdpVQ2RBpxaKz2YdkmAjjFkZEaU5Xowf3y6aWMamYEnKnxiHTFlpdUJnB397pAfz4ts7o/gHGKilQ==}
 
   '@vercel/detect-agent@0.2.0':
     resolution: {integrity: sha512-qf10Q2UwlbJAcWVqQGkyp9OlLBn9Aj2VVE0M4mTDe0gpB7Fo8qycTJLccDbHeyLrWnT6Q12sVy9ZYHas7B+rwg==}
@@ -828,8 +828,8 @@ packages:
   '@vercel/node@5.3.17':
     resolution: {integrity: sha512-quNnXO1XuMMid9MXJKPDtpwiNZUFrJgTvdcUu+AXRZg99rOw9N5pk+M0rM4+0FwVXVCIlXzjfKelEOXC8SxGQw==}
 
-  '@vercel/node@5.5.12':
-    resolution: {integrity: sha512-IWXpHTqYvEp2r3a1kWDtjHWQFaBOu8RLA5/ZBqtfOS5h0f72kkF7QBjvRDV0ndRCKFs0CoCKE2R+Am2DUAElTg==}
+  '@vercel/node@5.5.13':
+    resolution: {integrity: sha512-Zwp1ghhgXvEytR2mezfDwG59FXGrNR72894u79G9OROvTQ8TfyxvXMlSruaWUsMFMa6peh3+JM23ysiyE6xjpg==}
 
   '@vercel/python@5.0.0':
     resolution: {integrity: sha512-JHpYKQ8d478REzmF7NcJTJcncFziJhVOwzan8wW4F1RJOHGDBTPkATAgi4CPQIijToRamPCkgeECzNOvLUDR+w==}
@@ -2941,7 +2941,7 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@mapbox/node-pre-gyp@2.0.0':
+  '@mapbox/node-pre-gyp@2.0.3':
     dependencies:
       consola: 3.4.2
       detect-libc: 2.1.2
@@ -3185,7 +3185,7 @@ snapshots:
 
   '@vercel/build-utils@11.0.2': {}
 
-  '@vercel/build-utils@13.2.0': {}
+  '@vercel/build-utils@13.2.1': {}
 
   '@vercel/detect-agent@0.2.0': {}
 
@@ -3268,7 +3268,7 @@ snapshots:
 
   '@vercel/nft@0.30.1(rollup@4.53.3)':
     dependencies:
-      '@mapbox/node-pre-gyp': 2.0.0
+      '@mapbox/node-pre-gyp': 2.0.3
       '@rollup/pluginutils': 5.3.0(rollup@4.53.3)
       acorn: 8.15.0
       acorn-import-attributes: 1.9.5(acorn@8.15.0)
@@ -3287,7 +3287,7 @@ snapshots:
 
   '@vercel/nft@1.1.0(rollup@4.53.3)':
     dependencies:
-      '@mapbox/node-pre-gyp': 2.0.0
+      '@mapbox/node-pre-gyp': 2.0.3
       '@rollup/pluginutils': 5.3.0(rollup@4.53.3)
       acorn: 8.15.0
       acorn-import-attributes: 1.9.5(acorn@8.15.0)
@@ -3334,13 +3334,13 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/node@5.5.12(rollup@4.53.3)':
+  '@vercel/node@5.5.13(rollup@4.53.3)':
     dependencies:
       '@edge-runtime/node-utils': 2.3.0
       '@edge-runtime/primitives': 4.1.0
       '@edge-runtime/vm': 3.2.0
       '@types/node': 16.18.11
-      '@vercel/build-utils': 13.2.0
+      '@vercel/build-utils': 13.2.1
       '@vercel/error-utils': 2.0.3
       '@vercel/nft': 1.1.0(rollup@4.53.3)
       '@vercel/static-config': 3.1.2
