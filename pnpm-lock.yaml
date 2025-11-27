@@ -62,7 +62,7 @@ importers:
         version: 1.2.2
       '@prettier/plugin-pug':
         specifier: ^3.4.2
-        version: 3.4.2(prettier@3.6.2)
+        version: 3.4.2(prettier@3.7.1)
       '@tabler/icons-vue':
         specifier: ^3.34.1
         version: 3.35.0(vue@3.5.25(typescript@5.9.3))
@@ -110,7 +110,7 @@ importers:
         version: 1.1.1
       prettier:
         specifier: ^3.6.2
-        version: 3.6.2
+        version: 3.7.1
       pug:
         specifier: ^3.0.3
         version: 3.0.3
@@ -2081,8 +2081,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  prettier@3.6.2:
-    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+  prettier@3.7.1:
+    resolution: {integrity: sha512-RWKXE4qB3u5Z6yz7omJkjWwmTfLdcbv44jUVHC5NpfXwFGzvpQM798FGv/6WNK879tc+Cn0AAyherCl1KjbyZQ==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -3030,9 +3030,9 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@prettier/plugin-pug@3.4.2(prettier@3.6.2)':
+  '@prettier/plugin-pug@3.4.2(prettier@3.7.1)':
     dependencies:
-      prettier: 3.6.2
+      prettier: 3.7.1
       pug-lexer: 5.0.1
 
   '@rolldown/pluginutils@1.0.0-beta.50': {}
@@ -4618,7 +4618,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  prettier@3.6.2: {}
+  prettier@3.7.1: {}
 
   pretty-ms@7.0.1:
     dependencies:
