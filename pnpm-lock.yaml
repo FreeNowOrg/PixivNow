@@ -86,7 +86,7 @@ importers:
         version: 5.5.13(rollup@4.53.3)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
-        version: 6.0.2(vite@7.2.4(@types/node@22.19.1)(sass@1.94.2))(vue@3.5.25(typescript@5.9.3))
+        version: 6.0.2(vite@7.2.6(@types/node@22.19.1)(sass@1.94.2))(vue@3.5.25(typescript@5.9.3))
       '@vue/language-plugin-pug':
         specifier: ^3.0.6
         version: 3.1.5
@@ -137,7 +137,7 @@ importers:
         version: 46.1.1(rollup@4.53.3)
       vite:
         specifier: ^7.1.3
-        version: 7.2.4(@types/node@22.19.1)(sass@1.94.2)
+        version: 7.2.6(@types/node@22.19.1)(sass@1.94.2)
 
 packages:
 
@@ -2521,8 +2521,8 @@ packages:
     engines: {node: '>= 18'}
     hasBin: true
 
-  vite@7.2.4:
-    resolution: {integrity: sha512-NL8jTlbo0Tn4dUEXEsUg8KeyG/Lkmc4Fnzb8JXN/Ykm9G4HNImjtABMJgkQoVjOBN/j2WAwDTRytdqJbZsah7w==}
+  vite@7.2.6:
+    resolution: {integrity: sha512-tI2l/nFHC5rLh7+5+o7QjKjSR04ivXDF4jcgV0f/bTQ+OJiITy5S6gaynVsEM+7RqzufMnVbIon6Sr5x1SDYaQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -3407,10 +3407,10 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vitejs/plugin-vue@6.0.2(vite@7.2.4(@types/node@22.19.1)(sass@1.94.2))(vue@3.5.25(typescript@5.9.3))':
+  '@vitejs/plugin-vue@6.0.2(vite@7.2.6(@types/node@22.19.1)(sass@1.94.2))(vue@3.5.25(typescript@5.9.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.50
-      vite: 7.2.4(@types/node@22.19.1)(sass@1.94.2)
+      vite: 7.2.6(@types/node@22.19.1)(sass@1.94.2)
       vue: 3.5.25(typescript@5.9.3)
 
   '@volar/language-core@2.4.23':
@@ -5105,7 +5105,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite@7.2.4(@types/node@22.19.1)(sass@1.94.2):
+  vite@7.2.6(@types/node@22.19.1)(sass@1.94.2):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
