@@ -89,7 +89,7 @@ importers:
         version: 6.0.2(vite@7.2.7(@types/node@22.19.2)(sass@1.95.0))(vue@3.5.25(typescript@5.9.3))
       '@vue/language-plugin-pug':
         specifier: ^3.0.6
-        version: 3.1.7
+        version: 3.1.8
       '@vueuse/core':
         specifier: ^13.7.0
         version: 13.9.0(vue@3.5.25(typescript@5.9.3))
@@ -892,8 +892,8 @@ packages:
   '@vue/devtools-shared@7.7.7':
     resolution: {integrity: sha512-+udSj47aRl5aKb0memBvcUG9koarqnxNM5yjuREvqwK6T3ap4mn3Zqqc17QrBFTqSMjr3HK1cvStEZpMDpfdyw==}
 
-  '@vue/language-plugin-pug@3.1.7':
-    resolution: {integrity: sha512-h4chcWwkufcRxQrtSZck5qVH026Zg/p1oupzA3um5qBHb5wGypeEjT6zOjruPXcwr+4cHB2IGrHioj/BrmWd3Q==}
+  '@vue/language-plugin-pug@3.1.8':
+    resolution: {integrity: sha512-6/QnlRmoezW2u1H+wCGduP/mwDGJU+fjWXGmUFThbOogLrC1hWqUv4vgfR+bp9tgBT+aJBy7eQDeky+akKIYIA==}
 
   '@vue/reactivity@3.5.25':
     resolution: {integrity: sha512-5xfAypCQepv4Jog1U4zn8cZIcbKKFka3AgWHEFQeK65OW+Ys4XybP6z2kKgws4YB43KGpqp5D/K3go2UPPunLA==}
@@ -2565,16 +2565,16 @@ packages:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
 
-  volar-service-html@0.0.67:
-    resolution: {integrity: sha512-ljREMF79JbcjNvObiv69HK2HCl5UT7WTD10zi6CRFUHMbPfiF2UZ42HGLsEGSzaHGZz6H4IFjSS/qfENRLUviQ==}
+  volar-service-html@0.0.68:
+    resolution: {integrity: sha512-fru9gsLJxy33xAltXOh4TEdi312HP80hpuKhpYQD4O5hDnkNPEBdcQkpB+gcX0oK0VxRv1UOzcGQEUzWCVHLfA==}
     peerDependencies:
       '@volar/language-service': ~2.4.0
     peerDependenciesMeta:
       '@volar/language-service':
         optional: true
 
-  volar-service-pug@0.0.67:
-    resolution: {integrity: sha512-XDrjmvg+MnVZ6xAx2S0zpJ1WWFWvkUZ2PPyeDo3Q+LTdbHmwnHA0ixLZWmbAhHCoZLQ77465/iLVQcectqikKA==}
+  volar-service-pug@0.0.68:
+    resolution: {integrity: sha512-/nZ8fYKDDrV/fqlBoMACWaghFfaIFZMH+qO9YiRsdGbekAvSZqjQAKl1DSJwWqAkabA68Md51mRIdzYzqleipQ==}
 
   vooks@0.2.12:
     resolution: {integrity: sha512-iox0I3RZzxtKlcgYaStQYKEzWWGAduMmq+jS7OrNdQo1FgGfPMubGL3uGHOU9n97NIvfFDBGnpSvkWyb/NSn/Q==}
@@ -3478,10 +3478,10 @@ snapshots:
     dependencies:
       rfdc: 1.4.1
 
-  '@vue/language-plugin-pug@3.1.7':
+  '@vue/language-plugin-pug@3.1.8':
     dependencies:
       '@volar/source-map': 2.4.26
-      volar-service-pug: 0.0.67
+      volar-service-pug: 0.0.68
 
   '@vue/reactivity@3.5.25':
     dependencies:
@@ -5120,7 +5120,7 @@ snapshots:
 
   void-elements@3.1.0: {}
 
-  volar-service-html@0.0.67(@volar/language-service@2.4.26):
+  volar-service-html@0.0.68(@volar/language-service@2.4.26):
     dependencies:
       vscode-html-languageservice: 5.6.1
       vscode-languageserver-textdocument: 1.0.12
@@ -5128,13 +5128,13 @@ snapshots:
     optionalDependencies:
       '@volar/language-service': 2.4.26
 
-  volar-service-pug@0.0.67:
+  volar-service-pug@0.0.68:
     dependencies:
       '@volar/language-service': 2.4.26
       muggle-string: 0.4.1
       pug-lexer: 5.0.1
       pug-parser: 6.0.0
-      volar-service-html: 0.0.67(@volar/language-service@2.4.26)
+      volar-service-html: 0.0.68(@volar/language-service@2.4.26)
       vscode-html-languageservice: 5.6.1
       vscode-languageserver-textdocument: 1.0.12
 
