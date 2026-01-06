@@ -134,7 +134,7 @@ importers:
         version: 30.0.0(@babel/parser@7.28.5)(vue@3.5.26(typescript@5.9.3))
       vercel:
         specifier: ^50.0.0
-        version: 50.1.4(rollup@4.53.4)(typescript@5.9.3)
+        version: 50.1.5(rollup@4.53.4)(typescript@5.9.3)
       vite:
         specifier: ^7.1.3
         version: 7.3.0(@types/node@24.10.4)(sass@1.97.2)(tsx@4.19.2)
@@ -3019,8 +3019,8 @@ packages:
     peerDependencies:
       vue: ^3.0.11
 
-  vercel@50.1.4:
-    resolution: {integrity: sha512-zEXQ0ildXpPWqIgbL2zpQOpSee8cop5tvUYjfgrBKL2RuikdMmdyIdQX0blGOrVl+L+Jnl5enKHhv6m8XJGA9A==}
+  vercel@50.1.5:
+    resolution: {integrity: sha512-ELp+Hpdw2DEwg7RPUTND5voE1RJexND+9TBrwN+wMJ4WzTVK5dx8dAZILVytMnmWFVLs1EWrfRRr317KM/WZew==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -5928,7 +5928,7 @@ snapshots:
       evtd: 0.2.4
       vue: 3.5.26(typescript@5.9.3)
 
-  vercel@50.1.4(rollup@4.53.4)(typescript@5.9.3):
+  vercel@50.1.5(rollup@4.53.4)(typescript@5.9.3):
     dependencies:
       '@vercel/backends': 0.0.17(rollup@4.53.4)(typescript@5.9.3)
       '@vercel/blob': 1.0.2
