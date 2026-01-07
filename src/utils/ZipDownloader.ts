@@ -398,56 +398,34 @@ class RangeRequestManager {
   }
 
   async headSize(signal?: AbortSignal): Promise<number> {
-    console.log('[ZipDownloader] 获取文件大小...')
-
     const doHead = async () => {
-      console.log('[ZipDownloader] 尝试 HEAD 请求获取文件大小')
       const res = await withTimeout(
-        this.fetcher(this.url, {
-          method: 'HEAD',
-          headers: { Range: 'bytes=0-0' },
-          signal,
-        }),
+        this.fetcher(this.url, { method: 'HEAD', signal }),
         this.timeoutMs
       )
-      const n = getLengthByResponse(res)
-      if (n === null) throw new Error('HEAD response missing length')
-      console.log(`[ZipDownloader] HEAD 请求成功，文件大小: ${n} 字节`)
+      if (!res.ok) throw new Error(`HEAD ${res.status}`)
+      const len = res.headers.get('content-length')
+      if (!len) throw new Error('Missing content-length')
+      const n = Number(len)
+      if (!Number.isFinite(n) || n < 0)
+        throw new Error(`Bad content-length: ${len}`)
       return n
     }
     const doRange = async () => {
-      console.log('[ZipDownloader] 尝试 Range 请求获取文件大小')
       const res = await withTimeout(
         this.fetcher(this.url, { headers: { Range: 'bytes=0-0' }, signal }),
         this.timeoutMs
       )
-      const n = getLengthByResponse(res)
-      if (n === null) throw new Error('Range response missing length')
-      console.log(`[ZipDownloader] Range 请求成功，文件大小: ${n} 字节`)
-      return n
-    }
-    const getLengthByResponse = (res: Response): number | null => {
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const len = res.headers.get('content-length')
-      if (len) {
-        const n = Number(len)
-        if (Number.isFinite(n) && n >= 0) return n
-      }
       const cr = res.headers.get('content-range')
-      if (cr) {
-        const m = cr.match(/\/(\d+)$/)
-        if (m) {
-          const size = Number(m[1])
-          if (Number.isFinite(size) && size >= 0) return size
-        }
-      }
-      return null
+      if (!cr) throw new Error('Missing content-range')
+      const m = cr.match(/\/(\d+)$/)
+      if (!m) throw new Error(`Bad content-range: ${cr}`)
+      return Number(m[1])
     }
     return withRetries(async () => {
       try {
         return await doHead()
-      } catch (e) {
-        console.warn('[ZipDownloader] HEAD 请求失败，回退到 Range 请求:', e)
+      } catch {
         return await doRange()
       }
     }, this.retries)
