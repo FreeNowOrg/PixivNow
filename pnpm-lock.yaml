@@ -52,7 +52,7 @@ importers:
         version: 4.6.4(vue@3.5.26(typescript@5.9.3))
       vue-waterfall-plugin-next:
         specifier: ^3.0.0
-        version: 3.0.0
+        version: 3.0.1
     devDependencies:
       '@dragon-fish/sensitive-words-filter':
         specifier: ^2.0.1
@@ -3085,8 +3085,8 @@ packages:
     peerDependencies:
       vue: ^3.5.0
 
-  vue-waterfall-plugin-next@3.0.0:
-    resolution: {integrity: sha512-cH+id0egWXXuGJ/qVlQwxvBJn1GKRejLZBptZ3Ka6+cITAmhBzNxusIM3eU/w93IxPRrYNtrKh8X44Igt3Uz5A==}
+  vue-waterfall-plugin-next@3.0.1:
+    resolution: {integrity: sha512-ggtP0LkDRKABsTflya9l0YE/D2S6MYG+VBgvkVmCwqLanJy6STYCPFumYCujV9/ansxd81GBgwPe6DUegRDT+w==}
 
   vue@3.5.26:
     resolution: {integrity: sha512-SJ/NTccVyAoNUJmkM9KUqPcYlY+u8OVL1X5EW9RIs3ch5H2uERxyyIUI4MRxVCSOiEcupX9xNGde1tL9ZKpimA==}
@@ -5976,7 +5976,7 @@ snapshots:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.26(typescript@5.9.3)
 
-  vue-waterfall-plugin-next@3.0.0: {}
+  vue-waterfall-plugin-next@3.0.1: {}
 
   vue@3.5.26(typescript@5.9.3):
     dependencies:
