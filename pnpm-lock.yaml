@@ -77,7 +77,7 @@ importers:
         version: 4.1.9
       '@types/node':
         specifier: ^24.10.4
-        version: 24.10.8
+        version: 24.10.9
       '@types/nprogress':
         specifier: ^0.2.3
         version: 0.2.3
@@ -86,7 +86,7 @@ importers:
         version: 5.5.20(rollup@4.53.4)
       '@vitejs/plugin-vue':
         specifier: ^6.0.3
-        version: 6.0.3(vite@7.3.1(@types/node@24.10.8)(sass@1.97.2)(tsx@4.21.0))(vue@3.5.26(typescript@5.9.3))
+        version: 6.0.3(vite@7.3.1(@types/node@24.10.9)(sass@1.97.2)(tsx@4.21.0))(vue@3.5.26(typescript@5.9.3))
       '@vue/language-plugin-pug':
         specifier: ^3.2.2
         version: 3.2.2
@@ -137,7 +137,7 @@ importers:
         version: 50.4.0(rollup@4.53.4)(typescript@5.9.3)
       vite:
         specifier: ^7.3.1
-        version: 7.3.1(@types/node@24.10.8)(sass@1.97.2)(tsx@4.21.0)
+        version: 7.3.1(@types/node@24.10.9)(sass@1.97.2)(tsx@4.21.0)
 
 packages:
 
@@ -1012,8 +1012,8 @@ packages:
   '@types/node@16.18.11':
     resolution: {integrity: sha512-3oJbGBUWuS6ahSnEq1eN2XrCyf4YsWI8OyCvo7c64zQJNplk3mO84t53o8lfTk+2ji59g5ycfc6qQ3fdHliHuA==}
 
-  '@types/node@24.10.8':
-    resolution: {integrity: sha512-r0bBaXu5Swb05doFYO2kTWHMovJnNVbCsII0fhesM8bNRlLhXIuckley4a2DaD+vOdmm5G+zGkQZAPZsF80+YQ==}
+  '@types/node@24.10.9':
+    resolution: {integrity: sha512-ne4A0IpG3+2ETuREInjPNhUGis1SFjv1d5asp8MzEAGtOZeTeHVDOYqOgqfhvseqg/iXty2hjBf1zAOb7RNiNw==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -3382,7 +3382,7 @@ snapshots:
 
   '@types/node@16.18.11': {}
 
-  '@types/node@24.10.8':
+  '@types/node@24.10.9':
     dependencies:
       undici-types: 7.16.0
 
@@ -3671,10 +3671,10 @@ snapshots:
       json-schema-to-ts: 1.6.4
       ts-morph: 12.0.0
 
-  '@vitejs/plugin-vue@6.0.3(vite@7.3.1(@types/node@24.10.8)(sass@1.97.2)(tsx@4.21.0))(vue@3.5.26(typescript@5.9.3))':
+  '@vitejs/plugin-vue@6.0.3(vite@7.3.1(@types/node@24.10.9)(sass@1.97.2)(tsx@4.21.0))(vue@3.5.26(typescript@5.9.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.53
-      vite: 7.3.1(@types/node@24.10.8)(sass@1.97.2)(tsx@4.21.0)
+      vite: 7.3.1(@types/node@24.10.9)(sass@1.97.2)(tsx@4.21.0)
       vue: 3.5.26(typescript@5.9.3)
 
   '@volar/source-map@2.4.27': {}
@@ -5286,7 +5286,7 @@ snapshots:
       - supports-color
       - typescript
 
-  vite@7.3.1(@types/node@24.10.8)(sass@1.97.2)(tsx@4.21.0):
+  vite@7.3.1(@types/node@24.10.9)(sass@1.97.2)(tsx@4.21.0):
     dependencies:
       esbuild: 0.27.1
       fdir: 6.5.0(picomatch@4.0.3)
@@ -5295,7 +5295,7 @@ snapshots:
       rollup: 4.53.4
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 24.10.8
+      '@types/node': 24.10.9
       fsevents: 2.3.3
       sass: 1.97.2
       tsx: 4.21.0
