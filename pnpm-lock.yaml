@@ -83,7 +83,7 @@ importers:
         version: 0.2.3
       '@vercel/node':
         specifier: ^5.5.16
-        version: 5.5.24(rollup@4.53.4)
+        version: 5.5.25(rollup@4.53.4)
       '@vitejs/plugin-vue':
         specifier: ^6.0.3
         version: 6.0.3(vite@7.3.1(@types/node@24.10.9)(sass@1.97.2)(tsx@4.21.0))(vue@3.5.27(typescript@5.9.3))
@@ -1034,9 +1034,6 @@ packages:
     resolution: {integrity: sha512-Im/KeFH4oPx7UsM+QiteimnE07bIUD7JK6CBafI9Z0jRFogaialTBMiZj8EKk/30ctUYsrpIIyP9iIY1YxWnUQ==}
     engines: {node: '>=16.14'}
 
-  '@vercel/build-utils@13.2.12':
-    resolution: {integrity: sha512-jUzCgg/E+k3OfEgVF3kPuTMIpKpofhUfPdmBXqbKBCjVGA+jofveOVxzu3mPvNwCXXjdzfVSSCbPFIc4SP5irA==}
-
   '@vercel/build-utils@13.2.13':
     resolution: {integrity: sha512-LbxlIeLwFWKhwC7VK2Ggnd1wjt9yHrhKJsJ5iOhFsRFhFpU5wd3wQBXyLWKwEBFNJuBjqVskXEFOLBj+gXFHTQ==}
 
@@ -1100,9 +1097,6 @@ packages:
     resolution: {integrity: sha512-mKMGa7CEUcXU75474kOeqHbtvK1kAcu4wiahhmlUenB5JbTQB8wVlDI8CyHR3rpGo0qlzoRWqcDzI41FUoBJCA==}
     engines: {node: '>=20'}
     hasBin: true
-
-  '@vercel/node@5.5.24':
-    resolution: {integrity: sha512-VA7I1sW+CwN4HJw/FbCtKWgk9/Le8pHwtM777LRlgIT8XZVo55eW8XxKYibf89HfGMVA/KyN9A2fSF6Z58dBhA==}
 
   '@vercel/node@5.5.25':
     resolution: {integrity: sha512-L9Ayx8OJ2xy/NMIKtYfIjaNr80eEgG8UTiat7OhwIup+rlxRan6YF25FgkrIcHFs/YC9FwxHXzV6mR2SdPeIIw==}
@@ -1517,8 +1511,8 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  diff@4.0.2:
-    resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
+  diff@4.0.4:
+    resolution: {integrity: sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==}
     engines: {node: '>=0.3.1'}
 
   doctypes@1.1.0:
@@ -2427,8 +2421,8 @@ packages:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
 
-  tar@7.5.4:
-    resolution: {integrity: sha512-AN04xbWGrSTDmVwlI4/GTlIIwMFk/XEv7uL8aa57zuvRy6s4hdBed+lVq2fAZ89XDa7Us3ANXcE3Tvqvja1kTA==}
+  tar@7.5.5:
+    resolution: {integrity: sha512-ocjwSUBo2V8ExKxy9FH6iROIsK60OCW//h14MFYpivNSYIj7ntgm35ijGT82Jl//xwbxBhIYXkfAovjtVm9nrA==}
     engines: {node: '>=18'}
 
   temp-dir@3.0.0:
@@ -3120,7 +3114,7 @@ snapshots:
       node-fetch: 2.6.9
       nopt: 8.1.0
       semver: 7.7.3
-      tar: 7.5.4
+      tar: 7.5.5
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -3421,8 +3415,6 @@ snapshots:
       throttleit: 2.1.0
       undici: 5.29.0
 
-  '@vercel/build-utils@13.2.12': {}
-
   '@vercel/build-utils@13.2.13': {}
 
   '@vercel/cervel@0.0.9(typescript@5.9.3)':
@@ -3597,38 +3589,6 @@ snapshots:
       picomatch: 4.0.3
       resolve-from: 5.0.0
     transitivePeerDependencies:
-      - encoding
-      - rollup
-      - supports-color
-
-  '@vercel/node@5.5.24(rollup@4.53.4)':
-    dependencies:
-      '@edge-runtime/node-utils': 2.3.0
-      '@edge-runtime/primitives': 4.1.0
-      '@edge-runtime/vm': 3.2.0
-      '@types/node': 16.18.11
-      '@vercel/build-utils': 13.2.12
-      '@vercel/error-utils': 2.0.3
-      '@vercel/nft': 1.1.1(rollup@4.53.4)
-      '@vercel/static-config': 3.1.2
-      async-listen: 3.0.0
-      cjs-module-lexer: 1.2.3
-      edge-runtime: 2.5.9
-      es-module-lexer: 1.4.1
-      esbuild: 0.27.0
-      etag: 1.8.1
-      mime-types: 2.1.35
-      node-fetch: 2.6.9
-      path-to-regexp: 6.1.0
-      path-to-regexp-updated: path-to-regexp@6.3.0
-      ts-morph: 12.0.0
-      ts-node: 10.9.1(@types/node@16.18.11)(typescript@4.9.5)
-      typescript: 4.9.5
-      typescript5: typescript@5.9.3
-      undici: 5.28.4
-    transitivePeerDependencies:
-      - '@swc/core'
-      - '@swc/wasm'
       - encoding
       - rollup
       - supports-color
@@ -4118,7 +4078,7 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  diff@4.0.2: {}
+  diff@4.0.4: {}
 
   doctypes@1.1.0: {}
 
@@ -5098,7 +5058,7 @@ snapshots:
       mkdirp: 1.0.4
       yallist: 4.0.0
 
-  tar@7.5.4:
+  tar@7.5.5:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
@@ -5158,7 +5118,7 @@ snapshots:
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
-      diff: 4.0.2
+      diff: 4.0.4
       make-error: 1.3.6
       typescript: 4.9.5
       v8-compile-cache-lib: 3.0.1
