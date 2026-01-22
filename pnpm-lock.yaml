@@ -62,7 +62,7 @@ importers:
         version: 1.2.2
       '@prettier/plugin-pug':
         specifier: ^3.4.2
-        version: 3.4.2(prettier@3.8.0)
+        version: 3.4.2(prettier@3.8.1)
       '@tabler/icons-vue':
         specifier: ^3.36.1
         version: 3.36.1(vue@3.5.27(typescript@5.9.3))
@@ -110,7 +110,7 @@ importers:
         version: 1.1.1
       prettier:
         specifier: ^3.7.4
-        version: 3.8.0
+        version: 3.8.1
       pug:
         specifier: ^3.0.3
         version: 3.0.3
@@ -2191,8 +2191,8 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  prettier@3.8.0:
-    resolution: {integrity: sha512-yEPsovQfpxYfgWNhCfECjG5AQaO+K3dp6XERmOepyPDVqcJm+bjyCVO3pmU+nAPe0N5dDvekfGezt/EIiRe1TA==}
+  prettier@3.8.1:
+    resolution: {integrity: sha512-UOnG6LftzbdaHZcKoPFtOcCKztrQ57WkHDeRD9t/PTQtmT0NHSeWWepj6pS0z/N7+08BHFDQVUrfmfMRcZwbMg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -3201,9 +3201,9 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.1
     optional: true
 
-  '@prettier/plugin-pug@3.4.2(prettier@3.8.0)':
+  '@prettier/plugin-pug@3.4.2(prettier@3.8.1)':
     dependencies:
-      prettier: 3.8.0
+      prettier: 3.8.1
       pug-lexer: 5.0.1
 
   '@rolldown/binding-android-arm64@1.0.0-beta.59':
@@ -4781,7 +4781,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  prettier@3.8.0: {}
+  prettier@3.8.1: {}
 
   pretty-ms@7.0.1:
     dependencies:
