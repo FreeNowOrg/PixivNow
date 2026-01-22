@@ -83,7 +83,7 @@ importers:
         version: 0.2.3
       '@vercel/node':
         specifier: ^5.5.16
-        version: 5.5.25(rollup@4.53.4)
+        version: 5.5.26(rollup@4.53.4)
       '@vitejs/plugin-vue':
         specifier: ^6.0.3
         version: 6.0.3(vite@7.3.1(@types/node@24.10.9)(sass@1.97.3)(tsx@4.21.0))(vue@3.5.27(typescript@5.9.3))
@@ -1009,9 +1009,6 @@ packages:
   '@types/lodash@4.17.20':
     resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
 
-  '@types/node@16.18.11':
-    resolution: {integrity: sha512-3oJbGBUWuS6ahSnEq1eN2XrCyf4YsWI8OyCvo7c64zQJNplk3mO84t53o8lfTk+2ji59g5ycfc6qQ3fdHliHuA==}
-
   '@types/node@20.11.0':
     resolution: {integrity: sha512-o9bjXmDNcF7GbM4CNQpmi+TutCgap/K3w1JyKgxAjqx41zp9qlIAVFi0IhCNsJcXolEqLWhbFbEeL0PvYm4pcQ==}
 
@@ -1036,9 +1033,6 @@ packages:
   '@vercel/blob@1.0.2':
     resolution: {integrity: sha512-Im/KeFH4oPx7UsM+QiteimnE07bIUD7JK6CBafI9Z0jRFogaialTBMiZj8EKk/30ctUYsrpIIyP9iIY1YxWnUQ==}
     engines: {node: '>=16.14'}
-
-  '@vercel/build-utils@13.2.13':
-    resolution: {integrity: sha512-LbxlIeLwFWKhwC7VK2Ggnd1wjt9yHrhKJsJ5iOhFsRFhFpU5wd3wQBXyLWKwEBFNJuBjqVskXEFOLBj+gXFHTQ==}
 
   '@vercel/build-utils@13.2.14':
     resolution: {integrity: sha512-+URzjZtGWyuvhIhVs2fb+O3nRLNo3y4g0pIJRcBym1FmLoONH10abNDmvzebGDKrKk45G+zQpmKbyE4ow/gL8Q==}
@@ -1103,9 +1097,6 @@ packages:
     resolution: {integrity: sha512-mKMGa7CEUcXU75474kOeqHbtvK1kAcu4wiahhmlUenB5JbTQB8wVlDI8CyHR3rpGo0qlzoRWqcDzI41FUoBJCA==}
     engines: {node: '>=20'}
     hasBin: true
-
-  '@vercel/node@5.5.25':
-    resolution: {integrity: sha512-L9Ayx8OJ2xy/NMIKtYfIjaNr80eEgG8UTiat7OhwIup+rlxRan6YF25FgkrIcHFs/YC9FwxHXzV6mR2SdPeIIw==}
 
   '@vercel/node@5.5.26':
     resolution: {integrity: sha512-Rm/UcQlXmAIbIwJtLrle6xGgVm7VVO0fNsoNOHCxhNb3TqBIaQ+f2WgPBqHW947yCGYa8hPgTRmhaPtuB2/OJA==}
@@ -3387,8 +3378,6 @@ snapshots:
 
   '@types/lodash@4.17.20': {}
 
-  '@types/node@16.18.11': {}
-
   '@types/node@20.11.0':
     dependencies:
       undici-types: 5.26.5
@@ -3425,8 +3414,6 @@ snapshots:
       is-node-process: 1.2.0
       throttleit: 2.1.0
       undici: 5.29.0
-
-  '@vercel/build-utils@13.2.13': {}
 
   '@vercel/build-utils@13.2.14': {}
 
@@ -3602,38 +3589,6 @@ snapshots:
       picomatch: 4.0.3
       resolve-from: 5.0.0
     transitivePeerDependencies:
-      - encoding
-      - rollup
-      - supports-color
-
-  '@vercel/node@5.5.25(rollup@4.53.4)':
-    dependencies:
-      '@edge-runtime/node-utils': 2.3.0
-      '@edge-runtime/primitives': 4.1.0
-      '@edge-runtime/vm': 3.2.0
-      '@types/node': 16.18.11
-      '@vercel/build-utils': 13.2.13
-      '@vercel/error-utils': 2.0.3
-      '@vercel/nft': 1.1.1(rollup@4.53.4)
-      '@vercel/static-config': 3.1.2
-      async-listen: 3.0.0
-      cjs-module-lexer: 1.2.3
-      edge-runtime: 2.5.9
-      es-module-lexer: 1.4.1
-      esbuild: 0.27.0
-      etag: 1.8.1
-      mime-types: 2.1.35
-      node-fetch: 2.6.9
-      path-to-regexp: 6.1.0
-      path-to-regexp-updated: path-to-regexp@6.3.0
-      ts-morph: 12.0.0
-      ts-node: 10.9.1(@types/node@16.18.11)(typescript@4.9.5)
-      typescript: 4.9.5
-      typescript5: typescript@5.9.3
-      undici: 5.28.4
-    transitivePeerDependencies:
-      - '@swc/core'
-      - '@swc/wasm'
       - encoding
       - rollup
       - supports-color
@@ -5147,24 +5102,6 @@ snapshots:
     dependencies:
       '@ts-morph/common': 0.11.1
       code-block-writer: 10.1.1
-
-  ts-node@10.9.1(@types/node@16.18.11)(typescript@4.9.5):
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.12
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.4
-      '@types/node': 16.18.11
-      acorn: 8.15.0
-      acorn-walk: 8.3.4
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.4
-      make-error: 1.3.6
-      typescript: 4.9.5
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
 
   ts-node@10.9.1(@types/node@20.11.0)(typescript@4.9.5):
     dependencies:
