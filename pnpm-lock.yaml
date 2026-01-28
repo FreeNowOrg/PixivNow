@@ -134,7 +134,7 @@ importers:
         version: 30.0.0(@babel/parser@7.28.6)(vue@3.5.27(typescript@5.9.3))
       vercel:
         specifier: ^50.1.6
-        version: 50.6.1(rollup@4.53.4)(typescript@5.9.3)
+        version: 50.8.1(rollup@4.53.4)(typescript@5.9.3)
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@24.10.9)(sass@1.97.3)(tsx@4.21.0)
@@ -1110,8 +1110,8 @@ packages:
   '@vercel/remix-builder@5.5.9':
     resolution: {integrity: sha512-uVscM3Hx+2AqCnwUpksIZG2ADC3+mPnjyKtsvjHUWEgnxVgADp5MStSoVuQT6AKWwSEnBtxMfNi13I20MwUeeg==}
 
-  '@vercel/ruby@2.2.4':
-    resolution: {integrity: sha512-E7V8kUk/pgLT7ZmqyrZWShxaCHc73Cga4pwcW+jcvMAS4kj5niAaz1HquT5sIbq4onKvmHmB1dDEXE7IKAWsjA==}
+  '@vercel/ruby@2.2.5':
+    resolution: {integrity: sha512-DeSHZDEU1BvxzomHeBDsFyZ9VL2U/rUC15Ce4Asaw6LadYPyQ9HEvREJC7Vz4f2iHHD0iamJG9znaC3/UgvQDg==}
 
   '@vercel/rust@1.0.5':
     resolution: {integrity: sha512-Y03g59nv1uT6Da+PvB/50WqJSHlaFZ9MSkG00R82dUcTySslMbQdOeaXymZtabrmU8zQYhWDb1/CwBki8sWnaQ==}
@@ -2624,8 +2624,8 @@ packages:
     peerDependencies:
       vue: ^3.0.11
 
-  vercel@50.6.1:
-    resolution: {integrity: sha512-EpcZN/hXPlcfLH68HwUuTbdnlVUvfUvPNOQ8BLxCzOK64qMR84x/UJ4fIs3eT1w70VLgPcK38FqSmYAobsg1fw==}
+  vercel@50.8.1:
+    resolution: {integrity: sha512-SYQcx9yy+Jr0JjJIV1LwQ/dQFaRicp5Bqpw1QfRlZdTJVh5TVu3e+v3+YA3Cmol6jgh2NEdxunR0FacCJuNquQ==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -3651,7 +3651,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/ruby@2.2.4': {}
+  '@vercel/ruby@2.2.5': {}
 
   '@vercel/rust@1.0.5':
     dependencies:
@@ -5249,7 +5249,7 @@ snapshots:
       evtd: 0.2.4
       vue: 3.5.27(typescript@5.9.3)
 
-  vercel@50.6.1(rollup@4.53.4)(typescript@5.9.3):
+  vercel@50.8.1(rollup@4.53.4)(typescript@5.9.3):
     dependencies:
       '@vercel/backends': 0.0.23(rollup@4.53.4)(typescript@5.9.3)
       '@vercel/blob': 1.0.2
@@ -5270,7 +5270,7 @@ snapshots:
       '@vercel/python': 6.3.2
       '@vercel/redwood': 2.4.9(rollup@4.53.4)
       '@vercel/remix-builder': 5.5.9(rollup@4.53.4)
-      '@vercel/ruby': 2.2.4
+      '@vercel/ruby': 2.2.5
       '@vercel/rust': 1.0.5
       '@vercel/static-build': 2.8.28
       chokidar: 4.0.0
