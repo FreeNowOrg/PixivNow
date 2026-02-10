@@ -83,7 +83,7 @@ importers:
         version: 0.2.3
       '@vercel/node':
         specifier: ^5.5.16
-        version: 5.6.0(rollup@4.53.4)
+        version: 5.6.1(rollup@4.53.4)
       '@vitejs/plugin-vue':
         specifier: ^6.0.3
         version: 6.0.4(vite@7.3.1(@types/node@24.10.13)(sass@1.97.3)(tsx@4.21.0))(vue@3.5.28(typescript@5.9.3))
@@ -1154,6 +1154,9 @@ packages:
   '@vercel/build-utils@13.3.3':
     resolution: {integrity: sha512-OwnEj1OOVXq2UMo1Mrr8/Klt5BuWTo1GCWDYkrTbcm1b8cgRx3Hp0CnHGqMx8p3WpY4Jw6NkkreQETPg9gTEHQ==}
 
+  '@vercel/build-utils@13.3.4':
+    resolution: {integrity: sha512-0eyzTQw2BFfsexDj+qE7Pjv//mMZ7g1qlQ8c12ZhPmZcOrOR9oW6Ubtd0pLb3sBDtaMvy/wIoadhaJKyH34ejA==}
+
   '@vercel/cervel@0.0.17':
     resolution: {integrity: sha512-+Y0TA6+DUA47hOpupxvpqGCB09NZvjrykxDQW1KZyqh0XQww1oYVnr9QiXeehfFhKt1QKFnUd3JzRvJIuq4LuA==}
     hasBin: true
@@ -1219,6 +1222,9 @@ packages:
 
   '@vercel/node@5.6.0':
     resolution: {integrity: sha512-PCBRGCttvk4WdvkFWVdFX//1eVOqCQbaSzNSGQBi3XITXsLHG8d8OFyQqkpUGV5I4GUZOFtjLd/ObKI5ZK7CIg==}
+
+  '@vercel/node@5.6.1':
+    resolution: {integrity: sha512-8QF299xxNWv32cIFaSx6qQAcAwqPyacIackjYyMtSjWXepbI2AOcyusd3LgdQ2PSIk/iaVcPp1iCHrQMalD7ww==}
 
   '@vercel/python-analysis@0.3.2':
     resolution: {integrity: sha512-z7W4NidF8t/LB6fz2/Ui1wNx43mH1xP1sc01ZlwQvQXuCegokmwRvDERwxcPvR8RZQ5w+6U9qtTRQKNIE9M7wQ==}
@@ -1832,8 +1838,8 @@ packages:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
 
-  glob@13.0.1:
-    resolution: {integrity: sha512-B7U/vJpE3DkJ5WXTgTpTRN63uV42DseiXXKMwG14LQBXmsdeIoHAPbU/MEo6II0k5ED74uc2ZGTC6MwHFQhF6w==}
+  glob@13.0.2:
+    resolution: {integrity: sha512-035InabNu/c1lW0tzPhAgapKctblppqsKKG9ZaNzbr+gXwWMjXoiyGSyB9sArzrjG7jY+zntRq5ZSUYemrnWVQ==}
     engines: {node: 20 || >=22}
 
   globals@15.15.0:
@@ -2011,8 +2017,8 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
-  lru-cache@11.2.5:
-    resolution: {integrity: sha512-vFrFJkWtJvJnD5hg+hJvVE8Lh/TcMzKnTgCWmtBipwI5yLX/iX+5UB2tfuyODF5E7k9xEzMdYgGqaSb1c0c5Yw==}
+  lru-cache@11.2.6:
+    resolution: {integrity: sha512-ESL2CrkS/2wTPfuend7Zhkzo2u0daGJ/A2VucJOgQ/C48S/zB8MMeMHSGKYpXhIjbPxfuezITkaBH1wqv00DDQ==}
     engines: {node: 20 || >=22}
 
   lru-cache@6.0.0:
@@ -3564,6 +3570,10 @@ snapshots:
     dependencies:
       '@vercel/python-analysis': 0.3.2
 
+  '@vercel/build-utils@13.3.4':
+    dependencies:
+      '@vercel/python-analysis': 0.3.2
+
   '@vercel/cervel@0.0.17(rollup@4.53.4)(typescript@5.9.3)':
     dependencies:
       '@vercel/backends': 0.0.30(rollup@4.53.4)(typescript@5.9.3)
@@ -3712,7 +3722,7 @@ snapshots:
       async-sema: 3.1.1
       bindings: 1.5.0
       estree-walker: 2.0.2
-      glob: 13.0.1
+      glob: 13.0.2
       graceful-fs: 4.2.11
       node-gyp-build: 4.8.4
       picomatch: 4.0.3
@@ -3731,7 +3741,7 @@ snapshots:
       async-sema: 3.1.1
       bindings: 1.5.0
       estree-walker: 2.0.2
-      glob: 13.0.1
+      glob: 13.0.2
       graceful-fs: 4.2.11
       node-gyp-build: 4.8.4
       picomatch: 4.0.3
@@ -3748,6 +3758,35 @@ snapshots:
       '@edge-runtime/vm': 3.2.0
       '@types/node': 20.11.0
       '@vercel/build-utils': 13.3.3
+      '@vercel/error-utils': 2.0.3
+      '@vercel/nft': 1.1.1(rollup@4.53.4)
+      '@vercel/static-config': 3.1.2
+      async-listen: 3.0.0
+      cjs-module-lexer: 1.2.3
+      edge-runtime: 2.5.9
+      es-module-lexer: 1.4.1
+      esbuild: 0.27.0
+      etag: 1.8.1
+      mime-types: 2.1.35
+      node-fetch: 2.6.9
+      path-to-regexp: 6.1.0
+      path-to-regexp-updated: path-to-regexp@6.3.0
+      ts-morph: 12.0.0
+      tsx: 4.21.0
+      typescript: 5.9.3
+      undici: 5.28.4
+    transitivePeerDependencies:
+      - encoding
+      - rollup
+      - supports-color
+
+  '@vercel/node@5.6.1(rollup@4.53.4)':
+    dependencies:
+      '@edge-runtime/node-utils': 2.3.0
+      '@edge-runtime/primitives': 4.1.0
+      '@edge-runtime/vm': 3.2.0
+      '@types/node': 20.11.0
+      '@vercel/build-utils': 13.3.4
       '@vercel/error-utils': 2.0.3
       '@vercel/nft': 1.1.1(rollup@4.53.4)
       '@vercel/static-config': 3.1.2
@@ -4511,7 +4550,7 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  glob@13.0.1:
+  glob@13.0.2:
     dependencies:
       minimatch: 10.1.2
       minipass: 7.1.2
@@ -4676,7 +4715,7 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lru-cache@11.2.5: {}
+  lru-cache@11.2.6: {}
 
   lru-cache@6.0.0:
     dependencies:
@@ -4896,7 +4935,7 @@ snapshots:
 
   path-scurry@2.0.1:
     dependencies:
-      lru-cache: 11.2.5
+      lru-cache: 11.2.6
       minipass: 7.1.2
 
   path-to-regexp@6.1.0: {}
