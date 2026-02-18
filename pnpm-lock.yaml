@@ -83,7 +83,7 @@ importers:
         version: 0.2.3
       '@vercel/node':
         specifier: ^5.5.16
-        version: 5.6.3(rollup@4.53.4)
+        version: 5.6.4(rollup@4.53.4)
       '@vitejs/plugin-vue':
         specifier: ^6.0.3
         version: 6.0.4(vite@7.3.1(@types/node@24.10.13)(sass@1.97.3)(tsx@4.21.0))(vue@3.5.28(typescript@5.9.3))
@@ -1161,6 +1161,9 @@ packages:
   '@vercel/build-utils@13.4.0':
     resolution: {integrity: sha512-hGBYt+olxUtDZu0W8DKl4NjY8tQC1eJUxDpkJdOhcugap4NnHeHZQ33vEKs0Z72bYlqotgu0AoEOv+ri5rlh4w==}
 
+  '@vercel/build-utils@13.4.1':
+    resolution: {integrity: sha512-lYiPTGgtBJMAkFb78djW+n17VhmxjCln0RvDu+7N8Bra43AmtxyjNNaDeBstZqm9dJX8uWwgXLcT2e/ZhaZfUA==}
+
   '@vercel/cervel@0.0.20':
     resolution: {integrity: sha512-Gm3Os0ijk941CNMoPhcqw6Fitg4SLYg1xrFcn9WTLMbXCRl/iva4GsOYRQ1X7KAo3FNFG3WYTiaaT1UlyCukjg==}
     hasBin: true
@@ -1226,6 +1229,9 @@ packages:
 
   '@vercel/node@5.6.3':
     resolution: {integrity: sha512-sordxYoSnYquTxQ2sSIubukhZtAThSAjT+A+ACFac9nkOWyPfW83eQINPWBD/xotdNm3w+1v/afkt427GbXfNg==}
+
+  '@vercel/node@5.6.4':
+    resolution: {integrity: sha512-vALWvjxXA4bQeuf5YjS3V8oF5GWpwUzXhptP1cIekpm3yiCIgCyzrTbAtvzD6tXSK6zchB+Vdu97l+yCfCnuDg==}
 
   '@vercel/python-analysis@0.4.1':
     resolution: {integrity: sha512-Ae6zayRNAO//z9ULOV+T8sjJFJLfA0OU540/BDkaVWHWhlqElIA7uyi71WuD7Ls06CDVpKYNRysv3keJaVbwow==}
@@ -1885,10 +1891,6 @@ packages:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
 
-  glob@13.0.3:
-    resolution: {integrity: sha512-/g3B0mC+4x724v1TgtBlBtt2hPi/EWptsIAmXUx9Z2rvBYleQcsrmaOzd5LyL50jf/Soi83ZDJmw2+XqvH/EeA==}
-    engines: {node: 20 || >=22}
-
   glob@13.0.5:
     resolution: {integrity: sha512-BzXxZg24Ibra1pbQ/zE7Kys4Ua1ks7Bn6pKLkVPZ9FZe4JQS6/Q7ef3LG1H+k7lUf5l4T3PLSyYyYJVYUvfgTw==}
     engines: {node: 20 || >=22}
@@ -2137,10 +2139,6 @@ packages:
 
   minimatch@10.1.1:
     resolution: {integrity: sha512-enIvLvRAFZYXJzkCYG5RKmPfrFArdLv+R+lbQ53BmIMLIry74bjKzX6iHAm8WYamJkhSSEabrWN5D97XnKObjQ==}
-    engines: {node: 20 || >=22}
-
-  minimatch@10.2.0:
-    resolution: {integrity: sha512-ugkC31VaVg9cF0DFVoADH12k6061zNZkZON+aX8AWsR9GhPcErkcMBceb6znR8wLERM2AkkOxy2nWRLpT9Jq5w==}
     engines: {node: 20 || >=22}
 
   minimatch@10.2.1:
@@ -3681,6 +3679,10 @@ snapshots:
     dependencies:
       '@vercel/python-analysis': 0.4.1
 
+  '@vercel/build-utils@13.4.1':
+    dependencies:
+      '@vercel/python-analysis': 0.4.1
+
   '@vercel/cervel@0.0.20(rollup@4.53.4)(typescript@5.9.3)':
     dependencies:
       '@vercel/backends': 0.0.33(rollup@4.53.4)(typescript@5.9.3)
@@ -3829,7 +3831,7 @@ snapshots:
       async-sema: 3.1.1
       bindings: 1.5.0
       estree-walker: 2.0.2
-      glob: 13.0.3
+      glob: 13.0.5
       graceful-fs: 4.2.11
       node-gyp-build: 4.8.4
       picomatch: 4.0.3
@@ -3865,6 +3867,35 @@ snapshots:
       '@edge-runtime/vm': 3.2.0
       '@types/node': 20.11.0
       '@vercel/build-utils': 13.4.0
+      '@vercel/error-utils': 2.0.3
+      '@vercel/nft': 1.1.1(rollup@4.53.4)
+      '@vercel/static-config': 3.1.2
+      async-listen: 3.0.0
+      cjs-module-lexer: 1.2.3
+      edge-runtime: 2.5.9
+      es-module-lexer: 1.4.1
+      esbuild: 0.27.0
+      etag: 1.8.1
+      mime-types: 2.1.35
+      node-fetch: 2.6.9
+      path-to-regexp: 6.1.0
+      path-to-regexp-updated: path-to-regexp@6.3.0
+      ts-morph: 12.0.0
+      tsx: 4.21.0
+      typescript: 5.9.3
+      undici: 5.28.4
+    transitivePeerDependencies:
+      - encoding
+      - rollup
+      - supports-color
+
+  '@vercel/node@5.6.4(rollup@4.53.4)':
+    dependencies:
+      '@edge-runtime/node-utils': 2.3.0
+      '@edge-runtime/primitives': 4.1.0
+      '@edge-runtime/vm': 3.2.0
+      '@types/node': 20.11.0
+      '@vercel/build-utils': 13.4.1
       '@vercel/error-utils': 2.0.3
       '@vercel/nft': 1.1.1(rollup@4.53.4)
       '@vercel/static-config': 3.1.2
@@ -4672,12 +4703,6 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  glob@13.0.3:
-    dependencies:
-      minimatch: 10.2.0
-      minipass: 7.1.2
-      path-scurry: 2.0.1
-
   glob@13.0.5:
     dependencies:
       minimatch: 10.2.1
@@ -4900,10 +4925,6 @@ snapshots:
   minimatch@10.1.1:
     dependencies:
       '@isaacs/brace-expansion': 5.0.1
-
-  minimatch@10.2.0:
-    dependencies:
-      brace-expansion: 5.0.2
 
   minimatch@10.2.1:
     dependencies:
