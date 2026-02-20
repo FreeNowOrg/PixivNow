@@ -134,7 +134,7 @@ importers:
         version: 30.0.0(@babel/parser@7.29.0)(vue@3.5.28(typescript@5.9.3))
       vercel:
         specifier: ^50.1.6
-        version: 50.22.0(rollup@4.53.4)(typescript@5.9.3)
+        version: 50.22.1(rollup@4.53.4)(typescript@5.9.3)
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@24.10.13)(sass@1.97.3)(tsx@4.21.0)
@@ -1226,8 +1226,8 @@ packages:
   '@vercel/python-analysis@0.6.0':
     resolution: {integrity: sha512-M7VAxXDOPIwJICMKU2+yeky4ZE1CMaeJDi45F1TNtlzETGlMbT8H/Cf9E/BK341gkubDuQRoraz6ndrVqg6SZQ==}
 
-  '@vercel/python@6.15.0':
-    resolution: {integrity: sha512-8EIxtxotLwgnZscd0xVikL5brBj4MzOo2h5jnbS/M5HFYth03GdpAkIRQeAkG83aAdN1rKbxZhQib1n3lZ93gQ==}
+  '@vercel/python@6.15.1':
+    resolution: {integrity: sha512-X0MB2dWD2aH7DVM2Mmxg2bnUIjoMC0obs3IwWEZS1jKcZ02iwNhdYdyqtW2amg0yq/w/pdZFm19EviLSQrDTSA==}
 
   '@vercel/redwood@2.4.9':
     resolution: {integrity: sha512-U7bYIuWfMEFMIcKKbX7lTT8pFNjig9Q3vLeCYRYQUrKVP8xLoUBXSEfW3ijtWJBUV8GmbZCDI30A16uUfNhN+g==}
@@ -2820,8 +2820,8 @@ packages:
     peerDependencies:
       vue: ^3.0.11
 
-  vercel@50.22.0:
-    resolution: {integrity: sha512-2AKBUNQ+wg9k4YxCLvduYNb3jAAUSt/11Gh2hgt/JCe464iBTv49AJ4+SXVOpgr8O8Bwbs0KaY19WJasCEjvPQ==}
+  vercel@50.22.1:
+    resolution: {integrity: sha512-gtm9yDLbFRISNBeki6VqdZMygygJNEg0zjdh7K9tGkDuVupGFd3KlnEjyjNmxvkkVt8rVxjbh00Ey8S/WcE8LQ==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -3885,7 +3885,7 @@ snapshots:
       smol-toml: 1.5.2
       zod: 3.22.4
 
-  '@vercel/python@6.15.0':
+  '@vercel/python@6.15.1':
     dependencies:
       '@vercel/python-analysis': 0.6.0
 
@@ -5611,7 +5611,7 @@ snapshots:
       evtd: 0.2.4
       vue: 3.5.28(typescript@5.9.3)
 
-  vercel@50.22.0(rollup@4.53.4)(typescript@5.9.3):
+  vercel@50.22.1(rollup@4.53.4)(typescript@5.9.3):
     dependencies:
       '@vercel/backends': 0.0.36(rollup@4.53.4)(typescript@5.9.3)
       '@vercel/blob': 2.3.0
@@ -5629,7 +5629,7 @@ snapshots:
       '@vercel/nestjs': 0.2.43(rollup@4.53.4)
       '@vercel/next': 4.15.31(rollup@4.53.4)
       '@vercel/node': 5.6.6(rollup@4.53.4)
-      '@vercel/python': 6.15.0
+      '@vercel/python': 6.15.1
       '@vercel/redwood': 2.4.9(rollup@4.53.4)
       '@vercel/remix-builder': 5.5.10(rollup@4.53.4)
       '@vercel/ruby': 2.3.1
