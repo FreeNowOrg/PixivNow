@@ -134,7 +134,7 @@ importers:
         version: 30.0.0(@babel/parser@7.29.0)(vue@3.5.30(typescript@5.9.3))
       vercel:
         specifier: ^50.1.6
-        version: 50.31.1(rollup@4.53.4)(typescript@5.9.3)
+        version: 50.32.3(rollup@4.53.4)(typescript@5.9.3)
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@24.12.0)(sass@1.98.0)(tsx@4.21.0)
@@ -1167,8 +1167,8 @@ packages:
     peerDependencies:
       typescript: ^4.0.0 || ^5.0.0
 
-  '@vercel/detect-agent@1.2.0':
-    resolution: {integrity: sha512-kY0+TPdYr170bVmVSCg0XvwakWQMENy79uf/sM86DF/HVabaagdTjPwSPujlZid6Bgr66R4kHhjg4bkOxEzFDA==}
+  '@vercel/detect-agent@1.2.1':
+    resolution: {integrity: sha512-U/BJCltQSTFTHwaiCQQTQG3GonTbRoEewjV+OU2mMjcHLAoPOh6CP1SXA2XNmqiqI3c82nkRNJ7piZ14RqmTXw==}
     engines: {node: '>=14'}
 
   '@vercel/elysia@0.1.48':
@@ -1230,8 +1230,8 @@ packages:
   '@vercel/python-analysis@0.9.1':
     resolution: {integrity: sha512-ZwEi/F2DPxFPYmfjHFy7qM3+JTWRxD1EMpbIotNNhUyd/pnIG0wNt7S73RJSx62n1Y7pmFOFowoImnhULQgKvA==}
 
-  '@vercel/python@6.22.0':
-    resolution: {integrity: sha512-wyHIWKXrDp+VkiWTIkz/++m037lwIy1PUNLRooYFUUBylBWpF/oYy42Kj8vyAKtsXO+14SBtTCekLE+9+2wmhA==}
+  '@vercel/python@6.23.0':
+    resolution: {integrity: sha512-P4cwbfk1zaVfX6obR3h+tEiuRIMX1cHyqmOlsbi9CBrHsxEbw45rtvXQLe29MErzUKO90kzbnQ4NbVQ8d4jt0g==}
 
   '@vercel/redwood@2.4.10':
     resolution: {integrity: sha512-7C5lUn9g9kLm1KpX55b8iizVPOB6087+kVyQyKyXGk8bbkYySL26yb+LIwyL/7mXwHlq/JTC0AxVdC3nNmPZuw==}
@@ -2829,8 +2829,8 @@ packages:
     peerDependencies:
       vue: ^3.0.11
 
-  vercel@50.31.1:
-    resolution: {integrity: sha512-cu8ukSJVuKecKavhMWMP/sgcetQ/6qsEaIGf9626tWXpRddUsLLJAsGyZUoZxo+EshMEp5kjuLZvTonyOUBLcA==}
+  vercel@50.32.3:
+    resolution: {integrity: sha512-3ZYaLqS3smkTDR2NT7w7UV9FdYaynXBYN/4PwDuMz9qRSdQX5dAPnnMpux1NN3QP/H9oV0+DxIKyEXbHqbe/Cg==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -3692,7 +3692,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/detect-agent@1.2.0': {}
+  '@vercel/detect-agent@1.2.1': {}
 
   '@vercel/elysia@0.1.48(rollup@4.53.4)':
     dependencies:
@@ -3900,7 +3900,7 @@ snapshots:
       smol-toml: 1.5.2
       zod: 3.22.4
 
-  '@vercel/python@6.22.0':
+  '@vercel/python@6.23.0':
     dependencies:
       '@vercel/python-analysis': 0.9.1
 
@@ -5631,12 +5631,12 @@ snapshots:
       evtd: 0.2.4
       vue: 3.5.30(typescript@5.9.3)
 
-  vercel@50.31.1(rollup@4.53.4)(typescript@5.9.3):
+  vercel@50.32.3(rollup@4.53.4)(typescript@5.9.3):
     dependencies:
       '@vercel/backends': 0.0.45(rollup@4.53.4)(typescript@5.9.3)
       '@vercel/blob': 2.3.0
       '@vercel/build-utils': 13.8.0
-      '@vercel/detect-agent': 1.2.0
+      '@vercel/detect-agent': 1.2.1
       '@vercel/elysia': 0.1.48(rollup@4.53.4)
       '@vercel/express': 0.1.57(rollup@4.53.4)(typescript@5.9.3)
       '@vercel/fastify': 0.1.51(rollup@4.53.4)
@@ -5649,7 +5649,7 @@ snapshots:
       '@vercel/nestjs': 0.2.52(rollup@4.53.4)
       '@vercel/next': 4.16.1(rollup@4.53.4)
       '@vercel/node': 5.6.15(rollup@4.53.4)
-      '@vercel/python': 6.22.0
+      '@vercel/python': 6.23.0
       '@vercel/redwood': 2.4.10(rollup@4.53.4)
       '@vercel/remix-builder': 5.7.0(rollup@4.53.4)
       '@vercel/ruby': 2.3.2
