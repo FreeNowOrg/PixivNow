@@ -134,7 +134,7 @@ importers:
         version: 30.0.0(@babel/parser@7.29.0)(vue@3.5.30(typescript@5.9.3))
       vercel:
         specifier: ^50.1.6
-        version: 50.32.4(rollup@4.53.4)(typescript@5.9.3)
+        version: 50.32.5(rollup@4.53.4)(typescript@5.9.3)
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@24.12.0)(sass@1.98.0)(tsx@4.21.0)
@@ -1193,8 +1193,8 @@ packages:
   '@vercel/gatsby-plugin-vercel-builder@2.1.0':
     resolution: {integrity: sha512-avJ5IFev2h2K6E/Pd7qd00cFLALj3OyEmQE3UoGs1dmoncINFqa1RoIZDJ9wIhWm1Euan4wrFMRsXkCwNhEGhw==}
 
-  '@vercel/go@3.4.4':
-    resolution: {integrity: sha512-jfIx/gUe2YAp46/H4uqdA+PLQQuRwb5lwU37m/e5wrnMCUZ2ksuhg50xPHcBBweboYeE6WuT4e1W6Cwp3tBPzg==}
+  '@vercel/go@3.4.5':
+    resolution: {integrity: sha512-eTWsdXawkSsG5TP+1BJUo+wRnoG9uH51MRID0YlwMMvollG5q7CrYisg859koy8MzGjQAcu3ff5v/WwRbwXwgQ==}
 
   '@vercel/h3@0.1.57':
     resolution: {integrity: sha512-I7Q1ity7xEdIVw4OQuKOAR8i6DrvfjpKy+y2uTwbqBD80Gg0KpsMS/KKA+UjvCuclFmP/EHYS3kpMLc/O1rVqg==}
@@ -2829,8 +2829,8 @@ packages:
     peerDependencies:
       vue: ^3.0.11
 
-  vercel@50.32.4:
-    resolution: {integrity: sha512-Qh67nxN6xDp3CiVDhUwFIWr50gJsqzL7gziC6Ee+nCqL/SA/sF1iSPRbefYTJ7ofVTKg2yN//Q2VP/VAh8o91g==}
+  vercel@50.32.5:
+    resolution: {integrity: sha512-gwxkUgVLQGSUV3EgsJa3rbBXDgoKIjp73bxEgZm+BgSRDSG8sMJD1shozgu5NI+Od8HkzvsZBIX5c2XOsLH8+w==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -3766,7 +3766,7 @@ snapshots:
       etag: 1.8.1
       fs-extra: 11.1.0
 
-  '@vercel/go@3.4.4': {}
+  '@vercel/go@3.4.5': {}
 
   '@vercel/h3@0.1.57(rollup@4.53.4)':
     dependencies:
@@ -5631,7 +5631,7 @@ snapshots:
       evtd: 0.2.4
       vue: 3.5.30(typescript@5.9.3)
 
-  vercel@50.32.4(rollup@4.53.4)(typescript@5.9.3):
+  vercel@50.32.5(rollup@4.53.4)(typescript@5.9.3):
     dependencies:
       '@vercel/backends': 0.0.45(rollup@4.53.4)(typescript@5.9.3)
       '@vercel/blob': 2.3.0
@@ -5641,7 +5641,7 @@ snapshots:
       '@vercel/express': 0.1.57(rollup@4.53.4)(typescript@5.9.3)
       '@vercel/fastify': 0.1.51(rollup@4.53.4)
       '@vercel/fun': 1.3.0
-      '@vercel/go': 3.4.4
+      '@vercel/go': 3.4.5
       '@vercel/h3': 0.1.57(rollup@4.53.4)
       '@vercel/hono': 0.2.51(rollup@4.53.4)
       '@vercel/hydrogen': 1.3.6
