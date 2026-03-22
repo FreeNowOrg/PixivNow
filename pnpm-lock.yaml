@@ -134,7 +134,7 @@ importers:
         version: 30.0.0(@babel/parser@7.29.0)(vue@3.5.30(typescript@5.9.3))
       vercel:
         specifier: ^50.1.6
-        version: 50.34.3(rollup@4.53.4)(typescript@5.9.3)
+        version: 50.35.0(rollup@4.53.4)(typescript@5.9.3)
       vite:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@24.12.0)(sass@1.98.0)(tsx@4.21.0)
@@ -1214,14 +1214,14 @@ packages:
   '@vercel/node@5.6.18':
     resolution: {integrity: sha512-Hwu7S7JfKFOVVlvQEMMEbsCX4tXLprBemU9q15uN8iKJmuUtZpOZWqgcrxP9naa3cqfk0ZtsT+yik4Hi2Q1Z8Q==}
 
-  '@vercel/prepare-flags-definitions@0.2.0':
-    resolution: {integrity: sha512-2yvulNR7yyv/gbWLPPRvLYBq70X6sBuG5kMQWQMQrIJQZrcrTagy/OCj9gTnhNGod5JmYKXjVBV6GW6DZcNWlQ==}
+  '@vercel/prepare-flags-definitions@0.2.1':
+    resolution: {integrity: sha512-ouXTsqn7I9xZ1KKezgvn/w3tZeQHL/tc52j9GHiOYi6kT8xgdbT8s2x8C9BQr44iceX0hfhtZwk9q7NuI2Tqbw==}
 
   '@vercel/python-analysis@0.10.1':
     resolution: {integrity: sha512-VH56vAqg97HX2c2IMfpqOaXZAg1YN3N/S1w9rpD1LhKU2ZrgfZ3R9RsAYuOs+GcFYLL8ic5PgxcLpjfogwXjSg==}
 
-  '@vercel/python@6.25.0':
-    resolution: {integrity: sha512-6XP04p//ZeMzW1C8dmFtNhZmVuWdIMk3p7jD/cdPgN+Wq7xXLpMSae5lDu/WS9qRI442SSMHwGDc2euUAHRULg==}
+  '@vercel/python@6.26.0':
+    resolution: {integrity: sha512-/1Fu4B0wNnsimwVIV4+YPU8oKAXCzF6r5RE5dm+kN6X2UQ+PBMSOyr/d6zwkf7JIGWgBXKcyLsLnSg0Fal7r9g==}
 
   '@vercel/redwood@2.4.11':
     resolution: {integrity: sha512-fvVfbV4c5sELxO2sQAcLtyWJPKTla5zcuS8PF+QPDRb8Kx3X8YJPySiHW7NUkBBFLMP3S7GDvuAu8d4u+dVCjQ==}
@@ -2812,8 +2812,8 @@ packages:
     peerDependencies:
       vue: ^3.0.11
 
-  vercel@50.34.3:
-    resolution: {integrity: sha512-6lJMkjouKWAtYs0FzGHO8E/d/r05YpCUDOCYxQsJzSvLdUDnvEl2p2olvn97W7g3JZxJO5JK1/ce1VbkRzocPw==}
+  vercel@50.35.0:
+    resolution: {integrity: sha512-rG/1tx1Sv93aC3Mk9sC+fcbcXTWu+T9qtQRQtZQ5AmTRKa6QDpfc2bSfSneyebLNKUMq9k9QtaympR9gPHFgNA==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -3846,7 +3846,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/prepare-flags-definitions@0.2.0': {}
+  '@vercel/prepare-flags-definitions@0.2.1': {}
 
   '@vercel/python-analysis@0.10.1':
     dependencies:
@@ -3858,7 +3858,7 @@ snapshots:
       smol-toml: 1.5.2
       zod: 3.22.4
 
-  '@vercel/python@6.25.0':
+  '@vercel/python@6.26.0':
     dependencies:
       '@vercel/python-analysis': 0.10.1
 
@@ -5583,7 +5583,7 @@ snapshots:
       evtd: 0.2.4
       vue: 3.5.30(typescript@5.9.3)
 
-  vercel@50.34.3(rollup@4.53.4)(typescript@5.9.3):
+  vercel@50.35.0(rollup@4.53.4)(typescript@5.9.3):
     dependencies:
       '@vercel/backends': 0.0.49(rollup@4.53.4)(typescript@5.9.3)
       '@vercel/blob': 2.3.0
@@ -5601,8 +5601,8 @@ snapshots:
       '@vercel/nestjs': 0.2.55(rollup@4.53.4)
       '@vercel/next': 4.16.2(rollup@4.53.4)
       '@vercel/node': 5.6.18(rollup@4.53.4)
-      '@vercel/prepare-flags-definitions': 0.2.0
-      '@vercel/python': 6.25.0
+      '@vercel/prepare-flags-definitions': 0.2.1
+      '@vercel/python': 6.26.0
       '@vercel/redwood': 2.4.11(rollup@4.53.4)
       '@vercel/remix-builder': 5.7.1(rollup@4.53.4)
       '@vercel/ruby': 2.3.2
