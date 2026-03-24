@@ -110,3 +110,10 @@ dev-test
 *.dev.*
 .vercel
 .vs
+
+# Nuxt
+.nuxt
+.output
+
+# macOS
+.DS_Store
