@@ -56,7 +56,7 @@ import {
   validateSessionId,
   login,
   logout,
-} from '~/components/userData'
+} from '~/composables/userData'
 import { useUserStore } from '~/stores/session'
 import IFasAngleLeft from '~icons/fa-solid/angle-left'
 import { NButton, NForm, NFormItem, NInput } from 'naive-ui'

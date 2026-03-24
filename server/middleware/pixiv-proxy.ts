@@ -41,9 +41,10 @@ export default defineEventHandler(async (event) => {
 })
 
 function isAccepted(event: any) {
-  const { UA_BLACKLIST = '[]' } = process.env
+  const config = useRuntimeConfig()
+  const uaBlacklist = config.uaBlacklist || process.env.UA_BLACKLIST || '[]'
   try {
-    const list: string[] = JSON.parse(UA_BLACKLIST)
+    const list: string[] = JSON.parse(uaBlacklist)
     const ua = getHeader(event, 'user-agent') ?? ''
     return (
       !!ua &&

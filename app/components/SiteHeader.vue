@@ -86,7 +86,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 import SearchBox from './SearchBox.vue'
 import IFasBars from '~icons/fa-solid/bars'
 import IFasSearch from '~icons/fa-solid/search'
-import { logout } from './userData'
+import { logout } from '~/composables/userData'
 import LogoH from '~/assets/LogoH.png'
 import { useSideNavStore, useUserStore } from '~/stores/session'
 
@@ -129,10 +129,8 @@ watch(hidden, (value) => {
   }
 })
 
-onMounted(() => {
-  window.addEventListener('scroll', () => {
-    notAtTop.value = document.documentElement.scrollTop > 50
-  })
+useEventListener(window, 'scroll', () => {
+  notAtTop.value = document.documentElement.scrollTop > 50
 })
 </script>
 
