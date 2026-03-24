@@ -1,6 +1,7 @@
 import type { Artwork } from '~/types'
 import gifWorkerUrl from 'gif.js/dist/gif.worker.js?url'
-import { ZipDownloader, ZipDownloaderOptions } from './ZipDownloader'
+import { ZipDownloader, type ZipDownloaderOptions } from './ZipDownloader'
+import { replacePximgInObject } from './pximg'
 
 /**
  * Public options
@@ -200,13 +201,15 @@ export class UgoiraPlayer {
 
   // ====== network / assets ======
   async fetchMeta() {
-    this._meta = await fetch(
+    const data = await fetch(
       new URL(`/ajax/illust/${this._illust.id}/ugoira_meta`, location.href)
         .href,
       {
         cache: 'default',
       }
     ).then((res) => res.json())
+    // Pixiv API wraps response in { error, body }; replace pximg URLs
+    this._meta = replacePximgInObject(data.body ?? data)
     return this
   }
 
