@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     return // Not a proxied path, pass through
   }
 
-  if (!isAccepted(event)) {
+  if (!checkCanPassUaBlackList(event)) {
     throw createError({ statusCode: 403, message: '403' })
   }
 
@@ -40,23 +40,60 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-function isAccepted(event: any) {
-  const config = useRuntimeConfig()
-  const uaBlacklist = config.uaBlacklist || '[]'
+// Cached UA blacklist regex for efficient repeated checks
+let _uaBlacklist: string[] | null = null
+let _uaBlacklistRegex: RegExp | null = null
+let _uaBlacklistInvalid = false
+
+function getUaBlacklistRegex(): RegExp | null {
+  if (_uaBlacklistInvalid) return null
+  if (_uaBlacklistRegex) return _uaBlacklistRegex
+
   try {
-    const list: string[] = JSON.parse(uaBlacklist)
-    const ua = getHeader(event, 'user-agent') ?? ''
-    return (
-      !!ua &&
-      Array.isArray(list) &&
-      (list.length > 0
-        ? !new RegExp(
-            `(${list.map((str) => escapeRegExp(str)).join('|')})`,
-            'gi'
-          ).test(ua)
-        : true)
+    const config = useRuntimeConfig()
+    const rawUaBlacklist = config.uaBlacklist || '[]'
+
+    _uaBlacklist = JSON.parse(rawUaBlacklist)
+    if (!Array.isArray(_uaBlacklist) || _uaBlacklist.length === 0) {
+      _uaBlacklist = []
+      _uaBlacklistRegex = null
+      return null
+    }
+
+    _uaBlacklistRegex = new RegExp(
+      `(${_uaBlacklist.map((str) => escapeRegExp(str)).join('|')})`,
+      'gi'
     )
-  } catch (e) {
-    return false
+    return _uaBlacklistRegex
+  } catch {
+    // JSON parse error, treat as empty blacklist but log a warning
+    _uaBlacklistInvalid = true
+    return null
   }
+}
+
+/**
+ * @returns {boolean}
+ * - `true` - User-Agent is allowed (not in blacklist)
+ * - `false` - User-Agent is blocked (matches blacklist)
+ */
+function checkCanPassUaBlackList(event: any): boolean {
+  const ua = getHeader(event, 'user-agent') ?? ''
+  if (!ua) return false // weird case: no user-agent header, reject by default
+
+  const regex = getUaBlacklistRegex()
+
+  // JSON parse error, treat as empty blacklist but log a warning
+  if (_uaBlacklistInvalid) {
+    console.warn(
+      '[UA Blacklist] Invalid JSON format in configuration. Please check the NUXT_UA_BLACKLIST environment variable.'
+    )
+    return true
+  }
+
+  // Empty blacklist: allow all
+  if (!regex) return true
+
+  // If regex exists, block if it matches, allow if it doesn't
+  return !regex.test(ua)
 }
