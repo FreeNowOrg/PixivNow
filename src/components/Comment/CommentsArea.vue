@@ -24,7 +24,7 @@
 
 <script lang="ts" setup>
 import Comment from './Comment.vue'
-import { ajax } from '@/utils/ajax'
+import { pixivClient } from '@/api/pixiv-client'
 import type { Comments } from '@/types'
 import { NButton } from 'naive-ui'
 import IFasPlus from '~icons/fa-solid/plus'
@@ -49,12 +49,9 @@ async function init(id: string | number): Promise<void> {
 
   try {
     loading.value = true
-    const { data } = await ajax.get(`/ajax/illusts/comments/roots`, {
-      params: new URLSearchParams({
-        illust_id: `${id}`,
-        limit: comments.value.length ? '30' : '3',
-        offset: `${comments.value.length}`,
-      }),
+    const data = await pixivClient.getComments(`${id}`, {
+      limit: comments.value.length ? 30 : 3,
+      offset: comments.value.length,
     })
     hasNext.value = data.hasNext
     comments.value = comments.value.concat(data.comments)

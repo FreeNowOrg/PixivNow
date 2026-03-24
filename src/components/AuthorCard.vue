@@ -37,11 +37,11 @@
 <script lang="ts" setup>
 import ArtworkList from './ArtworksList/ArtworkList.vue'
 import type { User } from '@/types'
-import { addUserFollow, removeUserFollow } from '@/utils'
+import { pixivClient } from '@/api/pixiv-client'
 import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasPlus from '~icons/fa-solid/plus'
-import { useUserStore } from '@/composables/states'
+import { useUserStore } from '@/stores/session'
 
 const userStore = useUserStore()
 
@@ -56,8 +56,10 @@ function handleUserFollow() {
 
   loadingUserFollow.value = true
   const isFollowed = user.isFollowed
-  const handler = isFollowed ? removeUserFollow : addUserFollow
-  handler(user.userId)
+  const handler = isFollowed
+    ? pixivClient.unfollowUser(user.userId)
+    : pixivClient.followUser(user.userId)
+  handler
     .then(() => {
       user.isFollowed = !isFollowed
     })

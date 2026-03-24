@@ -35,7 +35,6 @@ declare module 'vue' {
     NCountdown: typeof import('naive-ui')['NCountdown']
     NEmpty: typeof import('naive-ui')['NEmpty']
     NFlex: typeof import('naive-ui')['NFlex']
-    NInput: typeof import('naive-ui')['NInput']
     NLi: typeof import('naive-ui')['NLi']
     NPagination: typeof import('naive-ui')['NPagination']
     NProgress: typeof import('./components/NProgress.vue')['default']

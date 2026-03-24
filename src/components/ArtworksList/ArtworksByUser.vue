@@ -2,18 +2,18 @@
 .artworks-by-user(ref='containerRef')
   NFlex(align='center' justify='center')
     NPagination(
-      :item-count='artworkIds.length',
-      :page-size='pageSize'
+      :item-count='userArtworksStore.allIds.length',
+      :page-size='userArtworksStore.pageSize'
       v-model:page='curPage'
     )
   ArtworkList(
     :list='curArtworks',
-    :loading='!curArtworks.length ? pageSize : false'
+    :loading='!curArtworks.length ? userArtworksStore.pageSize : false'
   )
   NFlex(align='center' justify='center')
     NPagination(
-      :item-count='artworkIds.length',
-      :page-size='pageSize'
+      :item-count='userArtworksStore.allIds.length',
+      :page-size='userArtworksStore.pageSize'
       v-model:page='curPage'
     )
 </template>
@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { type ArtworkInfo } from '@/types'
 import { NPagination } from 'naive-ui'
-import {} from 'vue'
+import { useUserArtworksStore } from '@/stores/user-artworks'
 
 const props = withDefaults(
   defineProps<{
@@ -34,13 +34,12 @@ const props = withDefaults(
 )
 
 const containerRef = ref<HTMLElement>()
-const artworkIds = ref<string[]>([])
-const pageSize = 24
 const curPage = ref(1)
-const cachedPages = ref<Record<number, ArtworkInfo[]>>({})
+const userArtworksStore = useUserArtworksStore()
+
 const curArtworks = computed(() => {
-  return (cachedPages.value[curPage.value] || []).sort(
-    (a, b) => Number(b.id) - Number(a.id)
+  return (userArtworksStore.cachedPages[curPage.value] || []).sort(
+    (a: ArtworkInfo, b: ArtworkInfo) => Number(b.id) - Number(a.id)
   )
 })
 
@@ -49,7 +48,7 @@ onMounted(async () => {
 })
 watch(curPage, (page) => {
   backToTop()
-  fetchArtworksByPage(page)
+  userArtworksStore.fetchPage(props.userId, page, props.workCategory)
 })
 
 function backToTop() {
@@ -62,45 +61,10 @@ function backToTop() {
 }
 
 async function firstInit() {
-  artworkIds.value = []
+  userArtworksStore.reset()
   curPage.value = 1
-  cachedPages.value = {}
-  artworkIds.value = (await fetchAllArtworkIds()).sort(
-    (a, b) => Number(b) - Number(a)
-  )
-  await fetchArtworksByPage(1)
-}
-
-async function fetchAllArtworkIds() {
-  const { data } = await ajax.get<{
-    illusts: Record<string, null>
-    manga: Record<string, null>
-  }>(`/ajax/user/${props.userId}/profile/all`)
-  const works =
-    props.workCategory === 'illust'
-      ? Object.keys(data.illusts)
-      : Object.keys(data.manga)
-  return works
-}
-
-function getArtworkIdsByPage(page: number) {
-  return artworkIds.value.slice((page - 1) * pageSize, page * pageSize)
-}
-
-async function fetchArtworksByPage(page: number) {
-  if (cachedPages.value[page]) return cachedPages.value[page]
-  const ids = getArtworkIdsByPage(page)
-  const { data } = await ajax.get<{
-    works: Record<string, ArtworkInfo>
-  }>(`/ajax/user/${props.userId}/profile/illusts`, {
-    params: {
-      ids,
-      work_category: props.workCategory,
-      is_first_page: 0,
-    },
-  })
-  cachedPages.value[page] = Object.values(data.works)
-  return data
+  await userArtworksStore.fetchAllIds(props.userId, props.workCategory)
+  await userArtworksStore.fetchPage(props.userId, 1, props.workCategory)
 }
 </script>
 

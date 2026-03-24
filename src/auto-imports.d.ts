@@ -19,6 +19,7 @@ declare global {
   const asyncComputed: typeof import('@vueuse/core').asyncComputed
   const autoResetRef: typeof import('@vueuse/core').autoResetRef
   const axios: typeof import('axios').default
+  const buildIllustUrls: typeof import('./utils/pximg').buildIllustUrls
   const computed: typeof import('vue').computed
   const computedAsync: typeof import('@vueuse/core').computedAsync
   const computedEager: typeof import('@vueuse/core').computedEager
@@ -31,6 +32,7 @@ declare global {
   const createGlobalState: typeof import('@vueuse/core').createGlobalState
   const createInjectionState: typeof import('@vueuse/core').createInjectionState
   const createOptimizedUgoiraPlayer: typeof import('./src/utils/UgoiraPlayerExample')['createOptimizedUgoiraPlayer']
+  const createPximgReplacer: typeof import('./utils/pximg').createPximgReplacer
   const createReactiveFn: typeof import('@vueuse/core').createReactiveFn
   const createRef: typeof import('@vueuse/core').createRef
   const createReusableTemplate: typeof import('@vueuse/core').createReusableTemplate
@@ -57,7 +59,7 @@ declare global {
   const initUser: typeof import('./components/userData').initUser
   const inject: typeof import('vue').inject
   const injectLocal: typeof import('@vueuse/core').injectLocal
-  const isArtwork: typeof import('./utils/artworkActions').isArtwork
+  const isArtwork: typeof import('./utils/index').isArtwork
   const isDefined: typeof import('@vueuse/core').isDefined
   const isProxy: typeof import('vue').isProxy
   const isReactive: typeof import('vue').isReactive
@@ -109,6 +111,8 @@ declare global {
   const refWithControl: typeof import('@vueuse/core').refWithControl
   const removeBookmark: typeof import('./utils/artworkActions').removeBookmark
   const removeUserFollow: typeof import('./utils/userActions').removeUserFollow
+  const replacePximgInObject: typeof import('./utils/pximg').replacePximgInObject
+  const replacePximgUrl: typeof import('./utils/pximg').replacePximgUrl
   const resolveComponent: typeof import('vue').resolveComponent
   const resolveRef: typeof import('@vueuse/core').resolveRef
   const resolveUnref: typeof import('@vueuse/core')['resolveUnref']
@@ -116,16 +120,18 @@ declare global {
   const shallowReactive: typeof import('vue').shallowReactive
   const shallowReadonly: typeof import('vue').shallowReadonly
   const shallowRef: typeof import('vue').shallowRef
-  const sortArtList: typeof import('./utils/artworkActions').sortArtList
+  const sortArtList: typeof import('./utils/index').sortArtList
   const syncRef: typeof import('@vueuse/core').syncRef
   const syncRefs: typeof import('@vueuse/core').syncRefs
   const templateRef: typeof import('@vueuse/core').templateRef
   const throttledRef: typeof import('@vueuse/core').throttledRef
   const throttledWatch: typeof import('@vueuse/core').throttledWatch
+  const toOriginalUrl: typeof import('./utils/pximg').toOriginalUrl
   const toRaw: typeof import('vue').toRaw
   const toReactive: typeof import('@vueuse/core').toReactive
   const toRef: typeof import('vue').toRef
   const toRefs: typeof import('vue').toRefs
+  const toRegularUrl: typeof import('./utils/pximg').toRegularUrl
   const toValue: typeof import('vue').toValue
   const triggerRef: typeof import('vue').triggerRef
   const tryOnBeforeMount: typeof import('@vueuse/core').tryOnBeforeMount
@@ -150,6 +156,7 @@ declare global {
   const useArrayReduce: typeof import('@vueuse/core').useArrayReduce
   const useArraySome: typeof import('@vueuse/core').useArraySome
   const useArrayUnique: typeof import('@vueuse/core').useArrayUnique
+  const useArtworkStore: typeof import('./stores/artwork').useArtworkStore
   const useAsyncQueue: typeof import('@vueuse/core').useAsyncQueue
   const useAsyncState: typeof import('@vueuse/core').useAsyncState
   const useAttrs: typeof import('vue').useAttrs
@@ -200,10 +207,12 @@ declare global {
   const useFileSystemAccess: typeof import('@vueuse/core').useFileSystemAccess
   const useFocus: typeof import('@vueuse/core').useFocus
   const useFocusWithin: typeof import('@vueuse/core').useFocusWithin
+  const useFollowingStore: typeof import('./stores/following').useFollowingStore
   const useFps: typeof import('@vueuse/core').useFps
   const useFullscreen: typeof import('@vueuse/core').useFullscreen
   const useGamepad: typeof import('@vueuse/core').useGamepad
   const useGeolocation: typeof import('@vueuse/core').useGeolocation
+  const useHomeStore: typeof import('./stores/home').useHomeStore
   const useI18n: typeof import('vue-i18n').useI18n
   const useId: typeof import('vue').useId
   const useIdle: typeof import('@vueuse/core').useIdle
@@ -250,6 +259,7 @@ declare global {
   const usePreferredReducedTransparency: typeof import('@vueuse/core').usePreferredReducedTransparency
   const usePrevious: typeof import('@vueuse/core').usePrevious
   const useRafFn: typeof import('@vueuse/core').useRafFn
+  const useRankingStore: typeof import('./stores/ranking').useRankingStore
   const useRefHistory: typeof import('@vueuse/core').useRefHistory
   const useResizeObserver: typeof import('@vueuse/core').useResizeObserver
   const useRoute: typeof import('vue-router').useRoute
@@ -260,9 +270,10 @@ declare global {
   const useScriptTag: typeof import('@vueuse/core').useScriptTag
   const useScroll: typeof import('@vueuse/core').useScroll
   const useScrollLock: typeof import('@vueuse/core').useScrollLock
+  const useSearchStore: typeof import('./stores/search').useSearchStore
   const useSessionStorage: typeof import('@vueuse/core').useSessionStorage
   const useShare: typeof import('@vueuse/core').useShare
-  const useSideNavStore: typeof import('./composables/states').useSideNavStore
+  const useSideNavStore: typeof import('./stores/session').useSideNavStore
   const useSlots: typeof import('vue').useSlots
   const useSorted: typeof import('@vueuse/core').useSorted
   const useSpeechRecognition: typeof import('@vueuse/core').useSpeechRecognition
@@ -293,8 +304,10 @@ declare global {
   const useToggle: typeof import('@vueuse/core').useToggle
   const useTransition: typeof import('@vueuse/core').useTransition
   const useUrlSearchParams: typeof import('@vueuse/core').useUrlSearchParams
+  const useUserArtworksStore: typeof import('./stores/user-artworks').useUserArtworksStore
   const useUserMedia: typeof import('@vueuse/core').useUserMedia
-  const useUserStore: typeof import('./composables/states').useUserStore
+  const useUserProfileStore: typeof import('./stores/user-profile').useUserProfileStore
+  const useUserStore: typeof import('./stores/session').useUserStore
   const useVModel: typeof import('@vueuse/core').useVModel
   const useVModels: typeof import('@vueuse/core').useVModels
   const useVibrate: typeof import('@vueuse/core').useVibrate

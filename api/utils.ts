@@ -76,8 +76,8 @@ ajax.interceptors.request.use((ctx) => {
   return ctx
 })
 ajax.interceptors.response.use((ctx) => {
-  typeof ctx.data === 'object' &&
-    (ctx.data = replacePximgUrlsInObject(ctx.data?.body ?? ctx.data))
+  // Pass through raw Pixiv response as-is.
+  // Client-side SDK handles body unwrapping and pximg URL replacement.
   if (DEV) {
     const out: string =
       typeof ctx.data === 'object'

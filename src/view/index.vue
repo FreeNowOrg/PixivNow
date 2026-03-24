@@ -1,7 +1,7 @@
 <template lang="pug">
 #home-view
   .top-slider.align-center(
-    :style='{ "background-image": `url(${randomBg.urls?.regular || randomBg.url || ""})` }'
+    :style='{ "background-image": `url(${randomBgRegularUrl || ""})` }'
   )
     section.search-area.flex-1
       SearchBox.big.search
@@ -11,36 +11,36 @@
     .description Now, everyone can enjoy Pixiv
 
     .bg-info
-      a.pointer(@click='async () => await setRandomBgNoCache()' title='换一个~')
+      a.pointer(@click='homeStore.fetchRandomBg()' title='换一个~')
         IFasRandom
       a.pointer(
         @click='isShowBgInfo = true'
         style='margin-left: 0.5em'
         title='关于背景'
-        v-if='randomBg.id'
+        v-if='randomBg?.id'
       )
         IFasInfoCircle
 
   NModal(
-    :title='`背景图片：${randomBg.alt}`'
+    :title='`背景图片：${randomBg?.alt}`'
     closable
     preset='card'
     v-model:show='isShowBgInfo'
   )
     .bg-info-modal
       .align-center
-        RouterLink.thumb(:to='"/artworks/" + randomBg.id')
-          img(:src='randomBg.urls?.regular || randomBg.url' lazyload)
+        RouterLink.thumb(:to='"/artworks/" + randomBg?.id')
+          img(:src='randomBgRegularUrl' lazyload)
         .desc
           .author
-            RouterLink(:to='"/users/" + randomBg.userId') {{ randomBg.userName }}
-            | 的作品 (ID: {{ randomBg.id }})
+            RouterLink(:to='"/users/" + randomBg?.userId') {{ randomBg?.userName }}
+            | 的作品 (ID: {{ randomBg?.id }})
         NSpace(justify='center' size='small' style='margin-top: 1rem')
           NTag(
             :key='tag'
             @click='$router.push({ name: "search", params: { keyword: tag, p: 1 } })'
             style='cursor: pointer'
-            v-for='tag in randomBg.tags'
+            v-for='tag in randomBg?.tags'
           ) {{ tag }}
 
   .body-inner
@@ -48,15 +48,15 @@
       NH2 探索发现
       .align-center
         NButton(
-          :loading='loadingDiscovery'
-          @click='discoveryList.length ? (async () => await setDiscoveryNoCache())() : void 0'
+          :loading='homeStore.loadingDiscovery'
+          @click='homeStore.discoveryList.length ? homeStore.fetchDiscovery() : void 0'
           round
           secondary
           size='small'
         )
-          template(#default) {{ loadingDiscovery ? '加载中' : '换一批' }}
+          template(#default) {{ homeStore.loadingDiscovery ? '加载中' : '换一批' }}
           template(#icon): NIcon: IFasRandom
-      ArtworkList(:list='discoveryList', :loading='loadingDiscovery')
+      ArtworkList(:list='homeStore.discoveryList', :loading='homeStore.loadingDiscovery')
 </template>
 
 <script lang="ts" setup>
@@ -66,80 +66,28 @@ import { NH2, NButton, NIcon, NModal } from 'naive-ui'
 import IFasInfoCircle from '~icons/fa-solid/info-circle'
 import IFasRandom from '~icons/fa-solid/random'
 
-import { formatInTimeZone } from 'date-fns-tz'
-import { getCache, setCache } from './siteCache'
-import { defaultArtwork, isArtwork } from '@/utils'
-import { ajax } from '@/utils/ajax'
-
+import { useHomeStore } from '@/stores/home'
+import { toRegularUrl } from '@/utils/pximg'
 import LogoH from '@/assets/LogoH.png'
-import type { Artwork, ArtworkInfo, ArtworkInfoOrAd } from '@/types'
 import { setTitle } from '@/utils/setTitle'
 
 const isShowBgInfo = ref(false)
-const discoveryList = ref<ArtworkInfo[]>([])
-const randomBg = ref<Artwork>({ ...defaultArtwork, urls: {} } as any)
-
-async function setRandomBgNoCache(): Promise<void> {
-  try {
-    const { data } = await ajax.get<Artwork[]>('/api/random', {
-      params: {
-        max: '1',
-      },
-    })
-    const info = data[0]
-    randomBg.value = info
-    setCache('home.randomBg', info)
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-async function setRandomBgFromCache(): Promise<void> {
-  const cache = getCache('home.randomBg')
-  if (cache) {
-    randomBg.value = cache
-  } else {
-    await setRandomBgNoCache()
-  }
-}
-
-const loadingDiscovery = ref(false)
-async function setDiscoveryNoCache(): Promise<void> {
-  if (loadingDiscovery.value) return
-  try {
-    loadingDiscovery.value = true
-    // discoveryList.value = []
-    const { data } = await ajax.get<{ illusts: ArtworkInfoOrAd[] }>(
-      '/ajax/illust/discovery',
-      { params: new URLSearchParams({ mode: 'all', max: '8' }) }
-    )
-    console.info('setDiscoveryNoCache', data)
-    const illusts = data.illusts.filter((item): item is ArtworkInfo =>
-      isArtwork(item)
-    )
-    discoveryList.value = illusts
-    setCache('home.discoveryList', illusts)
-  } catch (err) {
-    console.error('获取探索发现失败', err)
-  } finally {
-    loadingDiscovery.value = false
-  }
-}
-
-async function setDiscoveryFromCache(): Promise<void> {
-  const cache = getCache('home.discoveryList')
-  if (cache) {
-    discoveryList.value = cache
-    loadingDiscovery.value = false
-  } else {
-    await setDiscoveryNoCache()
-  }
-}
+const homeStore = useHomeStore()
+const randomBg = computed(() => homeStore.randomBg)
+const randomBgRegularUrl = computed(() => {
+  const bg = randomBg.value
+  if (!bg?.url) return ''
+  return toRegularUrl(bg.url)
+})
 
 onMounted(async () => {
   setTitle()
-  setRandomBgFromCache()
-  setDiscoveryFromCache()
+  if (!homeStore.randomBg) {
+    homeStore.fetchRandomBg()
+  }
+  if (!homeStore.discoveryList.length) {
+    homeStore.fetchDiscovery()
+  }
 })
 </script>
 

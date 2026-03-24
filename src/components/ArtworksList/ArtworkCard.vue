@@ -49,7 +49,7 @@
 
 <script lang="ts" setup>
 import LazyLoad from '../LazyLoad.vue'
-import { addBookmark, removeBookmark } from '@/utils/artworkActions'
+import { pixivClient } from '@/api/pixiv-client'
 import { NSkeleton } from 'naive-ui'
 import { IllustType } from '@/types'
 import IFasEye from '~icons/fa-solid/eye'
@@ -72,11 +72,11 @@ async function handleBookmark() {
   const item = props.item!
   try {
     if (item.bookmarkData) {
-      await removeBookmark(item.bookmarkData.id).then(() => {
+      await pixivClient.removeBookmark(item.bookmarkData.id).then(() => {
         item.bookmarkData = null
       })
     } else {
-      await addBookmark(item.id).then((data) => {
+      await pixivClient.addBookmark(item.id).then((data) => {
         if (data.last_bookmark_id) {
           item.bookmarkData = { id: data.last_bookmark_id, private: false }
         }

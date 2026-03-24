@@ -83,7 +83,7 @@ import IFasBars from '~icons/fa-solid/bars'
 import IFasSearch from '~icons/fa-solid/search'
 import { logout } from './userData'
 import LogoH from '@/assets/LogoH.png'
-import { useSideNavStore, useUserStore } from '@/composables/states'
+import { useSideNavStore, useUserStore } from '@/stores/session'
 
 const hidden = ref(false)
 const notAtTop = ref(false)

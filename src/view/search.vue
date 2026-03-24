@@ -4,25 +4,25 @@
     SearchBox.big
 
   //- Error
-  section(v-if='error && !loading')
+  section(v-if='error && !searchStore.loading')
     ErrorPage(:description='error' title='出大问题')
 
   //- Result
   section(v-if='!error')
 
     //- Loading
-    .loading-area(v-if='loading && !resultList.length')
+    .loading-area(v-if='searchStore.loading && !searchStore.results.length')
       ArtworkList(:list='[]', :loading='16')
 
-    .no-more(v-if='!loading && !resultList.length')
+    .no-more(v-if='!searchStore.loading && !searchStore.results.length')
       NCard(style='padding: 15vh 0'): NEmpty(description='没有了，一滴都没有了……')
 
-    NSpin.result-area(:show='loading' v-if='resultList.length')
+    NSpin.result-area(:show='searchStore.loading' v-if='searchStore.results.length')
       .pagenator
-        NPagination(v-model:page='page' :item-count='total' :page-size='resultList.length')
-      ArtworkLargeList(:artwork-list='resultList')
+        NPagination(v-model:page='page' :item-count='searchStore.total' :page-size='searchStore.results.length')
+      ArtworkLargeList(:artwork-list='searchStore.results')
       .pagenator
-        NPagination(v-model:page='page' :item-count='total' :page-size='resultList.length')
+        NPagination(v-model:page='page' :item-count='searchStore.total' :page-size='searchStore.results.length')
 </template>
 
 <script lang="ts" setup>
@@ -30,23 +30,18 @@ import ArtworkLargeList from '@/components/ArtworksList/ArtworkLargeList.vue'
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
 import SearchBox from '@/components/SearchBox.vue'
-import IFasAngleLeft from '~icons/fa-solid/angle-left'
-import IFasAngleRight from '~icons/fa-solid/angle-right'
 import { NButton, NSpin } from 'naive-ui'
 
-import { ajax } from '@/utils/ajax'
-import type { ArtworkInfo } from '@/types'
+import { useSearchStore } from '@/stores/search'
 import { effect } from 'vue'
 import { setTitle } from '@/utils/setTitle'
 
 const error = ref('')
-const loading = ref(true)
 const searchKeyword = ref('')
-const resultList = ref<ArtworkInfo[]>([])
 const page = ref(1)
-const total = ref(0)
 const route = useRoute()
 const router = useRouter()
+const searchStore = useSearchStore()
 
 async function makeSearch({
   keyword,
@@ -62,22 +57,16 @@ async function makeSearch({
   error.value = ''
   if (!searchKeyword.value) return
   try {
-    loading.value = true
-    const { data } = await ajax.get<{ illustManga: { data: ArtworkInfo[] } }>(
-      `/ajax/search/artworks/${encodeURIComponent(keyword)}`,
-      { params: new URLSearchParams({ p: p ?? '1', mode: mode ?? 'text' }) }
-    )
-    resultList.value = data.illustManga?.data ?? []
-    total.value = data.illustManga?.total || 0
-    console.info(data.illustManga?.data)
+    await searchStore.search(keyword, {
+      p: parseInt(p || '1'),
+      mode: mode ?? 'text',
+    })
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
     } else {
       error.value = '哎呀，出错了！'
     }
-  } finally {
-    loading.value = false
   }
 }
 

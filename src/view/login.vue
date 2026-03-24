@@ -56,7 +56,7 @@ import {
   login,
   logout,
 } from '@/components/userData'
-import { useUserStore } from '@/composables/states'
+import { useUserStore } from '@/stores/session'
 import IFasAngleLeft from '~icons/fa-solid/angle-left'
 import { NButton, NForm, NFormItem, NInput } from 'naive-ui'
 

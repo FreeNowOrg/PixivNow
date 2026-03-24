@@ -1,7 +1,14 @@
-import { ArtworkInfo } from '@/types'
+import { ArtworkInfo, ArtworkInfoOrAd } from '@/types'
 
-export * from './artworkActions'
-export * from './userActions'
+export function sortArtList<T extends { id: number | `${number}` }>(
+  obj: Record<string, T>
+): T[] {
+  return Object.values(obj).sort((a, b) => +b.id - +a.id)
+}
+
+export function isArtwork(item: ArtworkInfoOrAd): item is ArtworkInfo {
+  return Object.keys(item).includes('id')
+}
 
 export const defaultArtwork: ArtworkInfo = {
   id: '0',

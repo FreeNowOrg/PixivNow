@@ -167,9 +167,6 @@
 </template>
 
 <script lang="ts" setup>
-import { addUserFollow, removeUserFollow } from '@/utils/userActions'
-import { ajax } from '@/utils/ajax'
-
 import ArtworkList from '@/components/ArtworksList/ArtworkList.vue'
 import ErrorPage from '@/components/ErrorPage.vue'
 import ShowMore from '@/components/ShowMore.vue'
@@ -181,9 +178,8 @@ import IFasParking from '~icons/fa-solid/parking'
 import IFasPlus from '~icons/fa-solid/plus'
 import IFasVenusMars from '~icons/fa-solid/venus-mars'
 
-import { getCache, setCache } from './siteCache'
-import { sortArtList } from '@/utils/artworkActions'
-import { useUserStore } from '@/composables/states'
+import { useUserStore } from '@/stores/session'
+import { useUserProfileStore } from '@/stores/user-profile'
 import type { ArtworkInfo, User } from '@/types'
 import {
   NButton,
@@ -200,6 +196,8 @@ import { effect } from 'vue'
 
 const loadingUser = ref(true)
 const user = ref<User>()
+const userStore = useUserStore()
+const userProfileStore = useUserProfileStore()
 const isSelfUserPage = computed(() => user.value?.userId === userStore.userId)
 
 const publicBookmarks = ref<ArtworkInfo[]>([])
@@ -231,7 +229,6 @@ const error = ref('')
 const showUserMore = ref(false)
 const route = useRoute()
 const router = useRouter()
-const userStore = useUserStore()
 
 const workspaceNameMap = {
   userWorkspacePc: '个人电脑',
@@ -260,32 +257,10 @@ async function init(id: string | number, initTab?: UserTabs): Promise<void> {
   totalPublicBookmarks.value = 0
   totalHiddenBookmarks.value = 0
 
-  const cache = getCache(`users.${id}`)
-  if (cache) {
-    loadingUser.value = false
-    user.value = cache
-    tab.value = initTab || UserTabs.illusts
-    return
-  }
   try {
     loadingUser.value = true
-    const [{ data }, { data: profileData }] = await Promise.all([
-      ajax.get<User>(`/ajax/user/${id}?full=1`),
-      ajax.get<{
-        illusts: Record<string, ArtworkInfo>
-        manga: Record<string, ArtworkInfo>
-        novels: Record<string, ArtworkInfo>
-      }>(`/ajax/user/${id}/profile/top`),
-    ])
-    const userValue = {
-      ...data,
-      illusts: sortArtList(profileData.illusts),
-      manga: sortArtList(profileData.manga),
-      novels: sortArtList(profileData.novels),
-    }
-    user.value = userValue
+    user.value = await userProfileStore.fetchUser('' + id)
     tab.value = initTab || UserTabs.illusts
-    setCache(`users.${id}`, userValue)
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
@@ -298,20 +273,21 @@ async function init(id: string | number, initTab?: UserTabs): Promise<void> {
 }
 
 const loadingUserFollow = ref(false)
-function handleUserFollow() {
+async function handleUserFollow() {
   const target = user.value
   if (!target) return
 
   loadingUserFollow.value = true
-  const isFollowed = target.isFollowed
-  const handler = isFollowed ? removeUserFollow : addUserFollow
-  handler(target.userId)
-    .then(() => {
-      target.isFollowed = !isFollowed
-    })
-    .finally(() => {
-      loadingUserFollow.value = false
-    })
+  try {
+    if (target.isFollowed) {
+      await userProfileStore.unfollowUser(target.userId)
+    } else {
+      await userProfileStore.followUser(target.userId)
+    }
+    target.isFollowed = !target.isFollowed
+  } finally {
+    loadingUserFollow.value = false
+  }
 }
 
 function userMore(): void {
@@ -330,17 +306,10 @@ async function getBookmarks(hidden?: boolean): Promise<void> {
 
   try {
     curLoading.value = true
-    const { data } = await ajax.get<{ works: ArtworkInfo; total: number }>(
-      `/ajax/user/${curUser.userId}/illusts/bookmarks`,
-      {
-        params: new URLSearchParams({
-          tag: '',
-          offset: `${curList.value.length}`,
-          limit: '48',
-          rest: hidden ? 'hide' : 'show',
-        }),
-      }
-    )
+    const data = await userProfileStore.fetchBookmarks(curUser.userId, {
+      offset: curList.value.length,
+      hidden: !!hidden,
+    })
     curTotal.value = data.total
     curList.value = curList.value.concat(data.works)
   } catch (err) {
@@ -384,8 +353,6 @@ onMounted(async () => {
 <style scoped lang="sass">
 .user-info
   position: relative
-  // margin: -1rem -1rem 1rem -1rem
-  // box-shadow: 0 4px 16px var(--theme-box-shadow-color)
 
   .bg-area
     position: fixed

@@ -5,6 +5,12 @@ import { Artwork } from '../src/types/Artworks.js'
 
 type ArtworkOrAd = Artwork | { isAdContainer: boolean }
 
+// This endpoint constructs image URLs server-side from artwork metadata,
+// using PXIMG_BASEURL_I to produce proxy-ready URLs directly.
+// Unlike other endpoints that pass through raw Pixiv responses (with
+// client-side SDK handling pximg URL replacement), this custom endpoint
+// needs to build URLs itself because the discovery API response only
+// provides partial artwork data without complete image URLs.
 export default async (req: VercelRequest, res: VercelResponse) => {
   const requestImage =
     (req.headers.accept?.includes('image') || req.query.format === 'image') &&

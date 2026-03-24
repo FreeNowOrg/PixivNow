@@ -28,7 +28,7 @@ export default defineConfig({
           },
         }),
       ],
-      dirs: ['src/components/**', 'src/composables', 'src/utils', 'src/types'],
+      dirs: ['src/components/**', 'src/composables', 'src/stores', 'src/utils', 'src/types'],
     }),
     Components({ dts: 'src/components.d.ts', resolvers: [NaiveUiResolver()] }),
     Icons({

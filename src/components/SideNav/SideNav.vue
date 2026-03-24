@@ -57,7 +57,7 @@ import IFasHeart from '~icons/fa-solid/heart'
 import IFasHome from '~icons/fa-solid/home'
 import IFasImage from '~icons/fa-solid/image'
 import IFasUser from '~icons/fa-solid/user'
-import { useSideNavStore, useUserStore } from '@/composables/states'
+import { useSideNavStore, useUserStore } from '@/stores/session'
 
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()

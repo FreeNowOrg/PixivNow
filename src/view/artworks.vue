@@ -55,7 +55,7 @@
                 //- 收藏
                 span.bookmark-count(
                   :class='{ bookmarked: illust.bookmarkData }',
-                  :title='!store.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
+                  :title='!userStore.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
                   @click='illust?.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
                 )
                   IFasHeart(data-icon)
@@ -114,12 +114,12 @@
     //- 相关推荐
     .recommend-works.body-inner(ref='recommendRef')
       h2 相关推荐
-      ArtworkList(:list='recommend', :loading='!recommend.length')
+      ArtworkList(:list='artworkStore.recommendations', :loading='!artworkStore.recommendations.length')
       ShowMore(
         :loading='recommendLoading',
         :method='handleMoreRecommend',
         :text='recommendLoading ? "加载中" : "加载更多"'
-        v-if='recommend.length && recommendNextIds.length'
+        v-if='artworkStore.recommendations.length && artworkStore.recommendNextIds.length'
       )
 
   //- Error
@@ -143,18 +143,12 @@ import IFasImages from '~icons/fa-solid/images'
 import IFasLaughWink from '~icons/fa-solid/laugh-wink'
 import IFasThumbsUp from '~icons/fa-solid/thumbs-up'
 
-import { getCache, setCache } from './siteCache'
-import { ajax } from '@/utils/ajax'
-
 // Types
-import type { Artwork, ArtworkInfo, ArtworkGallery, User } from '@/types'
+import type { Artwork, ArtworkGallery, User } from '@/types'
 
-import { useUserStore } from '@/composables/states'
-import {
-  addBookmark,
-  removeBookmark,
-  sortArtList,
-} from '@/utils/artworkActions'
+import { useUserStore } from '@/stores/session'
+import { useArtworkStore } from '@/stores/artwork'
+import { useUserProfileStore } from '@/stores/user-profile'
 import { NButton, NSkeleton } from 'naive-ui'
 import { effect } from 'vue'
 import { setTitle } from '@/utils/setTitle'
@@ -164,12 +158,12 @@ const error = ref('')
 const illust = ref<Artwork>()
 const pages = ref<ArtworkGallery[]>([])
 const user = ref<User>()
-const recommend = ref<ArtworkInfo[]>([])
-const recommendNextIds = ref<string[]>([])
 const recommendLoading = ref(false)
 const bookmarkLoading = ref(false)
 const route = useRoute()
-const store = useUserStore()
+const userStore = useUserStore()
+const artworkStore = useArtworkStore()
+const userProfileStore = useUserProfileStore()
 
 const recommendRef = ref<HTMLDivElement | null>(null)
 const authorRef = ref<HTMLElement>()
@@ -219,30 +213,27 @@ async function init(id: string): Promise<void> {
   illust.value = undefined
   pages.value = []
   user.value = undefined
-  recommend.value = []
-  recommendNextIds.value = []
+  artworkStore.clearRecommendations()
 
   addObserver(recommendRef, () => handleRecommendInit(illust.value!.illustId))
   addObserver(authorRef, () => handleUserInit(illust.value!.userId))
 
-  const dataCache = getCache(`illust.${id}`)
-  const pageCache = getCache(`illust.${id}.page`)
-  if (dataCache && pageCache) {
-    illust.value = dataCache
-    pages.value = pageCache
+  const cachedArtwork = artworkStore.getCachedArtwork(id)
+  const cachedPages = artworkStore.getCachedPages(id)
+  if (cachedArtwork && cachedPages) {
+    illust.value = cachedArtwork
+    pages.value = cachedPages
     loading.value = false
     return
   }
 
   try {
-    const [{ data: illustData }, { data: illustPage }] = await Promise.all([
-      ajax.get<Artwork>(`/ajax/illust/${id}?full=1`),
-      ajax.get<ArtworkGallery[]>(`/ajax/illust/${id}/pages`),
+    const [artworkData, pagesData] = await Promise.all([
+      artworkStore.fetchArtwork(id),
+      artworkStore.fetchArtworkPages(id),
     ])
-    setCache(`illust.${id}`, illustData)
-    setCache(`illust.${id}.page`, illustPage)
-    illust.value = illustData
-    pages.value = illustPage
+    illust.value = artworkData
+    pages.value = pagesData
   } catch (err) {
     console.warn('illust fetch error', `#${id}`, err)
     if (err instanceof Error) {
@@ -256,26 +247,15 @@ async function init(id: string): Promise<void> {
 }
 
 async function handleUserInit(userId: string): Promise<void> {
-  const value = getCache(`user.${userId}`)
-  if (value) {
-    user.value = value
+  const cached = userProfileStore.getCachedUser(userId)
+  if (cached) {
+    user.value = cached
     return
   }
 
   try {
-    const [{ data: userData }, { data: profileData }] = await Promise.all([
-      axios.get<User>(`/ajax/user/${userId}?full=1`),
-      axios.get<{ illusts: Record<string, ArtworkInfo> }>(
-        `/ajax/user/${userId}/profile/top`
-      ),
-    ])
-    const { illusts } = profileData
-    const userValue = {
-      ...userData,
-      illusts: sortArtList(illusts),
-    }
-    user.value = userValue
-    setCache(`user.${userId}`, userValue)
+    const userData = await userProfileStore.fetchUser(userId)
+    user.value = userData
   } catch (err) {
     console.warn('User fetch error', err)
   }
@@ -286,12 +266,7 @@ async function handleRecommendInit(id: string): Promise<void> {
   try {
     recommendLoading.value = true
     console.log('init recommend')
-    const { data } = await ajax.get<{
-      illusts: ArtworkInfo[]
-      nextIds: string[]
-    }>(`/ajax/illust/${id}/recommend/init?limit=18`)
-    recommend.value = data.illusts
-    recommendNextIds.value = data.nextIds
+    await artworkStore.fetchRecommendInit(id)
   } catch (err) {
     console.error('recommend fetch error', err)
   } finally {
@@ -300,7 +275,7 @@ async function handleRecommendInit(id: string): Promise<void> {
 }
 async function handleMoreRecommend(): Promise<void> {
   if (recommendLoading.value) return
-  if (!recommendNextIds.value.length) {
+  if (!artworkStore.recommendNextIds.length) {
     console.log('no more recommend')
     return
   }
@@ -308,17 +283,7 @@ async function handleMoreRecommend(): Promise<void> {
   try {
     recommendLoading.value = true
     console.log('get more recommend')
-    const requestIds = recommendNextIds.value.splice(0, 18)
-    const searchParams = new URLSearchParams()
-    for (const id of requestIds) {
-      searchParams.append('illust_ids', id)
-    }
-    const { data } = await ajax.get<{
-      illusts: ArtworkInfo[]
-      nextIds: string[]
-    }>('/ajax/illust/recommend/illusts', { params: searchParams })
-    recommend.value = recommend.value.concat(data.illusts)
-    recommendNextIds.value = recommendNextIds.value.concat(data.nextIds)
+    await artworkStore.fetchRecommendMore()
   } catch (err) {
     console.error('recommend fetch error', err)
   } finally {
@@ -328,7 +293,7 @@ async function handleMoreRecommend(): Promise<void> {
 
 async function handleAddBookmark(): Promise<void> {
   if (!illust.value) return
-  if (!store.isLoggedIn) {
+  if (!userStore.isLoggedIn) {
     console.log('需要登录才可以添加收藏')
     return
   }
@@ -343,7 +308,7 @@ async function handleAddBookmark(): Promise<void> {
   if (bookmarkLoading.value) return
   try {
     bookmarkLoading.value = true
-    const data = await addBookmark(illust.value.illustId)
+    const data = await artworkStore.addBookmark(illust.value.illustId)
     if (data.last_bookmark_id) {
       illust.value.bookmarkData = {
         id: data.last_bookmark_id,
@@ -362,7 +327,7 @@ async function handleRemoveBookmark(): Promise<void> {
   if (bookmarkLoading.value || !illust.value.bookmarkData) return
   try {
     bookmarkLoading.value = true
-    await removeBookmark(illust.value.bookmarkData.id)
+    await artworkStore.removeBookmark(illust.value.bookmarkData.id)
     illust.value.bookmarkData = null
     illust.value.bookmarkCount--
   } catch (err) {

@@ -1,58 +1,37 @@
 <template lang="pug">
 #following-latest-view.body-inner
   h1 已关注用户的作品
-  ArtworkList(:list='illusts', :loading='isLoading && !illusts.length')
+  ArtworkList(:list='followingStore.latestIllusts', :loading='followingStore.latestLoading && !followingStore.latestIllusts.length')
   ShowMore(
-    :loading='isLoading',
-    :method='fetchList',
-    :text='isLoading ? "加载中" : "加载更多"'
-    v-if='hasNextPage && illusts.length'
+    :loading='followingStore.latestLoading',
+    :method='handleFetch',
+    :text='followingStore.latestLoading ? "加载中" : "加载更多"'
+    v-if='followingStore.latestHasNextPage && followingStore.latestIllusts.length'
   )
 </template>
 
 <script lang="ts" setup>
-import { type ArtworkInfo } from '@/types'
+import { useUserStore } from '@/stores/session'
+import { useFollowingStore } from '@/stores/following'
 
 onMounted(() => {
   setTitle('New Artworks from Following Users')
-  fetchList()
+  followingStore.resetLatest()
+  handleFetch()
 })
 
-const illusts = ref<ArtworkInfo[]>([])
 const userStore = useUserStore()
+const followingStore = useFollowingStore()
 const route = useRoute()
 const router = useRouter()
 
-const nextPage = ref(1)
-const hasNextPage = ref(true)
-const isLoading = ref(false)
-
-async function fetchList() {
+async function handleFetch() {
   if (!userStore.isLoggedIn) {
     return router.push({
       name: 'user-login',
       query: { back: route.fullPath },
     })
   }
-  if (isLoading.value) return
-  isLoading.value = true
-
-  try {
-    const { data } = await ajax.get<{
-      page: {
-        isLastPage: boolean
-      }
-      thumbnails: {
-        illust: ArtworkInfo[]
-      }
-    }>(`/ajax/follow_latest/illust`, {
-      params: { p: nextPage.value, mode: 'all' },
-    })
-    illusts.value.push(...data.thumbnails.illust)
-    nextPage.value++
-    hasNextPage.value = !data.page.isLastPage
-  } finally {
-    isLoading.value = false
-  }
+  followingStore.fetchLatest()
 }
 </script>
