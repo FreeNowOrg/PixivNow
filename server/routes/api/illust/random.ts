@@ -8,8 +8,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const reqHeaders = getHeaders(event)
   const requestImage =
-    (reqHeaders.accept?.includes('image') ||
-      query.format === 'image') &&
+    (reqHeaders.accept?.includes('image') || query.format === 'image') &&
     query.format !== 'json'
 
   try {
@@ -18,14 +17,14 @@ export default defineEventHandler(async (event) => {
         url: '/ajax/illust/discovery',
         params: {
           mode: query.mode ?? 'safe',
-          max: requestImage ? '1' : (query.max as string) ?? '18',
+          max: requestImage ? '1' : ((query.max as string) ?? '18'),
         },
         headers: reqHeaders as Record<string, string>,
       })
     ).data
 
-    const illusts = (data.illusts ?? []).filter(
-      (value): value is Artwork => Object.keys(value).includes('id')
+    const illusts = (data.illusts ?? []).filter((value): value is Artwork =>
+      Object.keys(value).includes('id')
     )
 
     illusts.forEach((value) => {
@@ -44,7 +43,11 @@ export default defineEventHandler(async (event) => {
     })
 
     if (requestImage) {
-      return sendRedirect(event, illusts[0].urls.regular)
+      const url = illusts[0]?.urls?.regular
+      if (!url) {
+        throw createError({ statusCode: 404, message: 'No image found' })
+      }
+      return sendRedirect(event, url)
     } else {
       return illusts
     }
