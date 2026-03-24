@@ -62,13 +62,14 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // Server-only (overridable via NUXT_UA_BLACKLIST or legacy UA_BLACKLIST)
-    uaBlacklist: process.env.UA_BLACKLIST || '',
+    uaBlacklist: process.env.UA_BLACKLIST || '[]',
     public: {
       // Overridable via NUXT_PUBLIC_* or legacy VITE_* env vars
       pximgBaseUrlI: process.env.VITE_PXIMG_BASEURL_I || '/-/',
       pximgBaseUrlS: process.env.VITE_PXIMG_BASEURL_S || '/~/',
       googleAnalyticsId: process.env.VITE_GOOGLE_ANALYTICS_ID || '',
-      siteEnv: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+      siteEnv:
+        process.env.NODE_ENV === 'production' ? 'production' : 'development',
     },
   },
 

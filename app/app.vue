@@ -1,5 +1,8 @@
 <template lang="pug">
-NaiveuiProvider#app-full-container
+NaiveuiProvider#app-full-container(
+  :data-env='siteConfig.public.siteEnv',
+  :data-route-name='route.name'
+)
   SiteNoticeBanner
   SiteHeader
 
@@ -27,6 +30,8 @@ const SideNav = defineAsyncComponent(
 )
 
 const userStore = useUserStore()
+const route = useRoute()
+const siteConfig = useRuntimeConfig()
 
 onMounted(async () => {
   if (!existsSessionId()) {
