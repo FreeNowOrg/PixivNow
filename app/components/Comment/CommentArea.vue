@@ -24,7 +24,6 @@
 
 <script lang="ts" setup>
 import Comment from './Comment.vue'
-import { pixivClient } from '~/api/pixiv-client'
 import type { Comments } from '~/types'
 import { NButton } from 'naive-ui'
 import IFasPlus from '~icons/fa-solid/plus'

@@ -32,7 +32,6 @@ import ArtworkList from '~/components/Artwork/ArtworkList.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
 import SearchBox from '~/components/SearchBox.vue'
 import { NButton, NSpin } from 'naive-ui'
-
 import { useSearchStore } from '~/stores/search'
 import { effect } from 'vue'
 import { setTitle } from '~/utils/setTitle'

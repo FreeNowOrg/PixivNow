@@ -150,7 +150,6 @@ import IFasThumbsUp from '~icons/fa-solid/thumbs-up'
 
 // Types
 import type { Artwork, ArtworkGallery, User } from '~/types'
-
 import { useUserStore } from '~/stores/session'
 import { useArtworkStore } from '~/stores/artwork'
 import { useUserProfileStore } from '~/stores/user-profile'

@@ -37,13 +37,13 @@
 <script lang="ts" setup>
 import ArtworkList from './Artwork/ArtworkList.vue'
 import type { User, UserListItem } from '~/types'
-import { pixivClient } from '~/api/pixiv-client'
 import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasPlus from '~icons/fa-solid/plus'
 import { useUserStore } from '~/stores/session'
 
 const userStore = useUserStore()
+const pixivClient = usePixivClientStore().client
 
 const props = defineProps<{
   user?: UserListItem

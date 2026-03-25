@@ -1,5 +1,4 @@
 import type { PixivUser } from '~/types'
-import { pixivClient } from '~/api/pixiv-client'
 import Cookies from 'js-cookie'
 
 export function existsSessionId(): boolean {
@@ -13,6 +12,7 @@ export function existsSessionId(): boolean {
 }
 
 export async function initUser(): Promise<PixivUser> {
+  const pixivClient = usePixivClientStore().client
   try {
     const data = await pixivClient._getSessionUser()
     if (data.token) {

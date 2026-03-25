@@ -11,10 +11,15 @@
   .artwork-card(v-else-if='item')
     .artwork-image
       .side-tags
-        .restrict.x-restrict(aria-label='R-18' role='img' title='R-18' v-if='item.xRestrict')
+        .restrict.x-restrict(
+          aria-label='R-18'
+          role='img'
+          title='R-18'
+          v-if='item.xRestrict'
+        )
           IFasEye(aria-hidden='true')
         .restrict.ai-restrict(
-          :aria-label='`AI生成`'
+          :aria-label='`AI生成`',
           :title='`AI生成(${item.aiType})`'
           role='img'
           v-if='item.aiType === 2'
@@ -27,8 +32,8 @@
           IFasImages(data-icon)
           | {{ item.pageCount }}
         button.bookmark(
-          :aria-label='item.bookmarkData ? "取消收藏" : "添加收藏"'
-          :class='{ bookmarked: item.bookmarkData, disabled: loadingBookmark }'
+          :aria-label='item.bookmarkData ? "取消收藏" : "添加收藏"',
+          :class='{ bookmarked: item.bookmarkData, disabled: loadingBookmark }',
           :title='item.bookmarkData ? "取消收藏" : "添加收藏"'
           @click.stop.prevent='handleBookmark'
         )
@@ -53,7 +58,6 @@
 
 <script lang="ts" setup>
 import DeferLoad from '../DeferLoad.vue'
-import { pixivClient } from '~/api/pixiv-client'
 import { NSkeleton } from 'naive-ui'
 import { IllustType } from '~/utils/constants'
 import IFasEye from '~icons/fa-solid/eye'
@@ -61,13 +65,14 @@ import IFasHeart from '~icons/fa-solid/heart'
 import IFasImages from '~icons/fa-solid/images'
 import IFasRobot from '~icons/fa-solid/robot'
 import IPlayCircle from '~icons/fa-solid/play-circle'
-
 import type { ArtworkInfo } from '~/types'
 
 const props = defineProps<{
   item?: ArtworkInfo
   loading?: boolean
 }>()
+
+const pixivClient = usePixivClientStore().client
 
 const loadingBookmark = ref(false)
 async function handleBookmark() {

@@ -25,7 +25,6 @@ definePageMeta({ name: 'ranking' })
 import ArtworkLargeList from '~/components/Artwork/ArtworkLargeList.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
 import Placeholder from '~/components/Placeholder.vue'
-
 import { useRankingStore } from '~/stores/ranking'
 import { effect } from 'vue'
 import { setTitle } from '~/utils/setTitle'

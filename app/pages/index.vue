@@ -30,7 +30,11 @@
     .bg-info-modal
       .align-center
         RouterLink.thumb(:to='"/artworks/" + randomBg?.id')
-          img(:src='randomBgRegularUrl' lazyload :style="{width: '100%', height: 'auto'}")
+          img(
+            :src='randomBgRegularUrl',
+            :style='{ width: "100%", height: "auto" }'
+            lazyload
+          )
         .desc
           .author
             RouterLink(:to='"/users/" + randomBg?.userId') @{{ randomBg?.userName }}
@@ -56,27 +60,29 @@
         )
           template(#default) {{ homeStore.loadingDiscovery ? '加载中' : '换一批' }}
           template(#icon): NIcon: IFasRandom
-      ArtworkList(:list='homeStore.discoveryList', :loading='homeStore.loadingDiscovery')
+      ArtworkList(
+        :list='homeStore.discoveryList',
+        :loading='homeStore.loadingDiscovery'
+      )
 </template>
 
 <script lang="ts" setup>
+import ArtworkList from '~/components/Artwork/ArtworkList.vue'
+import SearchBox from '~/components/SearchBox.vue'
+import { NH2, NButton, NIcon, NModal } from 'naive-ui'
+import IFasInfoCircle from '~icons/fa-solid/info-circle'
+import IFasRandom from '~icons/fa-solid/random'
+import { useHomeStore } from '~/stores/home'
+import { toRegularUrl } from '~/utils/pximg'
+import LogoH from '~/assets/LogoH.png'
+import { setTitle } from '~/utils/setTitle'
+
 definePageMeta({ name: 'home' })
 
 // Mark body with route class for navbar transparency
 useHead({
   bodyAttrs: { 'data-route': 'home' },
 })
-
-import ArtworkList from '~/components/Artwork/ArtworkList.vue'
-import SearchBox from '~/components/SearchBox.vue'
-import { NH2, NButton, NIcon, NModal } from 'naive-ui'
-import IFasInfoCircle from '~icons/fa-solid/info-circle'
-import IFasRandom from '~icons/fa-solid/random'
-
-import { useHomeStore } from '~/stores/home'
-import { toRegularUrl } from '~/utils/pximg'
-import LogoH from '~/assets/LogoH.png'
-import { setTitle } from '~/utils/setTitle'
 
 const isShowBgInfo = ref(false)
 const homeStore = useHomeStore()

@@ -57,10 +57,7 @@ export interface FollowingResult {
 
 // ── PixivWebClient ───────────────────────────────────────────────────
 
-function resolveBaseUrl(
-  fallback: string,
-  override?: string
-): string {
+function resolveBaseUrl(fallback: string, override?: string): string {
   if (override) return override.endsWith('/') ? override : override + '/'
   return fallback
 }
@@ -430,8 +427,3 @@ export class PixivWebClient {
     return this.transform(data)
   }
 }
-
-/**
- * Singleton instance for use across the application.
- */
-export const pixivClient = new PixivWebClient()

@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import { pixivClient } from '~/api/pixiv-client'
 import type { ArtworkInfo } from '~/types'
 
 export const useUserArtworksStore = defineStore('user-artworks', () => {
+  const pixivClient = usePixivClientStore().client
   const allIds = ref<string[]>([])
   const cachedPages = ref<Record<number, ArtworkInfo[]>>({})
   const pageSize = 24

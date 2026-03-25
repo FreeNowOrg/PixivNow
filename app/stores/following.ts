@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { pixivClient } from '~/api/pixiv-client'
 import type { ArtworkInfo, UserListItem } from '~/types'
 
 export const useFollowingStore = defineStore('following', () => {
@@ -23,6 +22,7 @@ export const useFollowingStore = defineStore('following', () => {
     userId: string,
     hidden: boolean
   ): Promise<void> {
+    const pixivClient = usePixivClientStore().client
     const list = hidden ? hiddenList : publicList
     const isLoading = hidden ? isLoadingHidden : isLoadingPublic
     const total = hidden ? totalHidden : totalPublic

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import type { PixivUser } from '~/types'
-import { pixivClient } from '~/api/pixiv-client'
 import Cookies from 'js-cookie'
 
 export const useSideNavStore = defineStore('sidenav', () => {
@@ -19,6 +18,7 @@ export const useSideNavStore = defineStore('sidenav', () => {
 })
 
 export const useUserStore = defineStore('user', () => {
+  const pixivClient = usePixivClientStore().client
   const user = ref<PixivUser | null>(null)
   const isLoggedIn = computed(() => !!user.value)
   const userId = computed(() => user.value?.id)

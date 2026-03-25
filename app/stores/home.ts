@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import { pixivClient } from '~/api/pixiv-client'
 import type { ArtworkInfo } from '~/types'
 
 export const useHomeStore = defineStore('home', () => {
+  const pixivClient = usePixivClientStore().client
   const randomBg = ref<ArtworkInfo | null>(null)
   const discoveryList = ref<ArtworkInfo[]>([])
   const loadingDiscovery = ref(false)
@@ -11,7 +11,7 @@ export const useHomeStore = defineStore('home', () => {
     try {
       const illusts = await pixivClient.getDiscovery({ mode: 'safe', max: 1 })
       if (illusts.length) {
-        randomBg.value = illusts[0]
+        randomBg.value = illusts[0]!
       }
     } catch (err) {
       console.error(err)

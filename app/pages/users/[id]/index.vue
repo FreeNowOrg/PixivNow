@@ -181,7 +181,6 @@ import IFasMapMarkerAlt from '~icons/fa-solid/map-marker-alt'
 import IFasParking from '~icons/fa-solid/parking'
 import IFasPlus from '~icons/fa-solid/plus'
 import IFasVenusMars from '~icons/fa-solid/venus-mars'
-
 import { useUserStore } from '~/stores/session'
 import { useUserProfileStore } from '~/stores/user-profile'
 import type { ArtworkInfo, User } from '~/types'

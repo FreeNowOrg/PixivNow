@@ -37,7 +37,6 @@
 <script lang="ts" setup>
 import ArtworkList from './Artwork/ArtworkList.vue'
 import type { User } from '~/types'
-import { pixivClient } from '~/api/pixiv-client'
 import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasPlus from '~icons/fa-solid/plus'

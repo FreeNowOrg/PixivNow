@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { pixivClient } from '~/api/pixiv-client'
 import type { ArtworkRank } from '~/types'
 
 export const useRankingStore = defineStore('ranking', () => {
@@ -8,6 +7,7 @@ export const useRankingStore = defineStore('ranking', () => {
     contents: ArtworkRank[]
   } | null>(null)
   const loading = ref(false)
+  const pixivClient = usePixivClientStore().client
 
   async function fetchRanking(params?: {
     p?: string
