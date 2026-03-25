@@ -1,51 +1,52 @@
 <template lang="pug">
-NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
-  RouterLink.button(
-    :to='$route.query.back.toString()'
-    v-if='$route.query.back'
-  )
-    IFasAngleLeft
-    | &nbsp;取消
-  h1.title 设置 Pixiv 令牌
-  NFormItem(
-    :feedback='sessionIdInput && !validateSessionId(sessionIdInput) ? "哎呀，这个格式看上去不太对……" : error ? error : "这个格式看上去没问题，点击保存试试"',
-    :validation-status='(sessionIdInput && !validateSessionId(sessionIdInput)) || error ? "error" : "success"'
-    label='PHPSESSID'
-    required
-  )
-    NInput(
-      :class='validateSessionId(sessionIdInput) ? "valid" : "invalid"'
-      v-model:value='sessionIdInput'
+#auth-view
+  NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
+    RouterLink.button(
+      :to='$route.query.back.toString()'
+      v-if='$route.query.back'
     )
-  #submit
-    NButton(
-      :disabled='!!error || loading || !validateSessionId(sessionIdInput)'
-      @click='async () => await submit()'
-      block
-      type='primary'
-    ) {{ loading ? '登录中……' : '保存令牌' }}
-  .tips
-    h2 如何获取 Pixiv 令牌？
-    p 访问 <a href="https://www.pixiv.net" target="_blank">www.pixiv.net</a> 源站并登录，打开浏览器控制台(f12)，点击“存储(storage)”一栏，在 cookie 列表里找到“键(key)”为<code>PHPSESSID</code>的一栏，将它的“值(value)”复制后填写到这里。
-    p
-      | 它应该形如：
-      code(@click='exampleSessionId' title='此处的令牌为随机生成，仅供演示使用') {{ example }}
-      | 。
-    h2 PixivNow 会窃取我的个人信息吗？
-    p 我们<strong>不会</strong>存储或转让您的个人信息以及 cookie。
-    p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
+      IFasAngleLeft
+      | &nbsp;取消
+    h1.title 设置 Pixiv 令牌
+    NFormItem(
+      :feedback='sessionIdInput && !validateSessionId(sessionIdInput) ? "哎呀，这个格式看上去不太对……" : error ? error : "这个格式看上去没问题，点击保存试试"',
+      :validation-status='(sessionIdInput && !validateSessionId(sessionIdInput)) || error ? "error" : "success"'
+      label='PHPSESSID'
+      required
+    )
+      NInput(
+        :class='validateSessionId(sessionIdInput) ? "valid" : "invalid"'
+        v-model:value='sessionIdInput'
+      )
+    #submit
+      NButton(
+        :disabled='!!error || loading || !validateSessionId(sessionIdInput)'
+        @click='async () => await submit()'
+        block
+        type='primary'
+      ) {{ loading ? '登录中……' : '保存令牌' }}
+    .tips
+      h2 如何获取 Pixiv 令牌？
+      p 访问 <a href="https://www.pixiv.net" target="_blank">www.pixiv.net</a> 源站并登录，打开浏览器控制台(f12)，点击“存储(storage)”一栏，在 cookie 列表里找到“键(key)”为<code>PHPSESSID</code>的一栏，将它的“值(value)”复制后填写到这里。
+      p
+        | 它应该形如：
+        code(@click='exampleSessionId' title='此处的令牌为随机生成，仅供演示使用') {{ example }}
+        | 。
+      h2 PixivNow 会窃取我的个人信息吗？
+      p 我们<strong>不会</strong>存储或转让您的个人信息以及 cookie。
+      p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
 
-#login-form.logged-in(v-if='userStore.isLoggedIn')
-  RouterLink.button(
-    :to='$route.query.back.toString()'
-    v-if='$route.query.back'
-  )
-    IFasAngleLeft
-    | &nbsp;返回
-  h1 查看 Pixiv 令牌
-  NInput.token(:value='Cookies.get("PHPSESSID")' readonly)
-  #submit
-    NButton(@click='remove' type='error') 移除令牌
+  #login-form.logged-in(v-if='userStore.isLoggedIn')
+    RouterLink.button(
+      :to='$route.query.back.toString()'
+      v-if='$route.query.back'
+    )
+      IFasAngleLeft
+      | &nbsp;返回
+    h1 查看 Pixiv 令牌
+    NInput.token(:value='Cookies.get("PHPSESSID")' readonly)
+    #submit
+      NButton(@click='remove' type='error') 移除令牌
 </template>
 
 <script lang="ts" setup>
