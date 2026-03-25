@@ -2,7 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "labels": ["dependencies"],
-  "baseBranches": ["dev"],
+  "baseBranches": ["master"],
   "packageRules": [
     {
       "groupName": "framework",
@@ -10,9 +10,9 @@
         "vue",
         "vue-i18n",
         "vue-router",
+        "nuxt",
         "axios",
-        "pinia",
-        "@vercel/node"
+        "pinia"
       ]
     },
     {
@@ -33,7 +33,6 @@
         "pug",
         "sass",
         "tslib",
-        "vercel",
         "@vue/language-plugin-pug",
         "@vitejs{/,}**",
         "unplugin{/,}**",
