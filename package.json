@@ -14,7 +14,9 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "prepare": "nuxt prepare",
     "postinstall": "nuxt prepare",
+    "serve": "node .output/server/index.mjs",
     "changelog": "conventional-changelog -p jquery -i CHANGELOG.md -s -r 0"
   },
   "dependencies": {

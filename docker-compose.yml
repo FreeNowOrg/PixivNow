@@ -1,0 +1,11 @@
+services:
+  pixivnow:
+    build: .
+    ports:
+      - '${PIXIVNOW_PORT:-3000}:3000'
+    environment:
+      - NUXT_PUBLIC_PXIMG_BASEURL_I=${NUXT_PUBLIC_PXIMG_BASEURL_I:-/-/}
+      - NUXT_PUBLIC_PXIMG_BASEURL_S=${NUXT_PUBLIC_PXIMG_BASEURL_S:-/~/}
+      - NUXT_PUBLIC_GOOGLE_ANALYTICS_ID=${NUXT_PUBLIC_GOOGLE_ANALYTICS_ID:-}
+      - NUXT_UA_BLACKLIST=${NUXT_UA_BLACKLIST:-}
+    restart: unless-stopped

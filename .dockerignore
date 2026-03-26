@@ -1,0 +1,12 @@
+.git
+.nuxt
+.output
+dist
+node_modules
+*.log
+.vscode
+.idea
+*.md
+!package.json
+DEV_NOTES
+docker-compose.yml
