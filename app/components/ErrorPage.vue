@@ -74,12 +74,11 @@ const props = defineProps<{
 }>()
 const msg = ref('')
 function randomMsg(): void {
-  const newValue = msgList[Math.floor(Math.random() * msgList.length)]!
-  if (newValue !== msg.value) {
-    msg.value = newValue
-  } else {
-    randomMsg()
+  let index = Math.floor(Math.random() * msgList.length)
+  if (msgList[index] === msg.value) {
+    index++
   }
+  msg.value = msgList[index % msgList.length]!
 }
 
 effect(() => {

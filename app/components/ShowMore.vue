@@ -19,7 +19,9 @@ const props = defineProps<{
   loading: boolean
 }>()
 
-useIntersectionObserver(elRef, async ([{ isIntersecting }]) => {
+useIntersectionObserver(elRef, async (entries) => {
+  if (entries.length === 0) return
+  const isIntersecting = entries[0]!.isIntersecting
   if (isIntersecting) {
     await nextTick()
     props.method()

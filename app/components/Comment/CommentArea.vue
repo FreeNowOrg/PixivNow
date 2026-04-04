@@ -68,16 +68,15 @@ function pushComment(data: Comments) {
 
 const commentsArea = ref<HTMLDivElement | null>(null)
 
-const ob = useIntersectionObserver(
-  commentsArea,
-  async ([{ isIntersecting }]) => {
-    if (isIntersecting) {
-      await nextTick()
-      init(props.id)
-      ob.stop()
-    }
+const ob = useIntersectionObserver(commentsArea, async (entries) => {
+  if (entries.length === 0) return
+  const isIntersecting = entries[0]!.isIntersecting
+  if (isIntersecting) {
+    await nextTick()
+    init(props.id)
+    ob.stop()
   }
-)
+})
 </script>
 
 <style scoped lang="sass">

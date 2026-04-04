@@ -200,15 +200,14 @@ function addObserver(elementRef: Ref, cb: () => any) {
     await nextTick()
     if (illust.value?.illustId) {
       unWatch()
-      const ob = useIntersectionObserver(
-        elementRef.value,
-        ([{ isIntersecting }]) => {
-          if (isIntersecting) {
-            cb()
-            ob.stop()
-          }
+      const ob = useIntersectionObserver(elementRef.value, (entries) => {
+        if (entries.length === 0) return
+        const isIntersecting = entries[0]!.isIntersecting
+        if (isIntersecting) {
+          cb()
+          ob.stop()
         }
-      )
+      })
     }
   })
 }

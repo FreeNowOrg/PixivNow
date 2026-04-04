@@ -23,7 +23,8 @@ const error = ref(false)
 const imgRef = ref<HTMLImageElement | null>(null)
 
 const ob = useIntersectionObserver(imgRef, async (entries) => {
-  const isIntersecting = entries[0]?.isIntersecting
+  if (entries.length === 0) return
+  const isIntersecting = entries[0]!.isIntersecting
   if (isIntersecting) {
     await nextTick()
     loadImage()
