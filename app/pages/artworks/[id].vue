@@ -54,7 +54,7 @@
 
                 //- 收藏
                 button.stat-item.bookmark-btn(
-                  :aria-label='illust.bookmarkData ? "取消收藏" : "添加收藏"'
+                  :aria-label='illust.bookmarkData ? "取消收藏" : "添加收藏"',
                   :class='{ bookmarked: illust.bookmarkData }',
                   :title='!userStore.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
                   @click='illust?.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
@@ -115,7 +115,10 @@
     //- 相关推荐
     .recommend-works.body-inner(ref='recommendRef')
       h2 相关推荐
-      ArtworkList(:list='artworkStore.recommendations', :loading='!artworkStore.recommendations.length')
+      ArtworkList(
+        :list='artworkStore.recommendations',
+        :loading='!artworkStore.recommendations.length'
+      )
       ShowMore(
         :loading='recommendLoading',
         :method='handleMoreRecommend',
@@ -150,9 +153,9 @@ import IFasThumbsUp from '~icons/fa-solid/thumbs-up'
 
 // Types
 import type { Artwork, ArtworkGallery, User } from '~/types'
-import { useUserStore } from '~/stores/session'
-import { useArtworkStore } from '~/stores/artwork'
-import { useUserProfileStore } from '~/stores/user-profile'
+import { useUserStore } from '~/composables/session'
+import { useArtworkStore } from '~/composables/artwork'
+import { useUserProfileStore } from '~/composables/user-profile'
 import { NButton, NSkeleton } from 'naive-ui'
 import { effect } from 'vue'
 import { setTitle } from '~/utils/setTitle'

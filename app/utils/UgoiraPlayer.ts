@@ -1,7 +1,4 @@
-import type { Artwork } from '~/types'
 import gifWorkerUrl from 'gif.js/dist/gif.worker.js?url'
-import { ZipDownloader, type ZipDownloaderOptions } from './ZipDownloader'
-import { replacePximgInObject } from './pximg'
 
 /**
  * Public options

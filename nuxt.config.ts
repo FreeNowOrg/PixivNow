@@ -1,40 +1,26 @@
-import AutoImport from 'unplugin-auto-import/vite'
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
-import Components from 'unplugin-vue-components/vite'
-import Icons from 'unplugin-icons/vite'
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-01',
 
   ssr: false,
 
-  modules: ['@pinia/nuxt', '@nuxtjs/i18n', '@vueuse/nuxt', 'nuxtjs-naive-ui'],
+  modules: [
+    '@pinia/nuxt',
+    '@nuxtjs/i18n',
+    '@vueuse/nuxt',
+    '@bg-dev/nuxt-naiveui',
+    [
+      'unplugin-icons/nuxt',
+      {
+        scale: 1,
+        defaultClass: 'svg--inline',
+      },
+    ],
+  ],
 
   css: ['~/assets/styles/index.sass'],
 
   vite: {
-    plugins: [
-      Icons({
-        scale: 1,
-        defaultClass: 'svg--inline',
-      }),
-      AutoImport({
-        imports: [
-          {
-            'naive-ui': [
-              'useDialog',
-              'useMessage',
-              'useNotification',
-              'useLoadingBar',
-            ],
-          },
-        ],
-      }),
-      Components({
-        resolvers: [NaiveUiResolver()],
-      }),
-    ],
     optimizeDeps: {
       include: [
         'vue-gtag',
@@ -45,9 +31,12 @@ export default defineNuxtConfig({
         'date-fns-tz',
       ],
     },
-    vue: {
-      template: {
-        compilerOptions: {},
+  },
+
+  typescript: {
+    tsConfig: {
+      vueCompilerOptions: {
+        plugins: ['@vue/language-plugin-pug'],
       },
     },
   },
@@ -55,8 +44,6 @@ export default defineNuxtConfig({
   i18n: {
     locales: [{ code: 'zh-Hans', file: 'zh-Hans.json' }],
     defaultLocale: 'zh-Hans',
-    lazy: true,
-    langDir: '../app/locales',
     strategy: 'no_prefix',
   },
 

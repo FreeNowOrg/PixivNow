@@ -1,5 +1,4 @@
 import escapeRegExp from 'lodash.escaperegexp'
-import { pixivAjax } from '~~/server/utils/pixiv'
 
 // Unified Pixiv API proxy middleware.
 // Intercepts /ajax/*, /rpc/*, and *.php requests and proxies them to Pixiv.

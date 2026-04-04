@@ -1,6 +1,3 @@
-import { defineStore } from 'pinia'
-import type { ArtworkInfo, UserListItem } from '~/types'
-
 export const useFollowingStore = defineStore('following', () => {
   // Following list state
   const publicList = ref<UserListItem[]>([])
@@ -64,6 +61,7 @@ export const useFollowingStore = defineStore('following', () => {
     if (latestLoading.value) return
     latestLoading.value = true
     try {
+      const pixivClient = usePixivClientStore().client
       const data = await pixivClient.getFollowLatest({
         p: latestNextPage.value,
         mode: 'all',

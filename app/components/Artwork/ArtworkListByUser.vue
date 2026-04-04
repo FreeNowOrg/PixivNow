@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import type { ArtworkInfo } from '~/types'
 import { NPagination } from 'naive-ui'
-import { useUserArtworksStore } from '~/stores/user-artworks'
+import { useUserArtworksStore } from '~/composables/user-artworks'
 
 const props = withDefaults(
   defineProps<{

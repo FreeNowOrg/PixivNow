@@ -59,7 +59,6 @@
 <script lang="ts" setup>
 import DeferLoad from '../DeferLoad.vue'
 import { NSkeleton } from 'naive-ui'
-import { IllustType } from '~/utils/constants'
 import IFasEye from '~icons/fa-solid/eye'
 import IFasHeart from '~icons/fa-solid/heart'
 import IFasImages from '~icons/fa-solid/images'

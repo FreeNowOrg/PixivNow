@@ -74,7 +74,7 @@ const props = defineProps<{
 }>()
 const msg = ref('')
 function randomMsg(): void {
-  const newValue = msgList[Math.floor(Math.random() * msgList.length)]
+  const newValue = msgList[Math.floor(Math.random() * msgList.length)]!
   if (newValue !== msg.value) {
     msg.value = newValue
   } else {

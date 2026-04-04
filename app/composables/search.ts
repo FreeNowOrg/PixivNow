@@ -1,6 +1,3 @@
-import { defineStore } from 'pinia'
-import type { ArtworkInfo } from '~/types'
-
 export const useSearchStore = defineStore('search', () => {
   const pixivClient = usePixivClientStore().client
   const results = ref<ArtworkInfo[]>([])

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { USER_AGENT } from '~~/server/utils/pixiv'
 
 // Unified pximg image proxy middleware.
 // Intercepts /-/* and /~/* requests and proxies them to pximg.

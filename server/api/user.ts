@@ -1,5 +1,4 @@
 import { type CheerioAPI, load } from 'cheerio'
-import { pixivAjax } from '~~/server/utils/pixiv'
 
 export default defineEventHandler(async (event) => {
   const cookies = parseCookies(event)

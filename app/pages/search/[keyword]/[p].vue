@@ -9,7 +9,6 @@
 
   //- Result
   section(v-if='!error')
-
     //- Loading
     .loading-area(v-if='searchStore.loading && !searchStore.results.length')
       ArtworkList(:list='[]', :loading='16')
@@ -17,12 +16,23 @@
     .no-more(v-if='!searchStore.loading && !searchStore.results.length')
       NCard(style='padding: 15vh 0'): NEmpty(description='没有了，一滴都没有了……')
 
-    NSpin.result-area(:show='searchStore.loading' v-if='searchStore.results.length')
+    NSpin.result-area(
+      :show='searchStore.loading'
+      v-if='searchStore.results.length'
+    )
       .pagenator
-        NPagination(v-model:page='page' :item-count='searchStore.total' :page-size='searchStore.results.length')
+        NPagination(
+          :item-count='searchStore.total',
+          :page-size='searchStore.results.length'
+          v-model:page='page'
+        )
       ArtworkLargeList(:artwork-list='searchStore.results')
       .pagenator
-        NPagination(v-model:page='page' :item-count='searchStore.total' :page-size='searchStore.results.length')
+        NPagination(
+          :item-count='searchStore.total',
+          :page-size='searchStore.results.length'
+          v-model:page='page'
+        )
 </template>
 
 <script lang="ts" setup>
@@ -32,7 +42,7 @@ import ArtworkList from '~/components/Artwork/ArtworkList.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
 import SearchBox from '~/components/SearchBox.vue'
 import { NButton, NSpin } from 'naive-ui'
-import { useSearchStore } from '~/stores/search'
+import { useSearchStore } from '~/composables/search'
 import { effect } from 'vue'
 import { setTitle } from '~/utils/setTitle'
 

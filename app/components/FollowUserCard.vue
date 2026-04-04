@@ -40,7 +40,7 @@ import type { User, UserListItem } from '~/types'
 import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasPlus from '~icons/fa-solid/plus'
-import { useUserStore } from '~/stores/session'
+import { useUserStore } from '~/composables/session'
 
 const userStore = useUserStore()
 const pixivClient = usePixivClientStore().client

@@ -1,7 +1,10 @@
 <template lang="pug">
 #following-latest-view.body-inner
   h1 已关注用户的作品
-  ArtworkList(:list='followingStore.latestIllusts', :loading='followingStore.latestLoading && !followingStore.latestIllusts.length')
+  ArtworkList(
+    :list='followingStore.latestIllusts',
+    :loading='followingStore.latestLoading && !followingStore.latestIllusts.length'
+  )
   ShowMore(
     :loading='followingStore.latestLoading',
     :method='handleFetch',
@@ -15,8 +18,8 @@ definePageMeta({
   name: 'following-latest',
   alias: ['/bookmark_new_illust'],
 })
-import { useUserStore } from '~/stores/session'
-import { useFollowingStore } from '~/stores/following'
+import { useUserStore } from '~/composables/session'
+import { useFollowingStore } from '~/composables/following'
 
 onMounted(() => {
   setTitle('New Artworks from Following Users')

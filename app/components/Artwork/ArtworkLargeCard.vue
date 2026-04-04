@@ -7,9 +7,19 @@
           :alt='illust.title',
           :src='illust.url.replace("p0_master", "p0_square")'
         )
-      .restrict.x-restrict(aria-label='R-18' role='img' title='R-18' v-if='illust.xRestrict === 2')
+      .restrict.x-restrict(
+        aria-label='R-18'
+        role='img'
+        title='R-18'
+        v-if='illust.xRestrict === 2'
+      )
         IFasEye(aria-hidden='true')
-      .restrict.ai-restrict(aria-label='AI生成' role='img' title='AI生成' v-if='illust.aiType === 2')
+      .restrict.ai-restrict(
+        aria-label='AI生成'
+        role='img'
+        title='AI生成'
+        v-if='illust.aiType === 2'
+      )
         IFasRobot(aria-hidden='true')
       .page-count(
         :title='"共 " + illust.pageCount + " 张"'
@@ -27,7 +37,11 @@
       RouterLink(:to='"/artworks/" + illust.id') {{ illust.title }}
     .author(:title='illust.userName')
       RouterLink(:to='"/users/" + illust.userId')
-        img.avatar(:alt='illust.userName' :src='illust.profileImageUrl' lazyload)
+        img.avatar(
+          :alt='illust.userName',
+          :src='illust.profileImageUrl'
+          lazyload
+        )
         | {{ illust.userName }}
     .tags
       ArtTag(:key='_', :tag='item' v-for='(item, _) in illust.tags')
@@ -35,7 +49,6 @@
 
 <script lang="ts" setup>
 import type { ArtworkInfo } from '~/types'
-import { IllustType } from '~/utils/constants'
 import DeferLoad from '../DeferLoad.vue'
 import ArtTag from '../ArtTag.vue'
 import IFasEye from '~icons/fa-solid/eye'

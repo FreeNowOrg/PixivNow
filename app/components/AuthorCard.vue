@@ -3,8 +3,11 @@
   .author-inner(v-if='user')
     .flex-center
       .left
-        RouterLink(:to='"/users/" + user.userId' :aria-label='"查看作者: " + user.name')
-          img(:alt='user.name + " 的头像"' :src='user.imageBig')
+        RouterLink(
+          :aria-label='"查看作者: " + user.name',
+          :to='"/users/" + user.userId'
+        )
+          img(:alt='user.name + " 的头像"', :src='user.imageBig')
       .right
         .flex
           h4.plain
@@ -40,7 +43,7 @@ import type { User } from '~/types'
 import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasPlus from '~icons/fa-solid/plus'
-import { useUserStore } from '~/stores/session'
+import { useUserStore } from '~/composables/session'
 
 const userStore = useUserStore()
 

@@ -1,5 +1,3 @@
-import { defineStore } from 'pinia'
-import type { PixivUser } from '~/types'
 import Cookies from 'js-cookie'
 
 export const useSideNavStore = defineStore('sidenav', () => {

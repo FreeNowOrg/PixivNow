@@ -41,7 +41,10 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
       .group
         .title PixivNow
         ul
-          SideNavListLink(externalLink='https://www.pixiv.net/' text='Pixiv.net')
+          SideNavListLink(
+            externalLink='https://www.pixiv.net/'
+            text='Pixiv.net'
+          )
             IFasExternalLinkAlt.link-icon
           SideNavListLink(link='/about' text='关于我们')
             IFasHeart.link-icon
@@ -57,7 +60,7 @@ import IFasHeart from '~icons/fa-solid/heart'
 import IFasHome from '~icons/fa-solid/home'
 import IFasImage from '~icons/fa-solid/image'
 import IFasUser from '~icons/fa-solid/user'
-import { useSideNavStore, useUserStore } from '~/stores/session'
+import { useSideNavStore, useUserStore } from '~/composables/session'
 
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()

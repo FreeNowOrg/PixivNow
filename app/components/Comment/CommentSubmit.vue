@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import Cookies from 'js-cookie'
-import { useUserStore } from '~/stores/session'
+import { useUserStore } from '~/composables/session'
 
 const store = useUserStore()
 
