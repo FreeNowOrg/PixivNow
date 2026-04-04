@@ -11,10 +11,6 @@ section.error-page
 </template>
 
 <script lang="ts" setup>
-import { setTitle } from '~/utils/setTitle'
-import { NResult } from 'naive-ui'
-import { effect } from 'vue'
-
 const msgList = [
   // 正经向提示
   '频繁遇到此问题？请通过关于里的联系方式联系我们！',
@@ -59,7 +55,7 @@ const msgList = [
   '这像劲爆纵连一样没有人喜欢！',
 ]
 
-const props = defineProps<{
+const { title, description, status } = defineProps<{
   title?: string
   description?: string
   status?:
@@ -82,7 +78,7 @@ function randomMsg(): void {
 }
 
 effect(() => {
-  setTitle(props.title, 'Error')
+  setTitle(title, 'Error')
 })
 
 onMounted(() => {

@@ -13,8 +13,6 @@ Transition(name='fade')
 </template>
 
 <script setup lang="ts">
-import {} from 'vue'
-
 const alreadyShown = ref(false)
 const forceShow = computed(() => route.name === 'about-us')
 const isShow = computed(() => {

@@ -13,7 +13,7 @@ import IFasSpinner from '~icons/fa-solid/spinner'
 
 const elRef = ref<HTMLDivElement | null>(null)
 
-const props = defineProps<{
+const { text, method, loading } = defineProps<{
   text: string
   method: () => any | Promise<any>
   loading: boolean
@@ -24,7 +24,7 @@ useIntersectionObserver(elRef, async (entries) => {
   const isIntersecting = entries[0]!.isIntersecting
   if (isIntersecting) {
     await nextTick()
-    props.method()
+    method()
   }
 })
 </script>

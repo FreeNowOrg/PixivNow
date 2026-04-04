@@ -1,4 +1,4 @@
-import { PROJECT_NAME, PROJECT_TAGLINE } from '~/config'
+const { PROJECT_NAME, PROJECT_TAGLINE } = useAppConfig()
 
 export function setTitle(...args: (string | number | null | undefined)[]) {
   return (document.title = [

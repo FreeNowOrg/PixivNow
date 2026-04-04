@@ -18,14 +18,14 @@
 
 <script lang="ts" setup>
 import Cookies from 'js-cookie'
-import { useUserStore } from '~/composables/session'
+import axios from 'axios'
 
 const store = useUserStore()
 
 const loading = ref(false)
 const comment = ref('')
 
-const props = defineProps<{ id: string }>()
+const { id } = defineProps<{ id: string }>()
 const emit = defineEmits<{
   (
     e: 'push-comment',
@@ -45,7 +45,7 @@ async function submit(): Promise<void> {
       `/ajax/illusts/comments/post`,
       {
         type: 'comment',
-        illust_id: props.id,
+        illust_id: id,
         author_user_id: store.userId,
         comment,
       },

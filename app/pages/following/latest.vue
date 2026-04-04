@@ -18,8 +18,6 @@ definePageMeta({
   name: 'following-latest',
   alias: ['/bookmark_new_illust'],
 })
-import { useUserStore } from '~/composables/session'
-import { useFollowingStore } from '~/composables/following'
 
 onMounted(() => {
   setTitle('New Artworks from Following Users')

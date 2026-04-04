@@ -10,7 +10,6 @@ NConfigProvider(
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { zhCN } from 'naive-ui'
 
 const theme = ref({

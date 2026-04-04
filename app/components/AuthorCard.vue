@@ -38,23 +38,19 @@
 </template>
 
 <script lang="ts" setup>
-import ArtworkList from './Artwork/ArtworkList.vue'
-import type { User } from '~/types'
-import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasPlus from '~icons/fa-solid/plus'
-import { useUserStore } from '~/composables/session'
 
 const userStore = useUserStore()
 
-const props = defineProps<{
+const { user } = defineProps<{
   user?: User
 }>()
 
 const loadingUserFollow = ref(false)
+const pixivClient = usePixivClientStore().client
 function handleUserFollow() {
-  if (!props.user || loadingUserFollow.value) return
-  const user = props.user
+  if (!user || loadingUserFollow.value) return
 
   loadingUserFollow.value = true
   const isFollowed = user.isFollowed

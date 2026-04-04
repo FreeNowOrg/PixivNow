@@ -12,7 +12,7 @@ Component(
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+const { src, width, height } = defineProps<{
   src: string
   width?: number
   height?: number
@@ -36,8 +36,8 @@ function loadImage() {
   loaded.value = false
   error.value = false
 
-  const img = new Image(props.width, props.height)
-  img.src = props.src
+  const img = new Image(width, height)
+  img.src = src
   img.onload = () => {
     loaded.value = true
     error.value = false

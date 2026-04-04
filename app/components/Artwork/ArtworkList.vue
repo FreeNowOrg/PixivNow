@@ -6,17 +6,14 @@ Component.artworks-list(
   x-scrollable
 )
   template(v-if='loading')
-    li(v-for='i in skeletonNumber' :key='"skeleton-" + i')
+    li(:key='"skeleton-" + i' v-for='i in skeletonNumber')
       ArtworkCard(loading)
   template(v-else)
-    li(v-for='item in artworks' :key='item.id')
+    li(:key='item.id' v-for='item in artworks')
       ArtworkCard(:item='item')
 </template>
 
 <script lang="ts" setup>
-import ArtworkCard from './ArtworkCard.vue'
-import { isArtwork } from '~/utils'
-import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
 import { NScrollbar } from 'naive-ui'
 
 const props = defineProps<{

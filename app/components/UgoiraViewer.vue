@@ -61,10 +61,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { Artwork } from '~/types'
-import { NSpin, NIcon, NFloatButton, useMessage, NProgress } from 'naive-ui'
-import { UgoiraPlayer } from '~/utils/UgoiraPlayer'
-import DeferLoad from './DeferLoad.vue'
 import IPlay from '~icons/fa-solid/play'
 import IDownload from '~icons/fa-solid/download'
 import {
@@ -75,7 +71,7 @@ import {
   IconPhotoDown,
 } from '@tabler/icons-vue'
 
-const props = defineProps<{
+const { illust } = defineProps<{
   illust: Artwork
 }>()
 const emit = defineEmits<{
@@ -89,7 +85,7 @@ const isLoading = ref(false)
 const canvasRef = ref<HTMLCanvasElement>()
 const downloadProgress = ref(0)
 const player = computed(() => {
-  const p = new UgoiraPlayer(props.illust, {
+  const p = new UgoiraPlayer(illust, {
     onDownloadProgress: (progress, frameIndex, totalFrames) => {
       downloadProgress.value = progress
       console.log(
@@ -168,7 +164,7 @@ function handlePause() {
 
 function handleJumpToCover() {
   const a = document.createElement('a')
-  a.href = props.illust.urls.original
+  a.href = illust.urls.original
   a.target = '_blank'
   a.click()
 }
@@ -177,7 +173,7 @@ const isLoadingGif = ref(false)
 const gifBlob = ref<Blob>()
 async function handleDownloadGif() {
   if (!player.value.canExport) return
-  const filename = `${props.illust.illustId}.ugoira.gif`
+  const filename = `${illust.illustId}.ugoira.gif`
 
   if (gifBlob.value) {
     downloadBlob(gifBlob.value, filename)
@@ -207,7 +203,7 @@ const isLoadingMp4 = ref(false)
 const mp4Blob = ref<Blob>()
 async function handleDownloadMp4() {
   if (!player.value.canExport) return
-  const filename = `${props.illust.illustId}.ugoira.mp4`
+  const filename = `${illust.illustId}.ugoira.mp4`
 
   if (mp4Blob.value) {
     downloadBlob(mp4Blob.value, filename)

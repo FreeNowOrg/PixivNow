@@ -61,10 +61,9 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({ name: 'following' })
 import IChevronLeft from '~icons/fa-solid/chevron-left'
-import { useUserStore } from '~/composables/session'
-import { useFollowingStore } from '~/composables/following'
+
+definePageMeta({ name: 'following' })
 
 onMounted(() => {
   setTitle('Following')

@@ -179,13 +179,6 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
-  name: 'users',
-  alias: ['/u/:id'],
-})
-import ArtworkList from '~/components/Artwork/ArtworkList.vue'
-import ErrorPage from '~/components/ErrorPage.vue'
-import ShowMore from '~/components/ShowMore.vue'
 import IFasBirthdayCake from '~icons/fa-solid/birthday-cake'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasHome from '~icons/fa-solid/home'
@@ -193,21 +186,11 @@ import IFasMapMarkerAlt from '~icons/fa-solid/map-marker-alt'
 import IFasParking from '~icons/fa-solid/parking'
 import IFasPlus from '~icons/fa-solid/plus'
 import IFasVenusMars from '~icons/fa-solid/venus-mars'
-import { useUserStore } from '~/composables/session'
-import { useUserProfileStore } from '~/composables/user-profile'
-import type { ArtworkInfo, User } from '~/types'
-import {
-  NButton,
-  NEmpty,
-  NImage,
-  NModal,
-  NSkeleton,
-  NTabPane,
-  NTable,
-  NTabs,
-} from 'naive-ui'
-import { setTitle } from '~/utils/setTitle'
-import { effect } from 'vue'
+
+definePageMeta({
+  name: 'users',
+  alias: ['/u/:id'],
+})
 
 const loadingUser = ref(true)
 const user = ref<User>()

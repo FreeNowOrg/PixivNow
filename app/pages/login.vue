@@ -50,17 +50,10 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({ name: 'login' })
 import Cookies from 'js-cookie'
-import {
-  exampleSessionId,
-  validateSessionId,
-  login,
-  logout,
-} from '~/composables/userData'
-import { useUserStore } from '~/composables/session'
 import IFasAngleLeft from '~icons/fa-solid/angle-left'
-import { NButton, NForm, NFormItem, NInput } from 'naive-ui'
+
+definePageMeta({ name: 'login' })
 
 const example = ref(exampleSessionId())
 const sessionIdInput = ref('')

@@ -7,8 +7,3 @@
   )
     RouterLink(to='/'): NButton(type='primary') Take me home
 </template>
-
-<script lang="ts" setup>
-import ErrorPage from '~/components/ErrorPage.vue'
-import { NButton } from 'naive-ui'
-</script>

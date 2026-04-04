@@ -6,8 +6,6 @@ NTag.artwork-tag(
 </template>
 
 <script lang="ts" setup>
-import { NTag } from 'naive-ui'
-
 defineProps<{ tag: string }>()
 </script>
 

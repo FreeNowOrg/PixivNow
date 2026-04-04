@@ -51,8 +51,6 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
 </template>
 
 <script lang="ts" setup>
-import SideNavListLink from './SideNavListLink.vue'
-import SearchBox from '../SearchBox.vue'
 import IFasCrown from '~icons/fa-solid/crown'
 import IFasExternalLinkAlt from '~icons/fa-solid/external-link-alt'
 import IFasFingerprint from '~icons/fa-solid/fingerprint'
@@ -60,7 +58,6 @@ import IFasHeart from '~icons/fa-solid/heart'
 import IFasHome from '~icons/fa-solid/home'
 import IFasImage from '~icons/fa-solid/image'
 import IFasUser from '~icons/fa-solid/user'
-import { useSideNavStore, useUserStore } from '~/composables/session'
 
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()

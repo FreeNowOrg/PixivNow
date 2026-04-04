@@ -37,14 +37,6 @@
 
 <script lang="ts" setup>
 definePageMeta({ name: 'search' })
-import ArtworkLargeList from '~/components/Artwork/ArtworkLargeList.vue'
-import ArtworkList from '~/components/Artwork/ArtworkList.vue'
-import ErrorPage from '~/components/ErrorPage.vue'
-import SearchBox from '~/components/SearchBox.vue'
-import { NButton, NSpin } from 'naive-ui'
-import { useSearchStore } from '~/composables/search'
-import { effect } from 'vue'
-import { setTitle } from '~/utils/setTitle'
 
 const error = ref('')
 const searchKeyword = ref('')

@@ -57,14 +57,11 @@
 </template>
 
 <script lang="ts" setup>
-import DeferLoad from '../DeferLoad.vue'
-import { NSkeleton } from 'naive-ui'
 import IFasEye from '~icons/fa-solid/eye'
 import IFasHeart from '~icons/fa-solid/heart'
 import IFasImages from '~icons/fa-solid/images'
 import IFasRobot from '~icons/fa-solid/robot'
 import IPlayCircle from '~icons/fa-solid/play-circle'
-import type { ArtworkInfo } from '~/types'
 
 const props = defineProps<{
   item?: ArtworkInfo

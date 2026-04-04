@@ -9,8 +9,6 @@ Waterfall.artwork-large-list(
 </template>
 
 <script lang="ts" setup>
-import ArtworkLargeCard from './ArtworkLargeCard.vue'
-import type { ArtworkInfo, ArtworkRank } from '~/types'
 import { Waterfall } from 'vue-waterfall-plugin-next'
 import 'vue-waterfall-plugin-next/dist/style.css'
 

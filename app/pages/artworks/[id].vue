@@ -132,18 +132,6 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
-  name: 'artworks',
-  alias: ['/illust/:id', '/i/:id'],
-})
-import ArtTag from '~/components/ArtTag.vue'
-import ArtworkList from '~/components/Artwork/ArtworkList.vue'
-import AuthorCard from '~/components/AuthorCard.vue'
-import Card from '~/components/Card.vue'
-import CommentArea from '~/components/Comment/CommentArea.vue'
-import ErrorPage from '~/components/ErrorPage.vue'
-import Gallery from '~/components/Gallery.vue'
-import ShowMore from '~/components/ShowMore.vue'
 import IFasArrowRight from '~icons/fa-solid/arrow-right'
 import IFasEye from '~icons/fa-solid/eye'
 import IFasHeart from '~icons/fa-solid/heart'
@@ -151,14 +139,10 @@ import IFasImages from '~icons/fa-solid/images'
 import IFasLaughWink from '~icons/fa-solid/laugh-wink'
 import IFasThumbsUp from '~icons/fa-solid/thumbs-up'
 
-// Types
-import type { Artwork, ArtworkGallery, User } from '~/types'
-import { useUserStore } from '~/composables/session'
-import { useArtworkStore } from '~/composables/artwork'
-import { useUserProfileStore } from '~/composables/user-profile'
-import { NButton, NSkeleton } from 'naive-ui'
-import { effect } from 'vue'
-import { setTitle } from '~/utils/setTitle'
+definePageMeta({
+  name: 'artworks',
+  alias: ['/illust/:id', '/i/:id'],
+})
 
 const loading = ref(true)
 const error = ref('')

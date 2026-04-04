@@ -77,12 +77,9 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 </template>
 
 <script lang="ts" setup>
-import SearchBox from './SearchBox.vue'
 import IFasBars from '~icons/fa-solid/bars'
 import IFasSearch from '~icons/fa-solid/search'
-import { logout } from '~/composables/userData'
 import LogoH from '~/assets/LogoH.png'
-import { useSideNavStore, useUserStore } from '~/composables/session'
 
 const hidden = ref(false)
 const notAtTop = ref(false)

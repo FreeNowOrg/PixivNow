@@ -15,6 +15,7 @@ li
 
 <script lang="ts" setup>
 import IFasListUl from '~icons/fa-solid/list-ul'
+
 defineProps<{
   text: string
   externalLink?: string

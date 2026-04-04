@@ -10,6 +10,7 @@
 
 <script lang="ts" setup>
 import IFasSearch from '~icons/fa-solid/search'
+
 const route = useRoute()
 const router = useRouter()
 const keyword = ref((route.params.keyword as string) || '')

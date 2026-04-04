@@ -48,9 +48,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { ArtworkInfo } from '~/types'
-import DeferLoad from '../DeferLoad.vue'
-import ArtTag from '../ArtTag.vue'
 import IFasEye from '~icons/fa-solid/eye'
 import IFasImages from '~icons/fa-solid/images'
 import IFasRobot from '~icons/fa-solid/robot'
