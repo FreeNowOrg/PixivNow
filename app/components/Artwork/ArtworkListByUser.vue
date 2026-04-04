@@ -19,19 +19,10 @@
 </template>
 
 <script setup lang="ts">
-import type { ArtworkInfo } from '~/types'
-import { NPagination } from 'naive-ui'
-import { useUserArtworksStore } from '~/stores/user-artworks'
-
-const props = withDefaults(
-  defineProps<{
-    userId: string
-    workCategory?: 'illust' | 'manga'
-  }>(),
-  {
-    workCategory: 'illust',
-  }
-)
+const { userId, workCategory = 'illust' } = defineProps<{
+  userId: string
+  workCategory?: 'illust' | 'manga'
+}>()
 
 const containerRef = ref<HTMLElement>()
 const curPage = ref(1)
@@ -48,7 +39,7 @@ onMounted(async () => {
 })
 watch(curPage, (page) => {
   backToTop()
-  userArtworksStore.fetchPage(props.userId, page, props.workCategory)
+  userArtworksStore.fetchPage(userId, page, workCategory)
 })
 
 function backToTop() {
@@ -63,8 +54,8 @@ function backToTop() {
 async function firstInit() {
   userArtworksStore.reset()
   curPage.value = 1
-  await userArtworksStore.fetchAllIds(props.userId, props.workCategory)
-  await userArtworksStore.fetchPage(props.userId, 1, props.workCategory)
+  await userArtworksStore.fetchAllIds(userId, workCategory)
+  await userArtworksStore.fetchPage(userId, 1, workCategory)
 }
 </script>
 

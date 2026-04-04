@@ -43,9 +43,7 @@ footer.global-footer
 </template>
 
 <script lang="ts" setup>
-import ExternalLink from './ExternalLink.vue'
-import { GITHUB_URL, PROJECT_NAME, GITHUB_OWNER, version } from '~/config'
-
+const { GITHUB_OWNER, GITHUB_URL, PROJECT_NAME, version } = useAppConfig()
 const yearStr = ref(`2021 - ${new Date().getFullYear()}`)
 </script>
 <style scoped lang="sass">

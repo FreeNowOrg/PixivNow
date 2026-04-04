@@ -54,7 +54,7 @@
 
                 //- 收藏
                 button.stat-item.bookmark-btn(
-                  :aria-label='illust.bookmarkData ? "取消收藏" : "添加收藏"'
+                  :aria-label='illust.bookmarkData ? "取消收藏" : "添加收藏"',
                   :class='{ bookmarked: illust.bookmarkData }',
                   :title='!userStore.isLoggedIn ? "收藏" : illust.bookmarkData ? "取消收藏" : "添加收藏"'
                   @click='illust?.bookmarkData ? handleRemoveBookmark() : handleAddBookmark()'
@@ -115,7 +115,10 @@
     //- 相关推荐
     .recommend-works.body-inner(ref='recommendRef')
       h2 相关推荐
-      ArtworkList(:list='artworkStore.recommendations', :loading='!artworkStore.recommendations.length')
+      ArtworkList(
+        :list='artworkStore.recommendations',
+        :loading='!artworkStore.recommendations.length'
+      )
       ShowMore(
         :loading='recommendLoading',
         :method='handleMoreRecommend',
@@ -129,18 +132,6 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
-  name: 'artworks',
-  alias: ['/illust/:id', '/i/:id'],
-})
-import ArtTag from '~/components/ArtTag.vue'
-import ArtworkList from '~/components/Artwork/ArtworkList.vue'
-import AuthorCard from '~/components/AuthorCard.vue'
-import Card from '~/components/Card.vue'
-import CommentArea from '~/components/Comment/CommentArea.vue'
-import ErrorPage from '~/components/ErrorPage.vue'
-import Gallery from '~/components/Gallery.vue'
-import ShowMore from '~/components/ShowMore.vue'
 import IFasArrowRight from '~icons/fa-solid/arrow-right'
 import IFasEye from '~icons/fa-solid/eye'
 import IFasHeart from '~icons/fa-solid/heart'
@@ -148,14 +139,10 @@ import IFasImages from '~icons/fa-solid/images'
 import IFasLaughWink from '~icons/fa-solid/laugh-wink'
 import IFasThumbsUp from '~icons/fa-solid/thumbs-up'
 
-// Types
-import type { Artwork, ArtworkGallery, User } from '~/types'
-import { useUserStore } from '~/stores/session'
-import { useArtworkStore } from '~/stores/artwork'
-import { useUserProfileStore } from '~/stores/user-profile'
-import { NButton, NSkeleton } from 'naive-ui'
-import { effect } from 'vue'
-import { setTitle } from '~/utils/setTitle'
+definePageMeta({
+  name: 'artworks',
+  alias: ['/illust/:id', '/i/:id'],
+})
 
 const loading = ref(true)
 const error = ref('')
@@ -197,15 +184,14 @@ function addObserver(elementRef: Ref, cb: () => any) {
     await nextTick()
     if (illust.value?.illustId) {
       unWatch()
-      const ob = useIntersectionObserver(
-        elementRef.value,
-        ([{ isIntersecting }]) => {
-          if (isIntersecting) {
-            cb()
-            ob.stop()
-          }
+      const ob = useIntersectionObserver(elementRef.value, (entries) => {
+        if (entries.length === 0) return
+        const isIntersecting = entries[0]!.isIntersecting
+        if (isIntersecting) {
+          cb()
+          ob.stop()
         }
-      )
+      })
     }
   })
 }

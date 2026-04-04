@@ -23,23 +23,20 @@
 </template>
 
 <script lang="ts" setup>
-import Comment from './Comment.vue'
-import type { Comments } from '~/types'
-import { NButton } from 'naive-ui'
 import IFasPlus from '~icons/fa-solid/plus'
 
 const loading = ref(false)
 const comments = ref<Comments[]>([])
 const hasNext = ref(false)
 
-const props = defineProps<{
+const { id, count } = defineProps<{
   id: string
   count: number
 }>()
 
 async function init(id: string | number): Promise<void> {
   if (loading.value) return
-  if (!props.count) {
+  if (!count) {
     hasNext.value = false
     comments.value = []
     loading.value = false
@@ -48,6 +45,7 @@ async function init(id: string | number): Promise<void> {
 
   try {
     loading.value = true
+    const pixivClient = usePixivClientStore().client
     const data = await pixivClient.getComments(`${id}`, {
       limit: comments.value.length ? 30 : 3,
       offset: comments.value.length,
@@ -68,16 +66,15 @@ function pushComment(data: Comments) {
 
 const commentsArea = ref<HTMLDivElement | null>(null)
 
-const ob = useIntersectionObserver(
-  commentsArea,
-  async ([{ isIntersecting }]) => {
-    if (isIntersecting) {
-      await nextTick()
-      init(props.id)
-      ob.stop()
-    }
+const ob = useIntersectionObserver(commentsArea, async (entries) => {
+  if (entries.length === 0) return
+  const isIntersecting = entries[0]!.isIntersecting
+  if (isIntersecting) {
+    await nextTick()
+    init(id)
+    ob.stop()
   }
-)
+})
 </script>
 
 <style scoped lang="sass">

@@ -113,14 +113,22 @@
         type='line'
         v-model:value='tab'
       )
-        NTabPane(display-directive='show:lazy' :name='UserTabs.illusts' tab='插画')
+        NTabPane(
+          :name='UserTabs.illusts'
+          display-directive='show:lazy'
+          tab='插画'
+        )
           NEmpty(
             description='用户没有插画作品 (｡•́︿•̀｡)'
             v-if='user.illusts && !user.illusts.length'
           )
           .user-illust.body-inner(v-else)
             ArtworkListByUser(:user-id='user.userId' work-category='illust')
-        NTabPane(display-directive='show:lazy' :name='UserTabs.mangas' tab='漫画')
+        NTabPane(
+          :name='UserTabs.mangas'
+          display-directive='show:lazy'
+          tab='漫画'
+        )
           NEmpty(description='用户没有漫画作品 (*/ω＼*)' v-if='!user.manga?.length')
           .user-manga.body-inner(v-else)
             ArtworkListByUser(:user-id='user.userId' work-category='manga')
@@ -144,7 +152,11 @@
                 :method='() => getBookmarks(false)',
                 :text='loadingPublicBookmarks ? "正在加载" : "加载更多"'
               )
-        NTabPane(:name='UserTabs.hidden_bookmarks' tab='秘密收藏' v-if='isSelfUserPage')
+        NTabPane(
+          :name='UserTabs.hidden_bookmarks'
+          tab='秘密收藏'
+          v-if='isSelfUserPage'
+        )
           ArtworkList(
             :list='[]',
             :loading='8'
@@ -167,13 +179,6 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
-  name: 'users',
-  alias: ['/u/:id'],
-})
-import ArtworkList from '~/components/Artwork/ArtworkList.vue'
-import ErrorPage from '~/components/ErrorPage.vue'
-import ShowMore from '~/components/ShowMore.vue'
 import IFasBirthdayCake from '~icons/fa-solid/birthday-cake'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasHome from '~icons/fa-solid/home'
@@ -181,21 +186,11 @@ import IFasMapMarkerAlt from '~icons/fa-solid/map-marker-alt'
 import IFasParking from '~icons/fa-solid/parking'
 import IFasPlus from '~icons/fa-solid/plus'
 import IFasVenusMars from '~icons/fa-solid/venus-mars'
-import { useUserStore } from '~/stores/session'
-import { useUserProfileStore } from '~/stores/user-profile'
-import type { ArtworkInfo, User } from '~/types'
-import {
-  NButton,
-  NEmpty,
-  NImage,
-  NModal,
-  NSkeleton,
-  NTabPane,
-  NTable,
-  NTabs,
-} from 'naive-ui'
-import { setTitle } from '~/utils/setTitle'
-import { effect } from 'vue'
+
+definePageMeta({
+  name: 'users',
+  alias: ['/u/:id'],
+})
 
 const loadingUser = ref(true)
 const user = ref<User>()
@@ -225,7 +220,7 @@ enum UserTabs {
   illusts = 'illusts',
   mangas = 'mangas',
   public_bookmarks = 'public_bookmarks',
-  hidden_bookmarks = 'hidden_bookmarks'
+  hidden_bookmarks = 'hidden_bookmarks',
 }
 const tab = ref<UserTabs>()
 const error = ref('')

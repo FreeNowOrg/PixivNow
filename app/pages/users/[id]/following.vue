@@ -2,11 +2,7 @@
 #about-view.body-inner
   h1
     .flex.gap-1
-      NButton(
-        @click='$router.push(`/users/${targetUserId}`)'
-        circle
-        secondary
-      )
+      NButton(@click='$router.push(`/users/${targetUserId}`)' circle secondary)
         template(#icon)
           IChevronLeft
       .first-heading {{ followingStore.title }}
@@ -25,7 +21,11 @@
           v-if='followingStore.publicList.length === 0 && followingStore.isLoadingPublic'
         )
           FollowUserCard
-        Card(:key='user.userId' title='' v-for='user in followingStore.publicList')
+        Card(
+          :key='user.userId'
+          title=''
+          v-for='user in followingStore.publicList'
+        )
           FollowUserCard(:user='user')
         ShowMore(
           :loading='followingStore.isLoadingPublic',
@@ -46,7 +46,11 @@
           v-if='followingStore.hiddenList.length === 0 && followingStore.isLoadingHidden'
         )
           FollowUserCard
-        Card(:key='user.userId' title='' v-for='user in followingStore.hiddenList')
+        Card(
+          :key='user.userId'
+          title=''
+          v-for='user in followingStore.hiddenList'
+        )
           FollowUserCard(:user='user')
         ShowMore(
           :loading='followingStore.isLoadingHidden',
@@ -57,10 +61,9 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({ name: 'following' })
 import IChevronLeft from '~icons/fa-solid/chevron-left'
-import { useUserStore } from '~/stores/session'
-import { useFollowingStore } from '~/stores/following'
+
+definePageMeta({ name: 'following' })
 
 onMounted(() => {
   setTitle('Following')

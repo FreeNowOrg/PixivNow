@@ -1,5 +1,4 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import type { ArtworkUrls } from '~/types'
 
 const PXIMG_I = 'https://i.pximg.net/'
 const PXIMG_S = 'https://s.pximg.net/'
@@ -10,9 +9,7 @@ const PXIMG_S = 'https://s.pximg.net/'
 export function createPximgReplacer(baseUrlI: string, baseUrlS: string) {
   function replacePximgUrl(str: string): string {
     if (!str.includes('pximg.net')) return str
-    return str
-      .replaceAll(PXIMG_I, baseUrlI)
-      .replaceAll(PXIMG_S, baseUrlS)
+    return str.replaceAll(PXIMG_I, baseUrlI).replaceAll(PXIMG_S, baseUrlS)
   }
 
   function replacePximgInObject<T>(obj: T): T {

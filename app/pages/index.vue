@@ -67,15 +67,8 @@
 </template>
 
 <script lang="ts" setup>
-import ArtworkList from '~/components/Artwork/ArtworkList.vue'
-import SearchBox from '~/components/SearchBox.vue'
-import { NH2, NButton, NIcon, NModal } from 'naive-ui'
-import IFasInfoCircle from '~icons/fa-solid/info-circle'
 import IFasRandom from '~icons/fa-solid/random'
-import { useHomeStore } from '~/stores/home'
-import { toRegularUrl } from '~/utils/pximg'
 import LogoH from '~/assets/LogoH.png'
-import { setTitle } from '~/utils/setTitle'
 
 definePageMeta({ name: 'home' })
 

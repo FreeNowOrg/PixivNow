@@ -1,5 +1,3 @@
-import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
-
 export function sortArtList<T extends { id: number | `${number}` }>(
   obj: Record<string, T>
 ): T[] {

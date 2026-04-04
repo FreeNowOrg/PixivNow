@@ -12,7 +12,7 @@ Component(
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+const { src, width, height } = defineProps<{
   src: string
   width?: number
   height?: number
@@ -22,7 +22,9 @@ const loaded = ref(false)
 const error = ref(false)
 const imgRef = ref<HTMLImageElement | null>(null)
 
-const ob = useIntersectionObserver(imgRef, async ([{ isIntersecting }]) => {
+const ob = useIntersectionObserver(imgRef, async (entries) => {
+  if (entries.length === 0) return
+  const isIntersecting = entries[0]!.isIntersecting
   if (isIntersecting) {
     await nextTick()
     loadImage()
@@ -34,8 +36,8 @@ function loadImage() {
   loaded.value = false
   error.value = false
 
-  const img = new Image(props.width, props.height)
-  img.src = props.src
+  const img = new Image(width, height)
+  img.src = src
   img.onload = () => {
     loaded.value = true
     error.value = false

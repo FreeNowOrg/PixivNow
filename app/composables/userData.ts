@@ -1,4 +1,3 @@
-import type { PixivUser } from '~/types'
 import Cookies from 'js-cookie'
 
 export function existsSessionId(): boolean {

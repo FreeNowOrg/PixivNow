@@ -74,11 +74,11 @@ mixin repoLink
 </template>
 
 <script lang="ts" setup>
-definePageMeta({ name: 'about' })
-import { PROJECT_NAME, GITHUB_OWNER, GITHUB_REPO, GITHUB_URL } from '~/config'
+const { PROJECT_NAME, GITHUB_OWNER, GITHUB_REPO, GITHUB_URL } = useAppConfig()
 import Card from '~/components/Card.vue'
 import ExternalLink from '~/components/ExternalLink.vue'
 import { setTitle } from '~/utils/setTitle'
 
+definePageMeta({ name: 'about' })
 onMounted(() => setTitle('About'))
 </script>

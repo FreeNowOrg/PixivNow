@@ -2,9 +2,9 @@
 header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
   .flex
     button.side-nav-toggle.plain(
+      @click='toggleSideNav'
       aria-label='打开导航菜单'
       title='导航菜单'
-      @click='toggleSideNav'
     )
       IFasBars(aria-hidden='true')
 
@@ -16,11 +16,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
       .search-full.align-right.flex-1
         SearchBox
       .search-icon.align-right.flex-1
-        button.pointer.plain(
-          aria-label='搜索'
-          title='搜索'
-          @click='openSideNav'
-        )
+        button.pointer.plain(@click='openSideNav' aria-label='搜索' title='搜索')
           IFasSearch(aria-hidden='true')
           | &nbsp;搜索
     .flex.search-area(v-else)
@@ -28,67 +24,62 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
     #global-nav__user-area.user-area
       .user-link(ref='userLinkRef')
         button.dropdown-btn.plain.pointer(
-          :aria-expanded='showUserDropdown'
-          :aria-label='userStore.isLoggedIn ? "用户菜单: " + userStore.userName : "用户菜单"'
-          :class='{ "show-user": showUserDropdown }'
+          :aria-expanded='showUserDropdown',
+          :aria-label='userStore.isLoggedIn ? "用户菜单: " + userStore.userName : "用户菜单"',
+          :class='{ "show-user": showUserDropdown }',
           :title='userStore.isLoggedIn ? userStore.userId + " (" + userStore.userPixivId + ")" : "未登入"'
           @click='showUserDropdown = !showUserDropdown'
         )
           img.avatar(
-            :alt='userStore.isLoggedIn ? userStore.userName : "未登入"'
+            :alt='userStore.isLoggedIn ? userStore.userName : "未登入"',
             :src='userStore.isLoggedIn ? userStore.userProfileImg : "/~/common/images/no_profile.png"'
           )
 
         .dropdown-content(:class='{ visible: showUserDropdown }')
           ul
-              //- notLogIn
-              li(v-if='!userStore.isLoggedIn')
-                .nav-user-card
-                  .top
-                    .banner-bg
-                    img.avatar(:src='"/~/common/images/no_profile.png"')
-                  .details
-                    a.user-name 游客
-                    .uid 绑定令牌，同步您的 Pixiv 信息！
+            //- notLogIn
+            li(v-if='!userStore.isLoggedIn')
+              .nav-user-card
+                .top
+                  .banner-bg
+                  img.avatar(:src='"/~/common/images/no_profile.png"')
+                .details
+                  a.user-name 游客
+                  .uid 绑定令牌，同步您的 Pixiv 信息！
 
-              //- isLogedIn
-              li(v-if='userStore.isLoggedIn')
-                .nav-user-card
-                  .top
-                    .banner-bg
-                    RouterLink.plain.name(:to='"/users/" + userStore.userId')
-                      img.avatar(:src='userStore.userProfileImgBig')
-                  .details
-                    RouterLink.plain.user-name(
-                      :to='"/users/" + userStore.userId'
-                    ) {{ userStore.userName }}
-                    .uid @{{ userStore.userPixivId }}
+            //- isLogedIn
+            li(v-if='userStore.isLoggedIn')
+              .nav-user-card
+                .top
+                  .banner-bg
+                  RouterLink.plain.name(:to='"/users/" + userStore.userId')
+                    img.avatar(:src='userStore.userProfileImgBig')
+                .details
+                  RouterLink.plain.user-name(
+                    :to='"/users/" + userStore.userId'
+                  ) {{ userStore.userName }}
+                  .uid @{{ userStore.userPixivId }}
 
-              li(v-if='userStore.isLoggedIn')
-                RouterLink.plain(
-                  :to='`/users/${userStore.userId}?tab=public_bookmarks`'
-                ) 公开收藏
-              li(v-if='userStore.isLoggedIn')
-                RouterLink.plain(
-                  :to='`/users/${userStore.userId}?tab=hidden_bookmarks`'
-                ) 私密收藏
-              li(v-if='userStore.isLoggedIn')
-                RouterLink.plain(
-                  :to='`/users/${userStore.userId}/following`'
-                ) 我的关注
-              li(v-if='$route.path !== "/login"')
-                RouterLink.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
-              li(v-if='userStore.isLoggedIn')
-                a.plain(@click='logoutUser') 用户登出
+            li(v-if='userStore.isLoggedIn')
+              RouterLink.plain(
+                :to='`/users/${userStore.userId}?tab=public_bookmarks`'
+              ) 公开收藏
+            li(v-if='userStore.isLoggedIn')
+              RouterLink.plain(
+                :to='`/users/${userStore.userId}?tab=hidden_bookmarks`'
+              ) 私密收藏
+            li(v-if='userStore.isLoggedIn')
+              RouterLink.plain(:to='`/users/${userStore.userId}/following`') 我的关注
+            li(v-if='$route.path !== "/login"')
+              RouterLink.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
+            li(v-if='userStore.isLoggedIn')
+              a.plain(@click='logoutUser') 用户登出
 </template>
 
 <script lang="ts" setup>
-import SearchBox from './SearchBox.vue'
 import IFasBars from '~icons/fa-solid/bars'
 import IFasSearch from '~icons/fa-solid/search'
-import { logout } from '~/composables/userData'
 import LogoH from '~/assets/LogoH.png'
-import { useSideNavStore, useUserStore } from '~/stores/session'
 
 const hidden = ref(false)
 const notAtTop = ref(false)

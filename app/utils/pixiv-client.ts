@@ -1,18 +1,7 @@
 import axios, { type AxiosInstance } from 'axios'
 import Cookies from 'js-cookie'
 import nprogress from 'nprogress'
-import { createPximgReplacer } from '~/utils/pximg'
-import type {
-  Artwork,
-  ArtworkGallery,
-  ArtworkInfo,
-  ArtworkInfoOrAd,
-  ArtworkRank,
-  Comments,
-  User,
-  UserListItem,
-  PixivUser,
-} from '~/types'
+import { type UgoiraMeta } from './UgoiraPlayer'
 
 // ── Response envelope ────────────────────────────────────────────────
 
@@ -31,13 +20,6 @@ export interface PixivWebClientOptions {
   pximgBaseUrlS?: string
   /** Request timeout in ms (default: 15000) */
   timeout?: number
-}
-
-export interface UgoiraMeta {
-  src: string
-  originalSrc: string
-  mime_type: string
-  frames: { file: string; delay: number }[]
 }
 
 export interface RecommendResult {

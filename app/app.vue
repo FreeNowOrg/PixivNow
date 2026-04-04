@@ -18,13 +18,6 @@ NaiveuiProvider#app-full-container(
 </template>
 
 <script lang="ts" setup>
-import NaiveuiProvider from '~/components/NaiveuiProvider.vue'
-import NProgress from '~/components/NProgress.vue'
-import SiteHeader from '~/components/SiteHeader.vue'
-import SiteFooter from '~/components/SiteFooter.vue'
-import { existsSessionId, initUser } from '~/composables/userData'
-import { useUserStore } from '~/stores/session'
-
 const SideNav = defineAsyncComponent(
   () => import('~/components/SideNav/SideNav.vue')
 )

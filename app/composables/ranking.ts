@@ -1,6 +1,3 @@
-import { defineStore } from 'pinia'
-import type { ArtworkRank } from '~/types'
-
 export const useRankingStore = defineStore('ranking', () => {
   const rankingData = ref<{
     date: Date

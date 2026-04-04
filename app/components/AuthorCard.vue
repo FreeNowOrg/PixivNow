@@ -3,8 +3,11 @@
   .author-inner(v-if='user')
     .flex-center
       .left
-        RouterLink(:to='"/users/" + user.userId' :aria-label='"查看作者: " + user.name')
-          img(:alt='user.name + " 的头像"' :src='user.imageBig')
+        RouterLink(
+          :aria-label='"查看作者: " + user.name',
+          :to='"/users/" + user.userId'
+        )
+          img(:alt='user.name + " 的头像"', :src='user.imageBig')
       .right
         .flex
           h4.plain
@@ -35,23 +38,19 @@
 </template>
 
 <script lang="ts" setup>
-import ArtworkList from './Artwork/ArtworkList.vue'
-import type { User } from '~/types'
-import { NButton, NEllipsis, NSkeleton } from 'naive-ui'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasPlus from '~icons/fa-solid/plus'
-import { useUserStore } from '~/stores/session'
 
 const userStore = useUserStore()
 
-const props = defineProps<{
+const { user } = defineProps<{
   user?: User
 }>()
 
 const loadingUserFollow = ref(false)
+const pixivClient = usePixivClientStore().client
 function handleUserFollow() {
-  if (!props.user || loadingUserFollow.value) return
-  const user = props.user
+  if (!user || loadingUserFollow.value) return
 
   loadingUserFollow.value = true
   const isFollowed = user.isFollowed

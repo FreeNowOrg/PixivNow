@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios'
+import axios, { type AxiosRequestConfig } from 'axios'
 import nprogress from 'nprogress'
 
 export const ajax = axios.create({

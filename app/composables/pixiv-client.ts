@@ -1,5 +1,3 @@
-import { PixivWebClient } from '~/api/pixiv-client'
-
 export const usePixivClientStore = defineStore('pixiv-client', () => {
   const runtimeConfig = useRuntimeConfig()
   const client = markRaw(
