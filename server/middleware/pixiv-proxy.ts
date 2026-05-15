@@ -8,6 +8,7 @@ import { pixivAjax } from '~~/server/utils/pixiv'
 const PROXY_PATTERNS = [/^\/ajax\//, /^\/rpc\//, /\.php$/]
 
 function shouldProxy(pathname: string): boolean {
+  if (pathname === '/novel/show.php') return false
   return PROXY_PATTERNS.some((re) => re.test(pathname))
 }
 

@@ -124,6 +124,10 @@
           NEmpty(description='用户没有漫画作品 (*/ω＼*)' v-if='!user.manga?.length')
           .user-manga.body-inner(v-else)
             ArtworkListByUser(:user-id='user.userId' work-category='manga')
+        NTabPane(display-directive='show:lazy' :name='UserTabs.novels' tab='小说')
+          NEmpty(description='用户没有小说作品 (｡•́︿•̀｡)' v-if='!user.novels?.length')
+          .user-novels.body-inner(v-else)
+            NovelList(:list='user.novels')
         NTabPane(:name='UserTabs.public_bookmarks' tab='公开收藏')
           ArtworkList(
             :list='[]',
@@ -173,6 +177,7 @@ definePageMeta({
 })
 import ArtworkList from '~/components/Artwork/ArtworkList.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
+import NovelList from '~/components/Novel/NovelList.vue'
 import ShowMore from '~/components/ShowMore.vue'
 import IFasBirthdayCake from '~icons/fa-solid/birthday-cake'
 import IFasCheck from '~icons/fa-solid/check'
@@ -224,6 +229,7 @@ const hasMoreHiddenBookmarks = computed(
 enum UserTabs {
   illusts = 'illusts',
   mangas = 'mangas',
+  novels = 'novels',
   public_bookmarks = 'public_bookmarks',
   hidden_bookmarks = 'hidden_bookmarks'
 }
@@ -445,7 +451,7 @@ onMounted(async () => {
     max-width: 1200px
     margin: 0 auto
 
-.user-illust, .user-manga
+.user-illust, .user-manga, .user-novels
   :deep(.author)
     display: none
 

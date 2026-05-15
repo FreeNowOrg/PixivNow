@@ -9,6 +9,11 @@ import type {
   ArtworkInfoOrAd,
   ArtworkRank,
   Comments,
+  Novel,
+  NovelInfo,
+  NovelContentTitle,
+  NovelSeries,
+  NovelSeriesContentResult,
   User,
   UserListItem,
   PixivUser,
@@ -164,6 +169,47 @@ export class PixivWebClient {
     return this.unwrap(data)
   }
 
+  // ── Novel ─────────────────────────────────────────────────────────
+
+  async getNovel(id: string): Promise<Novel> {
+    const { data } = await this.http.get<PixivResponse<Novel>>(
+      `/ajax/novel/${id}`
+    )
+    return this.unwrap(data)
+  }
+
+  async getNovelSeries(id: string): Promise<NovelSeries> {
+    const { data } = await this.http.get<PixivResponse<NovelSeries>>(
+      `/ajax/novel/series/${id}`
+    )
+    return this.unwrap(data)
+  }
+
+  async getNovelSeriesContent(
+    id: string,
+    params?: { limit?: number; lastOrder?: number; orderBy?: 'asc' | 'dsc' }
+  ): Promise<NovelSeriesContentResult> {
+    const { data } = await this.http.get<
+      PixivResponse<NovelSeriesContentResult>
+    >(`/ajax/novel/series_content/${id}`, {
+      params: {
+        limit: params?.limit ?? 30,
+        last_order: params?.lastOrder ?? 0,
+        order_by: params?.orderBy ?? 'asc',
+      },
+    })
+    return this.unwrap(data)
+  }
+
+  async getNovelSeriesContentTitles(
+    id: string
+  ): Promise<NovelContentTitle[]> {
+    const { data } = await this.http.get<PixivResponse<NovelContentTitle[]>>(
+      `/ajax/novel/series/${id}/content_titles`
+    )
+    return this.unwrap(data)
+  }
+
   async getUgoiraMeta(id: string): Promise<UgoiraMeta> {
     const { data } = await this.http.get<PixivResponse<UgoiraMeta>>(
       `/ajax/illust/${id}/ugoira_meta`
@@ -265,13 +311,13 @@ export class PixivWebClient {
   async getUserProfileTop(id: string): Promise<{
     illusts: Record<string, ArtworkInfo>
     manga: Record<string, ArtworkInfo>
-    novels: Record<string, ArtworkInfo>
+    novels: Record<string, NovelInfo>
   }> {
     const { data } = await this.http.get<
       PixivResponse<{
         illusts: Record<string, ArtworkInfo>
         manga: Record<string, ArtworkInfo>
-        novels: Record<string, ArtworkInfo>
+        novels: Record<string, NovelInfo>
       }>
     >(`/ajax/user/${id}/profile/top`)
     return this.unwrap(data)

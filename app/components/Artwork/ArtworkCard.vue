@@ -38,7 +38,7 @@
           @click.stop.prevent='handleBookmark'
         )
           IFasHeart(aria-hidden='true')
-      RouterLink(:to='"/artworks/" + item.id')
+      RouterLink(:to='workLink')
         DeferLoad.img(
           :alt='item.alt',
           :src='item.url',
@@ -46,10 +46,10 @@
           lazyload
         )
         .hover-title {{ item.title }}
-        .type-ugoira(v-if='item.illustType === IllustType.UGOIRA'): IPlayCircle
+        .type-ugoira(v-if='item.type !== "novel" && item.illustType === IllustType.UGOIRA'): IPlayCircle
     .artwork-info
       .title
-        RouterLink(:to='"/artworks/" + item.id') {{ item.title }}
+        RouterLink(:to='workLink') {{ item.title }}
       .author(:title='item.userName')
         RouterLink(:to='"/users/" + item.userId')
           img.avatar(:src='item.profileImageUrl' lazyload)
@@ -60,6 +60,7 @@
 import DeferLoad from '../DeferLoad.vue'
 import { NSkeleton } from 'naive-ui'
 import { IllustType } from '~/utils/constants'
+import { toRef } from 'vue'
 import IFasEye from '~icons/fa-solid/eye'
 import IFasHeart from '~icons/fa-solid/heart'
 import IFasImages from '~icons/fa-solid/images'
@@ -72,22 +73,29 @@ const props = defineProps<{
   loading?: boolean
 }>()
 
+const item = toRef(props, 'item')
+const loading = toRef(props, 'loading')
+
 const pixivClient = usePixivClientStore().client
+const workLink = computed(() =>
+  item.value?.type === 'novel' ? `/novels/${item.value.id}` : `/artworks/${item.value?.id}`
+)
 
 const loadingBookmark = ref(false)
 async function handleBookmark() {
   if (loadingBookmark.value) return
   loadingBookmark.value = true
-  const item = props.item!
+  const it = item.value!
   try {
-    if (item.bookmarkData) {
-      await pixivClient.removeBookmark(item.bookmarkData.id).then(() => {
-        item.bookmarkData = null
+    if (it.bookmarkData) {
+      await pixivClient.removeBookmark(it.bookmarkData.id).then(() => {
+        // update the reactive prop value via the ref
+        if (item.value) item.value.bookmarkData = null
       })
     } else {
-      await pixivClient.addBookmark(item.id).then((data) => {
-        if (data.last_bookmark_id) {
-          item.bookmarkData = { id: data.last_bookmark_id, private: false }
+      await pixivClient.addBookmark(it.id).then((data) => {
+        if (data.last_bookmark_id && item.value) {
+          item.value.bookmarkData = { id: data.last_bookmark_id, private: false }
         }
       })
     }
