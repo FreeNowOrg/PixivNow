@@ -103,7 +103,7 @@ onMounted(async () => {
 #home-view {
   .top-slider {
     min-height: 100vh;
-    margin-top: -50px;
+    margin-top: -63px;
     padding: 30px 10%;
     background-position: center;
     background-repeat: no-repeat;

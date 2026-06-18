@@ -354,7 +354,7 @@ onMounted(async () => {
   .bg-area {
     position: fixed;
     left: 0;
-    top: 50px;
+    top: 63px;
     height: 40vh;
     width: 100%;
     z-index: 1;
@@ -452,7 +452,7 @@ onMounted(async () => {
     background-color: var(--fnb-bg);
     z-index: 12;
     position: sticky;
-    top: 50px;
+    top: 63px;
   }
 }
 

@@ -306,8 +306,6 @@ async function handleBookmark() {
       display: inline-block;
       width: 1.5rem;
       height: 1.5rem;
-      border: 2px solid var(--fnb-text-muted);
-      border-radius: var(--fnb-radius-sm);
       @include fnb-border-sm;
       margin-right: .4rem;
     }

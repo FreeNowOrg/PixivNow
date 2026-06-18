@@ -14,19 +14,24 @@ onMounted(() => {
 })
 </script>
 
-<style lang="sass">
+<style lang="scss">
 
-#nprogress
-  .bar
-    background-color: var(--fnb-accent)
-    top: 50px
-    .peg
-      display: none
+#nprogress {
+  .bar {
+    background-color: var(--fnb-accent);
+    top: 63px;
+    .peg {
+      display: none;
+    }
+  }
 
-  .spinner
-    top: 60px
+  .spinner {
+    top: 73px;
 
-    .spinner-icon
-      border-top-color: var(--fnb-accent)
-      border-left-color: var(--fnb-accent)
+    .spinner-icon {
+      border-top-color: var(--fnb-accent);
+      border-left-color: var(--fnb-accent);
+    }
+  }
+}
 </style>

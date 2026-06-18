@@ -1,5 +1,5 @@
 // app/composables/useToast.ts
-import { ref, type Component } from 'vue'
+import { ref } from 'vue'
 
 export interface ToastItem {
   id: number
