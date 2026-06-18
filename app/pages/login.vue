@@ -1,6 +1,6 @@
 <template lang="pug">
 #auth-view
-  NForm#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
+  form#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
     RouterLink.button(
       :to='$route.query.back.toString()'
       v-if='$route.query.back'
@@ -8,26 +8,27 @@
       IFasAngleLeft
       | &nbsp;取消
     h1.title 设置 Pixiv 令牌
-    NFormItem(
-      :feedback='sessionIdInput && !validateSessionId(sessionIdInput) ? "哎呀，这个格式看上去不太对……" : error ? error : "这个格式看上去没问题，点击保存试试"',
-      :validation-status='(sessionIdInput && !validateSessionId(sessionIdInput)) || error ? "error" : "success"'
-      label='PHPSESSID'
-      required
-    )
-      NInput(
+    .fnb-form-item
+      label.fnb-form-item__label PHPSESSID
+        span.fnb-form-item__required *
+      FnbInput(
         :class='validateSessionId(sessionIdInput) ? "valid" : "invalid"'
-        v-model:value='sessionIdInput'
+        v-model='sessionIdInput'
       )
+      .fnb-form-item__feedback(
+        :class='(sessionIdInput && !validateSessionId(sessionIdInput)) || error ? "fnb-form-item__feedback--error" : "fnb-form-item__feedback--success"'
+      ) {{ sessionIdInput && !validateSessionId(sessionIdInput) ? "哎呀，这个格式看上去不太对……" : error ? error : "这个格式看上去没问题，点击保存试试" }}
     #submit
-      NButton(
+      FnbButton(
         :disabled='!!error || loading || !validateSessionId(sessionIdInput)'
+        :loading='loading'
         @click='async () => await submit()'
-        block
-        type='primary'
+        variant='primary'
+        style='width: 100%'
       ) {{ loading ? '登录中……' : '保存令牌' }}
     .tips
       h2 如何获取 Pixiv 令牌？
-      p 访问 <a href="https://www.pixiv.net" target="_blank">www.pixiv.net</a> 源站并登录，打开浏览器控制台(f12)，点击“存储(storage)”一栏，在 cookie 列表里找到“键(key)”为<code>PHPSESSID</code>的一栏，将它的“值(value)”复制后填写到这里。
+      p 访问 <a href="https://www.pixiv.net" target="_blank">www.pixiv.net</a> 源站并登录，打开浏览器控制台(f12)，点击"存储(storage)"一栏，在 cookie 列表里找到"键(key)"为<code>PHPSESSID</code>的一栏，将它的"值(value)"复制后填写到这里。
       p
         | 它应该形如：
         code(@click='exampleSessionId' title='此处的令牌为随机生成，仅供演示使用') {{ example }}
@@ -44,9 +45,9 @@
       IFasAngleLeft
       | &nbsp;返回
     h1 查看 Pixiv 令牌
-    NInput.token(:value='Cookies.get("PHPSESSID")' readonly)
+    FnbInput.token(:model-value='Cookies.get("PHPSESSID")' readonly)
     #submit
-      NButton(@click='remove' type='error') 移除令牌
+      FnbButton(@click='remove' variant='danger') 移除令牌
 </template>
 
 <script lang="ts" setup>
@@ -60,7 +61,6 @@ import {
 } from '~/composables/userData'
 import { useUserStore } from '~/stores/session'
 import IFasAngleLeft from '~icons/fa-solid/angle-left'
-import { NButton, NForm, NFormItem, NInput } from 'naive-ui'
 
 const example = ref(exampleSessionId())
 const sessionIdInput = ref('')
@@ -111,50 +111,83 @@ function remove(): void {
 watch(sessionIdInput, () => (error.value = ''))
 </script>
 
-<style scoped lang="sass">
+<style scoped lang="scss">
 
-#login-form
-  width: 400px
-  margin: 0 auto
-  padding: 1rem
-  box-sizing: border-box
-  box-shadow: var(--theme-box-shadow)
-  border-radius: 4px
-  padding: 1rem
-  transition: box-shadow .24s ease-in-out
+#login-form {
+  width: 400px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  @include fnb-card;
+  transition: box-shadow 0.24s ease-in-out;
+}
 
-  &:hover
-    box-shadow: var(--theme-box-shadow-hover)
+@media screen and (max-width: 500px) {
+  #login-form {
+    width: 100%;
+  }
+}
 
-@media screen and (max-width: 500px)
-  #login-form
-    width: 100%
+input {
+  width: 100%;
+  display: block;
+  padding: 4px 8px;
+  font-size: 1.2rem;
+}
 
-input
-  width: 100%
-  display: block
-  padding: 4px 8px
-  font-size: 1.2rem
+#submit {
+  text-align: center;
+  margin: 1rem auto;
 
-#submit
-  text-align: center
-  margin: 1rem auto
+  .btn {
+    width: 50%;
+  }
+}
 
-  .btn
-    width: 50%
+code {
+  user-select: none;
+}
 
-code
-  user-select: none
+.status {
+  margin-top: 0.2rem;
+  text-align: center;
+  padding: 4px;
+  color: #fff;
 
-.status
-  margin-top: 0.2rem
-  text-align: center
-  padding: 4px
-  color: #fff
+  &.valid {
+    background-color: green;
+  }
 
-  &.valid
-    background-color: green
+  &.invalid {
+    background-color: #a00;
+  }
+}
 
-  &.invalid
-    background-color: #a00
+.fnb-form-item {
+  margin-bottom: 1rem;
+
+  &__label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  &__required {
+    color: var(--fnb-danger);
+    margin-left: 0.25rem;
+  }
+
+  &__feedback {
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+
+    &--error {
+      color: var(--fnb-danger);
+    }
+
+    &--success {
+      color: var(--fnb-success, green);
+    }
+  }
+}
 </style>
