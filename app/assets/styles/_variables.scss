@@ -1,0 +1,32 @@
+// app/assets/styles/_variables.scss
+:root {
+  // Colors
+  --fnb-bg: #EEF2FF;
+  --fnb-brand: #4993FF;
+  --fnb-brand-hover: #6AABFF;
+  --fnb-accent: #A78BFA;
+  --fnb-success: #7FD957;
+  --fnb-highlight: #FFE066;
+  --fnb-danger: #FF5555;
+  --fnb-bookmark: #FF69B4;
+  --fnb-border: #000;
+  --fnb-surface: #fff;
+  --fnb-text: #1a1a1a;
+  --fnb-text-muted: #666;
+
+  // Border radius
+  --fnb-radius: 0;
+  --fnb-radius-sm: 0;
+  --fnb-radius-lg: 0;
+
+  // Typography
+  --fnb-font-sans: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', system-ui, sans-serif;
+  --fnb-font-display: 'Archivo Black', 'Noto Sans SC', system-ui, sans-serif;
+  --fnb-font-mono: 'Space Grotesk', ui-monospace, monospace;
+
+  // Shadows (used internally by mixins, exposed for edge cases)
+  --fnb-shadow: 6px 6px 0 0 var(--fnb-border);
+  --fnb-shadow-sm: 4px 4px 0 0 var(--fnb-border);
+  --fnb-shadow-lg: 8px 8px 0 0 var(--fnb-border);
+  --fnb-shadow-xs: 3px 3px 0 0 var(--fnb-border);
+}

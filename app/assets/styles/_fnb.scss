@@ -1,0 +1,95 @@
+// app/assets/styles/_fnb.scss
+
+// Borders
+@mixin fnb-border {
+  border: 3px solid var(--fnb-border);
+  border-radius: var(--fnb-radius);
+}
+
+@mixin fnb-border-sm {
+  border: 2px solid var(--fnb-border);
+  border-radius: var(--fnb-radius-sm);
+}
+
+// Shadows
+@mixin fnb-shadow {
+  box-shadow: var(--fnb-shadow);
+}
+
+@mixin fnb-shadow-sm {
+  box-shadow: var(--fnb-shadow-sm);
+}
+
+@mixin fnb-shadow-lg {
+  box-shadow: var(--fnb-shadow-lg);
+}
+
+@mixin fnb-shadow-xs {
+  box-shadow: var(--fnb-shadow-xs);
+}
+
+// Press effect
+@mixin fnb-press {
+  transition: transform 150ms, box-shadow 150ms;
+
+  &:hover,
+  &:active {
+    transform: translate(1.5px, 1.5px);
+    box-shadow: 0 0 0 0 var(--fnb-border);
+  }
+}
+
+// Composites
+@mixin fnb-card {
+  @include fnb-border;
+  @include fnb-shadow;
+  background: var(--fnb-surface);
+  transition: all 150ms;
+}
+
+@mixin fnb-btn {
+  @include fnb-border;
+  @include fnb-shadow;
+  @include fnb-press;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 900;
+  font-family: inherit;
+  font-size: inherit;
+  background: var(--fnb-bg);
+  color: var(--fnb-text);
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: var(--fnb-radius);
+}
+
+@mixin fnb-tag {
+  @include fnb-border-sm;
+  @include fnb-shadow-xs;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.85rem;
+  background: var(--fnb-surface);
+  transition: all 150ms;
+  border-radius: var(--fnb-radius-sm);
+}
+
+@mixin fnb-input {
+  @include fnb-border-sm;
+  @include fnb-shadow-sm;
+  padding: 0.5rem 0.75rem;
+  background: var(--fnb-surface);
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--fnb-text);
+  border-radius: var(--fnb-radius-sm);
+  transition: box-shadow 150ms;
+
+  &:focus {
+    box-shadow: 4px 4px 0 0 var(--fnb-brand);
+  }
+}
