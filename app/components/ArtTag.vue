@@ -1,18 +1,16 @@
 <template lang="pug">
-NTag.artwork-tag(
+FnbTag.artwork-tag(
   @click='$router.push(`/search/${encodeURIComponent(tag)}/1`)'
-  type='info'
+  clickable
 ) {{ '#' }}{{ tag }}
 </template>
 
 <script lang="ts" setup>
-import { NTag } from 'naive-ui'
-
 defineProps<{ tag: string }>()
 </script>
 
-<style lang="sass">
-.artwork-tag
-  margin: 2px
-  cursor: pointer
+<style scoped lang="scss">
+.artwork-tag {
+  margin: 2px;
+}
 </style>

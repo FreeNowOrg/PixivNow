@@ -7,12 +7,10 @@
   ul.comments-list(v-if='comments.length')
     comment(:comment='item' v-for='item in comments')
     .show-more.align-center
-      NButton(
+      FnbButton(
         :loading='loading'
         @click='async () => await init(id)'
-        round
-        secondary
-        size='small'
+        size='sm'
         v-if='comments.length && hasNext'
       )
         template(#icon)
@@ -25,7 +23,6 @@
 <script lang="ts" setup>
 import Comment from './Comment.vue'
 import type { Comments } from '~/types'
-import { NButton } from 'naive-ui'
 import IFasPlus from '~icons/fa-solid/plus'
 
 const loading = ref(false)
@@ -80,9 +77,9 @@ const ob = useIntersectionObserver(
 )
 </script>
 
-<style scoped lang="sass">
-
-.comments-list
-  list-style: none
-  padding-left: 0
+<style scoped lang="scss">
+.comments-list {
+  list-style: none;
+  padding-left: 0;
+}
 </style>

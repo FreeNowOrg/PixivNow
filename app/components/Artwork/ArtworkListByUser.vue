@@ -1,26 +1,27 @@
 <template lang="pug">
 .artworks-by-user(ref='containerRef')
-  NFlex(align='center' justify='center')
-    NPagination(
+  .flex.justify-center.align-center
+    FnbPagination(
       :item-count='userArtworksStore.allIds.length',
+      :page='curPage',
       :page-size='userArtworksStore.pageSize'
-      v-model:page='curPage'
+      @update:page='curPage = $event'
     )
   ArtworkList(
     :list='curArtworks',
     :loading='!curArtworks.length ? userArtworksStore.pageSize : false'
   )
-  NFlex(align='center' justify='center')
-    NPagination(
+  .flex.justify-center.align-center
+    FnbPagination(
       :item-count='userArtworksStore.allIds.length',
+      :page='curPage',
       :page-size='userArtworksStore.pageSize'
-      v-model:page='curPage'
+      @update:page='curPage = $event'
     )
 </template>
 
 <script setup lang="ts">
 import type { ArtworkInfo } from '~/types'
-import { NPagination } from 'naive-ui'
 import { useUserArtworksStore } from '~/stores/user-artworks'
 
 const props = withDefaults(
@@ -68,4 +69,14 @@ async function firstInit() {
 }
 </script>
 
-<style scoped lang="sass"></style>
+<style scoped lang="scss">
+.flex {
+  display: flex;
+}
+.justify-center {
+  justify-content: center;
+}
+.align-center {
+  align-items: center;
+}
+</style>
