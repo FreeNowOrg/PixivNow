@@ -134,186 +134,239 @@ useEventListener(window, 'scroll', () => {
 })
 </script>
 
-<style lang="sass">
+<style lang="scss">
 
-.global-navbar
-  background-color: var(--theme-accent-color)
-  padding: 0.4rem 1rem
-  color: var(--theme-background-color)
-  display: flex
-  align-items: center
-  position: sticky
-  height: 50px
-  width: 100%
-  box-sizing: border-box
-  white-space: nowrap
-  top: 0
-  z-index: 100
-  transition: all .8s ease
+.global-navbar {
+  background-color: var(--fnb-brand);
+  padding: 0.4rem 1rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  height: 60px;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+  top: 0;
+  z-index: 100;
+  transition: all 0.8s ease;
+  border-bottom: 3px solid var(--fnb-border);
 
-  .flex
-    display: flex
-    width: 100%
-    gap: 1rem
-    align-items: center
+  .flex {
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+    align-items: center;
+  }
 
-  &.not-at-top
-    box-shadow: 0 0px 8px var(--theme-box-shadow-color)
+  .side-nav-toggle {
+    border: none;
+    background: none;
+    padding: 0;
+    font: inherit;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #fff;
+    cursor: pointer;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: var(--fnb-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  .side-nav-toggle
-    border: none
-    background: none
-    padding: 0
-    font: inherit
-    font-size: 1.2rem
-    text-align: center
-    color: var(--theme-accent-link-color)
-    cursor: pointer
-    width: 2.4rem
-    height: 2.4rem
-    border-radius: 50%
-    display: flex
-    align-items: center
-    justify-content: center
+    &:hover {
+      background-color: var(--fnb-highlight);
+      color: var(--fnb-text);
+    }
 
-    &:hover
-      background-color: rgba(255,255,255,0.2)
-    &:focus-visible
-      outline: 2px solid #fff
-      outline-offset: 2px
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+  }
 
-  .logo-area
-    .site-logo
-      height: 2.2rem
-      width: auto
+  .logo-area {
+    .site-logo {
+      height: 2.2rem;
+      width: auto;
+    }
+  }
 
-  .search-area
-    flex: 1
+  .search-area {
+    flex: 1;
+  }
 
-  .user-area
-    .avatar
-      height: 2rem
-      width: 2rem
-      border-radius: 50%
+  .user-area {
+    .avatar {
+      height: 2rem;
+      width: 2rem;
+      @include fnb-border-sm;
+    }
 
-    .user-link
-      position: relative
+    .user-link {
+      position: relative;
 
-      .dropdown-btn
-        border: none
-        background: none
-        padding: 0
-        font: inherit
-        cursor: pointer
-        list-style: none
-        display: flex
-        align-items: center
-        &:focus-visible
-          outline: 2px solid #fff
-          outline-offset: 2px
-        .avatar
-          box-shadow: 0 0 0 2px #fff
-          transition: box-shadow 0.24s ease
-        &.show-user
-          .avatar
-            box-shadow: 0 0 0 2px var(--theme-secondary-color)
+      .dropdown-btn {
+        border: none;
+        background: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        align-items: center;
 
-      .dropdown-content
-        position: absolute
-        top: 1.4rem
-        right: 0
-        padding: 0
-        padding-top: 0.4rem
-        width: 200px
-        opacity: 0
-        transform: translateY(-0.5rem)
-        pointer-events: none
-        transition: opacity 0.25s ease, transform 0.25s ease
-        &.visible
-          opacity: 1
-          transform: translateY(0)
-          pointer-events: auto
+        &:focus-visible {
+          outline: 2px solid #fff;
+          outline-offset: 2px;
+        }
 
-        ul
-          list-style: none
-          padding: 4px
-          background-color: #fff
-          box-shadow: 0 0 4px #aaa
-          border-radius: 4px
+        .avatar {
+          box-shadow: 0 0 0 2px #fff;
+          transition: box-shadow 0.24s ease;
+        }
 
-          li > *
-            padding: 0.5rem
+        &.show-user {
+          .avatar {
+            box-shadow: 0 0 0 2px var(--fnb-highlight);
+          }
+        }
+      }
 
-          li a
-            display: block
-            cursor: pointer
+      .dropdown-content {
+        position: absolute;
+        top: 1.4rem;
+        right: 0;
+        padding: 0;
+        padding-top: 0.4rem;
+        width: 200px;
+        opacity: 0;
+        transform: translateY(-0.5rem);
+        pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease;
 
-            &:hover
-              background-color: var(--theme-tag-color)
+        &.visible {
+          opacity: 1;
+          transform: translateY(0);
+          pointer-events: auto;
+        }
 
-  .nav-user-card
-    border-bottom: 1px solid
-    position: relative
+        ul {
+          list-style: none;
+          padding: 4px;
+          background-color: var(--fnb-surface);
+          @include fnb-border;
+          @include fnb-shadow;
 
-    .top
-      position: relative
+          li > * {
+            padding: 0.5rem;
+          }
 
-      .banner-bg
-        position: absolute
-        top: calc(-0.4rem - 6px)
-        left: -12px
-        height: 56px
-        width: calc(100% + 24px)
-        background-color: rgba(var(--theme-accent-color--rgb), 0.1)
-        z-index: 0
+          li a {
+            display: block;
+            cursor: pointer;
 
-      a
-        display: inline !important
+            &:hover {
+              background-color: var(--fnb-highlight);
+            }
+          }
+        }
+      }
+    }
+  }
 
-    .avatar
-      width: 68px
-      height: 68px
+  .nav-user-card {
+    border-bottom: 1px solid var(--fnb-border);
+    position: relative;
 
-    .details
-      .user-name
-        font-size: 1rem
+    .top {
+      position: relative;
 
-      .uid
-        font-size: 0.8rem
-        color: #aaa
+      .banner-bg {
+        position: absolute;
+        top: calc(-0.4rem - 6px);
+        left: -12px;
+        height: 56px;
+        width: calc(100% + 24px);
+        background-color: rgba(73, 147, 255, 0.1);
+        z-index: 0;
+      }
 
-  .search-icon
-    display: none
-    button
-      border: none
-      background: none
-      padding: 0
-      font: inherit
-      color: var(--theme-accent-link-color)
-      cursor: pointer
-      &:focus-visible
-        outline: 2px solid #fff
-        outline-offset: 2px
+      a {
+        display: inline !important;
+      }
+    }
+
+    .avatar {
+      width: 68px;
+      height: 68px;
+    }
+
+    .details {
+      .user-name {
+        font-size: 1rem;
+      }
+
+      .uid {
+        font-size: 0.8rem;
+        color: var(--fnb-text-muted);
+      }
+    }
+  }
+
+  .search-icon {
+    display: none;
+
+    button {
+      border: none;
+      background: none;
+      padding: 0;
+      font: inherit;
+      color: #fff;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+      }
+    }
+  }
+}
 
 // Home page: transparent navbar, search hidden until scrolled
-[data-route="home"]
-  .global-navbar
-    background: none
-    .search-area
-      opacity: 0
-      transition: opacity 0.4s ease
-      pointer-events: none
+[data-route="home"] {
+  .global-navbar {
+    background: none;
+    border-bottom-color: transparent;
 
-    &.not-at-top
-      background-color: var(--theme-accent-color)
-      .search-area
-        opacity: 1
-        pointer-events: all
+    .search-area {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
 
-@media (max-width: 450px)
-  .global-navbar
-    .search-full
-      display: none
-    .search-icon
-      display: block
+    &.not-at-top {
+      background-color: var(--fnb-brand);
+      border-bottom-color: var(--fnb-border);
+
+      .search-area {
+        opacity: 1;
+        pointer-events: all;
+      }
+    }
+  }
+}
+
+@media (max-width: 450px) {
+  .global-navbar {
+    .search-full {
+      display: none;
+    }
+
+    .search-icon {
+      display: block;
+    }
+  }
+}
 </style>

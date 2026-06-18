@@ -48,54 +48,71 @@ import { GITHUB_URL, PROJECT_NAME, GITHUB_OWNER, version } from '~/config'
 
 const yearStr = ref(`2021 - ${new Date().getFullYear()}`)
 </script>
-<style scoped lang="sass">
 
-.global-footer
-  background-color: var(--theme-accent-color)
-  font-size: 1rem
-  color: var(--theme-accent-link-color)
+<style scoped lang="scss">
 
-.top
-  padding-top: 2rem
-  padding-bottom: 2rem
-  gap: 1.5rem
+.global-footer {
+  background-color: var(--fnb-surface);
+  font-size: 1rem;
+  color: var(--fnb-text);
+  border-top: 3px solid var(--fnb-border);
+}
 
-.bottom
-  padding-top: 0.5rem
-  padding-bottom: 0.5rem
+.top {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  gap: 1.5rem;
+}
 
-a
-  --color: #eee
-  font-weight: 600
+.bottom {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: var(--fnb-bg);
+}
 
-  &::after
-    visibility: visible
-    transform: scaleX(1)
-    width: 40%
-    height: 1px
+a {
+  color: var(--fnb-text);
+  font-weight: 600;
 
-  &:hover::after
-    width: 100%
+  &:hover {
+    background: var(--fnb-highlight);
+    padding: 0 0.2em;
+  }
 
-.bottom
-  background-color: var(--theme-accent-color-darken)
+  &::after {
+    visibility: visible;
+    transform: scaleX(1);
+    width: 40%;
+    height: 1px;
+  }
 
-h4
-  position: relative
-  margin: 1rem 0 0.5rem 0
-  padding-bottom: 0.2rem
-  border-bottom: 2px solid
-  font-size: 1.1rem
+  &:hover::after {
+    width: 100%;
+  }
+}
 
-ul
-  padding-left: 1rem
-  margin: 0.2rem 0
+h4 {
+  position: relative;
+  margin: 1rem 0 0.5rem 0;
+  padding: 0.2em 0.4em;
+  font-size: 1.1rem;
+  background: var(--fnb-highlight);
+  display: inline-block;
+}
 
-  a
-    display: inline
-    font-weight: 400
+ul {
+  padding-left: 1rem;
+  margin: 0.2rem 0;
 
-@media screen and (max-width: 600px)
-  .top
-    flex-direction: column
+  a {
+    display: inline;
+    font-weight: 400;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .top {
+    flex-direction: column;
+  }
+}
 </style>

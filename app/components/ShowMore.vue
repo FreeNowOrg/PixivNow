@@ -27,16 +27,16 @@ useIntersectionObserver(elRef, async ([{ isIntersecting }]) => {
 })
 </script>
 
-<style scoped lang="sass">
+<style scoped lang="scss">
 
-.show-more
-  text-align: center
+.show-more {
+  text-align: center;
 
-  a
-    display: inline-block
-    margin: 1rem auto
-    background-color: var(--theme-tag-color)
-    padding: 0.4rem 8rem
-    border-radius: 4px
-    cursor: pointer
+  a {
+    @include fnb-btn;
+    margin: 1rem auto;
+    padding: 0.4rem 8rem;
+    cursor: pointer;
+  }
+}
 </style>

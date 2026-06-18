@@ -22,23 +22,29 @@ defineProps<{
 }>()
 </script>
 
-<style scoped lang="sass">
-li
-  a
-    padding: 0.8rem 1.6rem
-    display: block
-    color: #888
+<style scoped lang="scss">
+li {
+  a {
+    padding: 0.8rem 1.6rem;
+    display: block;
+    color: var(--fnb-text);
 
-    &:hover
-      background-color: rgba(0, 0, 0, 0.05)
+    &:hover {
+      background-color: var(--fnb-highlight);
+    }
 
-    &.not-allowed
-      cursor: not-allowed
-      text-decoration: line-through
+    &.not-allowed {
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
 
-    .svg--ListLink
-      width: 2em
+    .svg--ListLink {
+      width: 2em;
+    }
+  }
+}
 
-:slotted(svg)
-  width: 2em
+:slotted(svg) {
+  width: 2em;
+}
 </style>
