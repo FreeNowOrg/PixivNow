@@ -72,11 +72,11 @@ const picShow = ref(0)
 
   [role="img"]
     border-radius: 4px
-    box-shadow: var(--theme-box-shadow)
+    box-shadow: var(--fnb-shadow-sm)
     transition: box-shadow 0.24s ease-in-out
 
     &:hover
-      box-shadow: var(--theme-box-shadow-hover)
+      box-shadow: var(--fnb-shadow)
 
   .center-img
     display: block

@@ -32,7 +32,7 @@ const msgList = [
   '変わったああああああああああああああ', // 你比蔷薇更美丽
   'だめだね、だめよだめなのよ——', // 像笨蛋一样
   '壊れた 僕なんてさ、息を止めて', // unravel
-  'Groupons nous et demain. L'Internationale. Sera le genre humain.', // 国际歌
+  "Groupons nous et demain. L'Internationale. Sera le genre humain.", // 国际歌
   // FF14 骚话
   '这像闪耀登场释放天辉的白魔法师一样没有人喜欢！',
   '这像冰4火4一个慢动作的黑魔法师一样没有人喜欢！',

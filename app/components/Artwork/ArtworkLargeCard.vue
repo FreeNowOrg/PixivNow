@@ -56,7 +56,7 @@ h3
 .artwork-large-card
   display: block
   border: 1px solid #eee
-  background-color: var(--theme-background-color)
+  background-color: var(--fnb-surface)
   border-radius: 0.5rem
   transition: all .24s ease-in-out
   margin: 0.5rem auto
@@ -136,7 +136,7 @@ h3
     height: 1.8rem
     text-align: center
     line-height: 1.6
-    --ring-color: rgba(var(--theme-accent-color--rgb), 0.4)
+    --ring-color: rgba(73, 147, 255, 0.4)
     box-shadow: 0 0 0 1px var(--ring-color) inset, 0 0 0 2px #fff
     &.gold
       --ring-color: gold
@@ -180,7 +180,7 @@ h3
     a
       align-items: center
       &.RouterLink-active
-        color: var(--theme-text-color)
+        color: var(--fnb-text)
         font-weight: 600
         font-style: normal
         cursor: default

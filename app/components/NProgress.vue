@@ -18,7 +18,7 @@ onMounted(() => {
 
 #nprogress
   .bar
-    background-color: var(--theme-secondary-color)
+    background-color: var(--fnb-accent)
     top: 50px
     .peg
       display: none
@@ -27,6 +27,6 @@ onMounted(() => {
     top: 60px
 
     .spinner-icon
-      border-top-color: var(--theme-secondary-color)
-      border-left-color: var(--theme-secondary-color)
+      border-top-color: var(--fnb-accent)
+      border-left-color: var(--fnb-accent)
 </style>

@@ -512,6 +512,10 @@ onMounted(async () => {
   }
 }
 
+</style>
+
+<style lang="scss">
+// These styles apply to Teleport'd dialog content (escapes scoped styles)
 .fnb-dialog-overlay {
   position: fixed;
   inset: 0;
