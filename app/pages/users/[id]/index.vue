@@ -2,23 +2,20 @@
 #user-view
   //- Loading
   section.loading(v-if='loadingUser')
-    .bg-area.no-background
-      .bg-container(style='background-color: #efefef')
-    .user-info
-      .info-area
-        .avatar-area
-          FnbSkeleton(circle height='6rem' width='6rem')
-        .username-header.flex
-          h1.username: FnbSkeleton(text width='8em')
-        .desc(v-for='_ in 5')
-          FnbSkeleton(circle height='1em' text width='1em')
-          FnbSkeleton(
-            :width='`${Math.max(4, 12 * Math.random())}em`'
-            style='margin-left: 0.5em'
-            text
-          )
-    #user-artworks.body-inner
-      ArtworkList(:list='[]', :loading='20')
+    .cover-banner.no-cover
+    .body-inner.user-layout
+      .user-sidebar
+        FnbCard
+          .avatar-area
+            FnbSkeleton(block, height='6rem', width='6rem')
+          .sidebar-info
+            FnbSkeleton(text, width='8em', height='1.4em')
+            .meta-lines
+              .meta-line(v-for='_ in 3')
+                FnbSkeleton(text, width='1em', height='1em')
+                FnbSkeleton(text, :width='`${Math.max(4, 10 * Math.random())}em`')
+      .user-content
+        ArtworkList(:list='[]', :loading='20')
 
   //- Error
   section.error(v-else-if='error')
@@ -26,135 +23,150 @@
 
   //- :)
   section.user(v-else-if='user')
-    .user-info
-      .bg-area(:class='{ "no-background": !user?.background }')
-        .bg-container(
-          :style='{ backgroundImage: user?.background?.url ? `url("${user.background.url}")` : undefined }'
-        )
-          span(v-if='!user?.background') 用户未设置封面~
-      .info-area
-        .avatar-area
-          a.plain.pointer(@click='showUserMore = true')
-            img(:src='user.imageBig')
-        .username-header.flex
-          h1.username {{ user.name }}
-          .flex-1
-          .user-folow(v-if='!isSelfUserPage')
-            FnbButton(
-              :loading='loadingUserFollow',
-              :variant='user.isFollowed ? "success" : "default"'
-              @click='handleUserFollow'
-              size='sm'
-            )
-              template(#icon)
-                IFasCheck(v-if='user.isFollowed')
-                IFasPlus(v-else)
-              | {{ user.isFollowed ? '已关注' : '关注' }}
-          .user-folow(v-else)
-            FnbButton(size='sm') 我真棒
-        .following
-          RouterLink(:to='`/users/${user.userId}/following`') 关注了 <strong>{{ user.following }}</strong> 人
-        .gender(v-if='user.gender?.name')
-          IFasVenusMars(data-icon)
-          | {{ user.gender.name }}
-        .birthday(v-if='user.birthDay?.name')
-          IFasBirthdayCake(data-icon)
-          | {{ user.birthDay?.name }}
-        .region(v-if='user.region?.name')
-          IFasMapMarkerAlt(data-icon)
-          | {{ user.region?.name }}
-        .webpage(v-if='user.webpage')
-          IFasHome(data-icon)
-          a(:href='user.webpage' rel='noopener noreferrer' target='_blank') {{ user.webpage }}
-        .flex
-          .comment.flex-1 {{ user.comment }}
-          .user-more
-            a(@click='userMore' href='javascript:;') 查看更多
+    .cover-banner(:class='{ "no-cover": !user?.background }')
+      .cover-image(
+        v-if='user?.background?.url',
+        :style='{ backgroundImage: `url("${user.background.url}")` }'
+      )
+      span.cover-placeholder(v-else) 用户未设置封面~
 
-    .fnb-dialog-overlay(v-if='showUserMore' @click.self='showUserMore = false')
+    .body-inner.user-layout
+      //- Left: User info card
+      .user-sidebar
+        FnbCard(shadow='md')
+          .avatar-area
+            a.plain.pointer(@click='showUserMore = true')
+              img.user-avatar(:src='user.imageBig', :alt='user.name')
+          h2.username {{ user.name }}
+          .user-id(v-if='user.premium')
+            FnbTag(color='var(--fnb-highlight)') Premium
+          .meta-lines
+            .meta-line
+              RouterLink(:to='`/users/${user.userId}/following`')
+                | 关注了
+                strong  {{ user.following }}
+                |  人
+            .meta-line(v-if='user.gender?.name')
+              FnbIcon: IFasVenusMars
+              | {{ user.gender.name }}
+            .meta-line(v-if='user.birthDay?.name')
+              FnbIcon: IFasBirthdayCake
+              | {{ user.birthDay?.name }}
+            .meta-line(v-if='user.region?.name')
+              FnbIcon: IFasMapMarkerAlt
+              | {{ user.region?.name }}
+            .meta-line(v-if='user.webpage')
+              FnbIcon: IFasHome
+              a(:href='user.webpage', rel='noopener noreferrer', target='_blank') {{ user.webpage }}
+          .user-comment(v-if='user.comment')
+            hr
+            p.comment-text {{ user.comment }}
+          .user-comment(v-else)
+            hr
+            p.comment-text.muted -
+          .sidebar-actions
+            a.plain.pointer(@click='showUserMore = true') 查看更多
+          hr
+          .sidebar-buttons
+            template(v-if='!isSelfUserPage')
+              FnbButton(
+                :loading='loadingUserFollow',
+                :variant='user.isFollowed ? "success" : "default"',
+                @click='handleUserFollow',
+                size='sm'
+              )
+                template(#icon)
+                  FnbIcon
+                    IFasCheck(v-if='user.isFollowed')
+                    IFasPlus(v-else)
+                | {{ user.isFollowed ? '已关注' : '关注' }}
+            template(v-else)
+              FnbButton(size='sm') 我真棒
+
+      //- Right: Artworks
+      .user-content
+        FnbTabs(
+          v-model='tab',
+          :tabs='tabsList'
+        )
+          template(#panel-illusts)
+            .fnb-empty(v-if='user.illusts && !user.illusts.length') 用户没有插画作品 (｡•́︿•̀｡)
+            .user-illust(v-else)
+              ArtworkListByUser(:user-id='user.userId', work-category='illust')
+          template(#panel-mangas)
+            .fnb-empty(v-if='!user.manga?.length') 用户没有漫画作品 (*/ω＼*)
+            .user-manga(v-else)
+              ArtworkListByUser(:user-id='user.userId', work-category='manga')
+          template(#panel-public_bookmarks)
+            ArtworkList(
+              :list='[]',
+              :loading='8',
+              v-if='!publicBookmarks?.length && loadingPublicBookmarks'
+            )
+            .fnb-empty(v-else-if='!publicBookmarks?.length') {{ emptyPublicBookmarksText }}
+            .user-bookmarks(v-else)
+              ArtworkList(:list='publicBookmarks')
+              .more-btn.align-center(
+                v-if='publicBookmarks.length && hasMorePublicBookmarks'
+              )
+                ShowMore(
+                  :loading='loadingPublicBookmarks',
+                  :method='() => getBookmarks(false)',
+                  :text='loadingPublicBookmarks ? "正在加载" : "加载更多"'
+                )
+          template(#panel-hidden_bookmarks, v-if='isSelfUserPage')
+            ArtworkList(
+              :list='[]',
+              :loading='8',
+              v-if='!hiddenBookmarks?.length && loadingHiddenBookmarks'
+            )
+            .fnb-empty(v-else-if='!hiddenBookmarks?.length') 没有隐藏的小秘密 இ௰இ
+            .user-bookmarks(v-else)
+              ArtworkList(:list='hiddenBookmarks')
+              .more-btn.align-center(
+                v-if='hiddenBookmarks.length && hasMoreHiddenBookmarks'
+              )
+                ShowMore(
+                  :loading='loadingHiddenBookmarks',
+                  :method='() => getBookmarks(true)',
+                  :text='loadingHiddenBookmarks ? "正在加载" : "加载更多"'
+                )
+
+    //- User detail dialog
+    .fnb-dialog-overlay(v-if='showUserMore', @click.self='showUserMore = false')
       .fnb-dialog-card
-        button.fnb-dialog-card__close(@click='showUserMore = false' aria-label='关闭') ×
+        button.fnb-dialog-card__close(@click='showUserMore = false', aria-label='关闭') ×
         .fnb-dialog-card__header 用户资料
         .fnb-dialog-card__body
           .info-modal
-            .top
-              h3
-                a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
-                  img(:src='user.imageBig')
-                  .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
-                    IFasParking(data-icon)
-                .title {{ user.name }}
-            .bottom
-              section.user-comment
-                h4 个人简介
-                .comment.pre {{ user.comment || '-' }}
-              section.user-workspace(v-if='user.workspace')
-                hr
-                h4 工作环境
-                FnbImage(
-                  :preview-src='user.workspace.wsBigUrl',
-                  :src='user.workspace.wsUrl'
-                  lazy
-                  v-if='user.workspace.wsUrl'
-                )
-                FnbTable
-                  tbody
-                    tr(v-for='(val, key) in user.workspace')
-                      th {{ workspaceNameMap[key] || key }}
-                      td {{ val }}
-              section.dev-only
-                hr
-                h4 Debug Info
-                details
-                  pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
-
-    #user-artworks
-      FnbTabs(
-        v-model='tab'
-        :tabs='tabsList'
-      )
-        template(#panel-illusts)
-          .fnb-empty(v-if='user.illusts && !user.illusts.length') 用户没有插画作品 (｡•́︿•̀｡)
-          .user-illust.body-inner(v-else)
-            ArtworkListByUser(:user-id='user.userId' work-category='illust')
-        template(#panel-mangas)
-          .fnb-empty(v-if='!user.manga?.length') 用户没有漫画作品 (*/ω＼*)
-          .user-manga.body-inner(v-else)
-            ArtworkListByUser(:user-id='user.userId' work-category='manga')
-        template(#panel-public_bookmarks)
-          ArtworkList(
-            :list='[]',
-            :loading='8'
-            v-if='!publicBookmarks?.length && loadingPublicBookmarks'
-          )
-          .fnb-empty(v-else-if='!publicBookmarks?.length') {{ emptyPublicBookmarksText }}
-          .user-bookmarks.body-inner(v-else)
-            ArtworkList(:list='publicBookmarks')
-            .more-btn.align-center(
-              v-if='publicBookmarks.length && hasMorePublicBookmarks'
-            )
-              ShowMore(
-                :loading='loadingPublicBookmarks',
-                :method='() => getBookmarks(false)',
-                :text='loadingPublicBookmarks ? "正在加载" : "加载更多"'
+            .modal-top
+              a.modal-avatar(:href='user.imageBig', target='_blank', title='查看头像')
+                img(:src='user.imageBig')
+                .premium-icon(v-if='user.premium', title='该用户订阅了高级会员')
+                  FnbIcon: IFasParking
+              .modal-name {{ user.name }}
+            section.user-bio
+              h4 个人简介
+              .comment.pre {{ user.comment || '-' }}
+            section.user-workspace(v-if='user.workspace')
+              hr
+              h4 工作环境
+              FnbImage(
+                v-if='user.workspace.wsUrl',
+                :preview-src='user.workspace.wsBigUrl',
+                :src='user.workspace.wsUrl',
+                lazy
               )
-        template(#panel-hidden_bookmarks v-if='isSelfUserPage')
-          ArtworkList(
-            :list='[]',
-            :loading='8'
-            v-if='!hiddenBookmarks?.length && loadingHiddenBookmarks'
-          )
-          .fnb-empty(v-else-if='!hiddenBookmarks?.length') 没有隐藏的小秘密 இ௰இ
-          .user-bookmarks.body-inner(v-else)
-            ArtworkList(:list='hiddenBookmarks')
-            .more-btn.align-center(
-              v-if='hiddenBookmarks.length && hasMoreHiddenBookmarks'
-            )
-              ShowMore(
-                :loading='loadingHiddenBookmarks',
-                :method='() => getBookmarks(true)',
-                :text='loadingHiddenBookmarks ? "正在加载" : "加载更多"'
-              )
+              FnbTable
+                tbody
+                  tr(v-for='(val, key) in user.workspace')
+                    th {{ workspaceNameMap[key] || key }}
+                    td {{ val }}
+            section.dev-only
+              hr
+              h4 Debug Info
+              details
+                pre(style='overflow: auto; background: var(--fnb-bg); padding: 4px') {{ JSON.stringify(user, null, 2) }}
 </template>
 
 <script lang="ts" setup>
@@ -356,114 +368,145 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-.user-info {
+// ── Cover Banner ──
+.cover-banner {
+  height: 280px;
   position: relative;
+  border-bottom: 3px solid var(--fnb-border);
+  overflow: hidden;
 
-  .bg-area {
-    position: fixed;
-    left: 0;
-    top: 63px;
-    height: 40vh;
-    width: 100%;
-    z-index: 1;
-    @media (max-width: 800px) {
-      height: 20vh;
-    }
-    .bg-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background-color: var(--fnb-bg);
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-
-      > span {
-        user-select: none;
-        color: var(--fnb-text-muted);
-        display: inline-block;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translateX(-50%) translateY(-50%);
-      }
-    }
+  &.no-cover {
+    height: 120px;
+    background: var(--fnb-bg);
   }
 
-  .info-area {
-    position: relative;
-    background-color: var(--fnb-surface);
-    border-top: 3px solid var(--fnb-border);
-    border-bottom: 3px solid var(--fnb-border);
-    padding-left: calc(2rem + 100px + 2rem);
-    padding-top: 1rem;
-    padding-right: 1rem;
-    padding-bottom: 2rem;
-    margin-top: 40vh;
-    z-index: 2;
-    > div {
-      margin: 0.4rem auto;
-      [data-icon],
-      .tabler-icon {
-        width: 1em;
-        height: 1em;
-        margin-right: 0.4rem;
-      }
-    }
-    @media (max-width: 800px) {
-      margin-top: 20vh;
-      padding-left: 1rem;
-      padding-top: 60px;
+  @media (max-width: 768px) {
+    height: 180px;
+    &.no-cover {
+      height: 80px;
     }
   }
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.cover-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--fnb-text-muted);
+  user-select: none;
+}
+
+// ── Two-Column Layout ──
+.user-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  align-items: start;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Left Sidebar ──
+.user-sidebar {
+  text-align: center;
 
   .avatar-area {
-    position: absolute;
-    top: -50px;
-    left: 2rem;
-    @media (max-width: 800px) {
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    img {
-      box-sizing: border-box;
-      width: 100px;
-      height: 100px;
-      @include fnb-border;
-      @include fnb-shadow-sm;
-      background-color: var(--fnb-surface);
-    }
+    margin-bottom: 0.75rem;
+  }
+
+  .user-avatar {
+    width: 100px;
+    height: 100px;
+    @include fnb-border;
+    @include fnb-shadow-sm;
+    background: var(--fnb-surface);
   }
 
   .username {
     font-family: var(--fnb-font-display);
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     font-weight: 900;
-    margin: 0;
+    margin: 0 0 0.25rem;
   }
 
-  .comment {
-    max-height: 4rem;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  .user-id {
+    margin-bottom: 0.5rem;
   }
 
-  .userMore {
-    white-space: nowrap;
+  hr {
+    border: none;
+    height: 3px;
+    background: var(--fnb-border);
+    margin: 0.75rem 1rem;
+  }
+
+  .meta-lines {
+    text-align: left;
+    font-size: 0.85rem;
+  }
+
+  .meta-line {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0;
+
+    a {
+      display: inline;
+    }
+  }
+
+  .user-comment {
+    text-align: left;
+
+    .comment-text {
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 6rem;
+      overflow: hidden;
+      margin: 0;
+
+      &.muted {
+        color: var(--fnb-text-muted);
+      }
+    }
+  }
+
+  .sidebar-actions {
+    text-align: right;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+  }
+
+  .sidebar-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
   }
 }
 
-#user-artworks {
-  position: relative;
-  background-color: var(--fnb-surface);
-  z-index: 2;
+// ── Right Content ──
+.user-content {
+  min-width: 0;
 
-  .fnb-tabs__nav {
-    background-color: var(--fnb-bg);
-    z-index: 12;
+  :deep(.fnb-tabs__nav) {
     position: sticky;
     top: 63px;
+    z-index: 12;
+    background: var(--fnb-bg);
   }
 }
 
@@ -475,59 +518,61 @@ onMounted(async () => {
 }
 
 .fnb-empty {
-  margin: 20vh auto;
+  margin: 10vh auto;
   text-align: center;
   color: var(--fnb-text-muted);
 }
 
+// ── Detail Modal ──
 .info-modal {
-  position: relative;
   hr {
-    margin: 1.5rem auto;
-    width: 75%;
     border: none;
     height: 3px;
-    background-color: var(--fnb-border);
+    background: var(--fnb-border);
+    margin: 1rem 0;
   }
-  .top {
+
+  .modal-top {
     text-align: center;
-    background-color: var(--fnb-bg);
+    background: var(--fnb-bg);
     border-bottom: 3px solid var(--fnb-border);
-    z-index: 1;
-    padding: 1rem 0;
+    padding: 1.5rem 0;
     margin: 0 -1.5rem;
-    .avatar {
+  }
+
+  .modal-avatar {
+    display: inline-block;
+    position: relative;
+
+    img {
       width: 80px;
-      margin: 0 auto;
-      position: relative;
-      img {
-        width: 80px;
-        height: 80px;
-        @include fnb-border;
-        @include fnb-shadow-sm;
-      }
-      .premium-icon {
-        position: absolute;
-        bottom: -4px;
-        right: -4px;
-        color: var(--fnb-highlight);
-        background: var(--fnb-surface);
-        border: 2px solid var(--fnb-border);
-        width: 1.4rem;
-        height: 1.4rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        cursor: help;
-      }
+      height: 80px;
+      @include fnb-border;
+      @include fnb-shadow-sm;
     }
-    .title {
-      font-family: var(--fnb-font-display);
-      font-size: 1rem;
-      font-weight: 900;
-      margin-top: 0.5rem;
+
+    .premium-icon {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      color: var(--fnb-highlight);
+      background: var(--fnb-surface);
+      border: 2px solid var(--fnb-border);
+      width: 1.4rem;
+      height: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      cursor: help;
     }
+  }
+
+  .modal-name {
+    font-family: var(--fnb-font-display);
+    font-weight: 900;
+    font-size: 1rem;
+    margin-top: 0.5rem;
   }
 
   .user-workspace {
