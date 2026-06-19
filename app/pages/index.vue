@@ -327,7 +327,7 @@ onMounted(() => {
     z-index: 1;
 
     a {
-      --color: #fff;
+      color: #fff;
     }
   }
 
