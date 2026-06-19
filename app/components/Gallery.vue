@@ -71,7 +71,7 @@ const picShow = ref(0)
     font-style: italic
 
   [role="img"]
-    border-radius: 4px
+    border-radius: var(--fnb-radius)
     box-shadow: var(--fnb-shadow-sm)
     transition: box-shadow 0.24s ease-in-out
 
@@ -102,12 +102,12 @@ const picShow = ref(0)
 
     a
       display: block
-      @include fnb-border-sm
-      border-color: transparent
-      box-shadow: none
+      border: 2px solid transparent
       transition: all 150ms
 
-      &:hover, &.is-active
-        border-color: var(--fnb-border)
-        box-shadow: 4px 4px 0 0 var(--fnb-brand)
+      &:hover
+        border-color: var(--fnb-text-muted)
+
+      &.is-active
+        border-color: var(--fnb-brand)
 </style>
