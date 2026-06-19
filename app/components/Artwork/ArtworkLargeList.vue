@@ -84,9 +84,4 @@ onMounted(async () => {
 .artwork-large-list
   align-items: center
   background: transparent !important
-  max-width: 1200px
-  margin-left: auto
-  margin-right: auto
-  padding: 0 1rem
-  box-sizing: border-box
 </style>

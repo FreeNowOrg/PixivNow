@@ -40,7 +40,7 @@
   section(v-if='rankingStore.rankingData')
     .body-inner
       h2.ranking-date {{ rankingStore.rankingData.date.toLocaleDateString('zh', { dateStyle: 'long' }) }}
-    ArtworkLargeList(:rank-list='rankingStore.rankingData.contents')
+      ArtworkLargeList(:rank-list='rankingStore.rankingData.contents')
 </template>
 
 <script lang="ts" setup>

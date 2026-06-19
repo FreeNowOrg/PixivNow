@@ -19,21 +19,22 @@
         .fnb-empty 没有了，一滴都没有了……
 
     FnbSpin.result-area(:show='searchStore.loading' v-if='searchStore.results.length')
-      .pagenator
-        FnbPagination(
-          :page='page'
-          :item-count='searchStore.total'
-          :page-size='searchStore.results.length'
-          @update:page='page = $event'
-        )
-      ArtworkLargeList(:artwork-list='searchStore.results')
-      .pagenator
-        FnbPagination(
-          :page='page'
-          :item-count='searchStore.total'
-          :page-size='searchStore.results.length'
-          @update:page='page = $event'
-        )
+      .body-inner
+        .pagenator
+          FnbPagination(
+            :page='page'
+            :item-count='searchStore.total'
+            :page-size='searchStore.results.length'
+            @update:page='page = $event'
+          )
+        ArtworkLargeList(:artwork-list='searchStore.results')
+        .pagenator
+          FnbPagination(
+            :page='page'
+            :item-count='searchStore.total'
+            :page-size='searchStore.results.length'
+            @update:page='page = $event'
+          )
 </template>
 
 <script lang="ts" setup>
