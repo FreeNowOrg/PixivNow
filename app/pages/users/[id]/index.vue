@@ -449,12 +449,13 @@ onMounted(async () => {
     border: none;
     height: 3px;
     background: var(--fnb-border);
-    margin: 0.75rem 1rem;
+    margin: 0.75rem -1rem;
   }
 
   .meta-lines {
     text-align: left;
     font-size: 0.85rem;
+    color: var(--fnb-text);
   }
 
   .meta-line {
@@ -462,6 +463,11 @@ onMounted(async () => {
     align-items: center;
     gap: 0.4rem;
     padding: 0.2rem 0;
+
+    .fnb-icon {
+      color: var(--fnb-brand);
+      font-size: 1.3em;
+    }
 
     a {
       display: inline;
@@ -506,7 +512,6 @@ onMounted(async () => {
     position: sticky;
     top: 63px;
     z-index: 12;
-    background: var(--fnb-bg);
   }
 }
 
@@ -524,6 +529,60 @@ onMounted(async () => {
 }
 
 // ── Detail Modal ──
+.fnb-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+}
+
+.fnb-dialog-card {
+  @include fnb-border;
+  @include fnb-shadow-lg;
+  background: var(--fnb-surface);
+  width: 600px;
+  max-width: 86vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &__close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--fnb-text-muted);
+    z-index: 1;
+
+    &:hover {
+      color: var(--fnb-text);
+    }
+  }
+
+  &__header {
+    font-family: var(--fnb-font-display);
+    font-weight: 900;
+    font-size: 1.1rem;
+    padding: 1rem 1.5rem 0.5rem;
+    padding-right: 2.5rem;
+  }
+
+  &__body {
+    padding: 0 1.5rem 1rem;
+    overflow-y: auto;
+    flex: 1;
+  }
+}
+
 .info-modal {
   hr {
     border: none;

@@ -26,14 +26,14 @@ defineProps<{
 .fnb-tabs__nav {
   display: flex;
   @include fnb-border;
-  padding: 4px;
-  gap: 4px;
-  background: color-mix(in srgb, var(--fnb-brand) 10%, var(--fnb-surface));
+  padding: 3px;
+  gap: 3px;
+  background: var(--fnb-surface);
 }
 
 .fnb-tabs__tab {
   flex: 1;
-  padding: 0.6rem 1rem;
+  padding: 0.3rem 1rem;
   background: transparent;
   border: 3px solid transparent;
   font-family: inherit;
