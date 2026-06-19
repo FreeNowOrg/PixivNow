@@ -25,8 +25,8 @@ defineProps<{
 <style scoped lang="scss">
 .fnb-tabs__nav {
   display: flex;
-  border-bottom: 3px solid var(--fnb-border);
-  gap: 0;
+  @include fnb-border;
+  background: color-mix(in srgb, var(--fnb-brand) 10%, var(--fnb-surface));
 }
 
 .fnb-tabs__tab {
@@ -34,8 +34,6 @@ defineProps<{
   padding: 0.75rem 1rem;
   background: transparent;
   border: none;
-  border-bottom: 3px solid transparent;
-  margin-bottom: -3px;
   font-family: inherit;
   font-size: 1rem;
   font-weight: 700;
@@ -43,14 +41,18 @@ defineProps<{
   transition: color 150ms, background 150ms;
   color: var(--fnb-text-muted);
 
-  &:hover {
+  &:hover:not(.fnb-tabs__tab--active) {
     color: var(--fnb-text);
+    background: color-mix(in srgb, var(--fnb-brand) 20%, var(--fnb-surface));
   }
 
   &--active {
     color: var(--fnb-text);
-    border-bottom-color: var(--fnb-brand);
-    background: var(--fnb-highlight);
+    background: var(--fnb-brand);
+    color: #fff;
+    font-weight: 900;
+    border: 3px solid var(--fnb-border);
+    margin: -3px;
   }
 }
 
