@@ -106,7 +106,7 @@ export async function pixivFetch(
   // Extract auth info from incoming request via h3 (case-insensitive)
   const token = (getHeader(event, 'authorization') || '')
     .replace(/^Bearer\s+/i, '')
-  const cookies = { ...parseCookies(event) }
+  const cookies = CookieUtils.toJSON(getHeader(event, 'cookie') || '')
   const csrfToken =
     getHeader(event, 'x-csrf-token') ?? cookies.CSRFTOKEN ?? ''
 
