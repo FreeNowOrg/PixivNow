@@ -1,4 +1,3 @@
-import axios from 'axios'
 import colors from 'picocolors'
 
 export const PROD = process.env.NODE_ENV === 'production'
@@ -41,78 +40,158 @@ export class CookieUtils {
   }
 }
 
-export const pixivAjax = axios.create({
-  baseURL: 'https://www.pixiv.net/',
-  params: {},
-  headers: {
-    'user-agent': USER_AGENT,
-  },
-  timeout: 9 * 1000,
-})
+// --- Proxy-aware fetch ---
 
-function extractToken(headers: Record<string, any>): string {
-  const auth = headers.authorization || ''
-  return auth.replace(/^Bearer\s+/i, '')
+async function proxyAwareFetch(
+  url: string,
+  init?: RequestInit
+): Promise<Response> {
+  if (import.meta.dev) {
+    const proxyUrl =
+      process.env.https_proxy ||
+      process.env.HTTPS_PROXY ||
+      process.env.http_proxy ||
+      process.env.HTTP_PROXY
+    if (proxyUrl) {
+      const { fetch: undiciFetch, ProxyAgent } = await import('undici')
+      return undiciFetch(url, {
+        ...init,
+        dispatcher: new ProxyAgent(proxyUrl),
+      } as any) as unknown as Response
+    }
+  }
+  return globalThis.fetch(url, init)
 }
 
-pixivAjax.interceptors.request.use((ctx) => {
-  // Remove internal params
-  ctx.params = ctx.params || {}
-  delete ctx.params.__PATH
-  delete ctx.params.__PREFIX
+// --- Pixiv API client ---
 
-  const token = extractToken(ctx.headers)
-  const cookies = CookieUtils.toJSON(ctx.headers.cookie || '')
-  const csrfToken = ctx.headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
+export class PixivResponseError extends Error {
+  response: { status: number; data: any }
+  constructor(status: number, data: any) {
+    super(`Pixiv API error: ${status}`)
+    this.response = { status, data }
+  }
+}
 
-  // Build cookie string: prefer token from Authorization header, fall back to existing cookie
+interface PixivFetchOptions {
+  method?: string
+  url: string
+  params?: Record<string, any>
+  data?: any
+  headers?: Record<string, string>
+}
+
+export async function pixivFetch(
+  opts: PixivFetchOptions
+): Promise<{ data: any }> {
+  const method = (opts.method ?? 'GET').toUpperCase()
+
+  // Build URL with query params
+  const url = new URL(opts.url, 'https://www.pixiv.net/')
+  if (opts.params) {
+    for (const [k, v] of Object.entries(opts.params)) {
+      if (v != null && k !== '__PATH' && k !== '__PREFIX') {
+        url.searchParams.set(k, String(v))
+      }
+    }
+  }
+
+  // Process headers
+  const inHeaders = opts.headers ?? {}
+  const token = (inHeaders.authorization || '')
+    .replace(/^Bearer\s+/i, '')
+  const cookies = CookieUtils.toJSON(inHeaders.cookie || '')
+  const csrfToken =
+    inHeaders['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
+
   if (token) {
     cookies.PHPSESSID = token
   }
 
-  // Override headers
-  ctx.headers = ctx.headers || {}
-  ctx.headers.host = 'www.pixiv.net'
-  ctx.headers.origin = 'https://www.pixiv.net'
-  ctx.headers.referer = 'https://www.pixiv.net/'
-  ctx.headers['user-agent'] = USER_AGENT
-  ctx.headers['accept-language'] ??=
-    'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
-  ctx.headers.cookie = CookieUtils.toString(cookies)
-  csrfToken && (ctx.headers['x-csrf-token'] = csrfToken)
-  delete ctx.headers.authorization
-
-  if (DEV) {
-    console.info(
-      colors.green(`[${ctx.method?.toUpperCase()}] <`),
-      colors.cyan(ctx.url || '')
-    )
-    console.info({
-      params: ctx.params,
-      data: ctx.data,
-      cookies,
-    })
+  const headers: Record<string, string> = {
+    host: 'www.pixiv.net',
+    origin: 'https://www.pixiv.net',
+    referer: 'https://www.pixiv.net/',
+    'user-agent': USER_AGENT,
+    'accept-language':
+      inHeaders['accept-language'] ??
+      'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+    cookie: CookieUtils.toString(cookies),
+  }
+  if (csrfToken) {
+    headers['x-csrf-token'] = csrfToken
   }
 
-  return ctx
-})
+  // Prepare body
+  let body: string | undefined
+  if (method !== 'GET' && opts.data != null) {
+    body =
+      typeof opts.data === 'string'
+        ? opts.data
+        : JSON.stringify(opts.data)
+    if (typeof opts.data !== 'string') {
+      headers['content-type'] = 'application/json'
+    }
+  }
 
-pixivAjax.interceptors.response.use((ctx) => {
   if (DEV) {
-    const out: string =
-      typeof ctx.data === 'object'
-        ? JSON.stringify(ctx.data, null, 2)
-        : ctx.data.toString().trim()
+    console.info(
+      colors.green(`[${method}] <`),
+      colors.cyan(url.pathname + url.search)
+    )
+    console.info({ params: opts.params, data: opts.data, cookies })
+  }
+
+  const response = await proxyAwareFetch(url.toString(), {
+    method,
+    headers,
+    body,
+    signal: AbortSignal.timeout(9000),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.text().catch(() => '')
+    throw new PixivResponseError(response.status, errorData)
+  }
+
+  const contentType = response.headers.get('content-type') ?? ''
+  const data = contentType.includes('application/json')
+    ? await response.json()
+    : await response.text()
+
+  if (DEV) {
+    const out =
+      typeof data === 'object'
+        ? JSON.stringify(data, null, 2)
+        : String(data).trim()
     console.info(
       colors.green('[SEND] >'),
-      colors.cyan(ctx.request?.path?.replace('https://www.pixiv.net', '')),
-      `\n${colors.yellow(typeof ctx.data)} ${
+      colors.cyan(url.pathname),
+      `\n${colors.yellow(typeof data)} ${
         out.length >= 200 ? out.slice(0, 200).trim() + '\n...' : out
       }`
     )
   }
-  return ctx
-})
+
+  return { data }
+}
+
+// --- Pximg proxy fetch ---
+
+export async function pximgFetch(
+  url: string,
+  headers: Record<string, string>
+): Promise<Response> {
+  return proxyAwareFetch(url, {
+    headers: {
+      ...headers,
+      referer: 'https://www.pixiv.net/',
+      'user-agent': USER_AGENT,
+    },
+  })
+}
+
+// --- URL replacement utilities ---
 
 export function replacePximgUrlsInString(str: string): string {
   if (!str.includes('pximg.net')) return str

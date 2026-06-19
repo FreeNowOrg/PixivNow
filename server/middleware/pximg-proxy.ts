@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { USER_AGENT } from '~~/server/utils/pixiv'
+import { pximgFetch } from '~~/server/utils/pixiv'
 
 // Unified pximg image proxy middleware.
 // Intercepts /-/* and /~/* requests and proxies them to pximg.
@@ -43,20 +42,9 @@ export default defineEventHandler(async (event) => {
       headers[h] = reqHeaders[h]
     }
   }
-  Object.assign(headers, {
-    referer: 'https://www.pixiv.net/',
-    'user-agent': USER_AGENT,
-  })
 
   try {
-    const {
-      data,
-      headers: respHeaders,
-      status,
-    } = await axios.get<ArrayBuffer>(url, {
-      responseType: 'arraybuffer',
-      headers,
-    })
+    const response = await pximgFetch(url, headers)
 
     const exposeHeaders = [
       'content-type',
@@ -70,12 +58,13 @@ export default defineEventHandler(async (event) => {
       'vary',
     ]
     for (const h of exposeHeaders) {
-      if (typeof respHeaders[h] === 'string') {
-        setResponseHeader(event, h, respHeaders[h])
+      const val = response.headers.get(h)
+      if (val) {
+        setResponseHeader(event, h, val)
       }
     }
-    setResponseStatus(event, status)
-    return Buffer.from(data)
+    setResponseStatus(event, response.status)
+    return Buffer.from(await response.arrayBuffer())
   } catch (err: any) {
     console.error('Image proxy error:', url, err?.message)
     throw createError({

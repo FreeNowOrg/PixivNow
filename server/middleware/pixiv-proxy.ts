@@ -1,5 +1,5 @@
 import escapeRegExp from 'lodash.escaperegexp'
-import { pixivAjax } from '~~/server/utils/pixiv'
+import { pixivFetch } from '~~/server/utils/pixiv'
 
 // Unified Pixiv API proxy middleware.
 // Intercepts /ajax/*, /rpc/*, and *.php requests and proxies them to Pixiv.
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
 
   try {
-    const { data } = await pixivAjax({
+    const { data } = await pixivFetch({
       method: event.method ?? 'GET',
       url: pathname,
       params: query ?? {},

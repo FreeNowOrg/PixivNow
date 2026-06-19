@@ -1,5 +1,5 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { PXIMG_BASEURL_I, pixivAjax } from '~~/server/utils/pixiv'
+import { PXIMG_BASEURL_I, pixivFetch } from '~~/server/utils/pixiv'
 import type { Artwork } from '~~/shared/types/Artworks'
 
 type ArtworkOrAd = Artwork | { isAdContainer: boolean }
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const data: { illusts?: ArtworkOrAd[] } = (
-      await pixivAjax({
+      await pixivFetch({
         url: '/ajax/illust/discovery',
         params: {
           mode: query.mode ?? 'safe',

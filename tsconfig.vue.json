@@ -1,0 +1,4 @@
+{
+  // For Volar to work
+  "include": ["app/**/*.vue"]
+}

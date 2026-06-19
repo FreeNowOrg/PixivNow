@@ -1,5 +1,5 @@
 import { type CheerioAPI, load } from 'cheerio'
-import { pixivAjax } from '~~/server/utils/pixiv'
+import { pixivFetch } from '~~/server/utils/pixiv'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -11,7 +11,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const { data } = await pixivAjax.get('/', {
+    const { data } = await pixivFetch({
+      url: '/',
       params: query,
       headers: getHeaders(event) as Record<string, string>,
     })
