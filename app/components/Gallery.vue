@@ -102,10 +102,12 @@ const picShow = ref(0)
 
     a
       display: block
-      border: 2px solid transparent
-      transition: border-color 150ms
+      @include fnb-border-sm
+      border-color: transparent
+      box-shadow: none
+      transition: all 150ms
 
-      &.is-active
-        border-color: var(--fnb-brand)
-        box-shadow: var(--fnb-shadow-sm)
+      &:hover, &.is-active
+        border-color: var(--fnb-border)
+        box-shadow: 4px 4px 0 0 var(--fnb-brand)
 </style>
