@@ -16,7 +16,7 @@ defineProps<{ modelValue: string }>()
 defineEmits<{ 'update:modelValue': [value: string] }>()
 
 const tabs = [
-  { label: '综合', value: 'all', disabled: false },
+  { label: '插画·漫画', value: 'all', disabled: false },
   { label: '小说', value: 'novel', disabled: true },
 ]
 </script>
