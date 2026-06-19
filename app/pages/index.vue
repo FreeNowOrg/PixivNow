@@ -15,28 +15,28 @@
 
       .quick-links
         FnbTag(clickable, @click='$router.push("/ranking")')
-          ITablerChartBar
+          FnbIcon: ITablerChartBar
           |  排行榜
         FnbTag(clickable, @click='$router.push("/following/latest")')
-          ITablerUsers
+          FnbIcon: ITablerUsers
           |  关注
         FnbTag(clickable, @click='scrollToDiscovery')
-          ITablerCompass
+          FnbIcon: ITablerCompass
           |  探索
         FnbTag(:clickable='false', style='opacity: 0.4')
-          ITablerBook
+          FnbIcon: ITablerBook
           |  小说
 
     .bg-info
       a.pointer(@click='homeStore.fetchRandomBg()', title='换一个~')
-        IFasRandom
+        FnbIcon: IFasRandom
       a.pointer(
         @click='isShowBgInfo = true',
         style='margin-left: 0.5em',
         title='关于背景',
         v-if='randomBg?.id'
       )
-        IFasInfoCircle
+        FnbIcon: IFasInfoCircle
 
   //- ── Background Info Dialog ──
   .fnb-dialog-overlay(v-if='isShowBgInfo', @click.self='isShowBgInfo = false')
@@ -72,7 +72,7 @@
     .content-grid
       .content-left
         h3.section-title
-          ITablerTrophy
+          FnbIcon: ITablerTrophy
           |  今日排行
         RankingCarousel(
           v-if='homeStore.rankingList.length',
@@ -92,7 +92,7 @@
     section.discover(ref='discoverRef')
       .discover-header
         h2
-          ITablerCompass
+          FnbIcon: ITablerCompass
           |  探索发现
         .discover-controls
           DiscoveryTabs(v-model='discoveryTab')

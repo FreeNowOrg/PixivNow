@@ -16,21 +16,21 @@ FnbCard.user-status-card(shadow='sm')
         tag='RouterLink',
         :to='`/users/${userStore.userId}?tab=public_bookmarks`'
       )
-        template(#icon): ITablerBookmark
+        template(#icon): FnbIcon: ITablerBookmark
         | 收藏
       FnbButton(
         size='sm',
         tag='RouterLink',
         :to='`/users/${userStore.userId}/following`'
       )
-        template(#icon): ITablerUsers
+        template(#icon): FnbIcon: ITablerUsers
         | 关注
       FnbButton(
         size='sm',
         tag='RouterLink',
         to='/login'
       )
-        template(#icon): ITablerKey
+        template(#icon): FnbIcon: ITablerKey
         | 令牌
 
   //- Not logged in
@@ -47,7 +47,7 @@ FnbCard.user-status-card(shadow='sm')
         tag='RouterLink',
         :to='"/login?back=/"'
       )
-        template(#icon): ITablerLogin
+        template(#icon): FnbIcon: ITablerLogin
         | 登录
 </template>
 

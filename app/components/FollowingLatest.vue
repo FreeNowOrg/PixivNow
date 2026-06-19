@@ -1,7 +1,7 @@
 <template lang="pug">
 .following-latest
   h3.section-title
-    ITablerUsers
+    FnbIcon: ITablerUsers
     | 关注更新
   FnbCard(shadow='sm')
     //- Loading
@@ -35,7 +35,7 @@
         tag='RouterLink',
         to='/login?back=/'
       )
-        template(#icon): ITablerLogin
+        template(#icon): FnbIcon: ITablerLogin
         | 登录
 
     //- Logged in but no follows

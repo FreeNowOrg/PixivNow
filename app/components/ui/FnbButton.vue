@@ -84,5 +84,10 @@ withDefaults(
     display: inline-flex;
     animation: spin 1s linear infinite;
   }
+
+  // Icon slot: slightly larger than text for visual balance (≈ 18/14)
+  .fnb-icon {
+    font-size: 1.25em;
+  }
 }
 </style>
