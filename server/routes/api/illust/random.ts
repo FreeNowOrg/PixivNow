@@ -12,18 +12,18 @@ export default defineEventHandler(async (event) => {
     query.format !== 'json'
 
   try {
-    const data: { thumbnails?: { illust?: ArtworkOrAd[] } } = (
+    const data: { illusts?: ArtworkOrAd[] } = (
       await pixivAjax({
-        url: '/ajax/discovery/artworks',
+        url: '/ajax/illust/discovery',
         params: {
           mode: query.mode ?? 'safe',
-          limit: requestImage ? '1' : ((query.limit as string) ?? '18'),
+          max: requestImage ? '1' : ((query.max as string) ?? '18'),
         },
         headers: reqHeaders as Record<string, string>,
       })
     ).data
 
-    const illusts = (data.thumbnails?.illust ?? []).filter((value): value is Artwork =>
+    const illusts = (data.illusts ?? []).filter((value): value is Artwork =>
       Object.keys(value).includes('id')
     )
 

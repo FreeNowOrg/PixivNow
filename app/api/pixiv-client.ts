@@ -182,16 +182,30 @@ export class PixivWebClient {
     mode?: string
     limit?: number
   }): Promise<ArtworkInfo[]> {
-    const { data } = await this.http.get<
-      PixivResponse<{ thumbnails: { illust: ArtworkInfoOrAd[] } }>
-    >('/ajax/discovery/artworks', {
-      params: {
-        mode: params.mode ?? 'all',
-        limit: String(params.limit ?? 60),
-      },
-    })
-    const body = this.unwrap(data)
-    return body.thumbnails.illust.filter((item): item is ArtworkInfo => 'id' in item)
+    const hasAuth = !!getToken()
+    if (hasAuth) {
+      const { data } = await this.http.get<
+        PixivResponse<{ thumbnails: { illust: ArtworkInfoOrAd[] } }>
+      >('/ajax/discovery/artworks', {
+        params: {
+          mode: params.mode ?? 'all',
+          limit: String(params.limit ?? 60),
+        },
+      })
+      const body = this.unwrap(data)
+      return body.thumbnails.illust.filter((item): item is ArtworkInfo => 'id' in item)
+    } else {
+      const { data } = await this.http.get<
+        PixivResponse<{ illusts: ArtworkInfoOrAd[] }>
+      >('/ajax/illust/discovery', {
+        params: {
+          mode: params.mode ?? 'safe',
+          max: String(params.limit ?? 18),
+        },
+      })
+      const body = this.unwrap(data)
+      return body.illusts.filter((item): item is ArtworkInfo => 'id' in item)
+    }
   }
 
   async getRecommendInit(
