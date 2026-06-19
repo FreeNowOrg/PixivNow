@@ -111,22 +111,24 @@ h3 {
 
   .page-count {
     position: absolute;
-    top: 0.4rem;
-    right: 0.4rem;
+    top: 0.3rem;
+    right: 0.3rem;
     color: #fff;
     background-color: rgba(0, 0, 0, 0.6);
-    padding: 0.2rem 0.6rem;
-    border-radius: 0.2rem;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.7rem;
+    border-radius: var(--fnb-radius-sm);
     [data-icon] {
-      margin-right: 0.2rem;
+      margin-right: 0.15rem;
     }
   }
 
   .restrict {
     position: absolute;
     color: #fff;
-    width: 2rem;
-    height: 2rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    font-size: 0.7rem;
     border-radius: var(--fnb-radius-sm);
     display: flex;
     align-items: center;
