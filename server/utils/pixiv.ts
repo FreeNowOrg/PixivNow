@@ -90,17 +90,27 @@ export async function pixivFetch(
   const url = new URL(opts.url, 'https://www.pixiv.net/')
   if (opts.params) {
     for (const [k, v] of Object.entries(opts.params)) {
-      if (v != null && k !== '__PATH' && k !== '__PREFIX') {
+      if (v == null || k === '__PATH' || k === '__PREFIX') continue
+      if (Array.isArray(v)) {
+        for (const item of v) {
+          url.searchParams.append(k, String(item))
+        }
+      } else {
         url.searchParams.set(k, String(v))
       }
     }
   }
 
-  // Process headers
-  const inHeaders = opts.headers ?? {}
-  const token = (inHeaders.authorization || '')
+  // Normalize incoming headers to lowercase for consistent access
+  // (AxiosHeaders was case-insensitive; plain objects from edge runtimes may not be)
+  const inHeaders: Record<string, string> = {}
+  for (const [k, v] of Object.entries(opts.headers ?? {})) {
+    if (typeof v === 'string') inHeaders[k.toLowerCase()] = v
+  }
+
+  const token = (inHeaders['authorization'] || '')
     .replace(/^Bearer\s+/i, '')
-  const cookies = CookieUtils.toJSON(inHeaders.cookie || '')
+  const cookies = CookieUtils.toJSON(inHeaders['cookie'] || '')
   const csrfToken =
     inHeaders['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
 
@@ -109,7 +119,6 @@ export async function pixivFetch(
   }
 
   const headers: Record<string, string> = {
-    host: 'www.pixiv.net',
     origin: 'https://www.pixiv.net',
     referer: 'https://www.pixiv.net/',
     'user-agent': USER_AGENT,
