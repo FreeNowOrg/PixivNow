@@ -95,9 +95,12 @@
           FnbIcon: ITablerCompass
           |  探索发现
         .discover-controls
-          DiscoveryTabs(v-model='discoveryTab')
+          DiscoveryTabs(
+            :model-value='discoveryTab',
+            @update:model-value='changeDiscoveryTab'
+          )
           FnbSelect(
-            :model-value='homeStore.discoveryMode',
+            :model-value='discoveryMode',
             :options='discoveryModeOptions',
             @update:model-value='changeDiscoveryMode'
           )
@@ -156,7 +159,8 @@ const isShowBgInfo = ref(false)
 useBodyScrollLock(isShowBgInfo)
 const homeStore = useHomeStore()
 const userStore = useUserStore()
-const discoveryTab = ref('all')
+const route = useRoute()
+const router = useRouter()
 const discoverRef = ref<HTMLElement | null>(null)
 const scrollSentinel = ref<HTMLElement | null>(null)
 
@@ -173,13 +177,37 @@ const discoveryModeOptions = [
   { label: 'R18', value: 'r18' },
 ]
 
-function scrollToDiscovery() {
-  discoverRef.value?.scrollIntoView({ behavior: 'smooth' })
+const savedDiscoveryTab = useLocalStorage('pixivnow:discovery-tab', 'all')
+const savedDiscoveryMode = useLocalStorage('pixivnow:discovery-mode', 'all')
+
+const discoveryTab = ref((route.query.tab as string) || savedDiscoveryTab.value)
+const discoveryMode = ref((route.query.mode as string) || savedDiscoveryMode.value)
+
+homeStore.discoveryMode = discoveryMode.value
+
+function syncDiscoveryQuery() {
+  const query: Record<string, string> = {}
+  if (discoveryTab.value !== 'all') query.tab = discoveryTab.value
+  if (discoveryMode.value !== 'all') query.mode = discoveryMode.value
+  router.replace({ query })
+}
+
+function changeDiscoveryTab(tab: string) {
+  discoveryTab.value = tab
+  savedDiscoveryTab.value = tab
+  syncDiscoveryQuery()
 }
 
 function changeDiscoveryMode(mode: string) {
+  discoveryMode.value = mode
+  savedDiscoveryMode.value = mode
   homeStore.discoveryMode = mode
+  syncDiscoveryQuery()
   homeStore.fetchDiscovery()
+}
+
+function scrollToDiscovery() {
+  discoverRef.value?.scrollIntoView({ behavior: 'smooth' })
 }
 
 // Infinite scroll observer
@@ -198,6 +226,7 @@ watch(() => userStore.isLoggedIn, (loggedIn) => {
 
 onMounted(() => {
   setTitle()
+  syncDiscoveryQuery()
   if (!homeStore.randomBg) {
     homeStore.fetchRandomBg()
   }
