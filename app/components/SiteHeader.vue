@@ -187,6 +187,10 @@ useEventListener(window, 'scroll', () => {
   }
 
   .logo-area {
+    a {
+      display: block;
+      line-height: 0;
+    }
     .site-logo {
       height: 2.2rem;
       width: auto;
@@ -295,6 +299,8 @@ useEventListener(window, 'scroll', () => {
 
       a {
         display: inline !important;
+        position: relative;
+        z-index: 1;
       }
     }
 
