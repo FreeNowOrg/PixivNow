@@ -66,12 +66,14 @@ import IFasRobot from '~icons/fa-solid/robot'
 import IPlayCircle from '~icons/fa-solid/play-circle'
 import type { ArtworkInfo } from '~/types'
 
+import { useArtworkStore } from '~/stores/artwork'
+
 const props = defineProps<{
   item?: ArtworkInfo
   loading?: boolean
 }>()
 
-const pixivClient = usePixivClientStore().client
+const artworkStore = useArtworkStore()
 
 const loadingBookmark = ref(false)
 async function handleBookmark() {
@@ -80,15 +82,13 @@ async function handleBookmark() {
   const item = props.item!
   try {
     if (item.bookmarkData) {
-      await pixivClient.removeBookmark(item.bookmarkData.id).then(() => {
-        item.bookmarkData = null
-      })
+      await artworkStore.removeBookmark(item.bookmarkData.id)
+      item.bookmarkData = null
     } else {
-      await pixivClient.addBookmark(item.id).then((data) => {
-        if (data.last_bookmark_id) {
-          item.bookmarkData = { id: data.last_bookmark_id, private: false }
-        }
-      })
+      const data = await artworkStore.addBookmark(item.id)
+      if (data.last_bookmark_id) {
+        item.bookmarkData = { id: data.last_bookmark_id, private: false }
+      }
     }
   } catch (e) {
     console.warn('handleBookmark', e)

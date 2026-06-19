@@ -38,30 +38,29 @@ import type { User } from '~/types'
 import IFasCheck from '~icons/fa-solid/check'
 import IFasPlus from '~icons/fa-solid/plus'
 import { useUserStore } from '~/stores/session'
+import { useUserProfileStore } from '~/stores/user-profile'
 
 const userStore = useUserStore()
+const userProfileStore = useUserProfileStore()
 
 const props = defineProps<{
   user?: User
 }>()
 
 const loadingUserFollow = ref(false)
-function handleUserFollow() {
+async function handleUserFollow() {
   if (!props.user || loadingUserFollow.value) return
-  const user = props.user
-
   loadingUserFollow.value = true
-  const isFollowed = user.isFollowed
-  const handler = isFollowed
-    ? pixivClient.unfollowUser(user.userId)
-    : pixivClient.followUser(user.userId)
-  handler
-    .then(() => {
-      user.isFollowed = !isFollowed
-    })
-    .finally(() => {
-      loadingUserFollow.value = false
-    })
+  try {
+    if (props.user.isFollowed) {
+      await userProfileStore.unfollowUser(props.user.userId)
+    } else {
+      await userProfileStore.followUser(props.user.userId)
+    }
+    props.user.isFollowed = !props.user.isFollowed
+  } finally {
+    loadingUserFollow.value = false
+  }
 }
 </script>
 

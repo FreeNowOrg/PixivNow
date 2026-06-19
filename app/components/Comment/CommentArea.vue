@@ -24,8 +24,9 @@
 import Comment from './Comment.vue'
 import type { Comments } from '~/types'
 import IFasPlus from '~icons/fa-solid/plus'
+import { useArtworkStore } from '~/stores/artwork'
 
-const pixivClient = usePixivClientStore().client
+const artworkStore = useArtworkStore()
 const loading = ref(false)
 const comments = ref<Comments[]>([])
 const hasNext = ref(false)
@@ -46,7 +47,7 @@ async function init(id: string | number): Promise<void> {
 
   try {
     loading.value = true
-    const data = await pixivClient.getComments(`${id}`, {
+    const data = await artworkStore.fetchComments(`${id}`, {
       limit: comments.value.length ? 30 : 3,
       offset: comments.value.length,
     })
