@@ -233,8 +233,17 @@ h3 {
   }
   .tags {
     overflow: hidden;
-    font-size: 0.75rem;
-    max-height: 1.8em;
+    max-height: 2.2em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+
+    :deep(.fnb-tag) {
+      font-size: 0.7rem;
+      padding: 0.05rem 0.3rem;
+      border-width: 1px;
+      box-shadow: none;
+    }
   }
 }
 </style>
