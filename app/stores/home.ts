@@ -16,6 +16,7 @@ export const useHomeStore = defineStore('home', () => {
   const discoverySeenIds = new Set<string>()
   const loadingMoreDiscovery = ref(false)
   const noMoreDiscovery = ref(false)
+  const discoveryMode = ref('all')
 
   async function fetchRandomBg(): Promise<void> {
     try {
@@ -32,7 +33,7 @@ export const useHomeStore = defineStore('home', () => {
     if (loadingDiscovery.value) return
     try {
       loadingDiscovery.value = true
-      const illusts = await pixivClient.getDiscovery({ mode: 'all', max: 18 })
+      const illusts = await pixivClient.getDiscovery({ mode: discoveryMode.value, max: 60 })
       discoverySeenIds.clear()
       noMoreDiscovery.value = false
       illusts.forEach((item) => discoverySeenIds.add(item.id))
@@ -74,7 +75,7 @@ export const useHomeStore = defineStore('home', () => {
     if (loadingMoreDiscovery.value || noMoreDiscovery.value) return
     try {
       loadingMoreDiscovery.value = true
-      const illusts = await pixivClient.getDiscovery({ mode: 'all', max: 18 })
+      const illusts = await pixivClient.getDiscovery({ mode: discoveryMode.value, max: 60 })
       const fresh = illusts.filter((item) => !discoverySeenIds.has(item.id))
       if (!fresh.length) {
         noMoreDiscovery.value = true
@@ -104,5 +105,6 @@ export const useHomeStore = defineStore('home', () => {
     loadingMoreDiscovery,
     noMoreDiscovery,
     appendDiscovery,
+    discoveryMode,
   }
 })

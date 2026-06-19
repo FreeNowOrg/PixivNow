@@ -96,6 +96,11 @@
           |  探索发现
         .discover-controls
           DiscoveryTabs(v-model='discoveryTab')
+          FnbSelect(
+            :model-value='homeStore.discoveryMode',
+            :options='discoveryModeOptions',
+            @update:model-value='changeDiscoveryMode'
+          )
           FnbButton(
             :loading='homeStore.loadingDiscovery',
             @click='homeStore.fetchDiscovery()',
@@ -162,8 +167,19 @@ const randomBgRegularUrl = computed(() => {
   return toRegularUrl(bg.url)
 })
 
+const discoveryModeOptions = [
+  { label: '混池', value: 'all' },
+  { label: '全年龄', value: 'safe' },
+  { label: 'R18', value: 'r18' },
+]
+
 function scrollToDiscovery() {
   discoverRef.value?.scrollIntoView({ behavior: 'smooth' })
+}
+
+function changeDiscoveryMode(mode: string) {
+  homeStore.discoveryMode = mode
+  homeStore.fetchDiscovery()
 }
 
 // Infinite scroll observer
