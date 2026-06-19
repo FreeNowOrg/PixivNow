@@ -10,7 +10,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
 
     .logo-area
       RouterLink.plain(to='/')
-        img.site-logo(:src='LogoH')
+        img.site-logo(:src='SiteLogo')
 
     .flex.search-area(v-if='$route.name !== "search"')
       .search-full.align-right.flex-1
@@ -87,7 +87,7 @@ import SearchBox from './SearchBox.vue'
 import IFasBars from '~icons/fa-solid/bars'
 import IFasSearch from '~icons/fa-solid/search'
 import { logout } from '~/composables/userData'
-import LogoH from '~/assets/LogoH.png'
+import SiteLogo from '~/assets/PixivNow.svg'
 import { useSideNavStore, useUserStore } from '~/stores/session'
 import { pximgS } from '~/utils/pximg'
 

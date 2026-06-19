@@ -7,7 +7,7 @@
     .hero-overlay
     .hero-content
       .site-logo
-        img(:src='LogoH')
+        img(:src='SiteLogo')
       .description Now, everyone can enjoy Pixiv
 
       .search-area
@@ -146,7 +146,7 @@ import { IconChartBar as ITablerChartBar, IconUsers as ITablerUsers, IconCompass
 import { useHomeStore } from '~/stores/home'
 import { useUserStore } from '~/stores/session'
 import { toRegularUrl } from '~/utils/pximg'
-import LogoH from '~/assets/LogoH.png'
+import SiteLogo from '~/assets/PixivNow.svg'
 import { setTitle } from '~/utils/setTitle'
 
 definePageMeta({ name: 'home' })
