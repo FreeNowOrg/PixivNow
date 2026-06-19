@@ -1,10 +1,11 @@
 <template lang="pug">
-header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
+header.global-navbar(:class='{ "not-at-top": notAtTop, hidden, "side-nav-opened": sideNavStore.isOpened }')
   .flex
     button.side-nav-toggle.plain(
       aria-label='打开导航菜单'
       title='导航菜单'
       @click='toggleSideNav'
+      :class='{ "is-active": sideNavStore.isOpened }'
     )
       IFasBars(aria-hidden='true')
 
@@ -178,7 +179,7 @@ useEventListener(window, 'scroll', () => {
     align-items: center;
     justify-content: center;
 
-    &:hover {
+    &:hover, &.is-active {
       background-color: var(--fnb-highlight);
       color: var(--fnb-text);
     }
@@ -355,7 +356,7 @@ useEventListener(window, 'scroll', () => {
       pointer-events: none;
     }
 
-    &.not-at-top {
+    &.not-at-top, &.side-nav-opened {
       background-color: var(--fnb-brand);
       border-bottom-color: var(--fnb-border);
 

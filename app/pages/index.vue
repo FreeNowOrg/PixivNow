@@ -243,7 +243,7 @@ onMounted(() => {
 #home-view {
   // ── Hero ──
   .hero-section {
-    min-height: 50vh;
+    min-height: 65vh;
     margin-top: -63px;
     padding: 30px 10%;
     padding-top: 93px;
@@ -277,16 +277,14 @@ onMounted(() => {
 
   .site-logo {
     img {
-      height: 12rem;
+      height: 10rem;
       width: auto;
     }
     margin-bottom: 0.25rem;
   }
 
   .description {
-    font-size: 0.9rem;
     margin-bottom: 2rem;
-    opacity: 0.85;
   }
 
   .search-area {
