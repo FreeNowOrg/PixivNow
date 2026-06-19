@@ -45,7 +45,6 @@ defineProps<{
 
   &:hover {
     color: var(--fnb-text);
-    background: var(--fnb-highlight);
   }
 
   &--active {
