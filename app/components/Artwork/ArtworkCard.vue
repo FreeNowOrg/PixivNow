@@ -106,8 +106,7 @@ async function handleBookmark() {
   border-radius: var(--fnb-radius);
   @include fnb-border;
   width: 100%;
-  height: 0;
-  padding-top: 100%;
+  aspect-ratio: 1 / 1;
   animation: imgProgress 0.6s ease infinite alternate;
 
   a {
