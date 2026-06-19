@@ -199,16 +199,3 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
-=========================================================================
-
-Brand Assets Exception
-
-The PixivNow logo and associated brand assets (files under app/assets/
-matching PixivNow.*) are NOT licensed under the Apache License 2.0.
-All rights to the PixivNow logo design are reserved by the original
-author. You may not use, modify, or redistribute the PixivNow logo
-without explicit written permission.
-
-"Pixiv" is a trademark of pixiv Inc. The PixivNow project is not
-affiliated with, endorsed by, or sponsored by pixiv Inc.
