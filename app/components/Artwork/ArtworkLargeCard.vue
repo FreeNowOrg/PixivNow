@@ -125,26 +125,27 @@ h3 {
 
   .ranking {
     position: absolute;
-    top: -0.9rem;
-    left: -0.89rem;
-    font-size: 1.2rem;
-    color: #252525;
-    background-color: #fff;
-    border-radius: var(--fnb-radius-sm);
+    top: -0.6rem;
+    left: -0.6rem;
+    font-family: var(--fnb-font-display);
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--fnb-text);
+    background-color: var(--fnb-surface);
+    border: 2px solid var(--fnb-border);
+    box-shadow: var(--fnb-shadow-xs);
     width: 1.8rem;
     height: 1.8rem;
     text-align: center;
-    line-height: 1.6;
-    --ring-color: color-mix(in srgb, var(--fnb-brand) 40%, transparent);
-    box-shadow: 0 0 0 1px var(--ring-color) inset, 0 0 0 2px #fff;
+    line-height: 1.7;
     &.gold {
-      --ring-color: gold;
+      background-color: var(--fnb-highlight);
     }
     &.silver {
-      --ring-color: darkgray;
+      background-color: #d1d5db;
     }
     &.bronze {
-      --ring-color: #b87333;
+      background-color: #f0b27a;
     }
   }
 
