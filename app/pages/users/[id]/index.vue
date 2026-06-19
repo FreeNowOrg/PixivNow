@@ -126,7 +126,7 @@
             :loading='8'
             v-if='!publicBookmarks?.length && loadingPublicBookmarks'
           )
-          .fnb-empty(v-else-if='!publicBookmarks?.length') {{ isSelfUserPage ? `收藏夹是空的 Σ(⊙▽⊙"a` : `${user.name}没有公开的收藏 ${"(❁´◡`❁)"}` }}
+          .fnb-empty(v-else-if='!publicBookmarks?.length') {{ emptyPublicBookmarksText }}
           .user-bookmarks.body-inner(v-else)
             ArtworkList(:list='publicBookmarks')
             .more-btn.align-center(
@@ -214,6 +214,12 @@ const error = ref('')
 const showUserMore = ref(false)
 const route = useRoute()
 const router = useRouter()
+
+const emptyPublicBookmarksText = computed(() =>
+  isSelfUserPage.value
+    ? '收藏夹是空的 Σ(⊙▽⊙"a'
+    : user.value?.name + '没有公开的收藏 (❁´◡`❁)'
+)
 
 const tabsList = computed(() => {
   const list = [
