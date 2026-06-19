@@ -117,3 +117,4 @@ dev-test
 
 # macOS
 .DS_Store
+.playwright-mcp/
