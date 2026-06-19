@@ -24,26 +24,29 @@
   Teleport(to='body')
     Transition(name='dialog')
       .fnb-dialog-overlay(v-if='isShowBgInfo' @click.self='isShowBgInfo = false')
-        FnbCard.fnb-dialog-card(:title='`背景图片：${randomBg?.alt}`')
-          .bg-info-modal
-            .align-center
-              RouterLink.thumb(:to='"/artworks/" + randomBg?.id')
-                img(
-                  :src='randomBgRegularUrl',
-                  :style='{ width: "100%", height: "auto" }'
-                  lazyload
-                )
-              .desc
-                .author
-                  RouterLink(:to='"/users/" + randomBg?.userId') @{{ randomBg?.userName }}
-                  | 的作品 (ID: {{ randomBg?.id }})
-              .tag-list(style='display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1rem')
-                FnbTag(
-                  :key='tag'
-                  clickable
-                  @click='$router.push(`/search/${encodeURIComponent(tag)}/1`)'
-                  v-for='tag in randomBg?.tags'
-                ) {{ tag }}
+        .fnb-dialog-card
+          button.fnb-dialog-card__close(@click='isShowBgInfo = false' aria-label='关闭') ×
+          .fnb-dialog-card__header {{ `背景图片：${randomBg?.alt}` }}
+          .fnb-dialog-card__body
+            .bg-info-modal
+              .align-center
+                RouterLink.thumb(:to='"/artworks/" + randomBg?.id')
+                  img(
+                    :src='randomBgRegularUrl',
+                    :style='{ width: "100%", height: "auto" }'
+                    lazyload
+                  )
+                .desc
+                  .author
+                    RouterLink(:to='"/users/" + randomBg?.userId') @{{ randomBg?.userName }}
+                    | 的作品 (ID: {{ randomBg?.id }})
+                .tag-list(style='display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1rem')
+                  FnbTag(
+                    :key='tag'
+                    clickable
+                    @click='$router.push(`/search/${encodeURIComponent(tag)}/1`)'
+                    v-for='tag in randomBg?.tags'
+                  ) {{ tag }}
 
   .body-inner
     section.discover
@@ -80,6 +83,7 @@ useHead({
 })
 
 const isShowBgInfo = ref(false)
+useBodyScrollLock(isShowBgInfo)
 const homeStore = useHomeStore()
 const randomBg = computed(() => homeStore.randomBg)
 const randomBgRegularUrl = computed(() => {
@@ -198,8 +202,47 @@ onMounted(async () => {
 }
 
 .fnb-dialog-card {
+  @include fnb-border;
+  @include fnb-shadow-lg;
+  background: var(--fnb-surface);
   width: 600px;
   max-width: 86vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &__close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--fnb-text-muted);
+    z-index: 1;
+
+    &:hover {
+      color: var(--fnb-text);
+    }
+  }
+
+  &__header {
+    font-family: var(--fnb-font-display);
+    font-weight: 900;
+    font-size: 1.1rem;
+    padding: 1rem 1.5rem 0.5rem;
+    padding-right: 2.5rem;
+  }
+
+  &__body {
+    padding: 0 1.5rem 1rem;
+    overflow-y: auto;
+    flex: 1;
+  }
 }
 
 .dialog-enter-active,

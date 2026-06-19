@@ -25,6 +25,7 @@ import Comment from './Comment.vue'
 import type { Comments } from '~/types'
 import IFasPlus from '~icons/fa-solid/plus'
 
+const pixivClient = usePixivClientStore().client
 const loading = ref(false)
 const comments = ref<Comments[]>([])
 const hasNext = ref(false)

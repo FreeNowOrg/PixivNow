@@ -99,4 +99,13 @@ const picShow = ref(0)
     li
       margin: 0.5rem
       display: inline-block
+
+    a
+      display: block
+      border: 2px solid transparent
+      transition: border-color 150ms
+
+      &.is-active
+        border-color: var(--fnb-brand)
+        box-shadow: var(--fnb-shadow-sm)
 </style>

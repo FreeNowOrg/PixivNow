@@ -74,38 +74,41 @@
     Teleport(to='body')
       Transition(name='dialog')
         .fnb-dialog-overlay(v-if='showUserMore' @click.self='showUserMore = false')
-          FnbCard.fnb-dialog-card(title='用户资料')
-            .info-modal
-              .top
-                h3
-                  a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
-                    img(:src='user.imageBig')
-                    .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
-                      IFasParking(data-icon)
-                  .title {{ user.name }}
-              .bottom
-                section.user-comment
-                  h4 个人简介
-                  .comment.pre {{ user.comment || '-' }}
-                section.user-workspace(v-if='user.workspace')
-                  hr
-                  h4 工作环境
-                  FnbImage(
-                    :preview-src='user.workspace.wsBigUrl',
-                    :src='user.workspace.wsUrl'
-                    lazy
-                    v-if='user.workspace.wsUrl'
-                  )
-                  FnbTable
-                    tbody
-                      tr(v-for='(val, key) in user.workspace')
-                        th {{ workspaceNameMap[key] || key }}
-                        td {{ val }}
-                section.dev-only
-                  hr
-                  h4 Debug Info
-                  details
-                    pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
+          .fnb-dialog-card
+            button.fnb-dialog-card__close(@click='showUserMore = false' aria-label='关闭') ×
+            .fnb-dialog-card__header 用户资料
+            .fnb-dialog-card__body
+              .info-modal
+                .top
+                  h3
+                    a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
+                      img(:src='user.imageBig')
+                      .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
+                        IFasParking(data-icon)
+                    .title {{ user.name }}
+                .bottom
+                  section.user-comment
+                    h4 个人简介
+                    .comment.pre {{ user.comment || '-' }}
+                  section.user-workspace(v-if='user.workspace')
+                    hr
+                    h4 工作环境
+                    FnbImage(
+                      :preview-src='user.workspace.wsBigUrl',
+                      :src='user.workspace.wsUrl'
+                      lazy
+                      v-if='user.workspace.wsUrl'
+                    )
+                    FnbTable
+                      tbody
+                        tr(v-for='(val, key) in user.workspace')
+                          th {{ workspaceNameMap[key] || key }}
+                          td {{ val }}
+                  section.dev-only
+                    hr
+                    h4 Debug Info
+                    details
+                      pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
 
     #user-artworks
       FnbTabs(
@@ -212,6 +215,7 @@ enum UserTabs {
 const tab = ref<string>()
 const error = ref('')
 const showUserMore = ref(false)
+useBodyScrollLock(showUserMore)
 const route = useRoute()
 const router = useRouter()
 
@@ -533,10 +537,47 @@ onMounted(async () => {
 }
 
 .fnb-dialog-card {
+  @include fnb-border;
+  @include fnb-shadow-lg;
+  background: var(--fnb-surface);
   width: 600px;
   max-width: 86vw;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &__close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--fnb-text-muted);
+    z-index: 1;
+
+    &:hover {
+      color: var(--fnb-text);
+    }
+  }
+
+  &__header {
+    font-family: var(--fnb-font-display);
+    font-weight: 900;
+    font-size: 1.1rem;
+    padding: 1rem 1.5rem 0.5rem;
+    padding-right: 2.5rem;
+  }
+
+  &__body {
+    padding: 0 1.5rem 1rem;
+    overflow-y: auto;
+    flex: 1;
+  }
 }
 
 .dialog-enter-active,
