@@ -173,16 +173,20 @@ useIntersectionObserver(scrollSentinel, ([{ isIntersecting }]) => {
   }
 })
 
-onMounted(async () => {
+// Fetch following when login state becomes available (async session init)
+watch(() => userStore.isLoggedIn, (loggedIn) => {
+  if (loggedIn && !homeStore.followingList.length) {
+    homeStore.fetchFollowing()
+  }
+}, { immediate: true })
+
+onMounted(() => {
   setTitle()
   if (!homeStore.randomBg) {
     homeStore.fetchRandomBg()
   }
   if (!homeStore.rankingList.length) {
     homeStore.fetchRanking()
-  }
-  if (userStore.isLoggedIn && !homeStore.followingList.length) {
-    homeStore.fetchFollowing()
   }
   if (!homeStore.discoveryList.length) {
     homeStore.fetchDiscovery()
