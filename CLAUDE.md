@@ -45,7 +45,7 @@ Session relies on `PHPSESSID` cookie forwarded to Pixiv. The `/api/user` endpoin
 
 ### Key Dependencies
 
-- **UI**: naive-ui (component library), @tabler/icons-vue
+- **UI**: Fnb* component system (self-implemented, `app/components/ui/`), @tabler/icons-vue
 - **State**: pinia, vue-router
 - **Media**: gif.js, modern-mp4, fflate (for animated artwork export)
 
@@ -53,7 +53,8 @@ Session relies on `PHPSESSID` cookie forwarded to Pixiv. The `/api/user` endpoin
 
 - Prettier: no semicolons, single quotes, 2-space indent, trailing commas (es5)
 - Vue templates use Pug syntax (`lang="pug"`)
-- Auto-imports enabled for Vue/Nuxt composables, naive-ui components, and Pinia stores
+- Component styles use SCSS (`lang="scss"`); global styles in `app/assets/styles/`
+- Auto-imports enabled for Vue/Nuxt composables and Pinia stores
 
 ## Environment Variables
 

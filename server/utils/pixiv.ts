@@ -21,13 +21,23 @@ export const PXIMG_BASEURL_S = (() => {
 })()
 
 export class CookieUtils {
-  static toJSON(raw: string) {
-    return Object.fromEntries(new URLSearchParams(raw.replace(/;\s*/g, '&')))
+  static toJSON(raw: string): Record<string, string> {
+    const result: Record<string, string> = {}
+    if (!raw) return result
+    for (const pair of raw.split(';')) {
+      const idx = pair.indexOf('=')
+      if (idx === -1) continue
+      const key = pair.slice(0, idx).trim()
+      const val = pair.slice(idx + 1).trim()
+      if (key) result[key] = val
+    }
+    return result
   }
-  static toString(obj: any) {
-    return Object.keys(obj)
-      .map((i) => `${i}=${obj[i]}`)
-      .join(';')
+  static toString(obj: Record<string, string>): string {
+    return Object.entries(obj)
+      .filter(([, v]) => v != null && v !== '')
+      .map(([k, v]) => `${k}=${v}`)
+      .join('; ')
   }
 }
 
@@ -40,14 +50,26 @@ export const pixivAjax = axios.create({
   timeout: 9 * 1000,
 })
 
+function extractToken(headers: Record<string, any>): string {
+  const auth = headers.authorization || ''
+  return auth.replace(/^Bearer\s+/i, '')
+}
+
 pixivAjax.interceptors.request.use((ctx) => {
   // Remove internal params
   ctx.params = ctx.params || {}
   delete ctx.params.__PATH
   delete ctx.params.__PREFIX
 
+  const token = extractToken(ctx.headers)
   const cookies = CookieUtils.toJSON(ctx.headers.cookie || '')
   const csrfToken = ctx.headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
+
+  // Build cookie string: prefer token from Authorization header, fall back to existing cookie
+  if (token) {
+    cookies.PHPSESSID = token
+  }
+
   // Override headers
   ctx.headers = ctx.headers || {}
   ctx.headers.host = 'www.pixiv.net'
@@ -56,7 +78,9 @@ pixivAjax.interceptors.request.use((ctx) => {
   ctx.headers['user-agent'] = USER_AGENT
   ctx.headers['accept-language'] ??=
     'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
+  ctx.headers.cookie = CookieUtils.toString(cookies)
   csrfToken && (ctx.headers['x-csrf-token'] = csrfToken)
+  delete ctx.headers.authorization
 
   if (DEV) {
     console.info(

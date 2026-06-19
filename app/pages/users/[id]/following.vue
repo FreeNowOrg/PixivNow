@@ -2,22 +2,20 @@
 #about-view.body-inner
   h1
     .flex.gap-1
-      NButton(
+      FnbButton(
         @click='$router.push(`/users/${targetUserId}`)'
-        circle
-        secondary
+        size='sm'
+        variant='default'
       )
         template(#icon)
           IChevronLeft
       .first-heading {{ followingStore.title }}
 
-  NTabs(
-    :bar-width='32'
-    justify-content='space-evenly'
-    type='line'
-    v-model:value='tab'
+  FnbTabs(
+    v-model='tab'
+    :tabs='tabsList'
   )
-    NTabPane(display-directive='show:lazy' name='public' tab='公开关注')
+    template(#panel-public)
       .user-list
         Card(
           title=''
@@ -33,12 +31,7 @@
           :text='followingStore.isLoadingPublic ? "加载中..." : "加载更多"'
           v-if='followingStore.hasMorePublic'
         )
-    NTabPane(
-      :disabled='!isSelfPage'
-      display-directive='show:lazy'
-      name='hidden'
-      tab='私密关注'
-    )
+    template(#panel-hidden v-if='isSelfPage')
       .user-list
         Card(
           title=''
@@ -75,11 +68,19 @@ onBeforeRouteUpdate((to, from) => {
 const route = useRoute()
 const targetUserId = ref(route.params.id)
 
-const tab = ref<'public' | 'hidden'>('public')
+const tab = ref<string>('public')
 
 const userStore = useUserStore()
 const followingStore = useFollowingStore()
 const isSelfPage = computed(() => userStore.userId === targetUserId.value)
+
+const tabsList = computed(() => {
+  const list = [{ key: 'public', label: '公开关注' }]
+  if (isSelfPage.value) {
+    list.push({ key: 'hidden', label: '私密关注' })
+  }
+  return list
+})
 
 function resetAndFetch(userId: string) {
   targetUserId.value = userId
@@ -101,14 +102,18 @@ watch(tab, (newTab) => {
 })
 </script>
 
-<style scoped lang="sass">
-#about-view
-  padding-top: 2rem
+<style scoped lang="scss">
+#about-view {
+  padding-top: 2rem;
+}
 
-h1
-  margin-top: 0
+h1 {
+  margin-top: 0;
+}
 
-.user-list
-  .card:not(:first-of-type)
-    margin-top: 1rem
+.user-list {
+  .card:not(:first-of-type) {
+    margin-top: 1rem;
+  }
+}
 </style>

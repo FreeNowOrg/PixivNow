@@ -22,7 +22,7 @@ export const useFollowingStore = defineStore('following', () => {
     userId: string,
     hidden: boolean
   ): Promise<void> {
-    const pixivClient = usePixivClientStore().client
+    const pixivClient = usePixivClient()
     const list = hidden ? hiddenList : publicList
     const isLoading = hidden ? isLoadingHidden : isLoadingPublic
     const total = hidden ? totalHidden : totalPublic
@@ -64,7 +64,7 @@ export const useFollowingStore = defineStore('following', () => {
     if (latestLoading.value) return
     latestLoading.value = true
     try {
-      const data = await pixivClient.getFollowLatest({
+      const data = await usePixivClient().getFollowLatest({
         p: latestNextPage.value,
         mode: 'all',
       })

@@ -15,46 +15,45 @@
     loading='lazy'
     v-else
   )
-  NProgress(
+  FnbProgress(
     :height='6',
     :percentage='+downloadProgress.toFixed(2)',
-    :processing='isLoading',
     :style='{ left: 0, right: 0, position: "absolute", ...(isLoading ? { top: "calc(100% + 4px)", opacity: "1", transitionDuration: "0.25s" } : { top: "calc(100% - 4px)", opacity: "0", transitionDelay: "3s", transitionDuration: "0.5s" }) }'
-    show-value
-    status='default'
-    transition='all ease-in-out'
-    type='line'
   )
-  NFloatButton(
+  FnbFloatButton(
     :bottom='20',
-    :menu-trigger='"hover"',
     :right='20',
     :style='{ cursor: isLoading ? "wait" : "pointer", opacity: 0.75 }'
-    shape='circle'
   )
-    //- button
+    //- main button
     template(v-if='!firstLoaded')
-      NSpin(size='small' v-if='isLoading')
-      NIcon(v-else): IPlay
+      svg.spin-icon(v-if='isLoading' viewBox='0 0 24 24' width='20' height='20')
+        circle(cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='31.4 31.4' stroke-linecap='round')
+      IPlay(v-else)
     template(v-else)
-      NIcon: IDownload
-    //- menu
+      IDownload
+    //- menu (before first load)
     template(#menu v-if='!firstLoaded')
-      NFloatButton(@click='handleInit(true)' title='加载原画' v-if='!isLoading')
+      button.ugoira-menu-btn(@click='handleInit(true)' title='加载原画' v-if='!isLoading')
         IconPhotoSpark
-      NFloatButton(@click='handleInit(false)' title='加载普通画质')
-        NSpin(size='small' v-if='isLoading')
+      button.ugoira-menu-btn(@click='handleInit(false)' title='加载普通画质')
+        svg.spin-icon(v-if='isLoading' viewBox='0 0 24 24' width='20' height='20')
+          circle(cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='31.4 31.4' stroke-linecap='round')
         IconPhotoScan(v-else)
+    //- menu (after first load)
     template(#menu v-if='firstLoaded')
-      NFloatButton(@click='handleJumpToCover' title='查看封面'): IconPhotoDown
-      NFloatButton(@click='handleDownloadGif' title='下载GIF')
-        NSpin(size='small' v-if='isLoadingGif || isLoading')
+      button.ugoira-menu-btn(@click='handleJumpToCover' title='查看封面'): IconPhotoDown
+      button.ugoira-menu-btn(@click='handleDownloadGif' title='下载GIF')
+        svg.spin-icon(v-if='isLoadingGif || isLoading' viewBox='0 0 24 24' width='20' height='20')
+          circle(cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='31.4 31.4' stroke-linecap='round')
         template(v-else): IconGif
-      NFloatButton(@click='handleDownloadMp4' title='下载MP4')
-        NSpin(size='small' v-if='isLoadingMp4 || isLoading')
+      button.ugoira-menu-btn(@click='handleDownloadMp4' title='下载MP4')
+        svg.spin-icon(v-if='isLoadingMp4 || isLoading' viewBox='0 0 24 24' width='20' height='20')
+          circle(cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='31.4 31.4' stroke-linecap='round')
         template(v-else): IconMovie
-      NFloatButton(@click='handleInit(true)' title='加载原画' v-if='!isHQLoaded') 
-        NSpin(size='small' v-if='isLoading')
+      button.ugoira-menu-btn(@click='handleInit(true)' title='加载原画' v-if='!isHQLoaded')
+        svg.spin-icon(v-if='isLoading' viewBox='0 0 24 24' width='20' height='20')
+          circle(cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='31.4 31.4' stroke-linecap='round')
         template(v-else): IconPhotoSpark
 
   .badge {{ firstLoaded ? (isHQLoaded ? 'HQ' : 'NQ') : 'Cover' }}
@@ -62,7 +61,6 @@
 
 <script lang="ts" setup>
 import type { Artwork } from '~/types'
-import { NSpin, NIcon, NFloatButton, useMessage, NProgress } from 'naive-ui'
 import { UgoiraPlayer } from '~/utils/UgoiraPlayer'
 import DeferLoad from './DeferLoad.vue'
 import IPlay from '~icons/fa-solid/play'
@@ -82,7 +80,7 @@ const emit = defineEmits<{
   'on:player': [UgoiraPlayer]
 }>()
 
-const message = useMessage()
+const toast = useToast()
 
 const firstLoaded = ref(false)
 const isLoading = ref(false)
@@ -112,7 +110,7 @@ const player = computed(() => {
       // 清理播放器状态
       p.destroy()
 
-      message.warning('Ugoira 下载失败，请重试')
+      toast.warning('Ugoira 下载失败，请重试')
     },
   })
   emit('on:player', p)
@@ -153,7 +151,7 @@ async function handleInit(originalQuality?: boolean) {
     // 清理播放器状态
     player.value.destroy()
 
-    message.error('Ugoira 初始化失败，请重试')
+    toast.error('Ugoira 初始化失败，请重试')
   }
 }
 
@@ -247,73 +245,71 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style scoped lang="sass">
-#ugoira-viewer
-  display: inline-block
-  position: relative
-  transform: translate(0)
-  line-height: 0
+<style scoped lang="scss">
+#ugoira-viewer {
+  display: inline-block;
+  position: relative;
+  transform: translate(0);
+  line-height: 0;
+}
 
-.media
-  border-radius: 4px
-  box-shadow: var(--theme-box-shadow)
-  transition: box-shadow 0.24s ease-in-out
-  max-width: 100%
-  max-height: 60vh
-  width: auto
-  height: auto
-  &:hover
-    box-shadow: var(--theme-box-shadow-hover)
+.media {
+  border-radius: var(--fnb-radius);
+  @include fnb-border;
+  @include fnb-shadow-sm;
+  transition: box-shadow 0.24s ease-in-out;
+  max-width: 100%;
+  max-height: 60vh;
+  width: auto;
+  height: auto;
+  &:hover {
+    box-shadow: var(--fnb-shadow);
+  }
+}
 
-.controller
-  position: absolute
-  bottom: 1rem
-  right: 1rem
+.controller {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+}
 
-.badge
-  color: #999
-  font-size: 0.6rem
-  background: rgba(150, 150, 150, 0.25)
-  padding: 0.1rem 0.25rem
-  border-radius: 0.2rem
-  position: absolute
-  right: 0.25rem
-  top: 0.25rem
-  line-height: 1
-  user-select: none
-  pointer-events: none
-  z-index: 1
+.badge {
+  color: #999;
+  font-size: 0.6rem;
+  background: rgba(150, 150, 150, 0.25);
+  padding: 0.1rem 0.25rem;
+  border-radius: var(--fnb-radius);
+  position: absolute;
+  right: 0.25rem;
+  top: 0.25rem;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  z-index: 1;
+}
 
-.download-progress
-  position: absolute
-  bottom: 0.5rem
-  left: 0.5rem
-  right: 0.5rem
-  z-index: 2
-  background: rgba(0, 0, 0, 0.7)
-  border-radius: 0.25rem
-  padding: 0.5rem
-  backdrop-filter: blur(4px)
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
 
-.progress-bar
-  width: 100%
-  height: 4px
-  background: rgba(255, 255, 255, 0.2)
-  border-radius: 2px
-  overflow: hidden
-  margin-bottom: 0.25rem
+.ugoira-menu-btn {
+  @include fnb-border;
+  @include fnb-shadow-sm;
+  @include fnb-press;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fnb-surface);
+  cursor: pointer;
+  font-size: 1.25rem;
+  border-radius: var(--fnb-radius);
+  color: var(--fnb-text);
+}
 
-.progress-fill
-  height: 100%
-  background: linear-gradient(90deg, #4CAF50, #8BC34A)
-  border-radius: 2px
-  transition: width 0.3s ease
-  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5)
-
-.progress-text
-  color: white
-  font-size: 0.75rem
-  text-align: center
-  font-weight: 500
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5)
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 </style>

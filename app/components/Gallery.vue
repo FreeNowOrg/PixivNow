@@ -71,12 +71,15 @@ const picShow = ref(0)
     font-style: italic
 
   [role="img"]
-    border-radius: 4px
-    box-shadow: var(--theme-box-shadow)
+    border-radius: var(--fnb-radius)
+    box-shadow: var(--fnb-shadow-sm)
     transition: box-shadow 0.24s ease-in-out
 
     &:hover
-      box-shadow: var(--theme-box-shadow-hover)
+      box-shadow: var(--fnb-shadow)
+
+  .is-active [role="img"]
+    box-shadow: var(--fnb-shadow-active)
 
   .center-img
     display: block
@@ -99,4 +102,7 @@ const picShow = ref(0)
     li
       margin: 0.5rem
       display: inline-block
+
+    a
+      display: block
 </style>

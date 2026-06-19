@@ -17,8 +17,8 @@
 </template>
 
 <script lang="ts" setup>
-import Cookies from 'js-cookie'
 import { useUserStore } from '~/stores/session'
+import { getCsrfToken } from '~/composables/userData'
 
 const store = useUserStore()
 
@@ -51,7 +51,7 @@ async function submit(): Promise<void> {
       },
       {
         headers: {
-          'X-CSRF-TOKEN': Cookies.get('csrf_token'),
+          'X-CSRF-TOKEN': getCsrfToken() || '',
         },
       }
     )

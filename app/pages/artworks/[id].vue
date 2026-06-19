@@ -3,31 +3,30 @@
   //- Loading
   section.placeholder(v-if='loading')
     .gallery
-      NSkeleton(
-        :sharp='false'
+      FnbSkeleton(
         block
         height='50vh'
         style='margin: 0 auto; width: 500px; max-width: 80vw'
       )
     .body-inner
       .artwork-info
-        h1.loading(style='padding: 0.5rem 0'): NSkeleton(
+        h1.loading(style='padding: 0.5rem 0'): FnbSkeleton(
           height='2rem'
           style='margin-top: 1em'
           width='20rem'
         )
         Card(title='')
-          p.description: NSkeleton(:repeat='4' text)
+          p.description: FnbSkeleton(:repeat='4' text)
           p.stats: span(v-for='_ in 4')
-            NSkeleton(circle height='1em' text width='1em')
-            NSkeleton(style='margin-left: 0.5em' text width='4em')
-          p.create-date: NSkeleton(text width='12em')
-          p.canonical-link: NSkeleton(height='1.5rem' width='8rem')
-        h2: NSkeleton(height='2rem' width='8rem')
+            FnbSkeleton(circle height='1em' text width='1em')
+            FnbSkeleton(style='margin-left: 0.5em' text width='4em')
+          p.create-date: FnbSkeleton(text width='12em')
+          p.canonical-link: FnbSkeleton(height='1.5rem' width='8rem')
+        h2: FnbSkeleton(height='2rem' width='8rem')
         Card(title='')
           AuthorCard
-        h2: NSkeleton(height='2rem' width='8rem')
-        NSkeleton(:sharp='false' height='8rem' width='100%')
+        h2: FnbSkeleton(height='2rem' width='8rem')
+        FnbSkeleton(height='8rem' width='100%')
 
   //- Done
   section.illust-container(v-if='!error && illust')
@@ -90,17 +89,16 @@
               )
 
             .canonical-link
-              NButton(
+              FnbButton(
                 :href='illust?.extraData?.meta?.canonical || "#"'
-                icon-placement='right'
                 rel='noopener noreferrer'
-                size='small'
+                size='sm'
                 tag='a'
                 target='_blank'
               )
+                | 前往 Pixiv 查看
                 template(#icon)
                   IFasArrowRight
-                | 前往 Pixiv 查看
 
         aside.author-area(ref='authorRef')
           Card(title='作者')
@@ -153,7 +151,6 @@ import type { Artwork, ArtworkGallery, User } from '~/types'
 import { useUserStore } from '~/stores/session'
 import { useArtworkStore } from '~/stores/artwork'
 import { useUserProfileStore } from '~/stores/user-profile'
-import { NButton, NSkeleton } from 'naive-ui'
 import { effect } from 'vue'
 import { setTitle } from '~/utils/setTitle'
 
@@ -355,96 +352,121 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="sass">
-section
-  padding-top: 1rem
+<style scoped lang="scss">
+section {
+  padding-top: 1rem;
+}
 
-.gallery
-  margin: 0 auto
+.gallery {
+  margin: 0 auto;
+}
 
-.artwork-tags
-  margin: 1rem 0
-  > span
-    font-weight: 700
-    margin-right: 1rem
+.artwork-tags {
+  margin: 1rem 0;
+  > span {
+    font-weight: 700;
+    margin-right: 1rem;
+  }
+}
 
-h1
-  --bg-color: var(--theme-accent-color)
-  box-shadow: 0 2px 0 var(--bg-color)
-  margin: 0
-  margin-bottom: 1rem
-  &.danger
-    --bg-color: var(--theme-danger-color)
-  &.loading
-    --bg-color: rgba(0, 0, 0, .08)
-    opacity: 0.85
+h1 {
+  --bg-color: var(--fnb-brand);
+  box-shadow: 0 2px 0 var(--bg-color);
+  margin: 0;
+  margin-bottom: 1rem;
+  &.danger {
+    --bg-color: var(--fnb-danger);
+  }
+  &.loading {
+    --bg-color: rgba(0, 0, 0, 0.08);
+    opacity: 0.85;
+  }
+}
 
-.original-tag
-  color: #e02080
-.x-restrict
-  color: #c00
-.ai-restrict
-  color: #c70
+.original-tag {
+  color: #e02080;
+}
+.x-restrict {
+  color: #c00;
+}
+.ai-restrict {
+  color: #c70;
+}
 
-.stats
-  display: flex
-  flex-wrap: wrap
-  gap: 0.25rem
-  align-items: center
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
 
-  .stat-item
-    display: inline-flex
-    align-items: center
-    gap: 4px
-    padding: 4px 8px
-    border-radius: 6px
-    color: #aaa
-    font-size: 0.9rem
-    line-height: 1
-    transition: background-color 0.15s, color 0.15s
+  .stat-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: var(--fnb-radius-sm);
+    color: #aaa;
+    font-size: 0.9rem;
+    line-height: 1;
+    transition: background-color 0.15s, color 0.15s;
+  }
 
-  .bookmark-btn
-    border: none
-    background: none
-    font: inherit
-    cursor: pointer
-    &:hover
-      background-color: rgba(255, 100, 100, 0.12)
-      color: #e04060
-    &:focus-visible
-      outline: 2px solid var(--theme-primary-color, #3597e7)
-      outline-offset: 2px
-    &.bookmarked
-      color: var(--theme-bookmark-color)
-      font-weight: 700
-      &:hover
-        background-color: rgba(255, 100, 100, 0.08)
+  .bookmark-btn {
+    border: none;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(255, 100, 100, 0.12);
+      color: #e04060;
+    }
+    &:focus-visible {
+      outline: 2px solid var(--fnb-brand);
+      outline-offset: 2px;
+    }
+    &.bookmarked {
+      color: var(--fnb-danger);
+      font-weight: 700;
+      &:hover {
+        background-color: rgba(255, 100, 100, 0.08);
+      }
+    }
+  }
+}
 
-.create-date
-  color: #aaa
-  font-size: 0.85rem
+.create-date {
+  color: #aaa;
+  font-size: 0.85rem;
+}
 
-.breadcrumb
-  margin-top: 1rem
+.breadcrumb {
+  margin-top: 1rem;
+}
 
-.user-illusts
-  ul
-    margin-left: -1rem
-    margin-right: -1rem
-    background-color: var(--theme-background-color)
+.user-illusts {
+  ul {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    background-color: var(--fnb-bg);
+  }
+}
 
-.load-more
-  a.plain
-    color: var(--theme-text-color)
-    cursor: pointer
+.load-more {
+  a.plain {
+    color: var(--fnb-text);
+    cursor: pointer;
+  }
 
-  .top .inner
-    border-radius: 8px
-    width: 100%
-    padding: 28% 0
-    background-color: var(--theme-box-shadow-color)
-    text-align: center
+  .top .inner {
+    border-radius: 8px;
+    width: 100%;
+    padding: 28% 0;
+    background-color: var(--fnb-border);
+    text-align: center;
+  }
 
-  .bottom .author
-    font-size: 0.8rem
+  .bottom .author {
+    font-size: 0.8rem;
+  }
+}
 </style>

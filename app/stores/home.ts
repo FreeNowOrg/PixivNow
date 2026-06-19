@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { ArtworkInfo } from '~/types'
 
 export const useHomeStore = defineStore('home', () => {
-  const pixivClient = usePixivClientStore().client
+  const pixivClient = usePixivClient()
   const randomBg = ref<ArtworkInfo | null>(null)
   const discoveryList = ref<ArtworkInfo[]>([])
   const loadingDiscovery = ref(false)

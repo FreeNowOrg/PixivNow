@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { Artwork, ArtworkGallery, ArtworkInfo } from '~/types'
 
 export const useArtworkStore = defineStore('artwork', () => {
-  const pixivClient = usePixivClientStore().client
+  const pixivClient = usePixivClient()
   const artworkCache = ref(new Map<string, Artwork>())
   const pagesCache = ref(new Map<string, ArtworkGallery[]>())
 
@@ -52,6 +52,13 @@ export const useArtworkStore = defineStore('artwork', () => {
     recommendNextIds.value = recommendNextIds.value.concat(result.nextIds)
   }
 
+  async function fetchComments(
+    illustId: string,
+    params: { limit: number; offset: number }
+  ) {
+    return pixivClient.getComments(illustId, params)
+  }
+
   async function addBookmark(illustId: string | number): Promise<any> {
     return pixivClient.addBookmark(illustId)
   }
@@ -76,6 +83,7 @@ export const useArtworkStore = defineStore('artwork', () => {
     fetchArtworkPages,
     fetchRecommendInit,
     fetchRecommendMore,
+    fetchComments,
     addBookmark,
     removeBookmark,
     clearRecommendations,

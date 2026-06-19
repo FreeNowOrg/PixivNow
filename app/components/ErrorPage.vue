@@ -1,6 +1,6 @@
 <template lang="pug">
 section.error-page
-  NResult(
+  FnbResult(
     :description='description',
     :status='status || "warning"',
     :title='title'
@@ -12,7 +12,6 @@ section.error-page
 
 <script lang="ts" setup>
 import { setTitle } from '~/utils/setTitle'
-import { NResult } from 'naive-ui'
 import { effect } from 'vue'
 
 const msgList = [
@@ -33,7 +32,7 @@ const msgList = [
   '変わったああああああああああああああ', // 你比蔷薇更美丽
   'だめだね、だめよだめなのよ——', // 像笨蛋一样
   '壊れた 僕なんてさ、息を止めて', // unravel
-  'Groupons nous et demain. L’Internationale. Sera le genre humain.', // 国际歌
+  "Groupons nous et demain. L'Internationale. Sera le genre humain.", // 国际歌
   // FF14 骚话
   '这像闪耀登场释放天辉的白魔法师一样没有人喜欢！',
   '这像冰4火4一个慢动作的黑魔法师一样没有人喜欢！',
@@ -91,37 +90,43 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="sass">
+<style scoped lang="scss">
+.error-page {
+  padding: 10vh 0;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 
-.error-page
-  padding: 10vh 0
-  height: 100%
-  text-align: center
-  display: flex
-  align-items: center
-  flex-wrap: wrap
+  > div {
+    width: 100%;
+  }
+}
 
-  > div
-    width: 100%
+.title {
+  font-size: 5rem;
+  font-weight: bold;
+  margin-bottom: 0.4em;
 
-.title
-  font-size: 5rem
-  font-weight: bold
-  margin-bottom: 0.4em
+  > span {
+    box-shadow: 0 -0.5em 0 var(--fnb-brand) inset;
+    padding: 0 0.4em;
+  }
+}
 
-  > span
-    box-shadow: 0 -0.5em 0 rgb(54, 151, 231) inset
-    text-shadow: 2px 2px var(--theme-text-shadow-color)
-    padding: 0 0.4em
+.description {
+  font-size: 1.5rem;
+}
 
-.description
-  font-size: 1.5rem
+.random {
+  color: var(--fnb-text-muted);
+  user-select: none;
+  margin-top: 1rem;
+  cursor: pointer;
+}
 
-.random
-  color: #aaa
-  user-select: none
-  margin-top: 1rem
-
-.extra
-  margin-top: 1em
+.extra {
+  margin-top: 1em;
+}
 </style>

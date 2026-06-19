@@ -7,12 +7,10 @@
   ul.comments-list(v-if='comments.length')
     comment(:comment='item' v-for='item in comments')
     .show-more.align-center
-      NButton(
+      FnbButton(
         :loading='loading'
         @click='async () => await init(id)'
-        round
-        secondary
-        size='small'
+        size='sm'
         v-if='comments.length && hasNext'
       )
         template(#icon)
@@ -25,9 +23,10 @@
 <script lang="ts" setup>
 import Comment from './Comment.vue'
 import type { Comments } from '~/types'
-import { NButton } from 'naive-ui'
 import IFasPlus from '~icons/fa-solid/plus'
+import { useArtworkStore } from '~/stores/artwork'
 
+const artworkStore = useArtworkStore()
 const loading = ref(false)
 const comments = ref<Comments[]>([])
 const hasNext = ref(false)
@@ -48,7 +47,7 @@ async function init(id: string | number): Promise<void> {
 
   try {
     loading.value = true
-    const data = await pixivClient.getComments(`${id}`, {
+    const data = await artworkStore.fetchComments(`${id}`, {
       limit: comments.value.length ? 30 : 3,
       offset: comments.value.length,
     })
@@ -80,9 +79,9 @@ const ob = useIntersectionObserver(
 )
 </script>
 
-<style scoped lang="sass">
-
-.comments-list
-  list-style: none
-  padding-left: 0
+<style scoped lang="scss">
+.comments-list {
+  list-style: none;
+  padding-left: 0;
+}
 </style>

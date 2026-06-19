@@ -1,9 +1,7 @@
 <template lang="pug">
 Component.artworks-list(
   :class='{ inline }',
-  :is='inline ? NScrollbar : "ul"'
-  trigger='none'
-  x-scrollable
+  :is='inline ? "div" : "ul"'
 )
   template(v-if='loading')
     li(v-for='i in skeletonNumber' :key='"skeleton-" + i')
@@ -17,7 +15,6 @@ Component.artworks-list(
 import ArtworkCard from './ArtworkCard.vue'
 import { isArtwork } from '~/utils'
 import type { ArtworkInfo, ArtworkInfoOrAd } from '~/types'
-import { NScrollbar } from 'naive-ui'
 
 const props = defineProps<{
   list: ArtworkInfoOrAd[]
@@ -34,35 +31,46 @@ const artworks = computed(() => {
 })
 </script>
 
-<style lang="sass">
-.artworks-list
-  margin-top: 1rem
-  list-style: none
-  padding-left: 0
-  display: flex
-  flex-wrap: wrap
-  gap: 1.5rem
-  justify-content: center
+<style lang="scss">
+.artworks-list {
+  margin-top: 1rem;
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
 
-  &.inline
-    overflow-y: auto
-    white-space: nowrap
-    display: block
+  &.inline {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    display: block;
+    // Neubrutalism scrollbar styling
+    scrollbar-width: thin;
+    scrollbar-color: var(--fnb-text) var(--fnb-bg);
 
-    li:not(:first-of-type)
-      margin-left: 0.75rem
+    li:not(:first-of-type) {
+      margin-left: 0.75rem;
+    }
+  }
 
-  li
-    width: 180px
-    max-width: calc(45vw - 1.5rem)
-    display: inline-block
+  li {
+    width: 180px;
+    max-width: calc(45vw - 1.5rem);
+    display: inline-block;
+  }
+}
 
-.tiny
-  gap: 0.75rem
+.tiny {
+  gap: 0.75rem;
 
-  li
-    width: 100px
+  li {
+    width: 100px;
+  }
 
-  .info
-    display: none
+  .info {
+    display: none;
+  }
+}
 </style>
