@@ -3,27 +3,51 @@ import type { ArtworkInfo } from '~/types'
 
 export const useUserArtworksStore = defineStore('user-artworks', () => {
   const pixivClient = usePixivClient()
-  const allIds = ref<string[]>([])
-  const cachedPages = ref<Record<number, ArtworkInfo[]>>({})
   const pageSize = 24
+
+  const state = ref<
+    Record<
+      string,
+      { allIds: string[]; cachedPages: Record<number, ArtworkInfo[]> }
+    >
+  >({})
+
+  function getState(category: string) {
+    if (!state.value[category]) {
+      state.value[category] = { allIds: [], cachedPages: {} }
+    }
+    return state.value[category]
+  }
+
+  function allIds(category: string) {
+    return getState(category).allIds
+  }
+
+  function cachedPages(category: string) {
+    return getState(category).cachedPages
+  }
 
   async function fetchAllIds(
     userId: string,
     workCategory: 'illust' | 'manga'
   ): Promise<string[]> {
-    allIds.value = []
-    cachedPages.value = {}
+    const s = getState(workCategory)
+    s.allIds = []
+    s.cachedPages = {}
     const data = await pixivClient.getUserProfileAll(userId)
     const works =
       workCategory === 'illust'
         ? Object.keys(data.illusts)
         : Object.keys(data.manga)
-    allIds.value = works.sort((a, b) => Number(b) - Number(a))
-    return allIds.value
+    s.allIds = works.sort((a, b) => Number(b) - Number(a))
+    return s.allIds
   }
 
-  function getIdsByPage(page: number): string[] {
-    return allIds.value.slice((page - 1) * pageSize, page * pageSize)
+  function getIdsByPage(category: string, page: number): string[] {
+    return getState(category).allIds.slice(
+      (page - 1) * pageSize,
+      page * pageSize
+    )
   }
 
   async function fetchPage(
@@ -31,16 +55,16 @@ export const useUserArtworksStore = defineStore('user-artworks', () => {
     page: number,
     workCategory: 'illust' | 'manga'
   ): Promise<ArtworkInfo[]> {
-    if (cachedPages.value[page]) return cachedPages.value[page]
-    const ids = getIdsByPage(page)
+    const s = getState(workCategory)
+    if (s.cachedPages[page]) return s.cachedPages[page]
+    const ids = getIdsByPage(workCategory, page)
     const works = await pixivClient.getUserIllusts(userId, ids, workCategory)
-    cachedPages.value[page] = Object.values(works)
-    return cachedPages.value[page]
+    s.cachedPages[page] = Object.values(works)
+    return s.cachedPages[page]
   }
 
   function reset() {
-    allIds.value = []
-    cachedPages.value = {}
+    state.value = {}
   }
 
   return {
