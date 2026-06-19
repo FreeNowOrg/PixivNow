@@ -277,7 +277,7 @@ onMounted(() => {
 
   .site-logo {
     img {
-      height: 4rem;
+      height: 8rem;
       width: auto;
     }
   }

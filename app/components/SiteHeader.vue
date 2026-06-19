@@ -195,7 +195,7 @@ useEventListener(window, 'scroll', () => {
       line-height: 0;
     }
     .site-logo {
-      height: 2.2rem;
+      height: 2.6rem;
       width: auto;
     }
   }
