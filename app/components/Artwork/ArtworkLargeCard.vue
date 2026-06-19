@@ -51,7 +51,8 @@ defineProps<{
 
 <style lang="scss">
 h3 {
-  margin-bottom: 0.4rem;
+  margin-top: 0;
+  margin-bottom: 0.25rem;
 }
 
 .artwork-large-card {
@@ -232,6 +233,8 @@ h3 {
   }
   .tags {
     overflow: hidden;
+    font-size: 0.75rem;
+    max-height: 1.8em;
   }
 }
 </style>
