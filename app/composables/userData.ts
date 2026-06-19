@@ -12,7 +12,7 @@ export function existsSessionId(): boolean {
 }
 
 export async function initUser(): Promise<PixivUser> {
-  const pixivClient = usePixivClientStore().client
+  const pixivClient = usePixivClient()
   try {
     const data = await pixivClient._getSessionUser()
     if (data.token) {

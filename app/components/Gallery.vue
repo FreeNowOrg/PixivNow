@@ -78,6 +78,9 @@ const picShow = ref(0)
     &:hover
       box-shadow: var(--fnb-shadow)
 
+  .is-active [role="img"]
+    box-shadow: var(--fnb-shadow-active)
+
   .center-img
     display: block
     text-align: center

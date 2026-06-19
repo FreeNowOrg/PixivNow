@@ -22,7 +22,7 @@ export const useFollowingStore = defineStore('following', () => {
     userId: string,
     hidden: boolean
   ): Promise<void> {
-    const pixivClient = usePixivClientStore().client
+    const pixivClient = usePixivClient()
     const list = hidden ? hiddenList : publicList
     const isLoading = hidden ? isLoadingHidden : isLoadingPublic
     const total = hidden ? totalHidden : totalPublic

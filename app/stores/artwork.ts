@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { Artwork, ArtworkGallery, ArtworkInfo } from '~/types'
 
 export const useArtworkStore = defineStore('artwork', () => {
-  const pixivClient = usePixivClientStore().client
+  const pixivClient = usePixivClient()
   const artworkCache = ref(new Map<string, Artwork>())
   const pagesCache = ref(new Map<string, ArtworkGallery[]>())
 

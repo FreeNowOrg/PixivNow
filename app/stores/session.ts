@@ -18,7 +18,7 @@ export const useSideNavStore = defineStore('sidenav', () => {
 })
 
 export const useUserStore = defineStore('user', () => {
-  const pixivClient = usePixivClientStore().client
+  const pixivClient = usePixivClient()
   const user = ref<PixivUser | null>(null)
   const isLoggedIn = computed(() => !!user.value)
   const userId = computed(() => user.value?.id)
