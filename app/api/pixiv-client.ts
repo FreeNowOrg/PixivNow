@@ -200,7 +200,7 @@ export class PixivWebClient {
       >('/ajax/illust/discovery', {
         params: {
           mode: params.mode ?? 'safe',
-          max: String(params.limit ?? 18),
+          max: String(Math.min(params.limit ?? 18, 18)),
         },
       })
       const body = this.unwrap(data)
