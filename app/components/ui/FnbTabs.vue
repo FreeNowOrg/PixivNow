@@ -26,14 +26,16 @@ defineProps<{
 .fnb-tabs__nav {
   display: flex;
   @include fnb-border;
+  padding: 4px;
+  gap: 4px;
   background: color-mix(in srgb, var(--fnb-brand) 10%, var(--fnb-surface));
 }
 
 .fnb-tabs__tab {
   flex: 1;
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 1rem;
   background: transparent;
-  border: none;
+  border: 3px solid transparent;
   font-family: inherit;
   font-size: 1rem;
   font-weight: 700;
@@ -43,16 +45,14 @@ defineProps<{
 
   &:hover:not(.fnb-tabs__tab--active) {
     color: var(--fnb-text);
-    background: color-mix(in srgb, var(--fnb-brand) 20%, var(--fnb-surface));
+    background: color-mix(in srgb, var(--fnb-brand) 15%, var(--fnb-surface));
   }
 
   &--active {
-    color: var(--fnb-text);
-    background: var(--fnb-brand);
     color: #fff;
     font-weight: 900;
-    border: 3px solid var(--fnb-border);
-    margin: -3px;
+    background: var(--fnb-brand);
+    border-color: var(--fnb-border);
   }
 }
 
