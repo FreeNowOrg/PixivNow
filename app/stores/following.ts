@@ -64,7 +64,7 @@ export const useFollowingStore = defineStore('following', () => {
     if (latestLoading.value) return
     latestLoading.value = true
     try {
-      const data = await pixivClient.getFollowLatest({
+      const data = await usePixivClient().getFollowLatest({
         p: latestNextPage.value,
         mode: 'all',
       })

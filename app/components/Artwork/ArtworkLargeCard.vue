@@ -56,10 +56,10 @@ h3 {
 
 .artwork-large-card {
   display: block;
-  border: 1px solid #eee;
+  @include fnb-border;
+  @include fnb-shadow;
+  @include fnb-press;
   background-color: var(--fnb-surface);
-  border-radius: var(--fnb-radius);
-  transition: all 0.24s ease-in-out;
   margin: 0.5rem auto;
   --parent-width: calc(100vw - 2rem);
   --counts: 1;
@@ -154,7 +154,7 @@ h3 {
     height: 1.8rem;
     text-align: center;
     line-height: 1.6;
-    --ring-color: rgba(var(--fnb-brand), 0.4);
+    --ring-color: color-mix(in srgb, var(--fnb-brand) 40%, transparent);
     box-shadow: 0 0 0 1px var(--ring-color) inset, 0 0 0 2px #fff;
     &.gold {
       --ring-color: gold;
@@ -222,7 +222,6 @@ h3 {
         height: 2rem;
         box-sizing: border-box;
         @include fnb-border-sm;
-        box-shadow: 0 0 4px #ccc;
         margin-right: 0.4rem;
       }
     }
