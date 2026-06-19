@@ -32,7 +32,7 @@ defineProps<{
 .fnb-tabs__tab {
   flex: 1;
   padding: 0.75rem 1rem;
-  background: var(--fnb-surface);
+  background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
   margin-bottom: -3px;
@@ -44,13 +44,17 @@ defineProps<{
   color: var(--fnb-text-muted);
 
   &:hover {
-    background: var(--fnb-bg);
+    color: var(--fnb-text);
+    background: var(--fnb-highlight);
   }
 
   &--active {
     color: var(--fnb-text);
     border-bottom-color: var(--fnb-brand);
-    background: var(--fnb-surface);
   }
+}
+
+.fnb-tabs__panel {
+  margin-top: 1rem;
 }
 </style>
