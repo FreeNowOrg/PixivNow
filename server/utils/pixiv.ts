@@ -103,29 +103,39 @@ export async function pixivFetch(
     }
   }
 
-  // Extract auth info from incoming request via h3 (case-insensitive)
-  const token = (getHeader(event, 'authorization') || '')
+  // Start with all incoming headers, then override specific fields
+  // (mirrors old axios interceptor behavior: preserve accept, sec-fetch-*, etc.)
+  const headers: Record<string, string> = {}
+  const incomingHeaders = getHeaders(event)
+  for (const [k, v] of Object.entries(incomingHeaders)) {
+    if (typeof v === 'string') headers[k] = v
+  }
+
+  // Extract auth info
+  const token = (headers['authorization'] || '')
     .replace(/^Bearer\s+/i, '')
-  const cookies = CookieUtils.toJSON(getHeader(event, 'cookie') || '')
-  const csrfToken =
-    getHeader(event, 'x-csrf-token') ?? cookies.CSRFTOKEN ?? ''
+  const cookies = CookieUtils.toJSON(headers['cookie'] || '')
+  const csrfToken = headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
 
   if (token) {
     cookies.PHPSESSID = token
   }
 
-  const headers: Record<string, string> = {
+  // Override headers for Pixiv
+  Object.assign(headers, {
     origin: 'https://www.pixiv.net',
     referer: 'https://www.pixiv.net/',
     'user-agent': USER_AGENT,
-    'accept-language':
-      getHeader(event, 'accept-language') ??
-      'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
     cookie: CookieUtils.toString(cookies),
-  }
+  })
+  headers['accept-language'] ??=
+    'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
   if (csrfToken) {
     headers['x-csrf-token'] = csrfToken
   }
+  delete headers['authorization']
+  // host is auto-set by fetch from URL; forbidden header in edge runtimes
+  delete headers['host']
 
   // Prepare body
   let body: string | undefined
