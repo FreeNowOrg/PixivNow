@@ -180,18 +180,18 @@ export class PixivWebClient {
 
   async getDiscovery(params: {
     mode?: string
-    max?: number
+    limit?: number
   }): Promise<ArtworkInfo[]> {
     const { data } = await this.http.get<
-      PixivResponse<{ illusts: ArtworkInfoOrAd[] }>
-    >('/ajax/illust/discovery', {
+      PixivResponse<{ thumbnails: { illust: ArtworkInfoOrAd[] } }>
+    >('/ajax/discovery/artworks', {
       params: {
         mode: params.mode ?? 'all',
-        max: String(params.max ?? 18),
+        limit: String(params.limit ?? 60),
       },
     })
     const body = this.unwrap(data)
-    return body.illusts.filter((item): item is ArtworkInfo => 'id' in item)
+    return body.thumbnails.illust.filter((item): item is ArtworkInfo => 'id' in item)
   }
 
   async getRecommendInit(

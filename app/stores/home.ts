@@ -20,7 +20,7 @@ export const useHomeStore = defineStore('home', () => {
 
   async function fetchRandomBg(): Promise<void> {
     try {
-      const illusts = await pixivClient.getDiscovery({ mode: 'safe', max: 1 })
+      const illusts = await pixivClient.getDiscovery({ mode: 'safe', limit: 1 })
       if (illusts.length) {
         randomBg.value = illusts[0]!
       }
@@ -33,7 +33,7 @@ export const useHomeStore = defineStore('home', () => {
     if (loadingDiscovery.value) return
     try {
       loadingDiscovery.value = true
-      const illusts = await pixivClient.getDiscovery({ mode: discoveryMode.value, max: 60 })
+      const illusts = await pixivClient.getDiscovery({ mode: discoveryMode.value, limit: 60 })
       discoverySeenIds.clear()
       noMoreDiscovery.value = false
       illusts.forEach((item) => discoverySeenIds.add(item.id))
@@ -75,7 +75,7 @@ export const useHomeStore = defineStore('home', () => {
     if (loadingMoreDiscovery.value || noMoreDiscovery.value) return
     try {
       loadingMoreDiscovery.value = true
-      const illusts = await pixivClient.getDiscovery({ mode: discoveryMode.value, max: 60 })
+      const illusts = await pixivClient.getDiscovery({ mode: discoveryMode.value, limit: 60 })
       const fresh = illusts.filter((item) => !discoverySeenIds.has(item.id))
       if (!fresh.length) {
         noMoreDiscovery.value = true
