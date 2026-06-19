@@ -3,8 +3,9 @@ import { pixivAjax } from '~~/server/utils/pixiv'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
+  const cookies = parseCookies(event)
   const authHeader = getHeader(event, 'authorization') || ''
-  const token = authHeader.replace(/^Bearer\s+/i, '') || (query.token as string)
+  const token = authHeader.replace(/^Bearer\s+/i, '') || cookies.PHPSESSID || (query.token as string)
   if (!token) {
     throw createError({ statusCode: 403, message: '未配置用户密钥' })
   }
