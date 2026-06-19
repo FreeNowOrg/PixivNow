@@ -48,7 +48,7 @@ export const useHomeStore = defineStore('home', () => {
     if (loadingRanking.value) return
     try {
       loadingRanking.value = true
-      const data = await pixivClient.getRanking({ mode: 'day', content: 'illust' })
+      const data = await pixivClient.getRanking({ mode: 'daily', content: 'all', p: 1 })
       rankingList.value = data.contents.slice(0, 5)
     } catch (err) {
       console.error('Failed to fetch ranking', err)
