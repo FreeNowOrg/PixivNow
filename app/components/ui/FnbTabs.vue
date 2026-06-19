@@ -40,7 +40,7 @@ defineProps<{
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 150ms;
+  transition: color 150ms, background 150ms;
   color: var(--fnb-text-muted);
 
   &:hover {
