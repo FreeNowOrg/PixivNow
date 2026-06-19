@@ -63,7 +63,7 @@ export const useHomeStore = defineStore('home', () => {
     try {
       loadingFollowing.value = true
       const data = await pixivClient.getFollowLatest({ p: 1, mode: 'all' })
-      followingList.value = data.thumbnails.illust.slice(0, 6)
+      followingList.value = data.thumbnails.illust
     } catch (err) {
       console.error('Failed to fetch following', err)
     } finally {

@@ -337,6 +337,27 @@ onMounted(() => {
     grid-template-columns: 1fr 340px;
     gap: 1.5rem;
     margin-bottom: 2rem;
+    align-items: start;
+  }
+
+  .content-left,
+  .content-right {
+    min-height: 0;
+  }
+
+  .content-right {
+    // Match left column height, scrollable
+    .following-latest {
+      display: flex;
+      flex-direction: column;
+      max-height: calc(360px + 2rem + 1.1rem + 0.75rem);
+    }
+
+    .fnb-card {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
   }
 
   .section-title {
