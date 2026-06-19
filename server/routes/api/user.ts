@@ -2,9 +2,9 @@ import { type CheerioAPI, load } from 'cheerio'
 import { pixivAjax } from '~~/server/utils/pixiv'
 
 export default defineEventHandler(async (event) => {
-  const cookies = parseCookies(event)
   const query = getQuery(event)
-  const token = cookies.PHPSESSID || query.token
+  const authHeader = getHeader(event, 'authorization') || ''
+  const token = authHeader.replace(/^Bearer\s+/i, '') || (query.token as string)
   if (!token) {
     throw createError({ statusCode: 403, message: '未配置用户密钥' })
   }
@@ -45,11 +45,6 @@ export default defineEventHandler(async (event) => {
     }
 
     setResponseHeader(event, 'cache-control', 'no-cache')
-    setCookie(event, 'CSRFTOKEN', meta.token, {
-      path: '/',
-      secure: true,
-      sameSite: 'lax',
-    })
     return meta
   } catch (err: any) {
     if (err.statusCode) throw err // Re-throw h3 errors

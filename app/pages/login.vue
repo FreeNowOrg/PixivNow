@@ -45,22 +45,24 @@
       IFasAngleLeft
       | &nbsp;返回
     h1 查看 Pixiv 令牌
-    FnbInput.token(:model-value='Cookies.get("PHPSESSID")' readonly)
+    FnbInput.token(:model-value='currentToken' readonly)
     #submit
       FnbButton(@click='remove' variant='danger') 移除令牌
 </template>
 
 <script lang="ts" setup>
 definePageMeta({ name: 'login' })
-import Cookies from 'js-cookie'
 import {
   exampleSessionId,
   validateSessionId,
   login,
   logout,
+  getToken,
 } from '~/composables/userData'
 import { useUserStore } from '~/stores/session'
 import IFasAngleLeft from '~icons/fa-solid/angle-left'
+
+const currentToken = computed(() => getToken() || '')
 
 const example = ref(exampleSessionId())
 const sessionIdInput = ref('')

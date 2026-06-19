@@ -1,12 +1,21 @@
 import type { PixivUser } from '~/types'
-import Cookies from 'js-cookie'
+
+const TOKEN_KEY = 'pixivnow:token'
+const CSRF_KEY = 'pixivnow:csrf'
+
+export function getToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY)
+}
+
+export function getCsrfToken(): string | null {
+  return sessionStorage.getItem(CSRF_KEY)
+}
 
 export function existsSessionId(): boolean {
-  const sessionId = Cookies.get('PHPSESSID')
-  if (sessionId) {
+  if (getToken()) {
     return true
   } else {
-    Cookies.remove('CSRFTOKEN')
+    sessionStorage.removeItem(CSRF_KEY)
     return false
   }
 }
@@ -17,14 +26,14 @@ export async function initUser(): Promise<PixivUser> {
     const data = await pixivClient._getSessionUser()
     if (data.token) {
       console.log('session ID认证成功', data)
-      Cookies.set('CSRFTOKEN', data.token, { secure: true, sameSite: 'Strict' })
+      sessionStorage.setItem(CSRF_KEY, data.token)
       return data.userData
     } else {
-      Cookies.remove('CSRFTOKEN')
+      sessionStorage.removeItem(CSRF_KEY)
       return Promise.reject('无效的session ID')
     }
   } catch (err) {
-    Cookies.remove('CSRFTOKEN')
+    sessionStorage.removeItem(CSRF_KEY)
     return Promise.reject(err)
   }
 }
@@ -34,20 +43,15 @@ export function login(token: string): Promise<PixivUser> {
     console.error('访问令牌格式错误')
     return Promise.reject('访问令牌格式错误')
   }
-  Cookies.set('PHPSESSID', token, {
-    expires: 180,
-    path: '/',
-    secure: true,
-    sameSite: 'Strict',
-  })
+  localStorage.setItem(TOKEN_KEY, token)
   return initUser()
 }
 
 export function logout(): void {
-  const token = Cookies.get('PHPSESSID')
+  const token = getToken()
   if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
-    Cookies.remove('PHPSESSID')
-    Cookies.remove('CSRFTOKEN')
+    localStorage.removeItem(TOKEN_KEY)
+    sessionStorage.removeItem(CSRF_KEY)
   }
 }
 

@@ -23,9 +23,6 @@ importers:
       gif.js:
         specifier: ^0.2.0
         version: 0.2.0
-      js-cookie:
-        specifier: ^3.0.5
-        version: 3.0.5
       modern-mp4:
         specifier: ^0.2.0
         version: 0.2.0(mp4box@0.5.3)
@@ -72,9 +69,6 @@ importers:
       '@types/gif.js':
         specifier: ^0.2.5
         version: 0.2.5
-      '@types/js-cookie':
-        specifier: ^3.0.6
-        version: 3.0.6
       '@types/lodash.escaperegexp':
         specifier: ^4.1.9
         version: 4.1.9
@@ -2460,9 +2454,6 @@ packages:
   '@types/gif.js@0.2.5':
     resolution: {integrity: sha512-OdDQYh9v7td9ztjaooBSqjUBAyAuui2xwDDmQcyRLd6c9T0iWgkebAoCBEdEEBoZG3ekJE/6UnH63Dzq0S3bvw==}
 
-  '@types/js-cookie@3.0.6':
-    resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==}
-
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
@@ -3871,10 +3862,6 @@ packages:
   jiti@2.6.1:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
-
-  js-cookie@3.0.5:
-    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
-    engines: {node: '>=14'}
 
   js-stringify@1.0.2:
     resolution: {integrity: sha512-rtS5ATOo2Q5k1G+DADISilDA6lv79zIiwFd6CcjuIxGKLFm5C+RLImRscVap9k55i+MOZwgliw+NejvkLuGD5g==}
@@ -7445,8 +7432,6 @@ snapshots:
     dependencies:
       '@types/events': 3.0.3
 
-  '@types/js-cookie@3.0.6': {}
-
   '@types/json-schema@7.0.15': {}
 
   '@types/lodash.escaperegexp@4.1.9':
@@ -9051,8 +9036,6 @@ snapshots:
       '@pkgjs/parseargs': 0.11.0
 
   jiti@2.6.1: {}
-
-  js-cookie@3.0.5: {}
 
   js-stringify@1.0.2: {}
 
