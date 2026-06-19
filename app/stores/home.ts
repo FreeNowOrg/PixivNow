@@ -1,11 +1,21 @@
 import { defineStore } from 'pinia'
-import type { ArtworkInfo } from '~/types'
+import type { ArtworkInfo, ArtworkRank } from '~/types'
 
 export const useHomeStore = defineStore('home', () => {
   const pixivClient = usePixivClient()
   const randomBg = ref<ArtworkInfo | null>(null)
   const discoveryList = ref<ArtworkInfo[]>([])
   const loadingDiscovery = ref(false)
+
+  const rankingList = ref<ArtworkRank[]>([])
+  const loadingRanking = ref(false)
+
+  const followingList = ref<ArtworkInfo[]>([])
+  const loadingFollowing = ref(false)
+
+  const discoverySeenIds = new Set<string>()
+  const loadingMoreDiscovery = ref(false)
+  const noMoreDiscovery = ref(false)
 
   async function fetchRandomBg(): Promise<void> {
     try {
@@ -22,12 +32,55 @@ export const useHomeStore = defineStore('home', () => {
     if (loadingDiscovery.value) return
     try {
       loadingDiscovery.value = true
-      const illusts = await pixivClient.getDiscovery({ mode: 'all', max: 8 })
+      const illusts = await pixivClient.getDiscovery({ mode: 'all', max: 18 })
+      discoverySeenIds.clear()
+      illusts.forEach((item) => discoverySeenIds.add(item.id))
       discoveryList.value = illusts
     } catch (err) {
       console.error('Failed to fetch discovery', err)
     } finally {
       loadingDiscovery.value = false
+    }
+  }
+
+  async function fetchRanking(): Promise<void> {
+    if (loadingRanking.value) return
+    try {
+      loadingRanking.value = true
+      const data = await pixivClient.getRanking({ mode: 'day', content: 'illust' })
+      rankingList.value = data.contents.slice(0, 5)
+    } catch (err) {
+      console.error('Failed to fetch ranking', err)
+    } finally {
+      loadingRanking.value = false
+    }
+  }
+
+  async function fetchFollowing(): Promise<void> {
+    if (loadingFollowing.value) return
+    try {
+      loadingFollowing.value = true
+      const data = await pixivClient.getFollowLatest({ p: 1, mode: 'all' })
+      followingList.value = data.thumbnails.illust.slice(0, 6)
+    } catch (err) {
+      console.error('Failed to fetch following', err)
+    } finally {
+      loadingFollowing.value = false
+    }
+  }
+
+  async function appendDiscovery(): Promise<void> {
+    if (loadingMoreDiscovery.value || noMoreDiscovery.value) return
+    try {
+      loadingMoreDiscovery.value = true
+      const illusts = await pixivClient.getDiscovery({ mode: 'all', max: 18 })
+      const fresh = illusts.filter((item) => !discoverySeenIds.has(item.id))
+      fresh.forEach((item) => discoverySeenIds.add(item.id))
+      discoveryList.value = [...discoveryList.value, ...fresh]
+    } catch (err) {
+      console.error('Failed to append discovery', err)
+    } finally {
+      loadingMoreDiscovery.value = false
     }
   }
 
@@ -37,5 +90,14 @@ export const useHomeStore = defineStore('home', () => {
     loadingDiscovery,
     fetchRandomBg,
     fetchDiscovery,
+    rankingList,
+    loadingRanking,
+    fetchRanking,
+    followingList,
+    loadingFollowing,
+    fetchFollowing,
+    loadingMoreDiscovery,
+    noMoreDiscovery,
+    appendDiscovery,
   }
 })
