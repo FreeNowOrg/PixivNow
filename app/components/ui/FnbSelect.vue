@@ -3,7 +3,7 @@
   select.fnb-select__native(
     :disabled='disabled'
     :value='modelValue'
-    @change='$emit("update:modelValue", ($event.target as HTMLSelectElement).value)'
+    @change='onChange'
   )
     option(v-if='placeholder' value='' disabled selected hidden) {{ placeholder }}
     option(
@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-defineEmits<{
+const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
@@ -24,6 +24,10 @@ defineProps<{
   placeholder?: string
   disabled?: boolean
 }>()
+
+function onChange(e: Event) {
+  emit('update:modelValue', (e.target as HTMLSelectElement).value)
+}
 </script>
 
 <style scoped lang="scss">

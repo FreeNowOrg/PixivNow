@@ -6,12 +6,12 @@ input.fnb-input(
   :readonly='readonly'
   :type='type'
   :value='modelValue'
-  @input='$emit("update:modelValue", ($event.target as HTMLInputElement).value)'
+  @input='onInput'
 )
 </template>
 
 <script lang="ts" setup>
-defineEmits<{
+const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
@@ -27,6 +27,10 @@ withDefaults(
     type: 'text',
   }
 )
+
+function onInput(e: Event) {
+  emit('update:modelValue', (e.target as HTMLInputElement).value)
+}
 </script>
 
 <style scoped lang="scss">
