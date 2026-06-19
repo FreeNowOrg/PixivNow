@@ -75,6 +75,10 @@ export const useHomeStore = defineStore('home', () => {
       loadingMoreDiscovery.value = true
       const illusts = await pixivClient.getDiscovery({ mode: 'all', max: 18 })
       const fresh = illusts.filter((item) => !discoverySeenIds.has(item.id))
+      if (!fresh.length) {
+        noMoreDiscovery.value = true
+        return
+      }
       fresh.forEach((item) => discoverySeenIds.add(item.id))
       discoveryList.value = [...discoveryList.value, ...fresh]
     } catch (err) {
