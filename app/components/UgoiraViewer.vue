@@ -25,32 +25,33 @@
     :right='20',
     :style='{ cursor: isLoading ? "wait" : "pointer", opacity: 0.75 }'
   )
-    //- button content
+    //- main button
     template(v-if='!firstLoaded')
       svg.spin-icon(v-if='isLoading' viewBox='0 0 24 24' width='20' height='20')
         circle(cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='31.4 31.4' stroke-linecap='round')
       IPlay(v-else)
     template(v-else)
       IDownload
-    //- menu
+    //- menu (before first load)
     template(#menu v-if='!firstLoaded')
-      FnbFloatButton(@click='handleInit(true)' title='加载原画' v-if='!isLoading')
+      button.ugoira-menu-btn(@click='handleInit(true)' title='加载原画' v-if='!isLoading')
         IconPhotoSpark
-      FnbFloatButton(@click='handleInit(false)' title='加载普通画质')
+      button.ugoira-menu-btn(@click='handleInit(false)' title='加载普通画质')
         svg.spin-icon(v-if='isLoading' viewBox='0 0 24 24' width='20' height='20')
           circle(cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='31.4 31.4' stroke-linecap='round')
         IconPhotoScan(v-else)
+    //- menu (after first load)
     template(#menu v-if='firstLoaded')
-      FnbFloatButton(@click='handleJumpToCover' title='查看封面'): IconPhotoDown
-      FnbFloatButton(@click='handleDownloadGif' title='下载GIF')
+      button.ugoira-menu-btn(@click='handleJumpToCover' title='查看封面'): IconPhotoDown
+      button.ugoira-menu-btn(@click='handleDownloadGif' title='下载GIF')
         svg.spin-icon(v-if='isLoadingGif || isLoading' viewBox='0 0 24 24' width='20' height='20')
           circle(cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='31.4 31.4' stroke-linecap='round')
         template(v-else): IconGif
-      FnbFloatButton(@click='handleDownloadMp4' title='下载MP4')
+      button.ugoira-menu-btn(@click='handleDownloadMp4' title='下载MP4')
         svg.spin-icon(v-if='isLoadingMp4 || isLoading' viewBox='0 0 24 24' width='20' height='20')
           circle(cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='31.4 31.4' stroke-linecap='round')
         template(v-else): IconMovie
-      FnbFloatButton(@click='handleInit(true)' title='加载原画' v-if='!isHQLoaded')
+      button.ugoira-menu-btn(@click='handleInit(true)' title='加载原画' v-if='!isHQLoaded')
         svg.spin-icon(v-if='isLoading' viewBox='0 0 24 24' width='20' height='20')
           circle(cx='12' cy='12' r='10' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='31.4 31.4' stroke-linecap='round')
         template(v-else): IconPhotoSpark
@@ -289,6 +290,22 @@ onBeforeUnmount(() => {
 
 .spin-icon {
   animation: spin 1s linear infinite;
+}
+
+.ugoira-menu-btn {
+  @include fnb-border;
+  @include fnb-shadow-sm;
+  @include fnb-press;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fnb-surface);
+  cursor: pointer;
+  font-size: 1.25rem;
+  border-radius: var(--fnb-radius);
+  color: var(--fnb-text);
 }
 
 @keyframes spin {
