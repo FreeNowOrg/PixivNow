@@ -1,3 +1,4 @@
+import type { H3Event } from 'h3'
 import colors from 'picocolors'
 
 export const PROD = process.env.NODE_ENV === 'production'
@@ -74,16 +75,17 @@ export class PixivResponseError extends Error {
 }
 
 interface PixivFetchOptions {
+  event: H3Event
   method?: string
   url: string
   params?: Record<string, any>
   data?: any
-  headers?: Record<string, string>
 }
 
 export async function pixivFetch(
   opts: PixivFetchOptions
 ): Promise<{ data: any }> {
+  const { event } = opts
   const method = (opts.method ?? 'GET').toUpperCase()
 
   // Build URL with query params
@@ -101,18 +103,12 @@ export async function pixivFetch(
     }
   }
 
-  // Normalize incoming headers to lowercase for consistent access
-  // (AxiosHeaders was case-insensitive; plain objects from edge runtimes may not be)
-  const inHeaders: Record<string, string> = {}
-  for (const [k, v] of Object.entries(opts.headers ?? {})) {
-    if (typeof v === 'string') inHeaders[k.toLowerCase()] = v
-  }
-
-  const token = (inHeaders['authorization'] || '')
+  // Extract auth info from incoming request via h3 (case-insensitive)
+  const token = (getHeader(event, 'authorization') || '')
     .replace(/^Bearer\s+/i, '')
-  const cookies = CookieUtils.toJSON(inHeaders['cookie'] || '')
+  const cookies = { ...parseCookies(event) }
   const csrfToken =
-    inHeaders['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
+    getHeader(event, 'x-csrf-token') ?? cookies.CSRFTOKEN ?? ''
 
   if (token) {
     cookies.PHPSESSID = token
@@ -123,7 +119,7 @@ export async function pixivFetch(
     referer: 'https://www.pixiv.net/',
     'user-agent': USER_AGENT,
     'accept-language':
-      inHeaders['accept-language'] ??
+      getHeader(event, 'accept-language') ??
       'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
     cookie: CookieUtils.toString(cookies),
   }

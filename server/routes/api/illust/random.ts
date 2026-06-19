@@ -6,20 +6,20 @@ type ArtworkOrAd = Artwork | { isAdContainer: boolean }
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  const reqHeaders = getHeaders(event)
   const requestImage =
-    (reqHeaders.accept?.includes('image') || query.format === 'image') &&
+    (getHeader(event, 'accept')?.includes('image') ||
+      query.format === 'image') &&
     query.format !== 'json'
 
   try {
     const data: { illusts?: ArtworkOrAd[] } = (
       await pixivFetch({
+        event,
         url: '/ajax/illust/discovery',
         params: {
           mode: query.mode ?? 'safe',
           max: requestImage ? '1' : ((query.max as string) ?? '18'),
         },
-        headers: reqHeaders as Record<string, string>,
       })
     ).data
 

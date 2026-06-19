@@ -12,9 +12,9 @@ export default defineEventHandler(async (event) => {
 
   try {
     const { data } = await pixivFetch({
+      event,
       url: '/',
       params: query,
-      headers: getHeaders(event) as Record<string, string>,
     })
 
     const $ = load(data)

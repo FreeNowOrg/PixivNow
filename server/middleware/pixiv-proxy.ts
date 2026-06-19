@@ -25,11 +25,11 @@ export default defineEventHandler(async (event) => {
 
   try {
     const { data } = await pixivFetch({
+      event,
       method: event.method ?? 'GET',
       url: pathname,
       params: query ?? {},
       data: event.method !== 'GET' ? await readBody(event) : undefined,
-      headers: getHeaders(event) as Record<string, string>,
     })
     return data
   } catch (e: any) {
