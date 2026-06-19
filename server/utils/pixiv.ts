@@ -21,13 +21,23 @@ export const PXIMG_BASEURL_S = (() => {
 })()
 
 export class CookieUtils {
-  static toJSON(raw: string) {
-    return Object.fromEntries(new URLSearchParams(raw.replace(/;\s*/g, '&')))
+  static toJSON(raw: string): Record<string, string> {
+    const result: Record<string, string> = {}
+    if (!raw) return result
+    for (const pair of raw.split(';')) {
+      const idx = pair.indexOf('=')
+      if (idx === -1) continue
+      const key = pair.slice(0, idx).trim()
+      const val = pair.slice(idx + 1).trim()
+      if (key) result[key] = val
+    }
+    return result
   }
-  static toString(obj: any) {
-    return Object.keys(obj)
-      .map((i) => `${i}=${obj[i]}`)
-      .join(';')
+  static toString(obj: Record<string, string>): string {
+    return Object.entries(obj)
+      .filter(([, v]) => v != null && v !== '')
+      .map(([k, v]) => `${k}=${v}`)
+      .join('; ')
   }
 }
 
