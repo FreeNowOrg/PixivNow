@@ -2,7 +2,7 @@
 FnbTag.artwork-tag(
   @click='$router.push(`/search/${encodeURIComponent(tag)}/1`)'
   clickable
-) {{ '#' }}{{ tag }}
+) {{ tag }}
 </template>
 
 <script lang="ts" setup>
