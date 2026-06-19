@@ -86,4 +86,5 @@ onMounted(async () => {
 .artwork-large-list
   align-items: center
   background: transparent !important
+  overflow: visible !important
 </style>
