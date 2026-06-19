@@ -36,7 +36,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
         )
           img.avatar(
             :alt='userStore.isLoggedIn ? userStore.userName : "未登入"'
-            :src='userStore.isLoggedIn ? userStore.userProfileImg : "/~/common/images/no_profile.png"'
+            :src='userStore.isLoggedIn ? userStore.userProfileImg : noProfileImg'
           )
 
         .dropdown-content(:class='{ visible: showUserDropdown }')
@@ -46,7 +46,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                 .nav-user-card
                   .top
                     .banner-bg
-                    img.avatar(:src='"/~/common/images/no_profile.png"')
+                    img.avatar(:src='noProfileImg')
                   .details
                     a.user-name 游客
                     .uid 绑定令牌，同步您的 Pixiv 信息！
@@ -89,6 +89,9 @@ import IFasSearch from '~icons/fa-solid/search'
 import { logout } from '~/composables/userData'
 import LogoH from '~/assets/LogoH.png'
 import { useSideNavStore, useUserStore } from '~/stores/session'
+import { pximgS } from '~/utils/pximg'
+
+const noProfileImg = pximgS('common/images/no_profile.png')
 
 const hidden = ref(false)
 const notAtTop = ref(false)
