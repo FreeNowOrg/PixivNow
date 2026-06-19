@@ -65,7 +65,7 @@ mixin repoLink
       h3 版权与品牌
       p 请求得到的全部数据以及媒体资源，版权归 Pixiv 或其原作者所有。
       p PixivNow 程序源代码通过 Apache-2.0 协议授权。
-      p PixivNow 的 Logo 及品牌视觉资产由原作者保留所有权利，未经书面许可不得在本项目以外的场景使用、修改或再分发。
+      p PixivNow 的 Logo 及品牌视觉资产以 #[ExternalLink(href='https://creativecommons.org/licenses/by-nc-sa/4.0/') CC BY-NC-SA 4.0] 协议授权。您可以自由分享和改编，但须署名、禁止商用、以相同协议共享。
       p “Pixiv” 是 pixiv Inc. 的商标。PixivNow 项目与 pixiv Inc. 没有从属、认可或赞助关系。
       p 仅供交流与学习。
 

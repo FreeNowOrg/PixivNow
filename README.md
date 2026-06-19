@@ -88,6 +88,6 @@ _For communication and learning only._
 
 > Source code licensed under the [Apache License 2.0](LICENSE).
 >
-> The PixivNow logo and brand assets are **not** covered by the Apache License. All rights reserved by the original author. See [LICENSE](LICENSE) for details.
+> The PixivNow logo and brand assets are licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — not the Apache License. See [app/assets/LICENSE](app/assets/LICENSE) for details.
 >
 > "Pixiv" is a trademark of pixiv Inc. This project is not affiliated with, endorsed by, or sponsored by pixiv Inc.
