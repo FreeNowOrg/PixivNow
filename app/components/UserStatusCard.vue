@@ -36,7 +36,7 @@ FnbCard.user-status-card(shadow='sm')
   //- Not logged in
   .user-status.guest(v-else)
     .user-identity
-      img.avatar(src='/~/common/images/no_profile.png', alt='游客')
+      img.avatar(:src='"/~/common/images/no_profile.png"', alt='游客')
       .user-info
         .user-name 游客
         .user-id 绑定令牌，同步您的 Pixiv 信息！
