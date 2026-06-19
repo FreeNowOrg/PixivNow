@@ -53,11 +53,12 @@ const positionStyle = computed(() => ({
 
 .fnb-float-button__menu {
   position: absolute;
-  bottom: calc(100% + 0.5rem);
+  bottom: 100%;
   right: 0;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  padding-bottom: 0.5rem;
   opacity: 0;
   pointer-events: none;
   transform: translateY(4px);
