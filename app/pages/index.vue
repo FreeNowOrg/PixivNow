@@ -100,6 +100,7 @@
             @update:model-value='changeDiscoveryTab'
           )
           FnbSelect(
+            v-if='userStore.isLoggedIn',
             :model-value='discoveryMode',
             :options='discoveryModeOptions',
             @update:model-value='changeDiscoveryMode'
