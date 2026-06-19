@@ -10,7 +10,7 @@ nav.fnb-pagination(v-if='totalPages > 1' aria-label='分页导航')
     button.fnb-pagination__btn(
       v-else
       :class='{ "fnb-pagination__btn--active": p === page }'
-      @click='goTo(p as number)'
+      @click='goTo(+p)'
     ) {{ p }}
   button.fnb-pagination__btn(
     :disabled='page >= totalPages'
