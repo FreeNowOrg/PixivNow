@@ -1,16 +1,17 @@
 <template lang="pug">
-header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
+header.global-navbar(:class='{ "not-at-top": notAtTop, hidden, "side-nav-opened": sideNavStore.isOpened }')
   .flex
     button.side-nav-toggle.plain(
       aria-label='打开导航菜单'
       title='导航菜单'
       @click='toggleSideNav'
+      :class='{ "is-active": sideNavStore.isOpened }'
     )
       IFasBars(aria-hidden='true')
 
     .logo-area
       RouterLink.plain(to='/')
-        img.site-logo(:src='LogoH')
+        img.site-logo(:src='SiteLogo')
 
     .flex.search-area(v-if='$route.name !== "search"')
       .search-full.align-right.flex-1
@@ -36,7 +37,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
         )
           img.avatar(
             :alt='userStore.isLoggedIn ? userStore.userName : "未登入"'
-            :src='userStore.isLoggedIn ? userStore.userProfileImg : "/~/common/images/no_profile.png"'
+            :src='userStore.isLoggedIn ? userStore.userProfileImg : noProfileImg'
           )
 
         .dropdown-content(:class='{ visible: showUserDropdown }')
@@ -46,7 +47,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden }')
                 .nav-user-card
                   .top
                     .banner-bg
-                    img.avatar(:src='"/~/common/images/no_profile.png"')
+                    img.avatar(:src='noProfileImg')
                   .details
                     a.user-name 游客
                     .uid 绑定令牌，同步您的 Pixiv 信息！
@@ -87,8 +88,11 @@ import SearchBox from './SearchBox.vue'
 import IFasBars from '~icons/fa-solid/bars'
 import IFasSearch from '~icons/fa-solid/search'
 import { logout } from '~/composables/userData'
-import LogoH from '~/assets/LogoH.png'
+import SiteLogo from '~/assets/PixivNow.svg'
 import { useSideNavStore, useUserStore } from '~/stores/session'
+import { pximgS } from '~/utils/pximg'
+
+const noProfileImg = pximgS('common/images/no_profile.png')
 
 const hidden = ref(false)
 const notAtTop = ref(false)
@@ -175,7 +179,7 @@ useEventListener(window, 'scroll', () => {
     align-items: center;
     justify-content: center;
 
-    &:hover {
+    &:hover, &.is-active {
       background-color: var(--fnb-highlight);
       color: var(--fnb-text);
     }
@@ -192,7 +196,7 @@ useEventListener(window, 'scroll', () => {
       line-height: 0;
     }
     .site-logo {
-      height: 2.2rem;
+      height: 2.6rem;
       width: auto;
     }
   }
@@ -352,7 +356,7 @@ useEventListener(window, 'scroll', () => {
       pointer-events: none;
     }
 
-    &.not-at-top {
+    &.not-at-top, &.side-nav-opened {
       background-color: var(--fnb-brand);
       border-bottom-color: var(--fnb-border);
 

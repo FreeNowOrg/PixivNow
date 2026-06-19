@@ -1,6 +1,8 @@
 <template lang="pug">
 Waterfall.artwork-large-list(
   :breakpoints='{ 9999: { rowPerView: 6 }, 1600: { rowPerView: 5 }, 1200: { rowPerView: 4 }, 750: { rowPerView: 3 }, 640: { rowPerView: 2 }, 380: { rowPerView: 1 } }',
+  :gutter='20',
+  :has-around-gutter='false',
   :list='artworks'
   ref='waterfallRef'
 )
@@ -84,4 +86,5 @@ onMounted(async () => {
 .artwork-large-list
   align-items: center
   background: transparent !important
+  overflow: visible !important
 </style>

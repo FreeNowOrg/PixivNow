@@ -6,12 +6,14 @@ Component(
   :key='src',
   :src='src',
   :width='width'
-  ref='imgRef'
+  ref='elRef'
   role='img'
 )
 </template>
 
 <script lang="ts" setup>
+import { observeLazy, unobserveLazy } from '~/composables/useSharedObserver'
+
 const props = defineProps<{
   src: string
   width?: number
@@ -20,15 +22,7 @@ const props = defineProps<{
 
 const loaded = ref(false)
 const error = ref(false)
-const imgRef = ref<HTMLImageElement | null>(null)
-
-const ob = useIntersectionObserver(imgRef, async ([{ isIntersecting }]) => {
-  if (isIntersecting) {
-    await nextTick()
-    loadImage()
-    ob.stop()
-  }
-})
+const elRef = ref<HTMLElement | null>(null)
 
 function loadImage() {
   loaded.value = false
@@ -39,13 +33,22 @@ function loadImage() {
   img.onload = () => {
     loaded.value = true
     error.value = false
-    imgRef.value = img
   }
   img.onerror = () => {
     loaded.value = false
     error.value = true
   }
 }
+
+onMounted(() => {
+  const el = elRef.value
+  if (el) observeLazy(el, loadImage)
+})
+
+onBeforeUnmount(() => {
+  const el = elRef.value
+  if (el) unobserveLazy(el)
+})
 </script>
 
 <style scoped lang="sass">

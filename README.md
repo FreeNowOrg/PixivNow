@@ -1,6 +1,6 @@
 <div align="center">
 
-![PixivNow Logo](app/assets/LogoH.png)
+![PixivNow Logo](app/assets/PixivNow.svg)
 
 PixivNow - Now, everyone can enjoy Pixiv!
 
@@ -84,6 +84,10 @@ Docker 部署时可在 `docker-compose.yml` 中添加 `environment` 配置。
 
 _For communication and learning only._
 
-**All data & pictures from query:** &copy;Pixiv & original authors
+**All data & pictures from query:** &copy;pixiv Inc. & original authors
 
-> Licensed under the [Apache License 2.0](LICENSE)
+> Source code licensed under the [Apache License 2.0](LICENSE).
+>
+> The PixivNow logo and brand assets are licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — not the Apache License. See [app/assets/LICENSE](app/assets/LICENSE) for details.
+>
+> "Pixiv" is a trademark of pixiv Inc. This project is not affiliated with, endorsed by, or sponsored by pixiv Inc.

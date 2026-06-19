@@ -15,7 +15,7 @@ li.comment-block
     .content(v-html='replaceStamps(comment.comment)' v-if='!comment.stampId')
     .content(v-if='comment.stampId')
       img.big-stamp(
-        :src='`/~/common/images/stamp/generated-stamps/${comment.stampId}_s.jpg`'
+        :src='pximgS(`common/images/stamp/generated-stamps/${comment.stampId}_s.jpg`)'
         alt='表情包'
         lazyload
       )
@@ -26,12 +26,14 @@ li.comment-block
 import stampList from './stampList.json'
 import type { Comments } from '~/types'
 import { useUserStore } from '~/stores/session'
+import { pximgS } from '~/utils/pximg'
 
 defineProps<{ comment: Comments }>()
 const store = useUserStore()
 
 function replaceStamps(str: string): string {
-  for (const [stampName, stampUrl] of Object.entries(stampList)) {
+  for (const [stampName, stampId] of Object.entries(stampList)) {
+    const stampUrl = pximgS(`common/images/emoji/${stampId}.png`)
     str = str.replaceAll(
       `(${stampName})`,
       `<img class="stamp" src="${stampUrl}" alt="表情包" lazyload>`

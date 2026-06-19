@@ -62,9 +62,11 @@ mixin repoLink
       p 我们本身不提供 NSFW 资源（例如 R-18 插画），任意访问此类资源的行为均是由用户在源站的参数设置中设定的。对于可能出现的 NSFW 资源我们均有做出明显的警告标记，我们不鼓励访问或传播此类资源。
       h3 用户言论
       p “用户言论”指的是 Pixiv 源站用户通过自我介绍、插画简介、评论区等功能发布的言论。这部分属于发表者自身的行为，我们无法有效控制。我们不会发布也不鼓励传播不当言论。如果您在浏览过程中发现了不当内容，我们非常鼓励您前往源站进行举报。
-      h3 版权声明
+      h3 版权与品牌
       p 请求得到的全部数据以及媒体资源，版权归 Pixiv 或其原作者所有。
-      p PixivNow 程序通过 Apache-2.0 协议授权。
+      p PixivNow 程序源代码通过 Apache-2.0 协议授权。
+      p PixivNow 的 Logo 及品牌视觉资产以 #[ExternalLink(href='https://creativecommons.org/licenses/by-nc-sa/4.0/') CC BY-NC-SA 4.0] 协议授权。您可以自由分享和改编，但须署名、禁止商用、以相同协议共享。
+      p “Pixiv” 是 pixiv Inc. 的商标。PixivNow 项目与 pixiv Inc. 没有从属、认可或赞助关系。
       p 仅供交流与学习。
 
     Card(title='加入我们')

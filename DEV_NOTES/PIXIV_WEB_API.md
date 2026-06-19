@@ -146,7 +146,8 @@ Some API endpoints (e.g. `/ajax/illust/{id}`) return a complete `urls` object �
 | `/ajax/illust/{id}`        | Full `urls` object   | Use directly |
 | `/ajax/illust/{id}/pages`  | Full `urls`          | Use directly |
 | `/ranking.php`             | Thumbnail `url` only | Approach A   |
-| `/ajax/illust/discovery`   | Full `urls`          | Use directly |
+| `/ajax/discovery/artworks` | Thumbnail `url`      | Approach A   |
+| `/ajax/illust/discovery`   | Thumbnail `url`      | Approach A   |
 | Only id + updateDate known | No URL available     | Approach B   |
 
 ### URL Conversion Examples
@@ -245,26 +246,52 @@ The `src`/`originalSrc` is a ZIP archive containing the frame images. Extract fr
 
 ## 4. Discovery & Recommendations
 
-### 4.1 GET `/ajax/illust/discovery`
+There are two discovery endpoints. The new one requires authentication; the legacy one works anonymously but has stricter limits.
 
-Discover random artworks (requires authentication).
+### 4.1 GET `/ajax/discovery/artworks` (New, Auth Required)
 
-| Param  | Type   | Default | Description            |
-| ------ | ------ | ------- | ---------------------- |
-| `mode` | string | `safe`  | `safe` / `all` / `r18` |
-| `max`  | string | `18`    | Max number of results  |
+Discover random artworks. **Requires authentication** (returns 401 without a valid session).
+
+| Param   | Type   | Default | Description            |
+| ------- | ------ | ------- | ---------------------- |
+| `mode`  | string | `safe`  | `safe` / `all` / `r18` |
+| `limit` | string | `60`    | Max number of results  |
+
+**Response** `body`:
+
+```jsonc
+{
+  "thumbnails": {
+    "illust": [
+      // Array of ArtworkInfo objects (same shape as §3.1 but abbreviated)
+      // May include ad objects: { "isAdContainer": true, ... }
+      // Filter by checking for the presence of "id" field
+    ]
+  },
+}
+```
+
+### 4.1.1 GET `/ajax/illust/discovery` (Legacy, No Auth)
+
+Legacy discovery endpoint. **Does not require authentication**, but has a lower result limit and does not support `r18` mode without a session.
+
+| Param | Type   | Default | Description                                     |
+| ----- | ------ | ------- | ----------------------------------------------- |
+| `mode` | string | `safe`  | `safe` / `all` (`r18` requires auth, same as §4.1) |
+| `max`  | string | `18`    | Max number of results (hard limit: **18**)       |
 
 **Response** `body`:
 
 ```jsonc
 {
   "illusts": [
-    // Array of ArtworkInfo objects (same shape as §3.1 but abbreviated)
+    // Same ArtworkInfo shape as §4.1, but wrapped in "illusts" instead of "thumbnails.illust"
     // May include ad objects: { "isAdContainer": true, ... }
-    // Filter by checking for the presence of "id" field
   ],
 }
 ```
+
+> **Migration note:** The PixivNow client uses §4.1 when a user token is present and falls back to §4.1.1 for anonymous users. The `max` parameter is clamped to 18 on the legacy endpoint regardless of the requested value.
 
 ### 4.2 GET `/ajax/illust/{id}/recommend/init`
 
@@ -658,7 +685,8 @@ The `/ranking.php` endpoint is an exception — it returns data directly without
 | 3.1  | GET    | `/ajax/illust/{id}?full=1`              | Optional (Required for r18) | Artwork detail            |
 | 3.2  | GET    | `/ajax/illust/{id}/pages`               | Optional (Required for r18) | Multi-page artwork        |
 | 3.3  | GET    | `/ajax/illust/{id}/ugoira_meta`         | Optional (Required for r18) | Ugoira animation metadata |
-| 4.1  | GET    | `/ajax/illust/discovery`                | Required                    | Random artwork discovery  |
+| 4.1  | GET    | `/ajax/discovery/artworks`              | Required                    | Discovery (new, limit 60) |
+| 4.1.1| GET    | `/ajax/illust/discovery`                | No                          | Discovery (legacy, max 18)|
 | 4.2  | GET    | `/ajax/illust/{id}/recommend/init`      | Optional                    | Initial recommendations   |
 | 4.3  | GET    | `/ajax/illust/recommend/illusts`        | Optional                    | More recommendations      |
 | 5.1  | GET    | `/ajax/search/artworks/{keyword}`       | Optional                    | Search artworks           |
