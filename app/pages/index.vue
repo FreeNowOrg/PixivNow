@@ -280,16 +280,17 @@ onMounted(() => {
       height: 12rem;
       width: auto;
     }
+    margin-bottom: 0.25rem;
   }
 
   .description {
     font-size: 0.9rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     opacity: 0.85;
   }
 
   .search-area {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 
     > * {
       width: 100%;
