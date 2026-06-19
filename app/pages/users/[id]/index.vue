@@ -71,44 +71,42 @@
           .user-more
             a(@click='userMore' href='javascript:;') 查看更多
 
-    Teleport(to='body')
-      Transition(name='dialog')
-        .fnb-dialog-overlay(v-if='showUserMore' @click.self='showUserMore = false')
-          .fnb-dialog-card
-            button.fnb-dialog-card__close(@click='showUserMore = false' aria-label='关闭') ×
-            .fnb-dialog-card__header 用户资料
-            .fnb-dialog-card__body
-              .info-modal
-                .top
-                  h3
-                    a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
-                      img(:src='user.imageBig')
-                      .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
-                        IFasParking(data-icon)
-                    .title {{ user.name }}
-                .bottom
-                  section.user-comment
-                    h4 个人简介
-                    .comment.pre {{ user.comment || '-' }}
-                  section.user-workspace(v-if='user.workspace')
-                    hr
-                    h4 工作环境
-                    FnbImage(
-                      :preview-src='user.workspace.wsBigUrl',
-                      :src='user.workspace.wsUrl'
-                      lazy
-                      v-if='user.workspace.wsUrl'
-                    )
-                    FnbTable
-                      tbody
-                        tr(v-for='(val, key) in user.workspace')
-                          th {{ workspaceNameMap[key] || key }}
-                          td {{ val }}
-                  section.dev-only
-                    hr
-                    h4 Debug Info
-                    details
-                      pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
+    .fnb-dialog-overlay(v-if='showUserMore' @click.self='showUserMore = false')
+      .fnb-dialog-card
+        button.fnb-dialog-card__close(@click='showUserMore = false' aria-label='关闭') ×
+        .fnb-dialog-card__header 用户资料
+        .fnb-dialog-card__body
+          .info-modal
+            .top
+              h3
+                a.avatar(:href='user.imageBig' target='_blank' title='查看头像')
+                  img(:src='user.imageBig')
+                  .premium-icon(title='该用户订阅了高级会员' v-if='user.premium')
+                    IFasParking(data-icon)
+                .title {{ user.name }}
+            .bottom
+              section.user-comment
+                h4 个人简介
+                .comment.pre {{ user.comment || '-' }}
+              section.user-workspace(v-if='user.workspace')
+                hr
+                h4 工作环境
+                FnbImage(
+                  :preview-src='user.workspace.wsBigUrl',
+                  :src='user.workspace.wsUrl'
+                  lazy
+                  v-if='user.workspace.wsUrl'
+                )
+                FnbTable
+                  tbody
+                    tr(v-for='(val, key) in user.workspace')
+                      th {{ workspaceNameMap[key] || key }}
+                      td {{ val }}
+              section.dev-only
+                hr
+                h4 Debug Info
+                details
+                  pre(style='overflow: auto; background: #efefef; padding: 4px') {{ JSON.stringify(user, null, 2) }}
 
     #user-artworks
       FnbTabs(
@@ -522,10 +520,6 @@ onMounted(async () => {
   }
 }
 
-</style>
-
-<style lang="scss">
-// These styles apply to Teleport'd dialog content (escapes scoped styles)
 .fnb-dialog-overlay {
   position: fixed;
   inset: 0;
@@ -578,14 +572,5 @@ onMounted(async () => {
     overflow-y: auto;
     flex: 1;
   }
-}
-
-.dialog-enter-active,
-.dialog-leave-active {
-  transition: opacity 0.2s ease;
-}
-.dialog-enter-from,
-.dialog-leave-to {
-  opacity: 0;
 }
 </style>

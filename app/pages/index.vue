@@ -21,32 +21,30 @@
       )
         IFasInfoCircle
 
-  Teleport(to='body')
-    Transition(name='dialog')
-      .fnb-dialog-overlay(v-if='isShowBgInfo' @click.self='isShowBgInfo = false')
-        .fnb-dialog-card
-          button.fnb-dialog-card__close(@click='isShowBgInfo = false' aria-label='关闭') ×
-          .fnb-dialog-card__header {{ `背景图片：${randomBg?.alt}` }}
-          .fnb-dialog-card__body
-            .bg-info-modal
-              .align-center
-                RouterLink.thumb(:to='"/artworks/" + randomBg?.id')
-                  img(
-                    :src='randomBgRegularUrl',
-                    :style='{ width: "100%", height: "auto" }'
-                    lazyload
-                  )
-                .desc
-                  .author
-                    RouterLink(:to='"/users/" + randomBg?.userId') @{{ randomBg?.userName }}
-                    | 的作品 (ID: {{ randomBg?.id }})
-                .tag-list(style='display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1rem')
-                  FnbTag(
-                    :key='tag'
-                    clickable
-                    @click='$router.push(`/search/${encodeURIComponent(tag)}/1`)'
-                    v-for='tag in randomBg?.tags'
-                  ) {{ tag }}
+  .fnb-dialog-overlay(v-if='isShowBgInfo' @click.self='isShowBgInfo = false')
+    .fnb-dialog-card
+      button.fnb-dialog-card__close(@click='isShowBgInfo = false' aria-label='关闭') ×
+      .fnb-dialog-card__header {{ `背景图片：${randomBg?.alt}` }}
+      .fnb-dialog-card__body
+        .bg-info-modal
+          .align-center
+            RouterLink.thumb(:to='"/artworks/" + randomBg?.id')
+              img(
+                :src='randomBgRegularUrl',
+                :style='{ width: "100%", height: "auto" }'
+                lazyload
+              )
+            .desc
+              .author
+                RouterLink(:to='"/users/" + randomBg?.userId') @{{ randomBg?.userName }}
+                | 的作品 (ID: {{ randomBg?.id }})
+            .tag-list(style='display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1rem')
+              FnbTag(
+                :key='tag'
+                clickable
+                @click='$router.push(`/search/${encodeURIComponent(tag)}/1`)'
+                v-for='tag in randomBg?.tags'
+              ) {{ tag }}
 
   .body-inner
     section.discover

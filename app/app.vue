@@ -1,21 +1,22 @@
 <template lang="pug">
-FnbProvider
-  #app-full-container(
-    :data-env='siteConfig.public.siteEnv',
-    :data-route-name='route.name'
-  )
-    SiteNoticeBanner
-    SiteHeader
+#app-full-container(
+  :data-env='siteConfig.public.siteEnv',
+  :data-route-name='route.name'
+)
+  SiteNoticeBanner
+  SiteHeader
 
-    main
-      article
-        NuxtPage(
-          :transition='{ enterActiveClass: "fade-in-up", leaveActiveClass: "fade-out-down", mode: "out-in" }'
-        )
+  main
+    article
+      NuxtPage(
+        :transition='{ enterActiveClass: "fade-in-up", leaveActiveClass: "fade-out-down", mode: "out-in" }'
+      )
 
-    SideNav
-    SiteFooter
-    NProgress
+  SideNav
+  SiteFooter
+  NProgress
+  FnbDialog
+  FnbToast
 </template>
 
 <script lang="ts" setup>
