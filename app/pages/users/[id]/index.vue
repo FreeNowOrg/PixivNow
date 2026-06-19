@@ -373,14 +373,14 @@ onMounted(async () => {
       position: relative;
       width: 100%;
       height: 100%;
-      background-color: #efefef;
+      background-color: var(--fnb-bg);
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
 
       > span {
         user-select: none;
-        color: #ccc;
+        color: var(--fnb-text-muted);
         display: inline-block;
         position: absolute;
         left: 50%;
@@ -392,18 +392,21 @@ onMounted(async () => {
 
   .info-area {
     position: relative;
-    background-color: #fff;
-    box-shadow: 0 0 0.5rem #aaa;
+    background-color: var(--fnb-surface);
+    border-top: 3px solid var(--fnb-border);
+    border-bottom: 3px solid var(--fnb-border);
     padding-left: calc(2rem + 100px + 2rem);
     padding-top: 1rem;
     padding-right: 1rem;
-    padding-bottom: 3rem;
+    padding-bottom: 2rem;
     margin-top: 40vh;
     z-index: 2;
     > div {
       margin: 0.4rem auto;
-      [data-icon] {
-        width: 1rem;
+      [data-icon],
+      .tabler-icon {
+        width: 1em;
+        height: 1em;
         margin-right: 0.4rem;
       }
     }
@@ -426,16 +429,16 @@ onMounted(async () => {
       box-sizing: border-box;
       width: 100px;
       height: 100px;
-      @include fnb-border-sm;
-      background-color: #fff;
-      border: 4px solid #fff;
-      box-shadow: 0 0.2rem 0.4rem #cdcdcd;
+      @include fnb-border;
+      @include fnb-shadow-sm;
+      background-color: var(--fnb-surface);
     }
   }
 
   .username {
+    font-family: var(--fnb-font-display);
     font-size: 1.6rem;
-    font-weight: 700;
+    font-weight: 900;
     margin: 0;
   }
 
@@ -453,7 +456,7 @@ onMounted(async () => {
 
 #user-artworks {
   position: relative;
-  background-color: #fff;
+  background-color: var(--fnb-surface);
   z-index: 2;
 
   .fnb-tabs__nav {
@@ -483,33 +486,47 @@ onMounted(async () => {
     margin: 1.5rem auto;
     width: 75%;
     border: none;
-    height: 2px;
-    background-color: #dedede;
+    height: 3px;
+    background-color: var(--fnb-border);
   }
   .top {
     text-align: center;
-    background-color: #f4f4f4;
+    background-color: var(--fnb-bg);
+    border-bottom: 3px solid var(--fnb-border);
     z-index: 1;
     padding: 1rem 0;
     margin: 0 -1.5rem;
     .avatar {
       width: 80px;
       margin: 0 auto;
+      position: relative;
       img {
-        border-radius: 50%;
         width: 80px;
+        height: 80px;
+        @include fnb-border;
+        @include fnb-shadow-sm;
       }
       .premium-icon {
         position: absolute;
-        bottom: 0;
-        right: 0;
-        color: #ffa500;
+        bottom: -4px;
+        right: -4px;
+        color: var(--fnb-highlight);
+        background: var(--fnb-surface);
+        border: 2px solid var(--fnb-border);
+        width: 1.4rem;
+        height: 1.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
         cursor: help;
       }
     }
     .title {
+      font-family: var(--fnb-font-display);
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 900;
+      margin-top: 0.5rem;
     }
   }
 
@@ -517,60 +534,6 @@ onMounted(async () => {
     :deep(img) {
       width: 100%;
     }
-  }
-}
-
-.fnb-dialog-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9000;
-}
-
-.fnb-dialog-card {
-  @include fnb-border;
-  @include fnb-shadow-lg;
-  background: var(--fnb-surface);
-  width: 600px;
-  max-width: 86vw;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-
-  &__close {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    font-weight: 900;
-    line-height: 1;
-    cursor: pointer;
-    color: var(--fnb-text-muted);
-    z-index: 1;
-
-    &:hover {
-      color: var(--fnb-text);
-    }
-  }
-
-  &__header {
-    font-family: var(--fnb-font-display);
-    font-weight: 900;
-    font-size: 1.1rem;
-    padding: 1rem 1.5rem 0.5rem;
-    padding-right: 2.5rem;
-  }
-
-  &__body {
-    padding: 0 1.5rem 1rem;
-    overflow-y: auto;
-    flex: 1;
   }
 }
 </style>
