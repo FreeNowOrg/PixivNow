@@ -104,6 +104,11 @@ code {
   }
 }
 
+// Scroll offset for sticky navbar (63px + 1rem)
+[id] {
+  scroll-margin-top: calc(63px + 1rem);
+}
+
 // Inline SVG icons
 svg.svg--inline {
   display: inline-block;
