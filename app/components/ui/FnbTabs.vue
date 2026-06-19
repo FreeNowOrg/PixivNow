@@ -51,6 +51,7 @@ defineProps<{
   &--active {
     color: var(--fnb-text);
     border-bottom-color: var(--fnb-brand);
+    background: var(--fnb-highlight);
   }
 }
 
