@@ -21,16 +21,17 @@
             ITablerEye
             | {{ formatCount(artwork.view_count) }}
   .controls
-    button.arrow.prev(@click='prev')
+    button.arrow.prev(@click='prev', aria-label='上一张')
       ITablerChevronLeft
     .dots
       button.dot(
         v-for='(_, i) in artworks',
         :key='i',
         :class='{ active: i === current }',
+        :aria-label='"第 " + (i + 1) + " 张"',
         @click='goTo(i)'
       )
-    button.arrow.next(@click='next')
+    button.arrow.next(@click='next', aria-label='下一张')
       ITablerChevronRight
   .ranking-link
     RouterLink(to='/ranking') 查看完整排行榜 →

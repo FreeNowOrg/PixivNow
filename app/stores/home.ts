@@ -34,6 +34,7 @@ export const useHomeStore = defineStore('home', () => {
       loadingDiscovery.value = true
       const illusts = await pixivClient.getDiscovery({ mode: 'all', max: 18 })
       discoverySeenIds.clear()
+      noMoreDiscovery.value = false
       illusts.forEach((item) => discoverySeenIds.add(item.id))
       discoveryList.value = illusts
     } catch (err) {

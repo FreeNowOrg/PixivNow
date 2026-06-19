@@ -84,7 +84,8 @@
       .content-right
         FollowingLatest(
           :artworks='homeStore.followingList',
-          :loading='homeStore.loadingFollowing'
+          :loading='homeStore.loadingFollowing',
+          :logged-in='userStore.isLoggedIn'
         )
 
     //- Discovery Section

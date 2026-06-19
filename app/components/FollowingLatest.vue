@@ -27,7 +27,7 @@
         RouterLink(to='/following/latest') 更多 →
 
     //- Not logged in
-    .following-empty(v-else)
+    .following-empty(v-else-if='!loggedIn')
       p 登录后查看关注用户的最新作品
       FnbButton(
         size='sm',
@@ -37,6 +37,10 @@
       )
         template(#icon): ITablerLogin
         | 登录
+
+    //- Logged in but no follows
+    .following-empty(v-else)
+      p 还没有关注任何用户
 </template>
 
 <script lang="ts" setup>
@@ -47,6 +51,7 @@ import type { ArtworkInfo } from '~/types'
 defineProps<{
   artworks: ArtworkInfo[]
   loading: boolean
+  loggedIn: boolean
 }>()
 </script>
 
