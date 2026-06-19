@@ -305,6 +305,11 @@ onMounted(() => {
     }
   }
 
+  // ── Body content below hero ──
+  > .body-inner {
+    margin-top: 1.5rem;
+  }
+
   // ── User Status Card ──
   .user-status-card {
     margin-bottom: 1.5rem;
