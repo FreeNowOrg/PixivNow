@@ -105,6 +105,8 @@ dist
 
 .vercel
 .claude
+.idea
+.omc
 
 dev-test
 *.dev.*
@@ -117,3 +119,4 @@ dev-test
 
 # macOS
 .DS_Store
+.playwright-mcp/

@@ -1,17 +1,30 @@
-import AutoImport from 'unplugin-auto-import/vite'
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
-import Components from 'unplugin-vue-components/vite'
+import { resolve } from 'node:path'
 import Icons from 'unplugin-icons/vite'
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-01',
 
   ssr: false,
 
-  modules: ['@pinia/nuxt', '@nuxtjs/i18n', '@vueuse/nuxt', 'nuxtjs-naive-ui'],
+  modules: ['@pinia/nuxt', '@nuxtjs/i18n', '@vueuse/nuxt'],
 
-  css: ['~/assets/styles/index.sass'],
+  components: [
+    { path: '~/components/ui', pathPrefix: false },
+    '~/components',
+  ],
+
+  css: ['~/assets/styles/index.scss'],
+
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+SC:wght@400;700;900&display=swap',
+        },
+      ],
+    },
+  },
 
   vite: {
     plugins: [
@@ -19,31 +32,16 @@ export default defineNuxtConfig({
         scale: 1,
         defaultClass: 'svg--inline',
       }),
-      AutoImport({
-        imports: [
-          {
-            'naive-ui': [
-              'useDialog',
-              'useMessage',
-              'useNotification',
-              'useLoadingBar',
-            ],
-          },
-        ],
-      }),
-      Components({
-        resolvers: [NaiveUiResolver()],
-      }),
     ],
-    optimizeDeps: {
-      include: [
-        'vue-gtag',
-        'naive-ui',
-        'nprogress',
-        'js-cookie',
-        'axios',
-        'date-fns-tz',
-      ],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use "${resolve(import.meta.dirname, './app/assets/styles/_fnb.scss')}" as *;`,
+        },
+        sass: {
+          additionalData: `\n@use "${resolve(import.meta.dirname, './app/assets/styles/_fnb.scss')}" as *\n`,
+        },
+      },
     },
     vue: {
       template: {
@@ -61,10 +59,8 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // Server-only (overridable via NUXT_UA_BLACKLIST or legacy UA_BLACKLIST)
     uaBlacklist: process.env.UA_BLACKLIST || '[]',
     public: {
-      // Overridable via NUXT_PUBLIC_* or legacy VITE_* env vars
       pximgBaseUrlI: process.env.VITE_PXIMG_BASEURL_I || '/-/',
       pximgBaseUrlS: process.env.VITE_PXIMG_BASEURL_S || '/~/',
       googleAnalyticsId: process.env.VITE_GOOGLE_ANALYTICS_ID || '',

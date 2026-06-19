@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { ArtworkInfo } from '~/types'
 
 export const useSearchStore = defineStore('search', () => {
-  const pixivClient = usePixivClientStore().client
+  const pixivClient = usePixivClient()
   const results = ref<ArtworkInfo[]>([])
   const total = ref(0)
   const loading = ref(false)

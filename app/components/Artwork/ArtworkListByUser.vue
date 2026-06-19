@@ -1,26 +1,27 @@
 <template lang="pug">
 .artworks-by-user(ref='containerRef')
-  NFlex(align='center' justify='center')
-    NPagination(
-      :item-count='userArtworksStore.allIds.length',
+  .flex.justify-center.align-center
+    FnbPagination(
+      :item-count='storeAllIds.length',
+      :page='curPage',
       :page-size='userArtworksStore.pageSize'
-      v-model:page='curPage'
+      @update:page='curPage = $event'
     )
   ArtworkList(
     :list='curArtworks',
     :loading='!curArtworks.length ? userArtworksStore.pageSize : false'
   )
-  NFlex(align='center' justify='center')
-    NPagination(
-      :item-count='userArtworksStore.allIds.length',
+  .flex.justify-center.align-center
+    FnbPagination(
+      :item-count='storeAllIds.length',
+      :page='curPage',
       :page-size='userArtworksStore.pageSize'
-      v-model:page='curPage'
+      @update:page='curPage = $event'
     )
 </template>
 
 <script setup lang="ts">
 import type { ArtworkInfo } from '~/types'
-import { NPagination } from 'naive-ui'
 import { useUserArtworksStore } from '~/stores/user-artworks'
 
 const props = withDefaults(
@@ -37,8 +38,13 @@ const containerRef = ref<HTMLElement>()
 const curPage = ref(1)
 const userArtworksStore = useUserArtworksStore()
 
+const storeAllIds = computed(() => userArtworksStore.allIds(props.workCategory))
+const storeCachedPages = computed(() =>
+  userArtworksStore.cachedPages(props.workCategory)
+)
+
 const curArtworks = computed(() => {
-  return (userArtworksStore.cachedPages[curPage.value] || []).sort(
+  return (storeCachedPages.value[curPage.value] || []).sort(
     (a: ArtworkInfo, b: ArtworkInfo) => Number(b.id) - Number(a.id)
   )
 })
@@ -61,11 +67,20 @@ function backToTop() {
 }
 
 async function firstInit() {
-  userArtworksStore.reset()
   curPage.value = 1
   await userArtworksStore.fetchAllIds(props.userId, props.workCategory)
   await userArtworksStore.fetchPage(props.userId, 1, props.workCategory)
 }
 </script>
 
-<style scoped lang="sass"></style>
+<style scoped lang="scss">
+.flex {
+  display: flex;
+}
+.justify-center {
+  justify-content: center;
+}
+.align-center {
+  align-items: center;
+}
+</style>

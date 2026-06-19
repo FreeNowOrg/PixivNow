@@ -83,4 +83,5 @@ onMounted(async () => {
 <style lang="sass">
 .artwork-large-list
   align-items: center
+  background: transparent !important
 </style>

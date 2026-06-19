@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from 'axios'
-import Cookies from 'js-cookie'
 import nprogress from 'nprogress'
+import { getToken, getCsrfToken } from '~/composables/userData'
 import { createPximgReplacer } from '~/utils/pximg'
 import type {
   Artwork,
@@ -96,10 +96,15 @@ export class PixivWebClient {
     this.http.interceptors.request.use((config) => {
       nprogress.start()
 
-      // Attach CSRF token for POST requests
-      const csrfToken = Cookies.get('CSRFTOKEN')
+      config.headers = config.headers || {}
+
+      const token = getToken()
+      if (token) {
+        config.headers['Authorization'] = token
+      }
+
+      const csrfToken = getCsrfToken()
       if (csrfToken && config.method?.toLowerCase() === 'post') {
-        config.headers = config.headers || {}
         config.headers['X-CSRF-TOKEN'] = csrfToken
       }
 

@@ -15,14 +15,25 @@
       ArtworkList(:list='[]', :loading='16')
 
     .no-more(v-if='!searchStore.loading && !searchStore.results.length')
-      NCard(style='padding: 15vh 0'): NEmpty(description='没有了，一滴都没有了……')
+      FnbCard(style='padding: 15vh 0; text-align: center')
+        .fnb-empty 没有了，一滴都没有了……
 
-    NSpin.result-area(:show='searchStore.loading' v-if='searchStore.results.length')
+    FnbSpin.result-area(:show='searchStore.loading' v-if='searchStore.results.length')
       .pagenator
-        NPagination(v-model:page='page' :item-count='searchStore.total' :page-size='searchStore.results.length')
+        FnbPagination(
+          :page='page'
+          :item-count='searchStore.total'
+          :page-size='searchStore.results.length'
+          @update:page='page = $event'
+        )
       ArtworkLargeList(:artwork-list='searchStore.results')
       .pagenator
-        NPagination(v-model:page='page' :item-count='searchStore.total' :page-size='searchStore.results.length')
+        FnbPagination(
+          :page='page'
+          :item-count='searchStore.total'
+          :page-size='searchStore.results.length'
+          @update:page='page = $event'
+        )
 </template>
 
 <script lang="ts" setup>
@@ -31,7 +42,6 @@ import ArtworkLargeList from '~/components/Artwork/ArtworkLargeList.vue'
 import ArtworkList from '~/components/Artwork/ArtworkList.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
 import SearchBox from '~/components/SearchBox.vue'
-import { NButton, NSpin } from 'naive-ui'
 import { useSearchStore } from '~/stores/search'
 import { effect } from 'vue'
 import { setTitle } from '~/utils/setTitle'
@@ -101,20 +111,27 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="sass" scoped>
-.pagenator
-  display: flex
-  justify-content: center
-  margin: 1rem auto
+<style lang="scss" scoped>
+.pagenator {
+  display: flex;
+  justify-content: center;
+  margin: 1rem auto;
+}
 
-.no-more
-  text-align: center
-  padding: 1rem
-  opacity: 0.75
+.no-more {
+  text-align: center;
+  padding: 1rem;
+  opacity: 0.75;
+}
 
-.search-box
-  margin: 1rem auto
-  margin-top: 2rem
-  box-shadow: 0 0 8px #ddd
-  border-radius: 2em
+.search-box {
+  margin: 1rem auto;
+  margin-top: 2rem;
+  box-shadow: 0 0 8px #ddd;
+}
+
+.fnb-empty {
+  color: var(--fnb-text-muted);
+  padding: 1rem;
+}
 </style>

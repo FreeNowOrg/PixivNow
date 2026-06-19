@@ -3,7 +3,7 @@ import type { ArtworkInfo, User } from '~/types'
 import { sortArtList } from '~/utils'
 
 export const useUserProfileStore = defineStore('user-profile', () => {
-  const pixivClient = usePixivClientStore().client
+  const pixivClient = usePixivClient()
   const userCache = ref(new Map<string, User>())
 
   function getCachedUser(id: string): User | undefined {

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import type { PixivUser } from '~/types'
-import Cookies from 'js-cookie'
 
 export const useSideNavStore = defineStore('sidenav', () => {
   const openState = ref(false)
@@ -18,7 +17,7 @@ export const useSideNavStore = defineStore('sidenav', () => {
 })
 
 export const useUserStore = defineStore('user', () => {
-  const pixivClient = usePixivClientStore().client
+  const pixivClient = usePixivClient()
   const user = ref<PixivUser | null>(null)
   const isLoggedIn = computed(() => !!user.value)
   const userId = computed(() => user.value?.id)
@@ -38,18 +37,15 @@ export const useUserStore = defineStore('user', () => {
     try {
       const data = await pixivClient._getSessionUser()
       if (data.token) {
-        Cookies.set('CSRFTOKEN', data.token, {
-          secure: true,
-          sameSite: 'Strict',
-        })
+        sessionStorage.setItem('pixivnow:csrf', data.token)
         user.value = data.userData
         return data.userData
       } else {
-        Cookies.remove('CSRFTOKEN')
+        sessionStorage.removeItem('pixivnow:csrf')
         return Promise.reject('Invalid session ID')
       }
     } catch (err) {
-      Cookies.remove('CSRFTOKEN')
+      sessionStorage.removeItem('pixivnow:csrf')
       return Promise.reject(err)
     }
   }

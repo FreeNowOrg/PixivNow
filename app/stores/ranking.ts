@@ -7,7 +7,7 @@ export const useRankingStore = defineStore('ranking', () => {
     contents: ArtworkRank[]
   } | null>(null)
   const loading = ref(false)
-  const pixivClient = usePixivClientStore().client
+  const pixivClient = usePixivClient()
 
   async function fetchRanking(params?: {
     p?: string

@@ -64,8 +64,9 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="sass">
+<style scoped lang="scss">
 
-.loading
-  text-align: center
+.loading {
+  text-align: center;
+}
 </style>

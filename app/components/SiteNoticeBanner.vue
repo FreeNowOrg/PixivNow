@@ -1,15 +1,15 @@
 <template lang="pug">
 Transition(name='fade')
   #sitenotice-banner(v-if='isShow')
-    NAlert(
+    FnbMbox(
       @close='handleClose'
       closable
+      header='全站公告'
       style='font-size: 1.5rem'
-      title='全站公告'
       type='warning'
     )
-      NUl
-        NLi: RouterLink(to='/notifications/2024-04-26') 关于 PixivNow 将可能停止服务的通知（2024年4月26日）
+      ul
+        li: RouterLink(to='/notifications/2024-04-26') 关于 PixivNow 将可能停止服务的通知（2024年4月26日）
 </template>
 
 <script setup lang="ts">
@@ -37,13 +37,15 @@ function handleClose() {
 }
 </script>
 
-<style scoped lang="sass">
+<style scoped lang="scss">
 .fade-enter-active,
-.fade-leave-active
-  transition: all 0.5s ease-in-out
+.fade-leave-active {
+  transition: all 0.5s ease-in-out;
+}
 
 .fade-enter-from,
-.fade-leave-to
-  opacity: 0
-  height: 0
+.fade-leave-to {
+  opacity: 0;
+  height: 0;
+}
 </style>

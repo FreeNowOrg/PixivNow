@@ -1,0 +1,112 @@
+// app/assets/styles/_elements.scss
+@use 'fnb' as *;
+
+// Headings
+article {
+  h1 {
+    font-family: var(--fnb-font-display);
+    font-size: 2.2rem;
+    font-weight: 900;
+  }
+
+  h2:not(.plain) {
+    font-family: var(--fnb-font-display);
+    font-weight: 900;
+    font-size: 1.5em;
+    display: inline-block;
+    background: var(--fnb-highlight);
+    border-bottom: 3px solid var(--fnb-border);
+    padding: 0.2em 0.4em;
+    margin: 1rem 0;
+  }
+
+  h3:not(.plain),
+  h4:not(.plain),
+  h5:not(.plain),
+  h6:not(.plain) {
+    font-weight: 700;
+    padding: 0.2rem;
+    color: var(--fnb-text);
+  }
+
+  h3:not(.plain) {
+    font-size: 1.3rem;
+    margin: 0.5em 0;
+  }
+
+  h4:not(.plain) {
+    font-size: 1.2rem;
+    margin: 0.5em 0;
+  }
+
+  h5:not(.plain) {
+    font-size: 1.125rem;
+    margin: 0.5em 0;
+  }
+
+  h6:not(.plain) {
+    font-size: 1.125rem;
+    margin: 0.5em 0;
+  }
+}
+
+// Links
+a {
+  color: var(--fnb-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+  transition: color 150ms;
+
+  &.plain {
+    text-decoration: none;
+  }
+
+  &:hover {
+    color: var(--fnb-brand);
+  }
+
+  &.button {
+    @include fnb-btn;
+    text-decoration: none;
+  }
+}
+
+// Code
+pre {
+  overflow: auto;
+  background: #efefef;
+  padding: 4px;
+  border-radius: var(--fnb-radius-sm);
+}
+
+code {
+  background-color: #efefef;
+  display: inline;
+  padding: 0.1rem 0.2rem;
+  color: var(--fnb-danger);
+  word-break: break-word;
+  border-radius: var(--fnb-radius-sm);
+}
+
+// Responsive container
+.responsive,
+.body-inner {
+  @media (min-width: 1280px) {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1200px;
+  }
+
+  @media (max-width: 1280px) {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+}
+
+// Inline SVG icons
+svg.svg--inline {
+  display: inline-block;
+  vertical-align: -0.125em;
+  overflow: visible;
+}
