@@ -31,7 +31,6 @@
             RouterLink.thumb(:to='"/artworks/" + randomBg?.id')
               img(
                 :src='randomBgRegularUrl',
-                :style='{ width: "100%", height: "auto" }'
                 lazyload
               )
             .desc
@@ -173,12 +172,13 @@ onMounted(async () => {
 
   .bg-info-modal {
     .thumb {
-      > * {
-        width: auto;
-        height: auto;
+      display: block;
+      text-align: center;
+
+      img {
         max-width: 100%;
         max-height: 60vh;
-        border-radius: var(--fnb-radius);
+        object-fit: contain;
       }
     }
     .desc {
