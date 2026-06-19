@@ -102,12 +102,4 @@ const picShow = ref(0)
 
     a
       display: block
-      border: 2px solid transparent
-      transition: all 150ms
-
-      &:hover
-        border-color: var(--fnb-text-muted)
-
-      &.is-active
-        border-color: var(--fnb-brand)
 </style>
