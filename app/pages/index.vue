@@ -27,16 +27,16 @@
           ITablerBook
           |  小说
 
-      .bg-info
-        a.pointer(@click='homeStore.fetchRandomBg()', title='换一个~')
-          IFasRandom
-        a.pointer(
-          @click='isShowBgInfo = true',
-          style='margin-left: 0.5em',
-          title='关于背景',
-          v-if='randomBg?.id'
-        )
-          IFasInfoCircle
+    .bg-info
+      a.pointer(@click='homeStore.fetchRandomBg()', title='换一个~')
+        IFasRandom
+      a.pointer(
+        @click='isShowBgInfo = true',
+        style='margin-left: 0.5em',
+        title='关于背景',
+        v-if='randomBg?.id'
+      )
+        IFasInfoCircle
 
   //- ── Background Info Dialog ──
   .fnb-dialog-overlay(v-if='isShowBgInfo', @click.self='isShowBgInfo = false')
