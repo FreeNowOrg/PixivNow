@@ -52,10 +52,12 @@ function getImageUrl(artwork: ArtworkRank): string {
 }
 
 function next() {
+  if (!props.artworks.length) return
   current.value = (current.value + 1) % props.artworks.length
 }
 
 function prev() {
+  if (!props.artworks.length) return
   current.value = (current.value - 1 + props.artworks.length) % props.artworks.length
 }
 
