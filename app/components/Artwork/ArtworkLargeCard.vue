@@ -61,30 +61,8 @@ h3 {
   @include fnb-shadow;
   @include fnb-press;
   background-color: var(--fnb-surface);
-  margin: 0.5rem auto;
-  --parent-width: calc(100vw - 2rem);
-  --counts: 1;
-  width: calc(
-    (var(--parent-width) - calc(var(--counts) - 1) * 2rem) / var(--counts)
-  );
-  @media (max-width: 380px) {
-    width: 100%;
-  }
-  @media (min-width: 380px) {
-    --counts: 2;
-  }
-  @media (min-width: 640px) {
-    --counts: 3;
-  }
-  @media (min-width: 750px) {
-    --counts: 4;
-  }
-  @media (min-width: 1200px) {
-    --counts: 5;
-  }
-  @media (min-width: 1600px) {
-    --counts: 6;
-  }
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .top {
