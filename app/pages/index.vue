@@ -277,14 +277,15 @@ onMounted(() => {
 
   .site-logo {
     img {
-      height: 8rem;
+      height: 12rem;
       width: auto;
     }
   }
 
   .description {
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     margin-bottom: 1.5rem;
+    opacity: 0.85;
   }
 
   .search-area {
