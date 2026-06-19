@@ -231,11 +231,9 @@ h3 {
   .author {
     margin: 0.4rem 0;
   }
-  .tags {
-    :deep(.fnb-tag) {
-      font-size: 0.7rem;
-      padding: 0.05rem 0.3rem;
-    }
+  .tags .fnb-tag.fnb-tag {
+    font-size: 0.7rem;
+    padding: 0.05rem 0.3rem;
   }
 }
 </style>
