@@ -187,9 +187,11 @@ const discoveryMode = ref((route.query.mode as string) || savedDiscoveryMode.val
 homeStore.discoveryMode = discoveryMode.value
 
 function syncDiscoveryQuery() {
-  const query: Record<string, string> = {}
+  const query = { ...route.query } as Record<string, string>
   if (discoveryTab.value !== 'all') query.tab = discoveryTab.value
+  else delete query.tab
   if (discoveryMode.value !== 'all') query.mode = discoveryMode.value
+  else delete query.mode
   router.replace({ query })
 }
 

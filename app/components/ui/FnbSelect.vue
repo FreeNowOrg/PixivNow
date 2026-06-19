@@ -1,14 +1,29 @@
 <template lang="pug">
 .fnb-select(:class='{ open }', ref='selectRef')
-  button.fnb-select-trigger(@click='open = !open', type='button')
+  button.fnb-select-trigger(
+    @click='open = !open',
+    @keydown='onTriggerKeydown',
+    type='button',
+    role='combobox',
+    :aria-expanded='open',
+    aria-haspopup='listbox',
+    :aria-activedescendant='open ? `fnb-opt-${modelValue}` : undefined'
+  )
     span.fnb-select-label {{ currentLabel }}
     span.fnb-select-arrow(:class='{ flipped: open }') ▼
   Transition(name='fnb-select-dropdown')
-    .fnb-select-dropdown(v-if='open')
-      .fnb-select-option(
-        v-for='opt in options',
+    ul.fnb-select-dropdown(
+      v-if='open',
+      role='listbox',
+      ref='dropdownRef'
+    )
+      li.fnb-select-option(
+        v-for='(opt, i) in options',
         :key='opt.value',
-        :class='{ selected: opt.value === modelValue }',
+        :id='`fnb-opt-${opt.value}`',
+        :class='{ selected: opt.value === modelValue, focused: i === focusedIndex }',
+        :aria-selected='opt.value === modelValue',
+        role='option',
         @click='select(opt.value)'
       ) {{ opt.label }}
 </template>
@@ -24,7 +39,9 @@ const emit = defineEmits<{
 }>()
 
 const open = ref(false)
+const focusedIndex = ref(-1)
 const selectRef = ref<HTMLElement>()
+const dropdownRef = ref<HTMLElement>()
 
 const currentLabel = computed(() => {
   const opt = props.options.find((o) => o.value === props.modelValue)
@@ -34,10 +51,52 @@ const currentLabel = computed(() => {
 function select(value: string) {
   emit('update:modelValue', value)
   open.value = false
+  focusedIndex.value = -1
+}
+
+function onTriggerKeydown(e: KeyboardEvent) {
+  switch (e.key) {
+    case 'ArrowDown':
+    case 'ArrowUp':
+      e.preventDefault()
+      if (!open.value) {
+        open.value = true
+        focusedIndex.value = props.options.findIndex((o) => o.value === props.modelValue)
+        if (focusedIndex.value === -1) focusedIndex.value = 0
+      } else {
+        moveFocus(e.key === 'ArrowDown' ? 1 : -1)
+      }
+      break
+    case 'Enter':
+    case ' ':
+      e.preventDefault()
+      if (open.value && focusedIndex.value >= 0) {
+        select(props.options[focusedIndex.value]!.value)
+      } else {
+        open.value = !open.value
+        if (open.value) {
+          focusedIndex.value = props.options.findIndex((o) => o.value === props.modelValue)
+          if (focusedIndex.value === -1) focusedIndex.value = 0
+        }
+      }
+      break
+    case 'Escape':
+      e.preventDefault()
+      open.value = false
+      focusedIndex.value = -1
+      break
+  }
+}
+
+function moveFocus(delta: number) {
+  const len = props.options.length
+  if (!len) return
+  focusedIndex.value = (focusedIndex.value + delta + len) % len
 }
 
 onClickOutside(selectRef, () => {
   open.value = false
+  focusedIndex.value = -1
 })
 </script>
 
@@ -89,6 +148,9 @@ onClickOutside(selectRef, () => {
   background: var(--fnb-surface);
   z-index: 50;
   overflow: hidden;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .fnb-select-option {
@@ -97,7 +159,8 @@ onClickOutside(selectRef, () => {
   font-size: 0.85rem;
   font-weight: 600;
 
-  &:hover {
+  &:hover,
+  &.focused {
     background: var(--fnb-highlight);
   }
 
