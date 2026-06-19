@@ -372,10 +372,11 @@ onMounted(() => {
   .content-left,
   .content-right {
     min-height: 0;
+    min-width: 0;
+    overflow: hidden;
   }
 
   .content-right {
-    // Match left column height, scrollable
     .following-latest {
       display: flex;
       flex-direction: column;
@@ -386,6 +387,12 @@ onMounted(() => {
       flex: 1;
       overflow-y: auto;
       min-height: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .content-right .following-latest {
+      max-height: 320px;
     }
   }
 

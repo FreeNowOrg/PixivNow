@@ -96,6 +96,14 @@ onBeforeUnmount(() => { if (timer) clearInterval(timer) })
   overflow: hidden;
   height: 360px;
   background: #000;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .ranking-carousel {
+    height: 280px;
+  }
 }
 
 .slides {
