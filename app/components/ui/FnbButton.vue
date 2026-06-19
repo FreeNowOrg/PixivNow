@@ -86,7 +86,7 @@ withDefaults(
   }
 
   // Icon slot: slightly larger than text for visual balance (≈ 18/14)
-  .fnb-icon {
+  :deep(.fnb-icon) {
     font-size: 1.25em;
   }
 }
