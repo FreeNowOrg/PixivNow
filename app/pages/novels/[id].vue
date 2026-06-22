@@ -257,6 +257,7 @@ h1 {
 .side-area {
   display: grid;
   gap: 1rem;
+  min-width: 0;
 }
 
 .series-nav {
