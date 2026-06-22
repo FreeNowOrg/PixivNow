@@ -22,6 +22,20 @@
             span(v-if='novel.isOriginal') 原创
             span(v-if='characterLabel') {{ characterLabel }}
             span(v-if='novel.readingTime') {{ Math.ceil(novel.readingTime / 60) }} 分钟
+          .actions
+            FnbButton(size='sm', variant='primary', @click='scrollToReader')
+              template(#icon): IFasBookOpen
+              | 立即阅读
+            FnbButton(
+              :href='novel.extraData?.meta?.canonical || `https://www.pixiv.net/novel/show.php?id=${novel.id}`'
+              rel='noopener noreferrer'
+              size='sm'
+              tag='a'
+              target='_blank'
+            )
+              | 前往 Pixiv 查看
+              template(#icon)
+                IFasArrowRight
           p.description.pre(v-if='descriptionText') {{ descriptionText }}
           p.description.no-desc(v-else) 作者未填写简介
           .stats
@@ -41,20 +55,6 @@
               :search-query='{ content: "novels", s_mode: "s_tag_only" }',
               v-for='tag in novel.tags.tags'
             )
-          .actions
-            FnbButton(size='sm', variant='primary', @click='scrollToReader')
-              template(#icon): IFasBookOpen
-              | 立即阅读
-            FnbButton(
-              :href='novel.extraData?.meta?.canonical || `https://www.pixiv.net/novel/show.php?id=${novel.id}`'
-              rel='noopener noreferrer'
-              size='sm'
-              tag='a'
-              target='_blank'
-            )
-              | 前往 Pixiv 查看
-              template(#icon)
-                IFasArrowRight
 
     .body-inner.content-grid
       main.reader-area
