@@ -34,7 +34,6 @@ export default defineEventHandler(async (event) => {
     'expires',
     'etag',
     'last-modified',
-    'vary',
     'content-type',
   ]
   for (const h of forwardHeaders) {
