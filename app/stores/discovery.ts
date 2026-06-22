@@ -19,6 +19,7 @@ export const useDiscoveryStore = defineStore('discovery', () => {
   const novelDiscoverySeenIds = new Set<string>()
 
   const userDiscoveryList = ref<UserListItem[]>([])
+  const userDiscoveryEpoch = ref(0)
   const loadingUserDiscovery = ref(false)
   const loadingMoreUserDiscovery = ref(false)
   const noMoreUserDiscovery = ref(false)
@@ -109,6 +110,7 @@ export const useDiscoveryStore = defineStore('discovery', () => {
       noMoreUserDiscovery.value = false
       users.forEach((u) => userDiscoverySeenIds.add(u.userId))
       userDiscoveryList.value = users
+      userDiscoveryEpoch.value++
     } catch (err) {
       console.error('Failed to fetch user discovery', err)
     } finally {
@@ -150,6 +152,7 @@ export const useDiscoveryStore = defineStore('discovery', () => {
     fetchNovelDiscovery,
     appendNovelDiscovery,
     userDiscoveryList,
+    userDiscoveryEpoch,
     loadingUserDiscovery,
     loadingMoreUserDiscovery,
     noMoreUserDiscovery,

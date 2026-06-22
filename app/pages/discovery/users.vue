@@ -64,11 +64,11 @@ useIntersectionObserver(scrollSentinel, ([{ isIntersecting }]) => {
   if (isIntersecting && userStore.isLoggedIn) loadMore()
 })
 
-// reset incremental reveal when the list is replaced by 换一批
+// reset incremental reveal whenever a fresh batch replaces the list (换一批 / mode change / first load)
 watch(
-  () => discoveryStore.userDiscoveryList.length,
-  (len, oldLen) => {
-    if (len < oldLen) visibleCount.value = PAGE_SIZE
+  () => discoveryStore.userDiscoveryEpoch,
+  () => {
+    visibleCount.value = PAGE_SIZE
   }
 )
 
