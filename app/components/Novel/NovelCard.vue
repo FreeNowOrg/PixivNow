@@ -12,7 +12,7 @@
       :title='item.title'
       lazyload
     )
-    .restrict(v-if='item.xRestrict') R-18
+    .restrict(v-if='+item.xRestrict') R-18
   .info
     .title
       RouterLink(:to='`/novels/${item.id}`') {{ item.title }}
