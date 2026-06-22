@@ -222,7 +222,7 @@ export class PixivWebClient {
   async getRecommendMore(ids: string[]): Promise<RecommendResult> {
     const searchParams = new URLSearchParams()
     for (const id of ids) {
-      searchParams.append('illust_ids', id)
+      searchParams.append('illust_ids[]', id)
     }
     const { data } = await this.http.get<PixivResponse<RecommendResult>>(
       '/ajax/illust/recommend/illusts',
