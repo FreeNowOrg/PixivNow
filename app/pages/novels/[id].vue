@@ -22,6 +22,9 @@
             span(v-if='novel.isOriginal') 原创
             span(v-if='characterLabel') {{ characterLabel }}
             span(v-if='novel.readingTime') {{ Math.ceil(novel.readingTime / 60) }} 分钟
+            FnbButton.read-now(size='sm', variant='primary', @click='scrollToReader')
+              template(#icon): IFasBookOpen
+              | 立即阅读
           p.description.pre(v-if='descriptionText') {{ descriptionText }}
           p.description.no-desc(v-else) 作者未填写简介
           .stats
@@ -54,7 +57,7 @@
                 IFasArrowRight
 
     .body-inner.content-grid
-      main.reader-area
+      main.reader-area(ref='readerRef')
         Card(title='正文')
           NovelReader(:blocks='contentBlocks')
 
@@ -93,6 +96,7 @@ import ErrorPage from '~/components/ErrorPage.vue'
 import NovelList from '~/components/Novel/NovelList.vue'
 import NovelReader from '~/components/Novel/NovelReader.vue'
 import IFasArrowRight from '~icons/fa-solid/arrow-right'
+import IFasBookOpen from '~icons/fa-solid/book-open'
 import IFasEye from '~icons/fa-solid/eye'
 import IFasHeart from '~icons/fa-solid/heart'
 import IFasThumbsUp from '~icons/fa-solid/thumbs-up'
@@ -106,6 +110,7 @@ import { setTitle } from '~/utils/setTitle'
 const route = useRoute()
 const novelStore = useNovelStore()
 const userProfileStore = useUserProfileStore()
+const readerRef = ref<HTMLElement>()
 const loading = ref(true)
 const error = ref('')
 const novel = ref<Novel>()
@@ -132,6 +137,10 @@ const relatedNovels = computed<NovelInfo[]>(() => {
     .filter((item): item is NovelInfo => !!item && item.id !== current.id)
     .slice(0, 6)
 })
+
+function scrollToReader() {
+  readerRef.value?.scrollIntoView({ behavior: 'smooth' })
+}
 
 async function init(id: string): Promise<void> {
   loading.value = true
@@ -215,7 +224,13 @@ h1 {
 
 .description {
   max-width: 72ch;
+  max-height: 12em;
+  overflow-y: auto;
   overflow-wrap: anywhere;
+}
+
+.read-now {
+  margin-top: 0.25rem;
 }
 
 .no-desc {
