@@ -1,4 +1,7 @@
 {
   // For Volar to work
-  "include": ["app/**/*.vue"]
+  "include": ["app/**/*.vue"],
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.cache/tsconfig.vue.tsbuildinfo"
+  }
 }
