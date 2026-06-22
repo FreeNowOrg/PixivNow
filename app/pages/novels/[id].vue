@@ -178,6 +178,10 @@ section {
   padding-top: 1rem;
 }
 
+.summary {
+  min-width: 0;
+}
+
 .novel-hero {
   display: grid;
   grid-template-columns: minmax(160px, 240px) minmax(0, 1fr);
