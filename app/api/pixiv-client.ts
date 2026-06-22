@@ -8,6 +8,7 @@ import type {
   ArtworkInfo,
   ArtworkInfoOrAd,
   ArtworkRank,
+  RankedArtworkInfo,
   Comments,
   Novel,
   NovelInfo,
@@ -304,18 +305,53 @@ export class PixivWebClient {
     mode?: string
     date?: string
     content?: string
-  }): Promise<{ date: string; contents: ArtworkRank[] }> {
+  }): Promise<{ date: string; contents: RankedArtworkInfo[] }> {
     const searchParams = new URLSearchParams({ format: 'json' })
     if (params?.p) searchParams.set('p', String(params.p))
     if (params?.mode) searchParams.set('mode', params.mode)
     if (params?.date) searchParams.set('date', params.date)
     if (params?.content) searchParams.set('content', params.content)
-    // ranking.php returns data directly (no body envelope)
     const { data } = await this.http.get<{
       date: string
       contents: ArtworkRank[]
     }>('/ranking.php', { params: searchParams })
-    return this.transform(data)
+    const transformed = this.transform(data)
+    return {
+      date: transformed.date,
+      contents: transformed.contents.map(
+        (item): RankedArtworkInfo => ({
+          id: `${item.illust_id}`,
+          title: item.title,
+          description: '',
+          createDate: item.date,
+          updateDate: item.date,
+          illustType: +item.illust_type as 0 | 1 | 2,
+          restrict: 0,
+          xRestrict: item.illust_content_type.sexual,
+          sl: 0,
+          userId: `${item.user_id}`,
+          userName: item.user_name,
+          alt: item.title,
+          width: item.width,
+          height: item.height,
+          pageCount: +item.illust_page_count,
+          isBookmarkable: true,
+          bookmarkData: null,
+          titleCaptionTranslation: {
+            workTitle: null,
+            workCaption: null,
+          },
+          isUnlisted: false,
+          aiType: 0,
+          url: item.url,
+          tags: item.tags,
+          profileImageUrl: item.profile_img,
+          type: 'illust',
+          rank: item.rank,
+          viewCount: item.view_count,
+        })
+      ),
+    }
   }
 
   // ── User ──────────────────────────────────────────────────────────

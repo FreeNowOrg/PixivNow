@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import type { ArtworkRank } from '~/types'
+import type { RankedArtworkInfo } from '~/types'
 
 export const useRankingStore = defineStore('ranking', () => {
   const rankingData = ref<{
     date: Date
-    contents: ArtworkRank[]
+    contents: RankedArtworkInfo[]
   } | null>(null)
   const loading = ref(false)
   const pixivClient = usePixivClient()

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { ArtworkInfo, ArtworkRank } from '~/types'
+import type { ArtworkInfo, RankedArtworkInfo } from '~/types'
 
 export const useHomeStore = defineStore('home', () => {
   const pixivClient = usePixivClient()
@@ -7,7 +7,7 @@ export const useHomeStore = defineStore('home', () => {
   const discoveryList = ref<ArtworkInfo[]>([])
   const loadingDiscovery = ref(false)
 
-  const rankingList = ref<ArtworkRank[]>([])
+  const rankingList = ref<RankedArtworkInfo[]>([])
   const loadingRanking = ref(false)
 
   const followingList = ref<ArtworkInfo[]>([])

@@ -18,9 +18,9 @@
         IFasImages(data-icon)
         | {{ illust.pageCount }}
       .ranking(
-        :class='{ gold: rank === 1, silver: rank === 2, bronze: rank === 3 }'
-        v-if='rank !== 0'
-      ) {{ rank }}
+        :class='{ gold: illust.rank === 1, silver: illust.rank === 2, bronze: illust.rank === 3 }'
+        v-if='illust.rank'
+      ) {{ illust.rank }}
       .type-ugoira(v-if='illust.illustType === IllustType.UGOIRA'): IPlayCircle
   .bottom
     h3.title.plain(:title='illust.title')
@@ -44,8 +44,7 @@ import IFasRobot from '~icons/fa-solid/robot'
 import IPlayCircle from '~icons/fa-solid/play-circle'
 
 defineProps<{
-  illust: ArtworkInfo
-  rank: number
+  illust: ArtworkInfo & { rank?: number; viewCount?: number }
 }>()
 </script>
 
