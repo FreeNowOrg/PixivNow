@@ -228,8 +228,7 @@ h1 {
 }
 
 .description {
-  max-width: 72ch;
-  max-height: 12em;
+  max-height: 6em;
   overflow-y: auto;
   overflow-wrap: anywhere;
 }
@@ -244,7 +243,7 @@ h1 {
 
 .content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) 280px;
   gap: 1.5rem;
   align-items: start;
   margin-top: 1rem;
@@ -260,6 +259,7 @@ h1 {
 
 .side-area {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
 }
 
