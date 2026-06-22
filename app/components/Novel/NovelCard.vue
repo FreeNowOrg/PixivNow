@@ -43,8 +43,8 @@ const fallbackCover =
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
   gap: 0.85rem;
-  width: 280px;
-  max-width: calc(100vw - 2rem);
+  width: 100%;
+  max-width: 280px;
 }
 
 .cover {

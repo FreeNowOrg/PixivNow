@@ -244,7 +244,7 @@ h1 {
 
 .content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-template-columns: minmax(0, 1fr) 300px;
   gap: 1.5rem;
   align-items: start;
   margin-top: 1rem;
