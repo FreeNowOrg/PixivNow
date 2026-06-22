@@ -12,7 +12,8 @@
       :title='item.title'
       lazyload
     )
-    .restrict(v-if='+item.xRestrict') R-18
+    .restrict(v-if='+item.xRestrict', aria-label='R-18', role='img', title='R-18')
+      IFasEye(aria-hidden='true')
   .info
     .title
       RouterLink(:to='`/novels/${item.id}`') {{ item.title }}
@@ -25,6 +26,7 @@
 
 <script lang="ts" setup>
 import DeferLoad from '~/components/DeferLoad.vue'
+import IFasEye from '~icons/fa-solid/eye'
 import type { NovelInfo } from '~/types'
 
 defineProps<{
@@ -67,13 +69,15 @@ const fallbackCover =
   position: absolute;
   top: 0.4rem;
   left: 0.4rem;
-  padding: 0.1rem 0.35rem;
-  background: rgba(220, 0, 0, 0.86);
   color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  @include fnb-border-sm;
-  border-color: rgba(0, 0, 0, 0.5);
+  width: 1.4rem;
+  height: 1.4rem;
+  font-size: 0.7rem;
+  border-radius: var(--fnb-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 0, 0, 0.8);
 }
 
 .info {

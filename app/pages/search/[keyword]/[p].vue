@@ -30,6 +30,11 @@
           @update:model-value='v => setQuery({ mode: v })'
         )
         FnbSelect(
+          :model-value='selectedAiType',
+          :options='aiTypeOptions',
+          @update:model-value='v => setQuery({ ai_type: v })'
+        )
+        FnbSelect(
           v-if='isNovel',
           :model-value='selectedLang',
           :options='langOptions',
@@ -120,6 +125,11 @@ const modeOptions = [
   { label: 'R18', value: 'r18' },
 ]
 
+const aiTypeOptions = [
+  { label: '含AI作品', value: '' },
+  { label: '隐藏AI作品', value: '1' },
+]
+
 const langOptions = [
   { label: '全部语言', value: '' },
   { label: '中文', value: 'zh-cn' },
@@ -148,6 +158,7 @@ const selectedOrder = computed(
   () => (route.query.order as string) || 'date_d'
 )
 const selectedMode = computed(() => (route.query.mode as string) || 'all')
+const selectedAiType = computed(() => (route.query.ai_type as string) || '')
 const selectedLang = computed(() => (route.query.lang as string) || '')
 
 const isNovel = computed(() => selectedContent.value === 'novels')
@@ -171,6 +182,7 @@ const defaults: Record<string, string> = {
   s_mode: 's_tag',
   order: 'date_d',
   mode: 'all',
+  ai_type: '',
   lang: '',
 }
 
@@ -212,6 +224,7 @@ async function makeSearch(): Promise<void> {
         s_mode: selectedSMode.value,
         order: selectedOrder.value,
         mode: selectedMode.value,
+        ai_type: selectedAiType.value || undefined,
         work_lang: selectedLang.value || undefined,
       })
     } else {
@@ -223,6 +236,7 @@ async function makeSearch(): Promise<void> {
           s_mode: selectedSMode.value,
           order: selectedOrder.value,
           mode: selectedMode.value,
+          ai_type: selectedAiType.value || undefined,
         }
       )
     }

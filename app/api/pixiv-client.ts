@@ -302,18 +302,21 @@ export class PixivWebClient {
     mode?: string
     s_mode?: string
     order?: string
+    ai_type?: string
   }): Record<string, string | number> {
-    return {
+    const result: Record<string, string | number> = {
       p: params?.p ?? 1,
       mode: params?.mode ?? 'all',
       s_mode: params?.s_mode ?? 's_tag',
       order: params?.order ?? 'date_d',
     }
+    if (params?.ai_type) result.ai_type = params.ai_type
+    return result
   }
 
   async searchArtworks(
     keyword: string,
-    params?: { p?: number; mode?: string; s_mode?: string; order?: string }
+    params?: { p?: number; mode?: string; s_mode?: string; order?: string; ai_type?: string }
   ): Promise<{ data: ArtworkInfo[]; total: number }> {
     const { data } = await this.http.get<
       PixivResponse<{
@@ -336,6 +339,7 @@ export class PixivWebClient {
       mode?: string
       s_mode?: string
       order?: string
+      ai_type?: string
       type?: string
     }
   ): Promise<{ data: ArtworkInfo[]; total: number }> {
@@ -358,7 +362,7 @@ export class PixivWebClient {
 
   async searchManga(
     keyword: string,
-    params?: { p?: number; mode?: string; s_mode?: string; order?: string }
+    params?: { p?: number; mode?: string; s_mode?: string; order?: string; ai_type?: string }
   ): Promise<{ data: ArtworkInfo[]; total: number }> {
     const { data } = await this.http.get<
       PixivResponse<{
@@ -381,6 +385,7 @@ export class PixivWebClient {
       mode?: string
       s_mode?: string
       order?: string
+      ai_type?: string
       work_lang?: string
     }
   ): Promise<{ data: NovelInfo[]; total: number }> {

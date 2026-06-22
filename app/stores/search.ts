@@ -23,6 +23,7 @@ export const useSearchStore = defineStore('search', () => {
       mode?: string
       s_mode?: string
       order?: string
+      ai_type?: string
       type?: string
     }
   ): Promise<void> {
@@ -54,6 +55,7 @@ export const useSearchStore = defineStore('search', () => {
       mode?: string
       s_mode?: string
       order?: string
+      ai_type?: string
       work_lang?: string
     }
   ): Promise<void> {
