@@ -9,17 +9,15 @@
           button.filter-tab(
             v-for='opt in contentOptions',
             :key='opt.value',
-            :class='{ active: selectedContent === opt.value, disabled: opt.disabled }',
-            :disabled='opt.disabled',
-            @click='!opt.disabled && setFilter("content", opt.value)'
+            :class='{ active: selectedContent === opt.value }',
+            @click='setFilter("content", opt.value)'
           )
             | {{ opt.label }}
-            span.coming-soon(v-if='opt.disabled') soon
       .filter-row
         span.filter-label 模式
         .filter-tabs
           button.filter-tab(
-            v-for='opt in modeOptions',
+            v-for='opt in activeModeOptions',
             :key='opt.value',
             :class='{ active: selectedMode === opt.value }',
             @click='setFilter("mode", opt.value)'
@@ -36,16 +34,23 @@
       .loading
         Placeholder
 
-  //- Result
-  section(v-if='rankingStore.rankingData')
+  //- Result — Artwork
+  section(v-if='!isNovel && rankingStore.rankingData')
     .body-inner
       h2.ranking-date {{ rankingStore.rankingData.date.toLocaleDateString('zh', { dateStyle: 'long' }) }}
       ArtworkLargeList(:rank-list='rankingStore.rankingData.contents')
+
+  //- Result — Novel
+  section(v-if='isNovel && rankingStore.novelRankingData')
+    .body-inner
+      h2.ranking-date {{ rankingStore.novelRankingData.date }}
+      NovelList(:list='rankingStore.novelRankingData.contents')
 </template>
 
 <script lang="ts" setup>
 definePageMeta({ name: 'ranking' })
 import ArtworkLargeList from '~/components/Artwork/ArtworkLargeList.vue'
+import NovelList from '~/components/Novel/NovelList.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
 import Placeholder from '~/components/Placeholder.vue'
 import { useRankingStore } from '~/stores/ranking'
@@ -57,19 +62,37 @@ const contentOptions = [
   { label: '插画', value: 'illust' },
   { label: '动图', value: 'ugoira' },
   { label: '漫画', value: 'manga' },
-  { label: '小说', value: 'novel', disabled: true },
+  { label: '小说', value: 'novel' },
 ]
 
-const modeOptions = [
+const artworkModeOptions = [
   { label: '日榜', value: 'daily' },
   { label: '周榜', value: 'weekly' },
   { label: '月榜', value: 'monthly' },
   { label: '新人', value: 'rookie' },
   { label: '原创', value: 'original' },
+  { label: 'AI', value: 'daily_ai' },
   { label: '男性向', value: 'male' },
   { label: '女性向', value: 'female' },
   { label: 'R18 日榜', value: 'daily_r18' },
   { label: 'R18 周榜', value: 'weekly_r18' },
+  { label: 'R18 AI', value: 'daily_r18_ai' },
+  { label: 'R18 男性向', value: 'male_r18' },
+  { label: 'R18 女性向', value: 'female_r18' },
+]
+
+const novelModeOptions = [
+  { label: '日榜', value: 'daily' },
+  { label: '周榜', value: 'weekly' },
+  { label: '月榜', value: 'monthly' },
+  { label: '新人', value: 'rookie' },
+  { label: '男性向', value: 'male' },
+  { label: '女性向', value: 'female' },
+  { label: 'R18 日榜', value: 'daily_r18' },
+  { label: 'R18 周榜', value: 'weekly_r18' },
+  { label: 'R18 AI', value: 'weekly_r18_ai' },
+  { label: 'R18 男性向', value: 'male_r18' },
+  { label: 'R18 女性向', value: 'female_r18' },
 ]
 
 const error = ref('')
@@ -79,11 +102,17 @@ const router = useRouter()
 
 const selectedContent = computed(() => (route.query.content as string) || 'all')
 const selectedMode = computed(() => (route.query.mode as string) || 'daily')
+const isNovel = computed(() => selectedContent.value === 'novel')
+
+const activeModeOptions = computed(() =>
+  isNovel.value ? novelModeOptions : artworkModeOptions
+)
 
 function setFilter(key: string, value: string) {
   const query = { ...route.query, [key]: value }
   if (key === 'content' && value === 'all') delete query.content
   if (key === 'mode' && value === 'daily') delete query.mode
+  if (key === 'content') delete query.mode
   delete query.p
   router.push({ query })
 }
@@ -92,12 +121,19 @@ async function init(): Promise<void> {
   const { p, mode, date, content } = route.query
   error.value = ''
   try {
-    await rankingStore.fetchRanking({
-      p: p as string | undefined,
-      mode: (mode as string) || 'daily',
-      date: date as string | undefined,
-      content: (content as string) || 'all',
-    })
+    if (content === 'novel') {
+      await rankingStore.fetchNovelRanking({
+        p: p as string | undefined,
+        mode: (mode as string) || 'daily',
+      })
+    } else {
+      await rankingStore.fetchRanking({
+        p: p as string | undefined,
+        mode: (mode as string) || 'daily',
+        date: date as string | undefined,
+        content: (content as string) || 'all',
+      })
+    }
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
@@ -173,20 +209,8 @@ onMounted(() => {
     transform: translate(3px, 3px);
   }
 
-  &:hover:not(.active):not(.disabled) {
+  &:hover:not(.active) {
     background: var(--fnb-highlight);
-  }
-
-  &.disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .coming-soon {
-    font-size: 0.6rem;
-    margin-left: 0.25rem;
-    vertical-align: super;
-    opacity: 0.7;
   }
 }
 

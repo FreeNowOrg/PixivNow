@@ -1,10 +1,14 @@
 import { defineStore } from 'pinia'
-import type { RankedArtworkInfo } from '~/types'
+import type { RankedArtworkInfo, RankedNovelInfo } from '~/types'
 
 export const useRankingStore = defineStore('ranking', () => {
   const rankingData = ref<{
     date: Date
     contents: RankedArtworkInfo[]
+  } | null>(null)
+  const novelRankingData = ref<{
+    date: string
+    contents: RankedNovelInfo[]
   } | null>(null)
   const loading = ref(false)
   const pixivClient = usePixivClient()
@@ -37,9 +41,36 @@ export const useRankingStore = defineStore('ranking', () => {
     }
   }
 
-  function reset() {
-    rankingData.value = null
+  async function fetchNovelRanking(params?: {
+    p?: string
+    mode?: string
+  }): Promise<void> {
+    loading.value = true
+    try {
+      const data = await pixivClient.getNovelRanking({
+        p: params?.p ? Number(params.p) : undefined,
+        mode: params?.mode,
+      })
+      novelRankingData.value = {
+        date: data.date,
+        contents: data.contents,
+      }
+    } finally {
+      loading.value = false
+    }
   }
 
-  return { rankingData, loading, fetchRanking, reset }
+  function reset() {
+    rankingData.value = null
+    novelRankingData.value = null
+  }
+
+  return {
+    rankingData,
+    novelRankingData,
+    loading,
+    fetchRanking,
+    fetchNovelRanking,
+    reset,
+  }
 })
