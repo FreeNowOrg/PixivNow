@@ -2,15 +2,22 @@
 #search-view
   .body-inner
     SearchBox.big
-    .search-type-tabs
-      button.search-type-tab(
-        :class='{ active: searchType !== "novel" }',
-        @click='switchType("artworks")'
-      ) 插画·漫画
-      button.search-type-tab(
-        :class='{ active: searchType === "novel" }',
-        @click='switchType("novel")'
-      ) 小说
+    .search-filters
+      .search-type-tabs
+        button.search-type-tab(
+          :class='{ active: searchType !== "novel" }',
+          @click='switchType("artworks")'
+        ) 插画·漫画
+        button.search-type-tab(
+          :class='{ active: searchType === "novel" }',
+          @click='switchType("novel")'
+        ) 小说
+      FnbSelect(
+        v-if='searchType === "novel"',
+        :model-value='selectedLang',
+        :options='langOptions',
+        @update:model-value='setLang'
+      )
 
   //- Error
   section(v-if='error && !searchStore.loading')
@@ -68,6 +75,15 @@ const router = useRouter()
 const searchStore = useSearchStore()
 
 const searchType = computed(() => (route.query.type as string) || 'artworks')
+const selectedLang = computed(() => (route.query.lang as string) || '')
+
+const langOptions = [
+  { label: '全部语言', value: '' },
+  { label: '中文', value: 'zh-cn' },
+  { label: '日本語', value: 'ja' },
+  { label: 'English', value: 'en' },
+  { label: '한국어', value: 'ko' },
+]
 
 const currentResults = computed(() =>
   searchType.value === 'novel' ? searchStore.novelResults : searchStore.results
@@ -79,7 +95,16 @@ const currentTotal = computed(() =>
 
 function switchType(type: string) {
   const query = { ...route.query, type }
-  if (type === 'artworks') delete query.type
+  if (type === 'artworks') {
+    delete query.type
+    delete query.lang
+  }
+  router.push({ query })
+}
+
+function setLang(value: string) {
+  const query = { ...route.query, lang: value }
+  if (!value) delete query.lang
   router.push({ query })
 }
 
@@ -100,6 +125,7 @@ async function makeSearch({
     if (searchType.value === 'novel') {
       await searchStore.searchNovels(keyword, {
         p: parseInt(p || '1'),
+        work_lang: selectedLang.value || undefined,
       })
     } else {
       await searchStore.search(keyword, {
@@ -118,11 +144,14 @@ async function makeSearch({
 
 watch(page, (value) => {
   page.value = value < 1 ? 1 : value
-  const query = route.query.type ? `?type=${route.query.type}` : ''
-  router.push(`/search/${searchKeyword.value}/${page.value}${query}`)
+  const params = new URLSearchParams()
+  if (route.query.type) params.set('type', route.query.type as string)
+  if (route.query.lang) params.set('lang', route.query.lang as string)
+  const qs = params.toString()
+  router.push(`/search/${searchKeyword.value}/${page.value}${qs ? `?${qs}` : ''}`)
 })
 
-watch(() => route.query.type, () => {
+watch([() => route.query.type, () => route.query.lang], () => {
   makeSearch(route.params as { keyword: string; p?: `${number}` })
 })
 
@@ -149,10 +178,17 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+.search-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
 .search-type-tabs {
   display: flex;
   gap: 0.5rem;
-  margin-top: 1rem;
 }
 
 .search-type-tab {

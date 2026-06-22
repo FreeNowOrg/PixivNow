@@ -322,19 +322,22 @@ export class PixivWebClient {
       mode?: string
       s_mode?: string
       order?: string
+      work_lang?: string
     }
   ): Promise<{ data: NovelInfo[]; total: number }> {
+    const searchParams: Record<string, string | number> = {
+      p: params?.p ?? 1,
+      mode: params?.mode ?? 'all',
+      s_mode: params?.s_mode ?? 's_tag',
+      order: params?.order ?? 'date_d',
+    }
+    if (params?.work_lang) searchParams.work_lang = params.work_lang
     const { data } = await this.http.get<
       PixivResponse<{
         novel: { data: NovelInfo[]; total: number }
       }>
     >(`/ajax/search/novels/${encodeURIComponent(keyword)}`, {
-      params: {
-        p: params?.p ?? 1,
-        mode: params?.mode ?? 'all',
-        s_mode: params?.s_mode ?? 's_tag',
-        order: params?.order ?? 'date_d',
-      },
+      params: searchParams,
     })
     const body = this.unwrap(data)
     return {

@@ -438,12 +438,14 @@ Search artworks by keyword. The `{keyword}` must be URI-encoded.
 
 Search novels by keyword. The `{keyword}` must be URI-encoded.
 
-| Param    | Type   | Default  | Description                                            |
-| -------- | ------ | -------- | ------------------------------------------------------ |
-| `p`      | number | `1`      | Page number (1-indexed)                                |
-| `mode`   | string | `all`    | Content filter: `all` / `safe` / `r18`                 |
-| `s_mode` | string | `s_tag`  | Match mode: `s_tag` (partial) / `s_tag_full` (exact)   |
-| `order`  | string | `date_d` | Sort order: `date_d` (newest) / `date` (oldest)        |
+| Param       | Type   | Default  | Description                                            |
+| ----------- | ------ | -------- | ------------------------------------------------------ |
+| `p`         | number | `1`      | Page number (1-indexed)                                |
+| `mode`      | string | `all`    | Content filter: `all` / `safe` / `r18`                 |
+| `s_mode`    | string | `s_tag`  | Match mode: `s_tag` (partial) / `s_tag_full` (exact)   |
+| `order`     | string | `date_d` | Sort order: `date_d` (newest) / `date` (oldest)        |
+| `work_lang` | string | —        | Language filter: `zh-cn`, `ja`, `en`, `ko`, etc.       |
+| `gs`        | number | `0`      | Group by series: `0` (individual novels) / `1` (series)|
 
 **Response** `body`:
 

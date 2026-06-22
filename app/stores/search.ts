@@ -27,7 +27,13 @@ export const useSearchStore = defineStore('search', () => {
 
   async function searchNovels(
     keyword: string,
-    params?: { p?: number; mode?: string; s_mode?: string; order?: string }
+    params?: {
+      p?: number
+      mode?: string
+      s_mode?: string
+      order?: string
+      work_lang?: string
+    }
   ): Promise<void> {
     if (!keyword) return
     loading.value = true
