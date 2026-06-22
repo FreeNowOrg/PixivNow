@@ -15,6 +15,8 @@ import type {
   NovelContentTitle,
   NovelSeries,
   NovelSeriesContentResult,
+  NovelRankItem,
+  RankedNovelInfo,
   User,
   UserListItem,
   PixivUser,
@@ -255,6 +257,21 @@ export class PixivWebClient {
     }
   }
 
+  async getNovelDiscovery(params: {
+    mode?: string
+    limit?: number
+  }): Promise<NovelInfo[]> {
+    const { data } = await this.http.get<
+      PixivResponse<{ novels: NovelInfo[] }>
+    >('/ajax/novel/discovery', {
+      params: {
+        mode: params.mode ?? 'safe',
+        limit: params.limit,
+      },
+    })
+    return this.unwrap(data).novels ?? []
+  }
+
   async getRecommendInit(
     id: string,
     limit: number = 18
@@ -295,6 +312,24 @@ export class PixivWebClient {
     return {
       data: body.illustManga?.data ?? [],
       total: body.illustManga?.total ?? 0,
+    }
+  }
+
+  async searchNovels(
+    keyword: string,
+    params?: { p?: number; mode?: string }
+  ): Promise<{ data: NovelInfo[]; total: number }> {
+    const { data } = await this.http.get<
+      PixivResponse<{
+        novel: { data: NovelInfo[]; total: number }
+      }>
+    >(`/ajax/search/novels/${encodeURIComponent(keyword)}`, {
+      params: { p: params?.p ?? 1, mode: params?.mode },
+    })
+    const body = this.unwrap(data)
+    return {
+      data: body.novel?.data ?? [],
+      total: body.novel?.total ?? 0,
     }
   }
 
@@ -349,6 +384,58 @@ export class PixivWebClient {
           type: 'illust',
           rank: item.rank,
           viewCount: item.view_count,
+        })
+      ),
+    }
+  }
+
+  async getNovelRanking(params?: {
+    p?: number
+    mode?: string
+  }): Promise<{ date: string; contents: RankedNovelInfo[] }> {
+    const { data } = await this.http.get<
+      PixivResponse<{
+        display_a: { rank_a: NovelRankItem[] }
+        date: string
+      }>
+    >('/ajax/ranking/novel', {
+      params: { mode: params?.mode ?? 'daily', p: params?.p },
+    })
+    const body = this.unwrap(data)
+    return {
+      date: body.date,
+      contents: (body.display_a?.rank_a ?? []).map(
+        (item): RankedNovelInfo => ({
+          id: `${item.id}`,
+          title: item.title,
+          description: item.comment ?? '',
+          createDate: item.create_date ?? '',
+          updateDate: item.create_date ?? '',
+          restrict: item.restrict as 0,
+          xRestrict: item.x_restrict as 0 | 1 | 2,
+          userId: `${item.user_id}`,
+          userName: item.user_name,
+          isBookmarkable: true,
+          bookmarkData: null,
+          titleCaptionTranslation: {
+            workTitle: null,
+            workCaption: null,
+          },
+          isUnlisted: false,
+          aiType: item.ai_type,
+          url: item.url,
+          tags: item.tag_a ?? [],
+          profileImageUrl: item.profile_img,
+          type: 'novel',
+          genre: item.genre,
+          textCount: item.character_count,
+          wordCount: item.word_count,
+          readingTime: item.reading_time,
+          isOriginal: item.is_original,
+          bookmarkCount: item.bookmark_count,
+          language: item.language,
+          marker: item.marker,
+          rank: item.rank,
         })
       ),
     }
