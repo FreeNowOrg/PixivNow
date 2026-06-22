@@ -8,7 +8,7 @@ import type {
 } from '~/types'
 
 export const useNovelStore = defineStore('novel', () => {
-  const pixivClient = usePixivClientStore().client
+  const pixivClient = usePixivClient()
   const novelCache = ref(new Map<string, Novel>())
   const seriesCache = ref(new Map<string, NovelSeries>())
   const seriesContentCache = ref(new Map<string, NovelInfo[]>())
