@@ -297,31 +297,80 @@ export class PixivWebClient {
 
   // ── Search ────────────────────────────────────────────────────────
 
+  private buildSearchParams(params?: {
+    p?: number
+    mode?: string
+    s_mode?: string
+    order?: string
+  }): Record<string, string | number> {
+    return {
+      p: params?.p ?? 1,
+      mode: params?.mode ?? 'all',
+      s_mode: params?.s_mode ?? 's_tag',
+      order: params?.order ?? 'date_d',
+    }
+  }
+
   async searchArtworks(
     keyword: string,
-    params?: {
-      p?: number
-      mode?: string
-      s_mode?: string
-      order?: string
-    }
+    params?: { p?: number; mode?: string; s_mode?: string; order?: string }
   ): Promise<{ data: ArtworkInfo[]; total: number }> {
     const { data } = await this.http.get<
       PixivResponse<{
         illustManga: { data: ArtworkInfo[]; total: number }
       }>
     >(`/ajax/search/artworks/${encodeURIComponent(keyword)}`, {
-      params: {
-        p: params?.p ?? 1,
-        mode: params?.mode ?? 'all',
-        s_mode: params?.s_mode ?? 's_tag',
-        order: params?.order ?? 'date_d',
-      },
+      params: this.buildSearchParams(params),
     })
     const body = this.unwrap(data)
     return {
       data: body.illustManga?.data ?? [],
       total: body.illustManga?.total ?? 0,
+    }
+  }
+
+  async searchIllustrations(
+    keyword: string,
+    params?: {
+      p?: number
+      mode?: string
+      s_mode?: string
+      order?: string
+      type?: string
+    }
+  ): Promise<{ data: ArtworkInfo[]; total: number }> {
+    const { data } = await this.http.get<
+      PixivResponse<{
+        illust: { data: ArtworkInfo[]; total: number }
+      }>
+    >(`/ajax/search/illustrations/${encodeURIComponent(keyword)}`, {
+      params: {
+        ...this.buildSearchParams(params),
+        type: params?.type ?? 'illust_and_ugoira',
+      },
+    })
+    const body = this.unwrap(data)
+    return {
+      data: body.illust?.data ?? [],
+      total: body.illust?.total ?? 0,
+    }
+  }
+
+  async searchManga(
+    keyword: string,
+    params?: { p?: number; mode?: string; s_mode?: string; order?: string }
+  ): Promise<{ data: ArtworkInfo[]; total: number }> {
+    const { data } = await this.http.get<
+      PixivResponse<{
+        manga: { data: ArtworkInfo[]; total: number }
+      }>
+    >(`/ajax/search/manga/${encodeURIComponent(keyword)}`, {
+      params: this.buildSearchParams(params),
+    })
+    const body = this.unwrap(data)
+    return {
+      data: body.manga?.data ?? [],
+      total: body.manga?.total ?? 0,
     }
   }
 
@@ -335,13 +384,10 @@ export class PixivWebClient {
       work_lang?: string
     }
   ): Promise<{ data: NovelInfo[]; total: number }> {
-    const searchParams: Record<string, string | number> = {
-      p: params?.p ?? 1,
-      mode: params?.mode ?? 'all',
-      s_mode: params?.s_mode ?? 's_tag',
-      order: params?.order ?? 'date_d',
+    const searchParams = {
+      ...this.buildSearchParams({ ...params, s_mode: params?.s_mode ?? 's_tag' }),
+      ...(params?.work_lang ? { work_lang: params.work_lang } : {}),
     }
-    if (params?.work_lang) searchParams.work_lang = params.work_lang
     const { data } = await this.http.get<
       PixivResponse<{
         novel: { data: NovelInfo[]; total: number }

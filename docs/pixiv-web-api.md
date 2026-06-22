@@ -419,20 +419,30 @@ All search endpoints share a common set of parameters and the `{keyword}` must b
 | Param       | Type   | Default  | Description                                                                 |
 | ----------- | ------ | -------- | --------------------------------------------------------------------------- |
 | `p`         | number | `1`      | Page number (1-indexed)                                                     |
-| `s_mode`    | string | `s_tag`  | Match mode (see table below)                                                |
+| `s_mode`    | string | varies   | Match mode (see tables below). Default differs by endpoint type.            |
 | `order`     | string | `date_d` | Sort: `date_d` (newest) / `date` (oldest). Other values require premium.    |
 | `mode`      | string | `all`    | Content filter: `all` / `safe` / `r18`                                      |
 | `ai_type`   | number | —        | Set to `1` to hide AI-generated works                                       |
 
-**`s_mode` values:**
+**`s_mode` for artwork endpoints** (§5.1–5.3, default: `s_tag`):
 
-| Value        | Description        | Artworks | Novels |
-| ------------ | ------------------ | -------- | ------ |
-| `s_tag`      | Tag (partial)      | Yes      | Yes    |
-| `s_tag_full` | Tag (exact)        | Yes      | Yes    |
-| `s_tc`       | Tag + title + desc | Yes      | Yes    |
-| `tc`         | Title + desc       | Yes      | No     |
-| `text`       | Full text           | No       | Yes    |
+| Value        | Description                |
+| ------------ | -------------------------- |
+| `s_tag`      | Tag (partial match)        |
+| `s_tag_full` | Tag (exact match)          |
+| `s_tc`       | Title + description        |
+| `s_tag_tc`   | Tag + title + description  |
+
+**`s_mode` for novel endpoint** (§5.4, default: `s_tag`):
+
+> **Caveat:** The meaning of `s_tag` differs between artwork and novel endpoints. For artworks, `s_tag` matches tags only (partial). For novels, `s_tag` matches tags + title + description. Pixiv's own frontend labels them differently but sends the same parameter value.
+
+| Value        | Description                |
+| ------------ | -------------------------- |
+| `s_tag`      | Tag + title + description  |
+| `s_tag_only` | Tag (partial match)        |
+| `s_tag_full` | Tag (exact match)          |
+| `s_tc`       | Full text (content body)   |
 
 ### 5.1 GET `/ajax/search/artworks/{keyword}`
 

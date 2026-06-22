@@ -1,25 +1,47 @@
 import { defineStore } from 'pinia'
 import type { ArtworkInfo, NovelInfo } from '~/types'
 
+export type SearchContentType =
+  | 'artworks'
+  | 'illustrations'
+  | 'manga'
+  | 'novels'
+
 export const useSearchStore = defineStore('search', () => {
   const pixivClient = usePixivClient()
-  const results = ref<ArtworkInfo[]>([])
-  const total = ref(0)
-  const loading = ref(false)
-
+  const artworkResults = ref<ArtworkInfo[]>([])
+  const artworkTotal = ref(0)
   const novelResults = ref<NovelInfo[]>([])
   const novelTotal = ref(0)
+  const loading = ref(false)
 
-  async function search(
+  async function searchArtworks(
     keyword: string,
-    params?: { p?: number; mode?: string; s_mode?: string; order?: string }
+    contentType: SearchContentType,
+    params?: {
+      p?: number
+      mode?: string
+      s_mode?: string
+      order?: string
+      type?: string
+    }
   ): Promise<void> {
     if (!keyword) return
     loading.value = true
     try {
-      const data = await pixivClient.searchArtworks(keyword, params)
-      results.value = data.data
-      total.value = data.total
+      let data: { data: ArtworkInfo[]; total: number }
+      switch (contentType) {
+        case 'illustrations':
+          data = await pixivClient.searchIllustrations(keyword, params)
+          break
+        case 'manga':
+          data = await pixivClient.searchManga(keyword, params)
+          break
+        default:
+          data = await pixivClient.searchArtworks(keyword, params)
+      }
+      artworkResults.value = data.data
+      artworkTotal.value = data.total
     } finally {
       loading.value = false
     }
@@ -47,19 +69,19 @@ export const useSearchStore = defineStore('search', () => {
   }
 
   function reset() {
-    results.value = []
-    total.value = 0
+    artworkResults.value = []
+    artworkTotal.value = 0
     novelResults.value = []
     novelTotal.value = 0
   }
 
   return {
-    results,
-    total,
+    artworkResults,
+    artworkTotal,
     novelResults,
     novelTotal,
     loading,
-    search,
+    searchArtworks,
     searchNovels,
     reset,
   }

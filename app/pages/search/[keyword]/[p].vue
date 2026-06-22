@@ -3,21 +3,38 @@
   .body-inner
     SearchBox.big
     .search-filters
-      .search-type-tabs
-        button.search-type-tab(
-          :class='{ active: searchType !== "novel" }',
-          @click='switchType("artworks")'
-        ) 插画·漫画
-        button.search-type-tab(
-          :class='{ active: searchType === "novel" }',
-          @click='switchType("novel")'
-        ) 小说
-      FnbSelect(
-        v-if='searchType === "novel"',
-        :model-value='selectedLang',
-        :options='langOptions',
-        @update:model-value='setLang'
-      )
+      .filter-row
+        .filter-tabs
+          button.filter-tab(
+            v-for='opt in contentOptions',
+            :key='opt.value',
+            :class='{ active: selectedContent === opt.value }',
+            @click='setQuery({ content: opt.value })'
+          ) {{ opt.label }}
+      .filter-row
+        .filter-tabs
+          button.filter-tab(
+            v-for='opt in activeSModeOptions',
+            :key='opt.value',
+            :class='{ active: selectedSMode === opt.value }',
+            @click='setQuery({ s_mode: opt.value })'
+          ) {{ opt.label }}
+        FnbSelect(
+          :model-value='selectedOrder',
+          :options='orderOptions',
+          @update:model-value='v => setQuery({ order: v })'
+        )
+        FnbSelect(
+          :model-value='selectedMode',
+          :options='modeOptions',
+          @update:model-value='v => setQuery({ mode: v })'
+        )
+        FnbSelect(
+          v-if='isNovel',
+          :model-value='selectedLang',
+          :options='langOptions',
+          @update:model-value='v => setQuery({ lang: v })'
+        )
 
   //- Error
   section(v-if='error && !searchStore.loading')
@@ -26,32 +43,34 @@
   //- Result
   section(v-if='!error')
 
-    //- Loading
+    //- Loading skeleton
     .loading-area(v-if='searchStore.loading && !currentResults.length')
-      ArtworkList(v-if='searchType !== "novel"', :list='[]', :loading='16')
+      ArtworkList(v-if='!isNovel', :list='[]', :loading='16')
       .body-inner(v-else)
         NovelList(:list='[]', :loading='12')
 
+    //- Empty
     .no-more(v-if='!searchStore.loading && !currentResults.length')
       FnbCard(style='padding: 15vh 0; text-align: center')
         .fnb-empty 没有了，一滴都没有了……
 
-    FnbSpin.result-area(:show='searchStore.loading' v-if='currentResults.length')
+    //- Results
+    FnbSpin.result-area(:show='searchStore.loading', v-if='currentResults.length')
       .body-inner
         .pagenator
           FnbPagination(
-            :page='page'
-            :item-count='currentTotal'
-            :page-size='currentResults.length'
+            :page='page',
+            :item-count='currentTotal',
+            :page-size='currentResults.length',
             @update:page='page = $event'
           )
-        ArtworkLargeList(v-if='searchType !== "novel"', :artwork-list='searchStore.results')
+        ArtworkLargeList(v-if='!isNovel', :artwork-list='searchStore.artworkResults')
         NovelList(v-else, :list='searchStore.novelResults')
         .pagenator
           FnbPagination(
-            :page='page'
-            :item-count='currentTotal'
-            :page-size='currentResults.length'
+            :page='page',
+            :item-count='currentTotal',
+            :page-size='currentResults.length',
             @update:page='page = $event'
           )
 </template>
@@ -63,19 +82,43 @@ import ArtworkList from '~/components/Artwork/ArtworkList.vue'
 import NovelList from '~/components/Novel/NovelList.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
 import SearchBox from '~/components/SearchBox.vue'
-import { useSearchStore } from '~/stores/search'
+import { useSearchStore, type SearchContentType } from '~/stores/search'
 import { effect } from 'vue'
 import { setTitle } from '~/utils/setTitle'
 
-const error = ref('')
-const searchKeyword = ref('')
-const page = ref(1)
-const route = useRoute()
-const router = useRouter()
-const searchStore = useSearchStore()
+// ── Filter options ──
 
-const searchType = computed(() => (route.query.type as string) || 'artworks')
-const selectedLang = computed(() => (route.query.lang as string) || '')
+const contentOptions = [
+  { label: '综合', value: 'artworks' },
+  { label: '插画', value: 'illustrations' },
+  { label: '漫画', value: 'manga' },
+  { label: '小说', value: 'novels' },
+]
+
+const artworkSModeOptions = [
+  { label: '标签（部分一致）', value: 's_tag' },
+  { label: '标签（完全一致）', value: 's_tag_full' },
+  { label: '标题、说明文字', value: 's_tc' },
+  { label: '标签、标题、说明', value: 's_tag_tc' },
+]
+
+const novelSModeOptions = [
+  { label: '标签、标题、说明', value: 's_tag' },
+  { label: '标签（部分一致）', value: 's_tag_only' },
+  { label: '标签（完全一致）', value: 's_tag_full' },
+  { label: '正文', value: 's_tc' },
+]
+
+const orderOptions = [
+  { label: '最新', value: 'date_d' },
+  { label: '最旧', value: 'date' },
+]
+
+const modeOptions = [
+  { label: '全部', value: 'all' },
+  { label: '全年龄', value: 'safe' },
+  { label: 'R18', value: 'r18' },
+]
 
 const langOptions = [
   { label: '全部语言', value: '' },
@@ -85,52 +128,103 @@ const langOptions = [
   { label: '한국어', value: 'ko' },
 ]
 
+// ── State ──
+
+const error = ref('')
+const searchKeyword = ref('')
+const page = ref(1)
+const route = useRoute()
+const router = useRouter()
+const searchStore = useSearchStore()
+
+const selectedContent = computed(
+  () => (route.query.content as string) || 'artworks'
+)
+const selectedSMode = computed(() => {
+  if (route.query.s_mode) return route.query.s_mode as string
+  return 's_tag'
+})
+const selectedOrder = computed(
+  () => (route.query.order as string) || 'date_d'
+)
+const selectedMode = computed(() => (route.query.mode as string) || 'all')
+const selectedLang = computed(() => (route.query.lang as string) || '')
+
+const isNovel = computed(() => selectedContent.value === 'novels')
+
+const activeSModeOptions = computed(() =>
+  isNovel.value ? novelSModeOptions : artworkSModeOptions
+)
+
 const currentResults = computed(() =>
-  searchType.value === 'novel' ? searchStore.novelResults : searchStore.results
+  isNovel.value ? searchStore.novelResults : searchStore.artworkResults
 )
 
 const currentTotal = computed(() =>
-  searchType.value === 'novel' ? searchStore.novelTotal : searchStore.total
+  isNovel.value ? searchStore.novelTotal : searchStore.artworkTotal
 )
 
-function switchType(type: string) {
-  const query = { ...route.query, type }
-  if (type === 'artworks') {
-    delete query.type
-    delete query.lang
+// ── Query helpers ──
+
+const defaults: Record<string, string> = {
+  content: 'artworks',
+  s_mode: 's_tag',
+  order: 'date_d',
+  mode: 'all',
+  lang: '',
+}
+
+function setQuery(updates: Record<string, string>) {
+  const q = { ...route.query } as Record<string, string>
+  const isContentSwitch = 'content' in updates
+
+  for (const [key, value] of Object.entries(updates)) {
+    if (value === defaults[key] || value === '') {
+      delete q[key]
+    } else {
+      q[key] = value
+    }
   }
-  router.push({ query })
+
+  if (isContentSwitch) {
+    delete q.s_mode
+    delete q.lang
+  }
+
+  delete q.p
+  router.push({ query: q })
 }
 
-function setLang(value: string) {
-  const query = { ...route.query, lang: value }
-  if (!value) delete query.lang
-  router.push({ query })
-}
+// ── Search execution ──
 
-async function makeSearch({
-  keyword,
-  p,
-  mode,
-}: {
-  keyword: string
-  p?: `${number}`
-  mode?: string
-}): Promise<void> {
+async function makeSearch(): Promise<void> {
+  const keyword = route.params.keyword as string
+  const p = parseInt((route.params.p as string) || '1')
   searchKeyword.value = keyword
-  page.value = parseInt(p || '1')
+  page.value = p
   error.value = ''
-  if (!searchKeyword.value) return
+  if (!keyword) return
+
   try {
-    if (searchType.value === 'novel') {
+    if (isNovel.value) {
       await searchStore.searchNovels(keyword, {
-        p: parseInt(p || '1'),
+        p,
+        s_mode: selectedSMode.value,
+        order: selectedOrder.value,
+        mode: selectedMode.value,
         work_lang: selectedLang.value || undefined,
       })
     } else {
-      await searchStore.search(keyword, {
-        p: parseInt(p || '1'),
-      })
+      await searchStore.searchArtworks(
+        keyword,
+        selectedContent.value as SearchContentType,
+        {
+          p,
+          s_mode: selectedSMode.value,
+          order: selectedOrder.value,
+          mode: selectedMode.value,
+        }
+      )
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -141,56 +235,59 @@ async function makeSearch({
   }
 }
 
+// ── Watchers ──
+
 watch(page, (value) => {
   page.value = value < 1 ? 1 : value
-  const params = new URLSearchParams()
-  if (route.query.type) params.set('type', route.query.type as string)
-  if (route.query.lang) params.set('lang', route.query.lang as string)
-  const qs = params.toString()
-  router.push(`/search/${searchKeyword.value}/${page.value}${qs ? `?${qs}` : ''}`)
+  const q = { ...route.query } as Record<string, string>
+  delete q.p
+  const qs = new URLSearchParams(q).toString()
+  router.push(
+    `/search/${searchKeyword.value}/${page.value}${qs ? `?${qs}` : ''}`
+  )
 })
 
-watch([() => route.query.type, () => route.query.lang], () => {
-  makeSearch(route.params as { keyword: string; p?: `${number}` })
-})
+watch(() => route.query, makeSearch, { deep: true })
 
 onBeforeRouteUpdate(async (to) => {
-  const params = to.params as {
-    keyword: string
-    p?: `${number}`
-    mode?: string
+  if (
+    to.params.keyword !== route.params.keyword ||
+    to.params.p !== route.params.p
+  ) {
+    await nextTick()
+    makeSearch()
   }
-  makeSearch(params)
 })
 
 effect(() =>
   setTitle(`${route.params.keyword} (第${route.params.p}页)`, 'Search')
 )
-onMounted(async () => {
-  const params = route.params as {
-    keyword: string
-    p?: `${number}`
-    mode?: string
-  }
-  await makeSearch(params)
-})
+
+onMounted(() => makeSearch())
 </script>
 
 <style lang="scss" scoped>
 .search-filters {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 0.75rem;
   margin-top: 1rem;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   flex-wrap: wrap;
 }
 
-.search-type-tabs {
+.filter-tabs {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
-.search-type-tab {
+.filter-tab {
   @include fnb-border-sm;
   @include fnb-shadow-xs;
   padding: 0.3rem 0.75rem;
