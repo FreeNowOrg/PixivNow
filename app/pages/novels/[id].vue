@@ -249,6 +249,10 @@ h1 {
   align-items: start;
   margin-top: 1rem;
 
+  > * {
+    min-width: 0;
+  }
+
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
   }
@@ -257,7 +261,6 @@ h1 {
 .side-area {
   display: grid;
   gap: 1rem;
-  min-width: 0;
 }
 
 .series-nav {
