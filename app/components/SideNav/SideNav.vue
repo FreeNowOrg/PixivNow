@@ -14,6 +14,8 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
             IFasHome.link-icon
           SideNavListLink(link='/ranking' text='排行榜')
             IFasCrown.link-icon
+          SideNavListLink(link='/search' text='搜索')
+            IFasSearch.link-icon
 
       .group
         .title 探索发现
@@ -65,6 +67,7 @@ import IFasHeart from '~icons/fa-solid/heart'
 import IFasHome from '~icons/fa-solid/home'
 import IFasBook from '~icons/fa-solid/book'
 import IFasImage from '~icons/fa-solid/image'
+import IFasSearch from '~icons/fa-solid/search'
 import IFasUser from '~icons/fa-solid/user'
 import { useSideNavStore, useUserStore } from '~/stores/session'
 
