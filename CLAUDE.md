@@ -43,6 +43,10 @@ API routes:
 
 Session relies on `PHPSESSID` cookie forwarded to Pixiv. The `/api/user` endpoint extracts user data and CSRF token from Pixiv's HTML response.
 
+PixivNow also handles `Authorization` header, forwarding it as `PHPSESSID` cookie to Pixiv when present:
+
+`Authorization: Bearer <token>` → `Cookie: PHPSESSID=<token>`
+
 ### Key Dependencies
 
 - **UI**: Fnb* component system (self-implemented, `app/components/ui/`), @tabler/icons-vue
@@ -65,4 +69,6 @@ Session relies on `PHPSESSID` cookie forwarded to Pixiv. The `/api/user` endpoin
 
 ## Reference
 
-Reverse-engineered Pixiv API documentation is in `DEV_NOTES/PIXIV_WEB_API.md`.
+Reverse-engineered Pixiv API documentation is in `docs/pixiv-web-api.md`.
+
+Design guidelines and UI style references are in `docs/design-guide.md`.

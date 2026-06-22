@@ -2,7 +2,7 @@
 #auth-view
   form#login-form.not-logged-in(v-if='!userStore.isLoggedIn')
     RouterLink.button(
-      :to='$route.query.back.toString()'
+      :to='$route.query.back?.toString()'
       v-if='$route.query.back'
     )
       IFasAngleLeft
@@ -17,29 +17,37 @@
       )
       .fnb-form-item__feedback(
         :class='(sessionIdInput && !validateSessionId(sessionIdInput)) || error ? "fnb-form-item__feedback--error" : "fnb-form-item__feedback--success"'
-      ) {{ sessionIdInput && !validateSessionId(sessionIdInput) ? "哎呀，这个格式看上去不太对……" : error ? error : "这个格式看上去没问题，点击保存试试" }}
+      ) {{ !sessionIdInput ? '请输入令牌' : !validateSessionId(sessionIdInput) ? '哎呀，这个格式看上去不太对……' : error ? error : '这个格式看上去没问题，点击保存试试' }}
     #submit
       FnbButton(
-        :disabled='!!error || loading || !validateSessionId(sessionIdInput)'
+        :disabled='!!error || loading || !validateSessionId(sessionIdInput)',
         :loading='loading'
         @click='async () => await submit()'
-        variant='primary'
         style='width: 100%'
+        variant='primary'
       ) {{ loading ? '登录中……' : '保存令牌' }}
     .tips
       h2 如何获取 Pixiv 令牌？
-      p 访问 <a href="https://www.pixiv.net" target="_blank">www.pixiv.net</a> 源站并登录，打开浏览器控制台(f12)，点击"存储(storage)"一栏，在 cookie 列表里找到"键(key)"为<code>PHPSESSID</code>的一栏，将它的"值(value)"复制后填写到这里。
-      p
-        | 它应该形如：
-        code(@click='exampleSessionId' title='此处的令牌为随机生成，仅供演示使用') {{ example }}
-        | 。
-      h2 PixivNow 会窃取我的个人信息吗？
-      p 我们<strong>不会</strong>存储或转让您的个人信息以及 cookie。
-      p 不过我们建议妥善保存您的 cookie。您在此处保存的信息若被他人获取有被盗号的风险。
+      ol.guide-steps
+        li 访问 #[ExternalLink(href='https://accounts.pixiv.net/portal' rel='noopener noreferrer' target='_blank') Pixiv 账户中心] 并登录您的账号
+        li 按 #[kbd F12] 打开浏览器开发者工具
+        li 切换到「应用」(Application) 选项卡（部分浏览器中显示为「存储」Storage），展开左侧「Cookie」列表
+        li 找到 #[code PHPSESSID] 一行，双击复制它的值，粘贴到上方输入框
+      .guide-image
+        FnbImage(
+          alt='获取 PHPSESSID 指引图'
+          previewSrc='https://files.seeusercontent.com/2026/06/22/bkL1/PixPin_2026-06-22_12-51-31.png'
+          src='https://files.seeusercontent.com/2026/06/22/bkL1/PixPin_2026-06-22_12-51-31.png'
+        )
+        .guide-image__hint 点击查看大图
+
+      h2 安全吗？
+      p PixivNow 本身不会存储您的凭据，但第三方部署的实例不在我们的控制范围内。请仅在您信任的实例上使用此功能。
+      p 详细说明见：#[NuxtLink(to='/about#account-security') 安全说明]。
 
   #login-form.logged-in(v-if='userStore.isLoggedIn')
     RouterLink.button(
-      :to='$route.query.back.toString()'
+      :to='$route.query.back?.toString()'
       v-if='$route.query.back'
     )
       IFasAngleLeft
@@ -53,7 +61,6 @@
 <script lang="ts" setup>
 definePageMeta({ name: 'login' })
 import {
-  exampleSessionId,
   validateSessionId,
   login,
   logout,
@@ -63,14 +70,33 @@ import { useUserStore } from '~/stores/session'
 import IFasAngleLeft from '~icons/fa-solid/angle-left'
 
 const currentToken = computed(() => getToken() || '')
-
-const example = ref(exampleSessionId())
 const sessionIdInput = ref('')
 const error = ref('')
 const loading = ref(false)
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+
+onMounted(async () => {
+  const token = route.query.phpsessid as string | undefined
+  if (!token) return
+  const { phpsessid: _, ...restQuery } = route.query
+  router.replace({ path: '/login', query: restQuery })
+  if (!validateSessionId(token)) {
+    error.value = '令牌格式无效'
+    return
+  }
+  try {
+    loading.value = true
+    const userData = await login(token)
+    userStore.login(userData)
+    goBack()
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : '登录失败，请重试'
+  } finally {
+    loading.value = false
+  }
+})
 
 function goBack(): void {
   const back = route.query.back
@@ -114,7 +140,6 @@ watch(sessionIdInput, () => (error.value = ''))
 </script>
 
 <style scoped lang="scss">
-
 #login-form {
   width: 400px;
   margin: 0 auto;
@@ -150,19 +175,15 @@ code {
   user-select: none;
 }
 
-.status {
-  margin-top: 0.2rem;
-  text-align: center;
-  padding: 4px;
-  color: #fff;
-
-  &.valid {
-    background-color: green;
-  }
-
-  &.invalid {
-    background-color: #a00;
-  }
+kbd {
+  display: inline-block;
+  padding: 0.1em 0.4em;
+  font-size: 0.85em;
+  font-family: inherit;
+  background: var(--fnb-bg-alt, #f0f0f0);
+  border: 1px solid var(--fnb-border);
+  border-radius: 3px;
+  box-shadow: 0 1px 0 var(--fnb-border);
 }
 
 .fnb-form-item {
@@ -190,6 +211,32 @@ code {
     &--success {
       color: var(--fnb-success, green);
     }
+  }
+}
+
+.guide-steps {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0 1rem;
+
+  li {
+    margin: 0.4rem 0;
+    line-height: 1.6;
+  }
+}
+
+.guide-image {
+  margin: 1rem 0;
+
+  img {
+    width: 100%;
+    display: block;
+  }
+
+  &__hint {
+    text-align: center;
+    padding: 0.2rem;
+    font-size: 0.8rem;
+    color: var(--fnb-text-muted);
   }
 }
 </style>
