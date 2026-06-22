@@ -412,66 +412,103 @@ Query string example: `?novelIds[]=123&novelIds[]=456`
 
 ## 5. Search
 
+All search endpoints share a common set of parameters and the `{keyword}` must be URI-encoded.
+
+### Common Parameters
+
+| Param       | Type   | Default  | Description                                                                 |
+| ----------- | ------ | -------- | --------------------------------------------------------------------------- |
+| `p`         | number | `1`      | Page number (1-indexed)                                                     |
+| `s_mode`    | string | `s_tag`  | Match mode (see table below)                                                |
+| `order`     | string | `date_d` | Sort: `date_d` (newest) / `date` (oldest). Other values require premium.    |
+| `mode`      | string | `all`    | Content filter: `all` / `safe` / `r18`                                      |
+| `ai_type`   | number | —        | Set to `1` to hide AI-generated works                                       |
+
+**`s_mode` values:**
+
+| Value        | Description        | Artworks | Novels |
+| ------------ | ------------------ | -------- | ------ |
+| `s_tag`      | Tag (partial)      | Yes      | Yes    |
+| `s_tag_full` | Tag (exact)        | Yes      | Yes    |
+| `s_tc`       | Tag + title + desc | Yes      | Yes    |
+| `tc`         | Title + desc       | Yes      | No     |
+| `text`       | Full text           | No       | Yes    |
+
 ### 5.1 GET `/ajax/search/artworks/{keyword}`
 
-Search artworks by keyword. The `{keyword}` must be URI-encoded.
-
-| Param  | Type   | Default | Description               |
-| ------ | ------ | ------- | ------------------------- |
-| `p`    | string | `1`     | Page number (1-indexed)   |
-| `mode` | string | `text`  | Search mode (e.g. `text`) |
+Search all artworks (illustrations + manga). Combined results.
 
 **Response** `body`:
 
 ```jsonc
 {
   "illustManga": {
-    "data": [
-      /* ArtworkInfo[] */
-    ],
+    "data": [ /* ArtworkInfo[] */ ],
     "total": 12345,
   },
+  "popular": { "recent": [], "permanent": [] },
+  "relatedTags": [],
+  "tagTranslation": {},
 }
 ```
 
-### 5.2 GET `/ajax/search/novels/{keyword}`
+### 5.2 GET `/ajax/search/illustrations/{keyword}`
 
-Search novels by keyword. The `{keyword}` must be URI-encoded.
+Search illustrations only, with optional type filter.
 
-| Param       | Type   | Default  | Description                                            |
-| ----------- | ------ | -------- | ------------------------------------------------------ |
-| `p`         | number | `1`      | Page number (1-indexed)                                |
-| `mode`      | string | `all`    | Content filter: `all` / `safe` / `r18`                 |
-| `s_mode`    | string | `s_tag`  | Match mode: `s_tag` (partial) / `s_tag_full` (exact)   |
-| `order`     | string | `date_d` | Sort order: `date_d` (newest) / `date` (oldest)        |
-| `work_lang` | string | —        | Language filter: `zh-cn`, `ja`, `en`, `ko`, etc.       |
-| `gs`        | number | `0`      | Group by series: `0` (individual novels) / `1` (series)|
+| Param  | Type   | Default              | Description                                                    |
+| ------ | ------ | -------------------- | -------------------------------------------------------------- |
+| `type` | string | `illust_and_ugoira`  | `illust_and_ugoira` / `illust` (static only) / `ugoira` (animated only) |
+
+**Response** `body`:
+
+```jsonc
+{
+  "illust": {
+    "data": [ /* ArtworkInfo[] */ ],
+    "total": 12345,
+  },
+  // same auxiliary fields as §5.1
+}
+```
+
+### 5.3 GET `/ajax/search/manga/{keyword}`
+
+Search manga only.
+
+**Response** `body`:
+
+```jsonc
+{
+  "manga": {
+    "data": [ /* ArtworkInfo[] */ ],
+    "total": 12345,
+  },
+  // same auxiliary fields as §5.1
+}
+```
+
+### 5.4 GET `/ajax/search/novels/{keyword}`
+
+Search novels.
+
+| Param       | Type   | Default | Description                                              |
+| ----------- | ------ | ------- | -------------------------------------------------------- |
+| `work_lang` | string | —       | Language filter: `zh-cn`, `ja`, `en`, `ko`, etc.         |
+| `gs`        | number | `0`     | Group by series: `0` (individual novels) / `1` (series)  |
 
 **Response** `body`:
 
 ```jsonc
 {
   "novel": {
-    "data": [
-      /* NovelInfo[] (see §12) */
-    ],
+    "data": [ /* NovelInfo[] (see §12) */ ],
     "total": 22713,
     "lastPage": 10,
   },
-  "popular": {
-    "recent": [
-      /* NovelInfo[] */
-    ],
-    "permanent": [
-      /* NovelInfo[] */
-    ],
-  },
-  "relatedTags": [
-    /* string[] */
-  ],
-  "tagTranslation": {
-    /* tag → { lang: translation } */
-  },
+  "popular": { "recent": [], "permanent": [] },
+  "relatedTags": [],
+  "tagTranslation": {},
 }
 ```
 
@@ -1251,8 +1288,10 @@ Novel ranking item from `/ajax/ranking/novel`. Uses **snake_case** field names (
 | 4.4   | GET    | `/ajax/illust/recommend/illusts`         | Optional            | More artwork recommendations |
 | 4.5   | GET    | `/ajax/novel/{id}/recommend/init`        | Optional            | Novel recommendations        |
 | 4.6   | GET    | `/ajax/novel/recommend/novels`           | Optional            | More novel recommendations   |
-| 5.1   | GET    | `/ajax/search/artworks/{keyword}`        | Optional            | Search artworks              |
-| 5.2   | GET    | `/ajax/search/novels/{keyword}`          | Optional            | Search novels                |
+| 5.1   | GET    | `/ajax/search/artworks/{keyword}`        | Optional            | Search artworks (combined)   |
+| 5.2   | GET    | `/ajax/search/illustrations/{keyword}`   | Optional            | Search illustrations         |
+| 5.3   | GET    | `/ajax/search/manga/{keyword}`           | Optional            | Search manga                 |
+| 5.4   | GET    | `/ajax/search/novels/{keyword}`          | Optional            | Search novels                |
 | 6.1   | GET    | `/ranking.php`                           | Partial (R18 req.)  | Artwork ranking              |
 | 6.2   | GET    | `/ajax/ranking/novel`                    | Partial (R18 req.)  | Novel ranking                |
 | 7.1   | GET    | `/ajax/user/{userId}?full=1`             | Optional            | User profile                 |

@@ -130,7 +130,6 @@ async function makeSearch({
     } else {
       await searchStore.search(keyword, {
         p: parseInt(p || '1'),
-        mode: mode ?? 'text',
       })
     }
   } catch (err) {

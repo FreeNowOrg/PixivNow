@@ -299,14 +299,24 @@ export class PixivWebClient {
 
   async searchArtworks(
     keyword: string,
-    params?: { p?: number; mode?: string }
+    params?: {
+      p?: number
+      mode?: string
+      s_mode?: string
+      order?: string
+    }
   ): Promise<{ data: ArtworkInfo[]; total: number }> {
     const { data } = await this.http.get<
       PixivResponse<{
         illustManga: { data: ArtworkInfo[]; total: number }
       }>
     >(`/ajax/search/artworks/${encodeURIComponent(keyword)}`, {
-      params: { p: params?.p ?? 1, mode: params?.mode ?? 'text' },
+      params: {
+        p: params?.p ?? 1,
+        mode: params?.mode ?? 'all',
+        s_mode: params?.s_mode ?? 's_tag',
+        order: params?.order ?? 'date_d',
+      },
     })
     const body = this.unwrap(data)
     return {
