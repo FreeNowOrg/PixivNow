@@ -66,6 +66,7 @@
           NovelReader#reader(:blocks='contentBlocks', ref='readerRef')
         Card.comments(title='评论')
           CommentArea(
+            :author-id='novel.userId',
             :count='novel.commentCount',
             :disabled='novel.commentOff === 1',
             :id='novel.id',

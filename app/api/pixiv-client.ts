@@ -691,6 +691,24 @@ export class PixivWebClient {
     return this.unwrap(data)
   }
 
+  /** Load replies for a root comment (replies are always one level deep). */
+  async getCommentReplies(
+    commentId: string,
+    page: number,
+    type: 'illust' | 'novel' = 'illust'
+  ): Promise<{ hasNext: boolean; comments: Comments[] }> {
+    const endpoint =
+      type === 'novel'
+        ? '/ajax/novels/comments/replies'
+        : '/ajax/illusts/comments/replies'
+    const { data } = await this.http.get<
+      PixivResponse<{ hasNext: boolean; comments: Comments[] }>
+    >(endpoint, {
+      params: { comment_id: commentId, page: String(page) },
+    })
+    return this.unwrap(data)
+  }
+
   async postComment(params: {
     illustId: string | number
     authorUserId: string | number

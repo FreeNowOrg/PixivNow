@@ -7,7 +7,12 @@
     | 共{{ count || comments.length || 0 }}条评论
   p(v-if='!comments.length && !loading') 还没有人发表评论呢~
   ul.comments-list(v-if='comments.length')
-    comment(:comment='item' v-for='item in comments')
+    comment(
+      :author-id='authorId',
+      :comment='item',
+      :type='type',
+      v-for='item in comments'
+    )
     .show-more.align-center
       FnbButton(
         :loading='loading'
@@ -40,6 +45,7 @@ const props = defineProps<{
   count: number
   type?: 'illust' | 'novel'
   disabled?: boolean
+  authorId?: string
 }>()
 
 async function init(id: string | number): Promise<void> {

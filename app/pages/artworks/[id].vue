@@ -112,6 +112,7 @@
 
         Card.comments(title='评论')
           CommentArea(
+            :author-id='illust.userId',
             :count='illust.commentCount',
             :disabled='illust.commentOff === 1',
             :id='illust.id || illust.illustId'
