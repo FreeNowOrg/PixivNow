@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { ArtworkInfo, NovelInfo } from '~/types'
+import type { ArtworkInfo, NovelInfo, UserListItem } from '~/types'
 
 export const useDiscoveryStore = defineStore('discovery', () => {
   const pixivClient = usePixivClient()
@@ -17,6 +17,12 @@ export const useDiscoveryStore = defineStore('discovery', () => {
   const loadingMoreNovelDiscovery = ref(false)
   const noMoreNovelDiscovery = ref(false)
   const novelDiscoverySeenIds = new Set<string>()
+
+  const userDiscoveryList = ref<UserListItem[]>([])
+  const loadingUserDiscovery = ref(false)
+  const loadingMoreUserDiscovery = ref(false)
+  const noMoreUserDiscovery = ref(false)
+  const userDiscoverySeenIds = new Set<string>()
 
   async function fetchDiscovery(): Promise<void> {
     if (loadingDiscovery.value) return
@@ -94,6 +100,41 @@ export const useDiscoveryStore = defineStore('discovery', () => {
     }
   }
 
+  async function fetchUserDiscovery(): Promise<void> {
+    if (loadingUserDiscovery.value) return
+    try {
+      loadingUserDiscovery.value = true
+      const users = await pixivClient.getDiscoveryUsers({ limit: 100 })
+      userDiscoverySeenIds.clear()
+      noMoreUserDiscovery.value = false
+      users.forEach((u) => userDiscoverySeenIds.add(u.userId))
+      userDiscoveryList.value = users
+    } catch (err) {
+      console.error('Failed to fetch user discovery', err)
+    } finally {
+      loadingUserDiscovery.value = false
+    }
+  }
+
+  async function appendUserDiscovery(): Promise<void> {
+    if (loadingMoreUserDiscovery.value || noMoreUserDiscovery.value) return
+    try {
+      loadingMoreUserDiscovery.value = true
+      const users = await pixivClient.getDiscoveryUsers({ limit: 20 })
+      const fresh = users.filter((u) => !userDiscoverySeenIds.has(u.userId))
+      if (!fresh.length) {
+        noMoreUserDiscovery.value = true
+        return
+      }
+      fresh.forEach((u) => userDiscoverySeenIds.add(u.userId))
+      userDiscoveryList.value = [...userDiscoveryList.value, ...fresh]
+    } catch (err) {
+      console.error('Failed to append user discovery', err)
+    } finally {
+      loadingMoreUserDiscovery.value = false
+    }
+  }
+
   return {
     discoveryMode,
     discoveryList,
@@ -108,5 +149,11 @@ export const useDiscoveryStore = defineStore('discovery', () => {
     noMoreNovelDiscovery,
     fetchNovelDiscovery,
     appendNovelDiscovery,
+    userDiscoveryList,
+    loadingUserDiscovery,
+    loadingMoreUserDiscovery,
+    noMoreUserDiscovery,
+    fetchUserDiscovery,
+    appendUserDiscovery,
   }
 })
