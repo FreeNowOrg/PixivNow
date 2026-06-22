@@ -1,45 +1,48 @@
 <template lang="pug">
 #novel-series-view
+  //- Loading
   section.placeholder(v-if='loading')
-    .series-hero.body-inner
-      NSkeleton(:sharp='false' height='320px' width='220px')
-      .summary
-        h1: NSkeleton(height='2rem' width='18rem')
-        NSkeleton(:repeat='5' text)
+    .body-inner
+      .series-hero
+        FnbSkeleton(block height='320px' width='220px')
+        .summary
+          h1: FnbSkeleton(height='2rem' width='18rem')
+          FnbSkeleton(:repeat='5' text)
 
+  //- Done
   section.series-container(v-else-if='!error && series')
-    .series-hero.body-inner
-      .cover(v-if='coverUrl')
-        img(:alt='series.title' :src='coverUrl')
-      .summary
-        h1(:class='{ danger: series.xRestrict }') {{ series.title }}
-        .meta
-          span(v-if='series.xRestrict') R-18
-          span(v-if='series.isConcluded') 已完结
-          span(v-else) 连载中
-          span {{ series.publishedContentCount }} 篇
-          span(v-if='series.publishedTotalCharacterCount') {{ series.publishedTotalCharacterCount }} 字
-          span(v-if='series.publishedReadingTime') {{ Math.ceil(series.publishedReadingTime / 60) }} 分钟
-        p.description.pre(v-if='captionText') {{ captionText }}
-        .tags
-          ArtTag(:key='tag' :tag='tag' v-for='tag in series.tags')
-        .actions
-          NButton(
-            :href='series.extraData?.meta?.canonical || `https://www.pixiv.net/novel/series/${series.id}`'
-            icon-placement='right'
-            rel='noopener noreferrer'
-            size='small'
-            tag='a'
-            target='_blank'
-          )
-            template(#icon)
-              IFasArrowRight
-            | 前往 Pixiv 查看
+    .body-inner
+      .series-hero
+        .cover(v-if='coverUrl')
+          img(:alt='series.title' :src='coverUrl')
+        .summary
+          h1(:class='{ danger: series.xRestrict }') {{ series.title }}
+          .meta
+            span(v-if='series.xRestrict') R-18
+            span(v-if='series.isConcluded') 已完结
+            span(v-else) 连载中
+            span {{ series.publishedContentCount }} 篇
+            span(v-if='series.publishedTotalCharacterCount') {{ series.publishedTotalCharacterCount }} 字
+            span(v-if='series.publishedReadingTime') {{ Math.ceil(series.publishedReadingTime / 60) }} 分钟
+          p.description.pre(v-if='captionText') {{ captionText }}
+          .tags
+            ArtTag(:key='tag' :tag='tag' v-for='tag in series.tags')
+          .actions
+            FnbButton(
+              :href='series.extraData?.meta?.canonical || `https://www.pixiv.net/novel/series/${series.id}`'
+              rel='noopener noreferrer'
+              size='sm'
+              tag='a'
+              target='_blank'
+            )
+              | 前往 Pixiv 查看
+              template(#icon)
+                IFasArrowRight
 
     .body-inner.content-grid
       main
         Card(title='目录')
-          NEmpty(description='这个系列还没有可显示的章节' v-if='!seriesNovels.length && !contentTitles.length')
+          .fnb-empty(v-if='!seriesNovels.length && !contentTitles.length') 这个系列还没有可显示的章节
           NovelList(:list='seriesNovels' v-else-if='seriesNovels.length')
           ul.title-list(v-else)
             li(:class='{ unavailable: !item.available }' :key='item.id' v-for='item in contentTitles')
@@ -52,9 +55,12 @@
             span {{ series.userName }}
         Card(title='快速入口')
           .quick-links
-            RouterLink(:to='`/novels/${series.firstNovelId}`' v-if='series.firstNovelId') 第一篇
-            RouterLink(:to='`/novels/${series.latestNovelId}`' v-if='series.latestNovelId') 最新篇
+            RouterLink.plain(:to='`/novels/${series.firstNovelId}`' v-if='series.firstNovelId')
+              FnbButton(size='sm') 第一篇
+            RouterLink.plain(:to='`/novels/${series.latestNovelId}`' v-if='series.latestNovelId')
+              FnbButton(size='sm') 最新篇
 
+  //- Error
   section.error(v-if='error')
     ErrorPage(:description='error' title='出大问题')
 </template>
@@ -69,7 +75,6 @@ import Card from '~/components/Card.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
 import NovelList from '~/components/Novel/NovelList.vue'
 import IFasArrowRight from '~icons/fa-solid/arrow-right'
-import { NButton, NEmpty, NSkeleton } from 'naive-ui'
 import { effect } from 'vue'
 import { useNovelStore } from '~/stores/novel'
 import type { NovelContentTitle, NovelInfo, NovelSeries } from '~/types'
@@ -131,82 +136,114 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="sass">
-section
-  padding-top: 1rem
+<style scoped lang="scss">
+section {
+  padding-top: 1rem;
+}
 
-.series-hero
-  display: grid
-  grid-template-columns: minmax(160px, 240px) minmax(0, 1fr)
-  gap: clamp(1rem, 3vw, 2rem)
-  align-items: start
+.series-hero {
+  display: grid;
+  grid-template-columns: minmax(160px, 240px) minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 2rem);
+  align-items: start;
 
-  @media (max-width: 720px)
-    grid-template-columns: 1fr
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+}
 
-.cover img
-  width: 100%
-  border-radius: 10px
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.16)
+.cover img {
+  width: 100%;
+  @include fnb-border;
+  @include fnb-shadow;
+}
 
-h1
-  --bg-color: var(--theme-accent-color)
-  box-shadow: 0 2px 0 var(--bg-color)
-  margin: 0 0 1rem
+h1 {
+  --bg-color: var(--fnb-brand);
+  box-shadow: 0 2px 0 var(--bg-color);
+  margin: 0 0 1rem;
 
-  &.danger
-    --bg-color: var(--theme-danger-color)
+  &.danger {
+    --bg-color: var(--fnb-danger);
+  }
+}
 
 .meta,
 .tags,
-.actions
-  display: flex
-  flex-wrap: wrap
-  gap: 0.5rem
-  margin: 0.75rem 0
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
 
-.meta span
-  color: #888
+.meta span {
+  color: var(--fnb-text-muted);
+}
 
-.description
-  max-width: 72ch
-  overflow-wrap: anywhere
+.description {
+  max-width: 72ch;
+  overflow-wrap: anywhere;
+}
 
-.content-grid
-  display: grid
-  grid-template-columns: minmax(0, 1fr) 260px
-  gap: 1.5rem
-  align-items: start
-  margin-top: 1rem
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 1.5rem;
+  align-items: start;
+  margin-top: 1rem;
 
-  @media (max-width: 960px)
-    grid-template-columns: 1fr
+  @media (max-width: 960px) {
+    grid-template-columns: 1fr;
+  }
+}
 
-.side-area,
-.quick-links
-  display: grid
-  gap: 1rem
+.side-area {
+  display: grid;
+  gap: 1rem;
+}
 
-.author
-  display: flex
-  align-items: center
-  gap: 0.5rem
+.quick-links {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
 
-  img
-    width: 2rem
-    height: 2rem
-    border-radius: 50%
+.author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
-.title-list
-  list-style: none
-  padding-left: 0
-  display: grid
-  gap: 0.75rem
+  img {
+    width: 2rem;
+    height: 2rem;
+    @include fnb-border-sm;
+  }
+}
 
-  li
-    padding: 0.75rem 0
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08)
+.title-list {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  gap: 0;
 
-  .unavailable
-    color: #aaa
+  li {
+    padding: 0.75rem 0;
+    border-bottom: 3px solid rgba(0, 0, 0, 0.08);
+  }
+
+  li:last-child {
+    border-bottom: none;
+  }
+
+  .unavailable {
+    color: var(--fnb-text-muted);
+  }
+}
+
+.fnb-empty {
+  text-align: center;
+  color: var(--fnb-text-muted);
+  padding: 2rem;
+}
 </style>
