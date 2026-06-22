@@ -1,15 +1,21 @@
 <template lang="pug">
-.search-box
+.search-box(:class='{ "no-icon": noIcon }')
   input(
     @keyup.enter='makeSearch'
     placeholder='输入关键词搜索/输入 id:数字 查看作品'
     v-model='keyword'
   )
-  IFasSearch.icon(data-icon)
+  IFasSearch.icon(data-icon, v-if='!noIcon')
 </template>
 
 <script lang="ts" setup>
 import IFasSearch from '~icons/fa-solid/search'
+
+const props = defineProps<{
+  type?: string
+  noIcon?: boolean
+}>()
+
 const route = useRoute()
 const router = useRouter()
 const keyword = ref((route.query.q as string) || '')
@@ -22,7 +28,11 @@ function makeSearch(): void {
     router.push(`/artworks/${/^id:(\d+)$/.exec(keyword.value)?.[1]}`)
     return
   }
-  router.push({ path: '/search', query: { q: keyword.value } })
+  const query: Record<string, string> = { q: keyword.value }
+  if (props.type && props.type !== 'artworks') {
+    query.type = props.type
+  }
+  router.push({ path: '/search', query })
 }
 </script>
 
@@ -34,6 +44,10 @@ function makeSearch(): void {
   position: relative;
   align-items: center;
   font-size: 0.8rem;
+
+  &.no-icon input {
+    padding-left: 0.6em;
+  }
 
   .icon,
   [data-icon] {

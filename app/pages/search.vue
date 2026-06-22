@@ -101,16 +101,9 @@ import SearchBox from '~/components/SearchBox.vue'
 import { useSearchStore, type SearchContentType } from '~/stores/search'
 import { effect } from 'vue'
 import { setTitle } from '~/utils/setTitle'
+import { contentOptions } from '~/utils/searchOptions'
 
 // ── Filter options ──
-
-const contentOptions = [
-  { label: '综合', value: 'artworks' },
-  { label: '插画', value: 'illustrations' },
-  { label: '动图', value: 'ugoira' },
-  { label: '漫画', value: 'manga' },
-  { label: '小说', value: 'novels' },
-]
 
 const artworkSModeOptions = [
   { label: '标签（部分一致）', value: 's_tag' },
