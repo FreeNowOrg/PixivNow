@@ -17,7 +17,7 @@ defineEmits<{ 'update:modelValue': [value: string] }>()
 
 const tabs = [
   { label: '插画·漫画', value: 'all', disabled: false },
-  { label: '小说', value: 'novel', disabled: true },
+  { label: '小说', value: 'novel', disabled: false },
 ]
 </script>
 
