@@ -21,23 +21,15 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, message: '403' })
   }
 
-  const query = getQuery(event)
-
-  try {
-    const { data } = await pixivFetch({
-      event,
-      method: event.method ?? 'GET',
-      url: pathname,
-      params: query ?? {},
-      data: event.method !== 'GET' ? await readBody(event) : undefined,
-    })
-    return data
-  } catch (e: any) {
-    throw createError({
-      statusCode: e?.response?.status || 500,
-      data: e?.response?.data || String(e),
-    })
-  }
+  const reqUrl = getRequestURL(event)
+  const { data, status } = await pixivFetch({
+    event,
+    method: event.method ?? 'GET',
+    url: reqUrl.pathname + reqUrl.search,
+    data: event.method !== 'GET' ? await readBody(event) : undefined,
+  })
+  setResponseStatus(event, status)
+  return data
 })
 
 // Cached UA blacklist regex for efficient repeated checks
