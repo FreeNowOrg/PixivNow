@@ -840,6 +840,30 @@ Remove artwork from bookmarks.
 
 The `bookmark_id` can be found in the `bookmarkData.id` field of artwork detail (§3.1).
 
+> The body must be `application/x-www-form-urlencoded`, not JSON. Sending JSON returns HTTP 400.
+
+### 9.4 POST `/ajax/illusts/like`
+
+Like an artwork. **Irreversible** — there is no unlike endpoint; a like cannot be undone.
+
+**Headers**: `X-CSRF-TOKEN`, `Content-Type: application/json`
+
+**Body**:
+
+```json
+{ "illust_id": "12345678" }
+```
+
+**Response** `body`:
+
+```jsonc
+{
+  "is_liked": false // whether the artwork was ALREADY liked before this call
+}
+```
+
+`is_liked: false` means the artwork was not previously liked, so this call registered a new like. `is_liked: true` means it was already liked (no change).
+
 ---
 
 ## 10. Comments
@@ -1314,6 +1338,7 @@ Novel ranking item from `/ajax/ranking/novel`. Uses **snake_case** field names (
 | 9.1   | GET    | `/ajax/user/{userId}/illusts/bookmarks`  | Optional            | User bookmarks               |
 | 9.2   | POST   | `/ajax/illusts/bookmarks/add`            | Required            | Add bookmark                 |
 | 9.3   | POST   | `/ajax/illusts/bookmarks/delete`         | Required            | Remove bookmark              |
+| 9.4   | POST   | `/ajax/illusts/like`                     | Required            | Like artwork (irreversible)  |
 | 10.1  | GET    | `/ajax/illusts/comments/roots`           | Optional            | Artwork comments             |
 | 10.2  | POST   | `/ajax/illusts/comments/post`            | Required            | Post comment                 |
 | 11.1  | POST   | `/bookmark_add.php`                      | Required            | Follow user                  |
