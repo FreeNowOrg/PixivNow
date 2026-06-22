@@ -18,18 +18,23 @@
               v-for='opt in contentOptions',
               :key='opt.value',
               :class='{ active: selectedContent === opt.value }',
-              @click='setFilter("content", opt.value)'
+              @click='setContentFilter(opt.value)'
             )
               | {{ opt.label }}
         .filter-row
           span.filter-label 模式
           .filter-tabs
             button.filter-tab(
-              v-for='opt in activeModeOptions',
+              v-for='opt in activeBaseModes',
               :key='opt.value',
               :class='{ active: selectedMode === opt.value }',
-              @click='setFilter("mode", opt.value)'
+              @click='setModeFilter(opt.value)'
             ) {{ opt.label }}
+          FnbSelect(
+            :model-value='selectedRating',
+            :options='ratingOptions',
+            @update:model-value='setRatingFilter'
+          )
 
       //- Result — Artwork
       template(v-if='!isNovel && rankingStore.rankingData')
@@ -59,71 +64,144 @@ const contentOptions = [
   { label: '小说', value: 'novel' },
 ]
 
-const artworkModeOptions = [
+const ratingOptions = [
+  { label: '全年龄', value: 'safe' },
+  { label: 'R18', value: 'r18' },
+]
+
+const artworkSafeModes = [
   { label: '日榜', value: 'daily' },
   { label: '周榜', value: 'weekly' },
   { label: '月榜', value: 'monthly' },
   { label: '新人', value: 'rookie' },
   { label: '原创', value: 'original' },
-  { label: 'AI', value: 'daily_ai' },
+  { label: 'AI', value: 'ai' },
   { label: '男性向', value: 'male' },
   { label: '女性向', value: 'female' },
-  { label: 'R18 日榜', value: 'daily_r18' },
-  { label: 'R18 周榜', value: 'weekly_r18' },
-  { label: 'R18 AI', value: 'daily_r18_ai' },
-  { label: 'R18 男性向', value: 'male_r18' },
-  { label: 'R18 女性向', value: 'female_r18' },
 ]
 
-const novelModeOptions = [
+const artworkR18Modes = [
+  { label: '日榜', value: 'daily' },
+  { label: '周榜', value: 'weekly' },
+  { label: 'AI', value: 'ai' },
+  { label: '男性向', value: 'male' },
+  { label: '女性向', value: 'female' },
+]
+
+const novelSafeModes = [
   { label: '日榜', value: 'daily' },
   { label: '周榜', value: 'weekly' },
   { label: '月榜', value: 'monthly' },
   { label: '新人', value: 'rookie' },
   { label: '男性向', value: 'male' },
   { label: '女性向', value: 'female' },
-  { label: 'R18 日榜', value: 'daily_r18' },
-  { label: 'R18 周榜', value: 'weekly_r18' },
-  { label: 'R18 AI', value: 'weekly_r18_ai' },
-  { label: 'R18 男性向', value: 'male_r18' },
-  { label: 'R18 女性向', value: 'female_r18' },
 ]
+
+const novelR18Modes = [
+  { label: '日榜', value: 'daily' },
+  { label: '周榜', value: 'weekly' },
+  { label: 'AI', value: 'ai' },
+  { label: '男性向', value: 'male' },
+  { label: '女性向', value: 'female' },
+]
+
+const apiModeMap: Record<string, Record<string, string>> = {
+  artwork: { ai: 'daily_ai' },
+  'artwork-r18': {
+    daily: 'daily_r18',
+    weekly: 'weekly_r18',
+    ai: 'daily_r18_ai',
+    male: 'male_r18',
+    female: 'female_r18',
+  },
+  novel: {},
+  'novel-r18': {
+    daily: 'daily_r18',
+    weekly: 'weekly_r18',
+    ai: 'weekly_r18_ai',
+    male: 'male_r18',
+    female: 'female_r18',
+  },
+}
+
+function resolveApiMode(
+  baseMode: string,
+  rating: string,
+  content: string
+): string {
+  const category = content === 'novel' ? 'novel' : 'artwork'
+  const key = rating === 'r18' ? `${category}-r18` : category
+  return apiModeMap[key]?.[baseMode] ?? baseMode
+}
 
 const error = ref('')
 const rankingStore = useRankingStore()
 const route = useRoute()
 const router = useRouter()
 
-const selectedContent = computed(() => (route.query.content as string) || 'all')
-const selectedMode = computed(() => (route.query.mode as string) || 'daily')
-const isNovel = computed(() => selectedContent.value === 'novel')
-
-const activeModeOptions = computed(() =>
-  isNovel.value ? novelModeOptions : artworkModeOptions
+const selectedContent = computed(
+  () => (route.query.content as string) || 'all'
 )
+const selectedMode = computed(() => (route.query.mode as string) || 'daily')
+const selectedRating = computed(
+  () => (route.query.rating as string) || 'safe'
+)
+const isNovel = computed(() => selectedContent.value === 'novel')
+const isR18 = computed(() => selectedRating.value === 'r18')
 
-function setFilter(key: string, value: string) {
-  const query = { ...route.query, [key]: value }
-  if (key === 'content' && value === 'all') delete query.content
-  if (key === 'mode' && value === 'daily') delete query.mode
-  if (key === 'content') delete query.mode
-  delete query.p
-  router.push({ query })
+const activeBaseModes = computed(() => {
+  if (isNovel.value) {
+    return isR18.value ? novelR18Modes : novelSafeModes
+  }
+  return isR18.value ? artworkR18Modes : artworkSafeModes
+})
+
+function pushQuery(query: Record<string, string | undefined>) {
+  const q = { ...route.query, ...query } as Record<string, string>
+  if (q.content === 'all') delete q.content
+  if (q.mode === 'daily') delete q.mode
+  if (q.rating === 'safe') delete q.rating
+  delete q.p
+  router.push({ query: q })
+}
+
+function setContentFilter(value: string) {
+  pushQuery({ content: value, mode: undefined, rating: undefined })
+}
+
+function setModeFilter(value: string) {
+  pushQuery({ mode: value })
+}
+
+function setRatingFilter(value: string) {
+  const modes = value === 'r18'
+    ? (isNovel.value ? novelR18Modes : artworkR18Modes)
+    : (isNovel.value ? novelSafeModes : artworkSafeModes)
+  const currentModeValid = modes.some((m) => m.value === selectedMode.value)
+  pushQuery({
+    rating: value,
+    mode: currentModeValid ? undefined : 'daily',
+  })
 }
 
 async function init(): Promise<void> {
-  const { p, mode, date, content } = route.query
+  const { p, date, content } = route.query
+  const apiMode = resolveApiMode(
+    selectedMode.value,
+    selectedRating.value,
+    selectedContent.value
+  )
   error.value = ''
   try {
     if (content === 'novel') {
       await rankingStore.fetchNovelRanking({
         p: p as string | undefined,
-        mode: (mode as string) || 'daily',
+        mode: apiMode,
       })
     } else {
       await rankingStore.fetchRanking({
         p: p as string | undefined,
-        mode: (mode as string) || 'daily',
+        mode: apiMode,
         date: date as string | undefined,
         content: (content as string) || 'all',
       })
