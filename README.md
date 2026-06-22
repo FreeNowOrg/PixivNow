@@ -1,6 +1,6 @@
 <div align="center">
 
-![PixivNow Logo](app/assets/PixivNow.svg)
+<img src="app/assets/PixivNow.svg" alt="PixivNow Logo" width="200"/>
 
 PixivNow - Now, everyone can enjoy Pixiv!
 
@@ -55,6 +55,10 @@ Docker 部署时可在 `docker-compose.yml` 中添加 `environment` 配置。
 
 ## API
 
+> AJAX API 的请求格式与示例：[pixiv-web-api.md](docs/pixiv-web-api.md)
+
+### 鉴权
+
 通过以下方式传递用户 token 鉴权（二选一）：
 
 - Header `Authorization`
@@ -79,6 +83,12 @@ Docker 部署时可在 `docker-compose.yml` 中添加 `environment` 配置。
 ### `/api/user`
 
 辅助接口，通过传入的 token，返回当前登录用户信息 (globalData->userData)。
+
+## UI风格指南
+
+[Neubrutalism / 新野兽派](https://neubrutalism.com/)
+
+[Design Guide](docs/design-guide.md)
 
 ---
 
