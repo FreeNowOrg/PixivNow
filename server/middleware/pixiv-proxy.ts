@@ -22,12 +22,26 @@ export default defineEventHandler(async (event) => {
   }
 
   const reqUrl = getRequestURL(event)
-  const { data, status } = await pixivFetch({
+  const { data, status, headers: respHeaders } = await pixivFetch({
     event,
     method: event.method ?? 'GET',
     url: reqUrl.pathname + reqUrl.search,
     data: event.method !== 'GET' ? await readBody(event) : undefined,
   })
+
+  const forwardHeaders = [
+    'cache-control',
+    'expires',
+    'etag',
+    'last-modified',
+    'vary',
+    'content-type',
+  ]
+  for (const h of forwardHeaders) {
+    const val = respHeaders.get(h)
+    if (val) setResponseHeader(event, h, val)
+  }
+
   setResponseStatus(event, status)
   return data
 })

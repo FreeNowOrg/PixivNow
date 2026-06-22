@@ -66,14 +66,6 @@ async function proxyAwareFetch(
 
 // --- Pixiv API client ---
 
-export class PixivResponseError extends Error {
-  response: { status: number; data: any }
-  constructor(status: number, data: any) {
-    super(`Pixiv API error: ${status}`)
-    this.response = { status, data }
-  }
-}
-
 interface PixivFetchOptions {
   event: H3Event
   method?: string
@@ -84,7 +76,7 @@ interface PixivFetchOptions {
 
 export async function pixivFetch(
   opts: PixivFetchOptions
-): Promise<{ data: any }> {
+): Promise<{ data: any; status: number; headers: Headers }> {
   const { event } = opts
   const method = (opts.method ?? 'GET').toUpperCase()
 
@@ -164,11 +156,6 @@ export async function pixivFetch(
     signal: AbortSignal.timeout(9000),
   })
 
-  if (!response.ok) {
-    const errorData = await response.text().catch(() => '')
-    throw new PixivResponseError(response.status, errorData)
-  }
-
   const contentType = response.headers.get('content-type') ?? ''
   const data = contentType.includes('application/json')
     ? await response.json()
@@ -180,7 +167,7 @@ export async function pixivFetch(
         ? JSON.stringify(data, null, 2)
         : String(data).trim()
     console.info(
-      colors.green('[SEND] >'),
+      colors.green(`[SEND ${response.status}] >`),
       colors.cyan(url.pathname),
       `\n${colors.yellow(typeof data)} ${
         out.length >= 200 ? out.slice(0, 200).trim() + '\n...' : out
@@ -188,7 +175,7 @@ export async function pixivFetch(
     )
   }
 
-  return { data }
+  return { data, status: response.status, headers: response.headers }
 }
 
 // --- Pximg proxy fetch ---
