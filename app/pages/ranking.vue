@@ -2,49 +2,44 @@
 #ranking-view
   .body-inner
     h1 排行榜
-    .ranking-filters
-      .filter-row
-        span.filter-label 内容
-        .filter-tabs
-          button.filter-tab(
-            v-for='opt in contentOptions',
-            :key='opt.value',
-            :class='{ active: selectedContent === opt.value }',
-            @click='setFilter("content", opt.value)'
-          )
-            | {{ opt.label }}
-      .filter-row
-        span.filter-label 模式
-        .filter-tabs
-          button.filter-tab(
-            v-for='opt in activeModeOptions',
-            :key='opt.value',
-            :class='{ active: selectedMode === opt.value }',
-            @click='setFilter("mode", opt.value)'
-          ) {{ opt.label }}
 
   //- Error
-  section(v-if='error')
+  section(v-if='error && !rankingStore.loading')
     .body-inner
       ErrorPage(:description='error' title='出大问题')
 
-  //- Loading
-  section(v-if='rankingStore.loading')
+  FnbSpin(:show='rankingStore.loading')
     .body-inner
-      .loading
-        Placeholder
+      .ranking-filters
+        .filter-row
+          span.filter-label 内容
+          .filter-tabs
+            button.filter-tab(
+              v-for='opt in contentOptions',
+              :key='opt.value',
+              :class='{ active: selectedContent === opt.value }',
+              @click='setFilter("content", opt.value)'
+            )
+              | {{ opt.label }}
+        .filter-row
+          span.filter-label 模式
+          .filter-tabs
+            button.filter-tab(
+              v-for='opt in activeModeOptions',
+              :key='opt.value',
+              :class='{ active: selectedMode === opt.value }',
+              @click='setFilter("mode", opt.value)'
+            ) {{ opt.label }}
 
-  //- Result — Artwork
-  section(v-if='!isNovel && rankingStore.rankingData')
-    .body-inner
-      h2.ranking-date {{ rankingStore.rankingData.date.toLocaleDateString('zh', { dateStyle: 'long' }) }}
-      ArtworkLargeList(:rank-list='rankingStore.rankingData.contents')
+      //- Result — Artwork
+      template(v-if='!isNovel && rankingStore.rankingData')
+        h2.ranking-date {{ rankingStore.rankingData.date.toLocaleDateString('zh', { dateStyle: 'long' }) }}
+        ArtworkLargeList(:rank-list='rankingStore.rankingData.contents')
 
-  //- Result — Novel
-  section(v-if='isNovel && rankingStore.novelRankingData')
-    .body-inner
-      h2.ranking-date {{ rankingStore.novelRankingData.date }}
-      NovelList(:list='rankingStore.novelRankingData.contents')
+      //- Result — Novel
+      template(v-if='isNovel && rankingStore.novelRankingData')
+        h2.ranking-date {{ rankingStore.novelRankingData.date }}
+        NovelList(:list='rankingStore.novelRankingData.contents')
 </template>
 
 <script lang="ts" setup>
@@ -52,7 +47,6 @@ definePageMeta({ name: 'ranking' })
 import ArtworkLargeList from '~/components/Artwork/ArtworkLargeList.vue'
 import NovelList from '~/components/Novel/NovelList.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
-import Placeholder from '~/components/Placeholder.vue'
 import { useRankingStore } from '~/stores/ranking'
 import { effect } from 'vue'
 import { setTitle } from '~/utils/setTitle'
