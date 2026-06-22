@@ -84,6 +84,10 @@ onMounted(() => setTitle('探索发现'))
 </script>
 
 <style lang="scss" scoped>
+#discovery-view {
+  margin-top: 1.5rem;
+}
+
 .discover-header {
   display: flex;
   align-items: center;
