@@ -12,10 +12,8 @@ const props = defineProps<{
 }>()
 
 const searchUrl = computed(() => {
-  const base = `/search/${encodeURIComponent(props.tag)}/1`
-  if (!props.searchQuery || !Object.keys(props.searchQuery).length) return base
-  const qs = new URLSearchParams(props.searchQuery).toString()
-  return `${base}?${qs}`
+  const params = new URLSearchParams({ q: props.tag, ...(props.searchQuery ?? {}) })
+  return `/search?${params.toString()}`
 })
 </script>
 

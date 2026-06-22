@@ -59,7 +59,7 @@
               FnbTag(
                 :key='tag',
                 clickable,
-                @click='$router.push(`/search/${encodeURIComponent(tag)}/1`)',
+                @click='$router.push({ path: "/search", query: { q: tag } })',
                 v-for='tag in randomBg?.tags'
               ) {{ tag }}
 

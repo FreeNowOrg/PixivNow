@@ -12,7 +12,7 @@
 import IFasSearch from '~icons/fa-solid/search'
 const route = useRoute()
 const router = useRouter()
-const keyword = ref((route.params.keyword as string) || '')
+const keyword = ref((route.query.q as string) || '')
 
 function makeSearch(): void {
   if (!keyword.value) {
@@ -22,7 +22,7 @@ function makeSearch(): void {
     router.push(`/artworks/${/^id:(\d+)$/.exec(keyword.value)?.[1]}`)
     return
   }
-  router.push(`/search/${encodeURIComponent(keyword.value)}/1`)
+  router.push({ path: '/search', query: { q: keyword.value } })
 }
 </script>
 
