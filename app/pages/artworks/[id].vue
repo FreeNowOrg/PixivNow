@@ -48,7 +48,7 @@
 
               p.stats
                 span.stat-item(title='点赞')
-                  IFasThumbsUp(aria-hidden='true')
+                  IFasThumbsUp.i-like(aria-hidden='true')
                   | {{ illust.likeCount }}
 
                 //- 收藏
@@ -62,10 +62,10 @@
                   | {{ illust.bookmarkCount }}
 
                 span.stat-item(title='浏览')
-                  IFasEye(aria-hidden='true')
+                  IFasEye.i-view(aria-hidden='true')
                   | {{ illust.viewCount }}
                 span.stat-item(title='页数')
-                  IFasImages(aria-hidden='true')
+                  IFasImages.i-pages(aria-hidden='true')
                   | {{ pages.length }}张
 
               p.create-date {{ new Date(illust.createDate).toLocaleString() }}
@@ -394,41 +394,62 @@ h1 {
 }
 
 .stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  align-items: center;
+  display: inline-flex;
+  align-items: stretch;
+  margin: 0.5rem 0;
+  background: var(--fnb-surface);
+  @include fnb-border-sm;
+  @include fnb-shadow-xs;
 
   .stat-item {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border-radius: var(--fnb-radius-sm);
-    color: #aaa;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    color: var(--fnb-text);
+    font-weight: 800;
     font-size: 0.9rem;
     line-height: 1;
     transition: background-color 0.15s, color 0.15s;
+
+    & + .stat-item {
+      border-left: 2px solid var(--fnb-border);
+    }
+  }
+
+  .i-like {
+    color: var(--fnb-brand);
+  }
+  .i-view {
+    color: var(--fnb-accent);
+  }
+  .i-pages {
+    color: var(--fnb-text-muted);
   }
 
   .bookmark-btn {
     border: none;
-    background: none;
+    background: transparent;
     font: inherit;
+    font-weight: 800;
     cursor: pointer;
-    &:hover {
-      background-color: rgba(255, 100, 100, 0.12);
-      color: #e04060;
+
+    svg {
+      color: var(--fnb-bookmark);
+    }
+
+    &:hover:not(.bookmarked) {
+      background-color: var(--fnb-highlight);
     }
     &:focus-visible {
       outline: 2px solid var(--fnb-brand);
       outline-offset: 2px;
     }
     &.bookmarked {
-      color: var(--fnb-danger);
-      font-weight: 700;
-      &:hover {
-        background-color: rgba(255, 100, 100, 0.08);
+      background-color: var(--fnb-bookmark);
+      color: #fff;
+      svg {
+        color: #fff;
       }
     }
   }
