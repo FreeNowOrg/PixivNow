@@ -165,7 +165,8 @@ section {
 
 h1 {
   --bg-color: var(--fnb-brand);
-  box-shadow: 0 2px 0 var(--bg-color);
+  display: inline-block;
+  box-shadow: 0 4px 0 var(--bg-color);
   margin: 0 0 1rem;
 
   &.danger {

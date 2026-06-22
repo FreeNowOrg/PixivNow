@@ -18,10 +18,14 @@
         .summary
           h1(:class='{ danger: novel.xRestrict }') {{ novel.title }}
           .meta
-            span(v-if='novel.xRestrict') R-18
-            span(v-if='novel.isOriginal') 原创
-            span(v-if='characterLabel') {{ characterLabel }}
-            span(v-if='novel.readingTime') {{ Math.ceil(novel.readingTime / 60) }} 分钟
+            span.meta-chip.danger(v-if='novel.xRestrict') R-18
+            span.meta-chip.original(v-if='novel.isOriginal') 原创
+            span.meta-chip(v-if='characterLabel')
+              IFasAlignLeft(aria-hidden='true')
+              | {{ characterLabel }}
+            span.meta-chip(v-if='novel.readingTime')
+              IFasClock(aria-hidden='true')
+              | {{ Math.ceil(novel.readingTime / 60) }} 分钟
           .actions
             FnbButton(size='sm', variant='primary', @click='scrollToReader')
               template(#icon): IFasBookOpen
@@ -40,13 +44,13 @@
           p.description.no-desc(v-else) 作者未填写简介
           .stats
             span.stat-item(title='点赞')
-              IFasThumbsUp(aria-hidden='true')
+              IFasThumbsUp.i-like(aria-hidden='true')
               | {{ novel.likeCount }}
             span.stat-item(title='收藏')
-              IFasHeart(aria-hidden='true')
+              IFasHeart.i-bookmark(aria-hidden='true')
               | {{ novel.bookmarkCount ?? 0 }}
             span.stat-item(title='浏览')
-              IFasEye(aria-hidden='true')
+              IFasEye.i-view(aria-hidden='true')
               | {{ novel.viewCount }}
           .tags
             ArtTag(
@@ -100,6 +104,8 @@ import IFasBookOpen from '~icons/fa-solid/book-open'
 import IFasEye from '~icons/fa-solid/eye'
 import IFasHeart from '~icons/fa-solid/heart'
 import IFasThumbsUp from '~icons/fa-solid/thumbs-up'
+import IFasAlignLeft from '~icons/fa-solid/align-left'
+import IFasClock from '~icons/fa-solid/clock'
 import { effect } from 'vue'
 import { useNovelStore } from '~/stores/novel'
 import { useUserProfileStore } from '~/stores/user-profile'
@@ -201,7 +207,8 @@ section {
 
 h1 {
   --bg-color: var(--fnb-brand);
-  box-shadow: 0 2px 0 var(--bg-color);
+  display: inline-block;
+  box-shadow: 0 4px 0 var(--bg-color);
   margin: 0 0 1rem;
 
   &.danger {
@@ -209,22 +216,79 @@ h1 {
   }
 }
 
-.meta,
-.stats,
 .tags,
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin: 0.75rem 0;
+  margin: 0.85rem 0;
 }
 
-.meta span,
+// ── Meta chips ──
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.85rem 0;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: var(--fnb-surface);
+  color: var(--fnb-text);
+  @include fnb-border-sm;
+
+  svg {
+    font-size: 0.85em;
+    opacity: 0.65;
+  }
+
+  &.danger {
+    background: var(--fnb-danger);
+    color: #fff;
+    border-color: var(--fnb-border);
+  }
+
+  &.original {
+    background: var(--fnb-highlight);
+  }
+}
+
+// ── Stats strip ──
+.stats {
+  display: inline-flex;
+  margin: 1rem 0;
+  background: var(--fnb-surface);
+  @include fnb-border-sm;
+  @include fnb-shadow-xs;
+}
+
 .stat-item {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  color: var(--fnb-text-muted);
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  font-weight: 800;
+  font-size: 0.92rem;
+
+  & + .stat-item {
+    border-left: 2px solid var(--fnb-border);
+  }
+
+  .i-like {
+    color: var(--fnb-brand);
+  }
+  .i-bookmark {
+    color: var(--fnb-bookmark);
+  }
+  .i-view {
+    color: var(--fnb-accent);
+  }
 }
 
 .description {

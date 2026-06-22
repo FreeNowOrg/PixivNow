@@ -3,43 +3,49 @@
   .body-inner
     SearchBox.big
     .search-filters
-      .filter-row
-        .filter-tabs
-          button.filter-tab(
-            v-for='opt in contentOptions',
-            :key='opt.value',
-            :class='{ active: selectedContent === opt.value }',
-            @click='setQuery({ content: opt.value })'
-          ) {{ opt.label }}
-      .filter-row
-        .filter-tabs
-          button.filter-tab(
-            v-for='opt in activeSModeOptions',
-            :key='opt.value',
-            :class='{ active: selectedSMode === opt.value }',
-            @click='setQuery({ s_mode: opt.value })'
-          ) {{ opt.label }}
-        FnbSelect(
-          :model-value='selectedOrder',
-          :options='orderOptions',
-          @update:model-value='v => setQuery({ order: v })'
-        )
-        FnbSelect(
-          :model-value='selectedMode',
-          :options='modeOptions',
-          @update:model-value='v => setQuery({ mode: v })'
-        )
-        FnbSelect(
-          :model-value='selectedAiType',
-          :options='aiTypeOptions',
-          @update:model-value='v => setQuery({ ai_type: v })'
-        )
-        FnbSelect(
-          v-if='isNovel',
-          :model-value='selectedLang',
-          :options='langOptions',
-          @update:model-value='v => setQuery({ lang: v })'
-        )
+      .content-tabs
+        button.content-tab(
+          v-for='opt in contentOptions',
+          :key='opt.value',
+          :class='{ active: selectedContent === opt.value }',
+          @click='setQuery({ content: opt.value })'
+        ) {{ opt.label }}
+      .refine-bar
+        .refine-field
+          span.refine-label 匹配
+          FnbSelect(
+            :model-value='selectedSMode',
+            :options='activeSModeOptions',
+            @update:model-value='v => setQuery({ s_mode: v })'
+          )
+        .refine-field
+          span.refine-label 排序
+          FnbSelect(
+            :model-value='selectedOrder',
+            :options='orderOptions',
+            @update:model-value='v => setQuery({ order: v })'
+          )
+        .refine-field
+          span.refine-label 分级
+          FnbSelect(
+            :model-value='selectedMode',
+            :options='modeOptions',
+            @update:model-value='v => setQuery({ mode: v })'
+          )
+        .refine-field
+          span.refine-label AI
+          FnbSelect(
+            :model-value='selectedAiType',
+            :options='aiTypeOptions',
+            @update:model-value='v => setQuery({ ai_type: v })'
+          )
+        .refine-field(v-if='isNovel')
+          span.refine-label 语言
+          FnbSelect(
+            :model-value='selectedLang',
+            :options='langOptions',
+            @update:model-value='v => setQuery({ lang: v })'
+          )
 
   //- Error
   section(v-if='error && !searchStore.loading')
@@ -285,30 +291,24 @@ onMounted(() => makeSearch())
 .search-filters {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.85rem;
   margin-top: 1rem;
 }
 
-.filter-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.filter-tabs {
+// ── Primary axis: content type ──
+.content-tabs {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
 
-.filter-tab {
+.content-tab {
   @include fnb-border-sm;
   @include fnb-shadow-xs;
-  padding: 0.3rem 0.75rem;
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 700;
+  padding: 0.4rem 0.95rem;
+  font-family: var(--fnb-font-display);
+  font-size: 0.9rem;
+  font-weight: 800;
   background: var(--fnb-surface);
   color: var(--fnb-text);
   cursor: pointer;
@@ -318,12 +318,34 @@ onMounted(() => makeSearch())
     background: var(--fnb-brand);
     color: #fff;
     box-shadow: none;
-    transform: translate(3px, 3px);
+    transform: translate(2px, 2px);
   }
 
   &:hover:not(.active) {
     background: var(--fnb-highlight);
   }
+}
+
+// ── Secondary axis: refinement ──
+.refine-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1.15rem;
+}
+
+.refine-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.refine-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--fnb-text-muted);
+  white-space: nowrap;
 }
 
 .pagenator {

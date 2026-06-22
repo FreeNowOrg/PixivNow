@@ -14,7 +14,7 @@
         .filter-row
           span.filter-label 内容
           .filter-tabs
-            button.filter-tab(
+            button.content-tab(
               v-for='opt in contentOptions',
               :key='opt.value',
               :class='{ active: selectedContent === opt.value }',
@@ -30,11 +30,13 @@
               :class='{ active: selectedMode === opt.value }',
               @click='setModeFilter(opt.value)'
             ) {{ opt.label }}
-          FnbSelect(
-            :model-value='selectedRating',
-            :options='ratingOptions',
-            @update:model-value='setRatingFilter'
-          )
+          .refine-field
+            span.refine-label 分级
+            FnbSelect(
+              :model-value='selectedRating',
+              :options='ratingOptions',
+              @update:model-value='setRatingFilter'
+            )
 
       //- Result — Artwork
       template(v-if='!isNovel && rankingStore.rankingData')
@@ -255,13 +257,10 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 
-.filter-tab {
+.filter-tab,
+.content-tab {
   @include fnb-border-sm;
   @include fnb-shadow-xs;
-  padding: 0.3rem 0.75rem;
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 700;
   background: var(--fnb-surface);
   color: var(--fnb-text);
   cursor: pointer;
@@ -271,12 +270,42 @@ onMounted(() => {
     background: var(--fnb-brand);
     color: #fff;
     box-shadow: none;
-    transform: translate(3px, 3px);
+    transform: translate(2px, 2px);
   }
 
   &:hover:not(.active) {
     background: var(--fnb-highlight);
   }
+}
+
+// Secondary axis: mode tabs
+.filter-tab {
+  padding: 0.3rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+// Primary axis: content tabs
+.content-tab {
+  padding: 0.4rem 0.95rem;
+  font-family: var(--fnb-font-display);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.refine-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.refine-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--fnb-text-muted);
+  white-space: nowrap;
 }
 
 .ranking-date {
