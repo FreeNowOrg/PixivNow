@@ -396,14 +396,18 @@ export class PixivWebClient {
     const { data } = await this.http.get<
       PixivResponse<{
         display_a: { rank_a: NovelRankItem[] }
-        date: string
+        date: string | null
+        start: string | null
+        end: string | null
       }>
     >('/ajax/ranking/novel', {
       params: { mode: params?.mode ?? 'daily', p: params?.p },
     })
     const body = this.unwrap(data)
+    const date =
+      body.date ?? (body.start && body.end ? `${body.start}～${body.end}` : '')
     return {
-      date: body.date,
+      date,
       contents: (body.display_a?.rank_a ?? []).map(
         (item): RankedNovelInfo => ({
           id: `${item.id}`,

@@ -156,8 +156,9 @@ const activeBaseModes = computed(() => {
   return isR18.value ? artworkR18Modes : artworkSafeModes
 })
 
-function pushQuery(query: Record<string, string | undefined>) {
-  const q = { ...route.query, ...query } as Record<string, string>
+function pushQuery(updates: Record<string, string>, remove?: string[]) {
+  const q = { ...route.query, ...updates } as Record<string, string>
+  for (const key of remove ?? []) delete q[key]
   if (q.content === 'all') delete q.content
   if (q.mode === 'daily') delete q.mode
   if (q.rating === 'safe') delete q.rating
@@ -166,7 +167,7 @@ function pushQuery(query: Record<string, string | undefined>) {
 }
 
 function setContentFilter(value: string) {
-  pushQuery({ content: value, mode: undefined, rating: undefined })
+  pushQuery({ content: value }, ['mode', 'rating'])
 }
 
 function setModeFilter(value: string) {
@@ -178,10 +179,9 @@ function setRatingFilter(value: string) {
     ? (isNovel.value ? novelR18Modes : artworkR18Modes)
     : (isNovel.value ? novelSafeModes : artworkSafeModes)
   const currentModeValid = modes.some((m) => m.value === selectedMode.value)
-  pushQuery({
-    rating: value,
-    mode: currentModeValid ? undefined : 'daily',
-  })
+  const updates: Record<string, string> = { rating: value }
+  if (!currentModeValid) updates.mode = 'daily'
+  pushQuery(updates)
 }
 
 async function init(): Promise<void> {
