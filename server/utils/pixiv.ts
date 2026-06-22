@@ -3,20 +3,18 @@ import colors from 'picocolors'
 
 export const PROD = process.env.NODE_ENV === 'production'
 export const DEV = !PROD
-export const USER_AGENT =
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0'
+export const PROXY_USER_AGENT =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36'
 
 export const PXIMG_BASEURL_I = (() => {
   const i =
-    process.env.NUXT_PUBLIC_PXIMG_BASEURL_I ||
-    process.env.VITE_PXIMG_BASEURL_I
+    process.env.NUXT_PUBLIC_PXIMG_BASEURL_I || process.env.VITE_PXIMG_BASEURL_I
   return i ? i.replace(/\/$/, '') + '/' : '/-/'
 })()
 
 export const PXIMG_BASEURL_S = (() => {
   const s =
-    process.env.NUXT_PUBLIC_PXIMG_BASEURL_S ||
-    process.env.VITE_PXIMG_BASEURL_S
+    process.env.NUXT_PUBLIC_PXIMG_BASEURL_S || process.env.VITE_PXIMG_BASEURL_S
   return s ? s.replace(/\/$/, '') + '/' : '/~/'
 })()
 
@@ -104,8 +102,7 @@ export async function pixivFetch(
   }
 
   // Extract auth info
-  const token = (headers['authorization'] || '')
-    .replace(/^Bearer\s+/i, '')
+  const token = (headers['authorization'] || '').replace(/^Bearer\s+/i, '')
   const cookies = CookieUtils.toJSON(headers['cookie'] || '')
   const csrfToken = headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
 
@@ -117,7 +114,7 @@ export async function pixivFetch(
   Object.assign(headers, {
     origin: 'https://www.pixiv.net',
     referer: 'https://www.pixiv.net/',
-    'user-agent': USER_AGENT,
+    'user-agent': PROXY_USER_AGENT,
     cookie: CookieUtils.toString(cookies),
   })
   headers['accept-language'] ??=
@@ -132,10 +129,7 @@ export async function pixivFetch(
   // Prepare body
   let body: string | undefined
   if (method !== 'GET' && opts.data != null) {
-    body =
-      typeof opts.data === 'string'
-        ? opts.data
-        : JSON.stringify(opts.data)
+    body = typeof opts.data === 'string' ? opts.data : JSON.stringify(opts.data)
     if (typeof opts.data !== 'string') {
       headers['content-type'] = 'application/json'
     }
@@ -188,7 +182,7 @@ export async function pximgFetch(
     headers: {
       ...headers,
       referer: 'https://www.pixiv.net/',
-      'user-agent': USER_AGENT,
+      'user-agent': PROXY_USER_AGENT,
     },
   })
 }

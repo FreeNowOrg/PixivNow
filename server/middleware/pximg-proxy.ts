@@ -8,6 +8,27 @@ const PREFIX_MAP: Record<string, string> = {
   '-': 'https://i.pximg.net/',
   '~': 'https://s.pximg.net/',
 }
+const PROXY_REQUEST_HEADERS = [
+  'accept',
+  'accept-encoding',
+  'accept-language',
+  'cache-control',
+  'if-modified-since',
+  'if-none-match',
+  'if-range',
+  'range',
+]
+const PROXY_RESPONSE_HEADERS = [
+  'accept-ranges',
+  'cache-control',
+  'content-disposition',
+  'content-length',
+  'content-range',
+  'content-type',
+  'etag',
+  'expires',
+  'last-modified',
+]
 
 export default defineEventHandler(async (event) => {
   const pathname = getRequestURL(event).pathname
@@ -19,25 +40,15 @@ export default defineEventHandler(async (event) => {
   }
 
   const [, prefix, path] = match
-  const baseUrl = PREFIX_MAP[prefix]
+  const baseUrl = PREFIX_MAP[prefix!]
   if (!baseUrl) return
 
   const url = `${baseUrl}${path}`
 
   const reqHeaders = getHeaders(event)
-  const proxyHeaderNames = [
-    'accept',
-    'accept-encoding',
-    'accept-language',
-    'range',
-    'if-range',
-    'if-none-match',
-    'if-modified-since',
-    'cache-control',
-  ]
 
   const headers: Record<string, string> = {}
-  for (const h of proxyHeaderNames) {
+  for (const h of PROXY_REQUEST_HEADERS) {
     if (typeof reqHeaders[h] === 'string') {
       headers[h] = reqHeaders[h]
     }
@@ -46,25 +57,14 @@ export default defineEventHandler(async (event) => {
   try {
     const response = await pximgFetch(url, headers)
 
-    const exposeHeaders = [
-      'content-type',
-      'content-length',
-      'cache-control',
-      'content-disposition',
-      'last-modified',
-      'etag',
-      'accept-ranges',
-      'content-range',
-      'vary',
-    ]
-    for (const h of exposeHeaders) {
+    for (const h of PROXY_RESPONSE_HEADERS) {
       const val = response.headers.get(h)
       if (val) {
         setResponseHeader(event, h, val)
       }
     }
     setResponseStatus(event, response.status)
-    return Buffer.from(await response.arrayBuffer())
+    return response
   } catch (err: any) {
     console.error('Image proxy error:', url, err?.message)
     throw createError({

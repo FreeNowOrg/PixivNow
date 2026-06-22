@@ -5,56 +5,55 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const cookies = parseCookies(event)
   const authHeader = getHeader(event, 'authorization') || ''
-  const token = authHeader.replace(/^Bearer\s+/i, '') || cookies.PHPSESSID || (query.token as string)
+  const token =
+    authHeader.replace(/^Bearer\s+/i, '') ||
+    cookies.PHPSESSID ||
+    (query.token as string)
   if (!token) {
-    throw createError({ statusCode: 403, message: '未配置用户密钥' })
+    throw createError({ statusCode: 403, message: 'Missing user token' })
   }
 
+  const { data, status } = await pixivFetch({
+    event,
+    url: '/',
+    params: query,
+  })
+
+  if (status !== 200) {
+    throw createError({ statusCode: status, data })
+  }
+
+  const $ = load(data)
+
+  let meta: { userData: any; token: string }
+  const $legacyGlobalMeta = $('meta[name="global-data"]')
+  const $nextDataScript = $('script#__NEXT_DATA__')
+
   try {
-    const { data } = await pixivFetch({
-      event,
-      url: '/',
-      params: query,
-    })
-
-    const $ = load(data)
-
-    let meta: { userData: any; token: string }
-    const $legacyGlobalMeta = $('meta[name="global-data"]')
-    const $nextDataScript = $('script#__NEXT_DATA__')
-
-    try {
-      if ($legacyGlobalMeta.length > 0) {
-        meta = resolveLegacyGlobalMeta($)
-      } else if ($nextDataScript.length > 0) {
-        meta = resolveNextData($)
-      } else {
-        throw new Error('未知的元数据类型', {
-          cause: {
-            error: new TypeError('No valid resolver found'),
-            meta: null,
-          },
-        })
-      }
-    } catch (error: any) {
-      throw createError({
-        statusCode: 401,
-        data: {
-          message: error.message,
-          cause: error.cause,
+    if ($legacyGlobalMeta.length > 0) {
+      meta = resolveLegacyGlobalMeta($)
+    } else if ($nextDataScript.length > 0) {
+      meta = resolveNextData($)
+    } else {
+      throw new Error('Cannot resolve user data', {
+        cause: {
+          error: new TypeError('No valid resolver found'),
+          meta: null,
         },
       })
     }
-
-    setResponseHeader(event, 'cache-control', 'no-cache')
-    return meta
-  } catch (err: any) {
-    if (err.statusCode) throw err // Re-throw h3 errors
+  } catch (error: any) {
     throw createError({
-      statusCode: err?.response?.status || 500,
-      data: err?.response?.data || String(err),
+      statusCode: 401,
+      data: {
+        message: error.message,
+        cause: error.cause,
+      },
     })
   }
+
+  setResponseHeader(event, 'cache-control', 'no-cache')
+  return meta
 })
 
 function resolveLegacyGlobalMeta($: CheerioAPI): {
@@ -63,7 +62,7 @@ function resolveLegacyGlobalMeta($: CheerioAPI): {
 } {
   const $meta = $('meta[name="global-data"]')
   if ($meta.length === 0 || !$meta.attr('content')) {
-    throw new Error('无效的用户密钥', {
+    throw new Error('Invalid user token', {
       cause: {
         error: new TypeError('No global-data meta found'),
         meta: $meta.prop('outerHTML'),
@@ -75,7 +74,7 @@ function resolveLegacyGlobalMeta($: CheerioAPI): {
   try {
     meta = JSON.parse($meta.attr('content') as string)
   } catch (error) {
-    throw new Error('解析元数据时出错', {
+    throw new Error('Error parsing user data', {
       cause: {
         error,
         meta: $meta.attr('content'),
@@ -84,7 +83,7 @@ function resolveLegacyGlobalMeta($: CheerioAPI): {
   }
 
   if (!meta.userData) {
-    throw new Error('无法获取登录状态', {
+    throw new Error('Error resolving user data', {
       cause: {
         error: new TypeError('userData is not defined'),
         meta,
@@ -104,7 +103,7 @@ function resolveNextData($: CheerioAPI): {
 } {
   const $nextDataScript = $('script#__NEXT_DATA__')
   if ($nextDataScript.length === 0) {
-    throw new Error('无法获取元数据', {
+    throw new Error('Error resolving user data', {
       cause: {
         error: new TypeError('No #__NEXT_DATA__ script found'),
         meta: null,
@@ -120,7 +119,7 @@ function resolveNextData($: CheerioAPI): {
       nextData?.props?.pageProps?.serverSerializedPreloadedState
     )
   } catch (error) {
-    throw new Error('解析元数据时出错', {
+    throw new Error('Error parsing user data', {
       cause: {
         error,
         meta: $nextDataScript.text(),
@@ -130,7 +129,7 @@ function resolveNextData($: CheerioAPI): {
 
   const userData = perloadState?.userData?.self
   if (!userData) {
-    throw new Error('意料外的元数据', {
+    throw new Error('Error resolving user data', {
       cause: {
         error: new TypeError('userData is not defined'),
         meta: nextData,

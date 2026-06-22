@@ -6,6 +6,14 @@ import { pixivFetch } from '~~/server/utils/pixiv'
 // Mirrors the original Vercel rewrites:
 //   /:__PREFIX(ajax|rpc|.+\.php)/:__PATH* → /api/http
 const PROXY_PATTERNS = [/^\/ajax\//, /^\/rpc\//, /\.php$/]
+const PROXY_RESPONSE_HEADERS = [
+  'cache-control',
+  'content-disposition',
+  'content-type',
+  'etag',
+  'expires',
+  'last-modified',
+]
 
 function shouldProxy(pathname: string): boolean {
   return PROXY_PATTERNS.some((re) => re.test(pathname))
@@ -22,21 +30,18 @@ export default defineEventHandler(async (event) => {
   }
 
   const reqUrl = getRequestURL(event)
-  const { data, status, headers: respHeaders } = await pixivFetch({
+  const {
+    data,
+    status,
+    headers: respHeaders,
+  } = await pixivFetch({
     event,
     method: event.method ?? 'GET',
     url: reqUrl.pathname + reqUrl.search,
     data: event.method !== 'GET' ? await readBody(event) : undefined,
   })
 
-  const forwardHeaders = [
-    'cache-control',
-    'expires',
-    'etag',
-    'last-modified',
-    'content-type',
-  ]
-  for (const h of forwardHeaders) {
+  for (const h of PROXY_RESPONSE_HEADERS) {
     const val = respHeaders.get(h)
     if (val) setResponseHeader(event, h, val)
   }
