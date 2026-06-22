@@ -54,8 +54,7 @@
   //- Landing: no keyword yet
   section.search-landing(v-else-if='!hasQuery')
     .body-inner
-      FnbCard(style='padding: 12vh 0; text-align: center')
-        .fnb-empty 输入关键词开始搜索
+      .fnb-empty(style='padding: 12vh 0; text-align: center') 输入关键词开始搜索
 
   //- Result (has keyword)
   section(v-else)
