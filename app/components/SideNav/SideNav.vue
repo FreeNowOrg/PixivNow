@@ -12,7 +12,7 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
         ul
           SideNavListLink(link='/' text='首页')
             IFasHome.link-icon
-          SideNavListLink.not-allowed(link='' text='探索发现')
+          SideNavListLink(link='/discovery' text='探索发现')
             IFasImage.link-icon
           SideNavListLink(link='/ranking' text='排行榜')
             IFasCrown.link-icon
