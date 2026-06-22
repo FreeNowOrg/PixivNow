@@ -15,7 +15,14 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden, "side-nav-opened"
 
     .flex.search-area(v-if='$route.name !== "search"')
       .search-full.align-right.flex-1
-        SearchBox
+        .header-search
+          FnbSelect.search-scope(
+            v-if='wide',
+            :model-value='searchType',
+            :options='contentOptions',
+            @update:model-value='searchType = $event'
+          )
+          SearchBox(:type='effectiveType', :no-icon='wide')
       .search-icon.align-right.flex-1
         button.pointer.plain(
           aria-label='搜索'
@@ -85,6 +92,7 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden, "side-nav-opened"
 
 <script lang="ts" setup>
 import SearchBox from './SearchBox.vue'
+import { contentOptions } from '~/utils/searchOptions'
 import IFasBars from '~icons/fa-solid/bars'
 import IFasSearch from '~icons/fa-solid/search'
 import { logout } from '~/composables/userData'
@@ -100,6 +108,10 @@ const showUserDropdown = ref(false)
 const userLinkRef = ref<HTMLElement | null>(null)
 const sideNavStore = useSideNavStore()
 const userStore = useUserStore()
+
+const searchType = ref('artworks')
+const wide = useMediaQuery('(min-width: 768px)')
+const effectiveType = computed(() => (wide.value ? searchType.value : 'artworks'))
 
 // Close dropdown when clicking outside .user-link
 onClickOutside(userLinkRef, () => {
@@ -204,6 +216,51 @@ useEventListener(window, 'scroll', () => {
 
   .search-area {
     flex: 1;
+  }
+
+  // Scope selector + search input merged into one pill
+  .header-search {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    background: var(--fnb-surface);
+    @include fnb-border-sm;
+    @include fnb-shadow-sm;
+    border-radius: var(--fnb-radius-sm);
+    // header sets color:#fff and .align-right — reset inside the pill
+    color: var(--fnb-text);
+    text-align: left;
+
+    .search-scope {
+      min-width: auto;
+      flex-shrink: 0;
+    }
+
+    .fnb-select-trigger {
+      border: none;
+      box-shadow: none;
+      border-right: 2px solid var(--fnb-border);
+      border-radius: var(--fnb-radius-sm) 0 0 var(--fnb-radius-sm);
+      background: transparent;
+      height: 100%;
+
+      &:hover {
+        transform: none;
+        background: var(--fnb-highlight);
+      }
+    }
+
+    .search-box {
+      flex: 1;
+
+      input {
+        border: none;
+        box-shadow: none;
+        background: transparent;
+        color: var(--fnb-text);
+        text-align: left;
+      }
+    }
   }
 
   .user-area {

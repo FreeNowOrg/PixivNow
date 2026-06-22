@@ -56,7 +56,7 @@
             ArtTag(
               :key='tag.tag',
               :tag='tag.tag',
-              :search-query='{ content: "novels", s_mode: "s_tag_only" }',
+              :search-query='{ type: "novels", s_mode: "s_tag_only" }',
               v-for='tag in novel.tags.tags'
             )
 
