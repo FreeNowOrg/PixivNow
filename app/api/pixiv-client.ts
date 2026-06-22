@@ -218,6 +218,31 @@ export class PixivWebClient {
     return this.unwrap(data)
   }
 
+  async getNovelRecommendInit(
+    id: string,
+    limit: number = 18
+  ): Promise<{ novels: NovelInfo[]; nextIds: string[] }> {
+    const { data } = await this.http.get<
+      PixivResponse<{ novels: NovelInfo[]; nextIds: string[] }>
+    >(`/ajax/novel/${id}/recommend/init`, { params: { limit } })
+    const body = this.unwrap(data)
+    return { novels: body.novels ?? [], nextIds: body.nextIds ?? [] }
+  }
+
+  async getNovelRecommendMore(
+    ids: string[]
+  ): Promise<{ novels: NovelInfo[] }> {
+    const searchParams = new URLSearchParams()
+    for (const id of ids) {
+      searchParams.append('novelIds[]', id)
+    }
+    const { data } = await this.http.get<
+      PixivResponse<{ novels: NovelInfo[] }>
+    >('/ajax/novel/recommend/novels', { params: searchParams })
+    const body = this.unwrap(data)
+    return { novels: body.novels ?? [] }
+  }
+
   async getUgoiraMeta(id: string): Promise<UgoiraMeta> {
     const { data } = await this.http.get<PixivResponse<UgoiraMeta>>(
       `/ajax/illust/${id}/ugoira_meta`
@@ -643,6 +668,22 @@ export class PixivWebClient {
     >('/ajax/illusts/comments/roots', {
       params: {
         illust_id: illustId,
+        limit: String(params.limit),
+        offset: String(params.offset),
+      },
+    })
+    return this.unwrap(data)
+  }
+
+  async getNovelComments(
+    novelId: string,
+    params: { limit: number; offset: number }
+  ): Promise<{ hasNext: boolean; comments: Comments[] }> {
+    const { data } = await this.http.get<
+      PixivResponse<{ hasNext: boolean; comments: Comments[] }>
+    >('/ajax/novels/comments/roots', {
+      params: {
+        novel_id: novelId,
         limit: String(params.limit),
         offset: String(params.offset),
       },

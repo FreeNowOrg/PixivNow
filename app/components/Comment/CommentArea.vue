@@ -25,8 +25,10 @@ import Comment from './Comment.vue'
 import type { Comments } from '~/types'
 import IFasPlus from '~icons/fa-solid/plus'
 import { useArtworkStore } from '~/stores/artwork'
+import { useNovelStore } from '~/stores/novel'
 
 const artworkStore = useArtworkStore()
+const novelStore = useNovelStore()
 const loading = ref(false)
 const comments = ref<Comments[]>([])
 const hasNext = ref(false)
@@ -34,6 +36,7 @@ const hasNext = ref(false)
 const props = defineProps<{
   id: string
   count: number
+  type?: 'illust' | 'novel'
 }>()
 
 async function init(id: string | number): Promise<void> {
@@ -47,7 +50,11 @@ async function init(id: string | number): Promise<void> {
 
   try {
     loading.value = true
-    const data = await artworkStore.fetchComments(`${id}`, {
+    const fetchComments =
+      props.type === 'novel'
+        ? novelStore.fetchComments
+        : artworkStore.fetchComments
+    const data = await fetchComments(`${id}`, {
       limit: comments.value.length ? 30 : 3,
       offset: comments.value.length,
     })

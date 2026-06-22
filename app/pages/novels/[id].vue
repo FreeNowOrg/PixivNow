@@ -64,6 +64,12 @@
       main.reader-area
         Card(title='正文')
           NovelReader#reader(:blocks='contentBlocks', ref='readerRef')
+        Card.comments(title='评论')
+          CommentArea(
+            :count='novel.commentCount',
+            :id='novel.id',
+            type='novel'
+          )
 
       aside.side-area
         Card(title='作者')
@@ -83,6 +89,20 @@
         Card(title='作者的其他小说' v-if='relatedNovels.length')
           NovelList(:list='relatedNovels')
 
+    //- 相关推荐
+    .recommend-works.body-inner(ref='recommendRef')
+      h2 相关推荐
+      NovelList(
+        :list='novelStore.recommendations',
+        :loading='!novelStore.recommendations.length'
+      )
+      ShowMore(
+        :loading='recommendLoading',
+        :method='handleMoreRecommend',
+        :text='recommendLoading ? "加载中" : "加载更多"'
+        v-if='novelStore.recommendations.length && novelStore.recommendNextIds.length'
+      )
+
   //- Error
   section.error(v-if='error')
     ErrorPage(:description='error' title='出大问题')
@@ -96,9 +116,11 @@ definePageMeta({
 import ArtTag from '~/components/ArtTag.vue'
 import AuthorCard from '~/components/AuthorCard.vue'
 import Card from '~/components/Card.vue'
+import CommentArea from '~/components/Comment/CommentArea.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
 import NovelList from '~/components/Novel/NovelList.vue'
 import NovelReader from '~/components/Novel/NovelReader.vue'
+import ShowMore from '~/components/ShowMore.vue'
 import IFasArrowRight from '~icons/fa-solid/arrow-right'
 import IFasBookOpen from '~icons/fa-solid/book-open'
 import IFasEye from '~icons/fa-solid/eye'
@@ -117,6 +139,8 @@ const route = useRoute()
 const novelStore = useNovelStore()
 const userProfileStore = useUserProfileStore()
 const readerRef = ref<HTMLElement>()
+const recommendRef = ref<HTMLElement | null>(null)
+const recommendLoading = ref(false)
 const loading = ref(true)
 const error = ref('')
 const novel = ref<Novel>()
@@ -149,16 +173,64 @@ function scrollToReader() {
   el?.scrollIntoView({ behavior: 'smooth' })
 }
 
+// Lazy-load recommendations when the section scrolls into view
+function observeRecommend(novelId: string) {
+  const unWatch = watch(
+    loading,
+    async (val) => {
+      if (val) return
+      await nextTick()
+      unWatch()
+      const ob = useIntersectionObserver(
+        recommendRef,
+        ([{ isIntersecting }]) => {
+          if (isIntersecting) {
+            handleRecommendInit(novelId)
+            ob.stop()
+          }
+        }
+      )
+    },
+    { immediate: true }
+  )
+}
+
+async function handleRecommendInit(id: string): Promise<void> {
+  if (recommendLoading.value || novelStore.recommendations.length) return
+  try {
+    recommendLoading.value = true
+    await novelStore.fetchRecommendInit(id)
+  } catch (err) {
+    console.error('novel recommend fetch error', err)
+  } finally {
+    recommendLoading.value = false
+  }
+}
+
+async function handleMoreRecommend(): Promise<void> {
+  if (recommendLoading.value || !novelStore.recommendNextIds.length) return
+  try {
+    recommendLoading.value = true
+    await novelStore.fetchRecommendMore()
+  } catch (err) {
+    console.error('novel recommend more error', err)
+  } finally {
+    recommendLoading.value = false
+  }
+}
+
 async function init(id: string): Promise<void> {
   loading.value = true
   error.value = ''
   novel.value = undefined
   user.value = undefined
+  novelStore.clearRecommendations()
 
   try {
     const novelData = await novelStore.fetchNovel(id)
     novel.value = novelData
     user.value = await userProfileStore.fetchUser(novelData.userId)
+    observeRecommend(id)
   } catch (err) {
     console.warn('novel fetch error', `#${id}`, err)
     error.value = err instanceof Error ? err.message : '未知错误'
