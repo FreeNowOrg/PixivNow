@@ -38,7 +38,7 @@
 
       //- Result — Artwork
       template(v-if='!isNovel && rankingStore.rankingData')
-        h2.ranking-date {{ rankingStore.rankingData.date.toLocaleDateString('zh', { dateStyle: 'long' }) }}
+        h2.ranking-date {{ rankingStore.rankingData.date }}
         ArtworkLargeList(:rank-list='rankingStore.rankingData.contents')
 
       //- Result — Novel
@@ -215,14 +215,7 @@ async function init(): Promise<void> {
   }
 }
 
-effect(() =>
-  setTitle(
-    rankingStore.rankingData?.date?.toLocaleDateString('zh', {
-      dateStyle: 'long',
-    }),
-    'Ranking'
-  )
-)
+effect(() => setTitle(rankingStore.rankingData?.date, 'Ranking'))
 
 watch(() => route.query, () => {
   init()

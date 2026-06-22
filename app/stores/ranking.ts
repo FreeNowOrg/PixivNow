@@ -3,7 +3,7 @@ import type { RankedArtworkInfo, RankedNovelInfo } from '~/types'
 
 export const useRankingStore = defineStore('ranking', () => {
   const rankingData = ref<{
-    date: Date
+    date: string
     contents: RankedArtworkInfo[]
   } | null>(null)
   const novelRankingData = ref<{
@@ -27,13 +27,8 @@ export const useRankingStore = defineStore('ranking', () => {
         date: params?.date,
         content: params?.content,
       })
-      const rankingDate = data.date
       rankingData.value = {
-        date: new Date(
-          +rankingDate.substring(0, 4),
-          +rankingDate.substring(4, 6) - 1,
-          +rankingDate.substring(6, 8)
-        ),
+        date: data.date,
         contents: data.contents,
       }
     } finally {

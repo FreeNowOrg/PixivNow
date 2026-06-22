@@ -348,11 +348,12 @@ export class PixivWebClient {
     if (params?.content) searchParams.set('content', params.content)
     const { data } = await this.http.get<{
       date: string
+      date_range_text: string
       contents: ArtworkRank[]
     }>('/ranking.php', { params: searchParams })
     const transformed = this.transform(data)
     return {
-      date: transformed.date,
+      date: transformed.date_range_text || transformed.date,
       contents: transformed.contents.map(
         (item): RankedArtworkInfo => ({
           id: `${item.illust_id}`,
