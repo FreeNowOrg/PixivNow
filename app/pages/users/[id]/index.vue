@@ -97,6 +97,10 @@
             .fnb-empty(v-if='!user.manga?.length') 用户没有漫画作品 (*/ω＼*)
             .user-manga(v-else)
               ArtworkListByUser(:user-id='user.userId', work-category='manga')
+          template(#panel-novels)
+            .fnb-empty(v-if='!user.novels?.length') 用户没有小说作品 (｡•́︿•̀｡)
+            .user-novels(v-else)
+              NovelList(:list='user.novels')
           template(#panel-public_bookmarks)
             ArtworkList(
               :list='[]',
@@ -177,6 +181,7 @@ definePageMeta({
 import ArtworkList from '~/components/Artwork/ArtworkList.vue'
 import ArtworkListByUser from '~/components/Artwork/ArtworkListByUser.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
+import NovelList from '~/components/Novel/NovelList.vue'
 import ShowMore from '~/components/ShowMore.vue'
 import IFasBirthdayCake from '~icons/fa-solid/birthday-cake'
 import IFasCheck from '~icons/fa-solid/check'
@@ -218,6 +223,7 @@ const hasMoreHiddenBookmarks = computed(
 enum UserTabs {
   illusts = 'illusts',
   mangas = 'mangas',
+  novels = 'novels',
   public_bookmarks = 'public_bookmarks',
   hidden_bookmarks = 'hidden_bookmarks'
 }
@@ -239,8 +245,11 @@ const tabsList = computed(() => {
   const list = [
     { key: UserTabs.illusts, label: '插画' },
     { key: UserTabs.mangas, label: '漫画' },
-    { key: UserTabs.public_bookmarks, label: '公开收藏' },
   ]
+  if (user.value?.novels?.length) {
+    list.push({ key: UserTabs.novels, label: '小说' })
+  }
+  list.push({ key: UserTabs.public_bookmarks, label: '公开收藏' })
   if (isSelfUserPage.value) {
     list.push({ key: UserTabs.hidden_bookmarks, label: '秘密收藏' })
   }
@@ -516,7 +525,8 @@ onMounted(async () => {
 }
 
 .user-illust,
-.user-manga {
+.user-manga,
+.user-novels {
   :deep(.author) {
     display: none;
   }

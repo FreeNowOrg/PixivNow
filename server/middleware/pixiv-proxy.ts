@@ -16,6 +16,7 @@ const PROXY_RESPONSE_HEADERS = [
 ]
 
 function shouldProxy(pathname: string): boolean {
+  if (pathname === '/novel/show.php') return false
   return PROXY_PATTERNS.some((re) => re.test(pathname))
 }
 

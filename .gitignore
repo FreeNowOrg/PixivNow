@@ -105,6 +105,8 @@ dist
 
 .vercel
 .claude
+.idea
+.omc
 
 dev-test
 *.dev.*

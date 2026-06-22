@@ -1,4 +1,5 @@
-import type { Artwork, ArtworkInfo } from './Artworks'
+import type { ArtworkInfo } from './Artworks'
+import type { NovelInfo } from './Novels'
 
 // Enums moved to ~/utils/constants.ts for runtime usage
 import type { UserXRestrict, UserPrivacyLevel } from '~/utils/constants'
@@ -75,7 +76,7 @@ export interface User {
   group: null
   illusts: ArtworkInfo[]
   manga: ArtworkInfo[]
-  novels: ArtworkInfo[]
+  novels: NovelInfo[]
 }
 
 export interface PixivUser {
@@ -106,6 +107,6 @@ export interface UserListItem {
   isBlocking: boolean
   isMypixiv: boolean
   illusts: ArtworkInfo[]
-  novels: any[]
+  novels: NovelInfo[]
   acceptRequest: boolean
 }
