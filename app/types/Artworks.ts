@@ -66,6 +66,11 @@ export interface ArtworkInfo extends ArtworkCommon {
   type: 'illust' | 'novel'
 }
 
+export type RankedArtworkInfo = ArtworkInfo & {
+  rank: number
+  viewCount: number
+}
+
 export type ArtworkInfoOrAd =
   | ArtworkInfo
   | {
