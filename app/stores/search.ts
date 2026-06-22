@@ -4,6 +4,7 @@ import type { ArtworkInfo, NovelInfo } from '~/types'
 export type SearchContentType =
   | 'artworks'
   | 'illustrations'
+  | 'ugoira'
   | 'manga'
   | 'novels'
 
@@ -33,7 +34,16 @@ export const useSearchStore = defineStore('search', () => {
       let data: { data: ArtworkInfo[]; total: number }
       switch (contentType) {
         case 'illustrations':
-          data = await pixivClient.searchIllustrations(keyword, params)
+          data = await pixivClient.searchIllustrations(keyword, {
+            ...params,
+            type: 'illust',
+          })
+          break
+        case 'ugoira':
+          data = await pixivClient.searchIllustrations(keyword, {
+            ...params,
+            type: 'ugoira',
+          })
           break
         case 'manga':
           data = await pixivClient.searchManga(keyword, params)

@@ -96,6 +96,7 @@ import { setTitle } from '~/utils/setTitle'
 const contentOptions = [
   { label: '综合', value: 'artworks' },
   { label: '插画', value: 'illustrations' },
+  { label: '动图', value: 'ugoira' },
   { label: '漫画', value: 'manga' },
   { label: '小说', value: 'novels' },
 ]
@@ -115,12 +116,12 @@ const novelSModeOptions = [
 ]
 
 const orderOptions = [
-  { label: '最新', value: 'date_d' },
-  { label: '最旧', value: 'date' },
+  { label: '新到旧', value: 'date_d' },
+  { label: '旧到新', value: 'date' },
 ]
 
 const modeOptions = [
-  { label: '全部', value: 'all' },
+  { label: '混池', value: 'all' },
   { label: '全年龄', value: 'safe' },
   { label: 'R18', value: 'r18' },
 ]
