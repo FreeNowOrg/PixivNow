@@ -1,11 +1,10 @@
 <template lang="pug">
 section.redirecting.body-inner
-  NSkeleton(text width='12rem')
+  FnbSkeleton(text width='12rem')
 </template>
 
 <script lang="ts" setup>
 definePageMeta({ name: 'novel-show-compat' })
-import { NSkeleton } from 'naive-ui'
 
 const route = useRoute()
 const router = useRouter()
