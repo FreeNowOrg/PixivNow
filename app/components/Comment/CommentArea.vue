@@ -1,5 +1,7 @@
 <template lang="pug">
-.comments-area(ref='commentsArea')
+.comments-area(v-if='disabled')
+  p.comments-closed 作者关闭了评论区
+.comments-area(v-else, ref='commentsArea')
   //- CommentSubmit(:id="id" @push-comment="pushComment")
   em.stats
     | 共{{ count || comments.length || 0 }}条评论
@@ -37,10 +39,11 @@ const props = defineProps<{
   id: string
   count: number
   type?: 'illust' | 'novel'
+  disabled?: boolean
 }>()
 
 async function init(id: string | number): Promise<void> {
-  if (loading.value) return
+  if (loading.value || props.disabled) return
   if (!props.count) {
     hasNext.value = false
     comments.value = []
@@ -90,5 +93,9 @@ const ob = useIntersectionObserver(
 .comments-list {
   list-style: none;
   padding-left: 0;
+}
+
+.comments-closed {
+  color: var(--fnb-text-muted);
 }
 </style>

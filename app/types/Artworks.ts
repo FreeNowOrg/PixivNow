@@ -148,6 +148,7 @@ export interface Artwork extends ArtworkCommon {
   bookmarkCount: number
   likeCount: number
   commentCount: number
+  commentOff?: 0 | 1
   responseCount: number
   viewCount: number
   isHowto: boolean

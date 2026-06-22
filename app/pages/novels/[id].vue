@@ -67,6 +67,7 @@
         Card.comments(title='评论')
           CommentArea(
             :count='novel.commentCount',
+            :disabled='novel.commentOff === 1',
             :id='novel.id',
             type='novel'
           )

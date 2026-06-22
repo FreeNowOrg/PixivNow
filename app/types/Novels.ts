@@ -82,6 +82,7 @@ export interface Novel {
   likeCount: number
   viewCount: number
   commentCount: number
+  commentOff?: 0 | 1
   markerCount?: number
   pageCount: number
   characterCount?: number
