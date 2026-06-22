@@ -958,6 +958,13 @@ onMounted(maybeFetch)
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  // Skip render/layout/image-decode for off-screen cards (heavy DOM).
+  // `auto` remembers the real height after first paint to avoid scroll jump.
+  > * {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 220px;
+  }
 }
 
 .discover-footer {

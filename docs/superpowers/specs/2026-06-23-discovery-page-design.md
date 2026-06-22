@@ -78,6 +78,7 @@ app/pages/discovery/users.vue    推荐用户子页
   - 网络层：`getDiscoveryUsers({ limit: 100 })` 一次拉满，去重后入 `userDiscoveryList` 缓冲。
   - 渲染层：页面用 `visibleCount`（初始 ~10）`slice` 增量显示；sentinel 进入视口时，缓冲还有未显示的就 `visibleCount += 10`（纯客户端不发请求），缓冲耗尽且未到底才 `appendUserDiscovery()` 再拉 100 入缓冲；「换一批」重置缓冲 + `visibleCount`。
   - 去重终止：与 artworks/novels 一致的「单批 0 新增即 `noMoreUserDiscovery`」。因每批拉 100、整批撞车概率极低，无需额外重试容错。
+  - 屏外卡片用 CSS `content-visibility: auto` + `contain-intrinsic-size` 跳过渲染/图片解码（仅 users 卡片，几乎零成本，缓解长滚动卡顿）。不做真·虚拟滚动（YAGNI，且会与 `ArtworkList` 瀑布流冲突）。
 - **未登录**：接口必须登录，未登录直接显示「请登录」提示，不发请求。
 
 ### 5. R18 开关
