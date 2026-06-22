@@ -412,6 +412,8 @@ git commit -m "refactor(store): extract discovery store from home, keep home beh
 
 ### Task 3: discovery store 增加推荐用户
 
+> `fetchUserDiscovery` / `appendUserDiscovery` 用 `limit: 100`（接口硬上限，实测 101+ 报错）—— 一次拉满当缓冲，配合 Task 6 的增量渲染，并降低小批次整批撞车导致过早判定到底的概率。终止逻辑沿用「单批 0 新增即 `noMore`」。
+
 **Files:**
 - Modify: `app/stores/discovery.ts`
 
@@ -442,7 +444,7 @@ import type { ArtworkInfo, NovelInfo, UserListItem } from '~/types'
     if (loadingUserDiscovery.value) return
     try {
       loadingUserDiscovery.value = true
-      const users = await pixivClient.getDiscoveryUsers({ limit: 20 })
+      const users = await pixivClient.getDiscoveryUsers({ limit: 100 })
       userDiscoverySeenIds.clear()
       noMoreUserDiscovery.value = false
       users.forEach((u) => userDiscoverySeenIds.add(u.userId))
@@ -863,29 +865,35 @@ git commit -m "feat(discovery): add artworks and novels sub-pages"
 
 - [ ] **Step 1: 创建 `app/pages/discovery/users.vue`**
 
+**关键策略（应对 FollowUserCard DOM 较重）：网络层一次拉满 `limit: 100` 入缓冲（Task 3），渲染层用 `visibleCount` 增量 `slice` 显示，首屏只渲染 ~10 张。未登录直接提示登录、不发请求（接口必须登录）。**
+
 ```vue
 <template lang="pug">
 #discovery-users
-  .user-list(v-if='discoveryStore.userDiscoveryList.length')
-    Card(v-for='u in discoveryStore.userDiscoveryList', :key='u.userId')
-      FollowUserCard(:user='u')
-  .user-list(v-else-if='discoveryStore.loadingUserDiscovery')
-    Card(v-for='n in 4', :key='n')
-      FollowUserCard
-  .discover-footer(v-if='!discoveryStore.loadingUserDiscovery')
-    .loading-more(v-if='userStore.isLoggedIn && discoveryStore.loadingMoreUserDiscovery')
-      FnbSkeleton(block, height='2rem', width='200px')
-    .login-prompt(v-else-if='!userStore.isLoggedIn')
-      p 登录后查看推荐用户
-      FnbButton(
-        size='sm',
-        variant='primary',
-        tag='RouterLink',
-        to='/login?back=/discovery/users'
-      )
-        template(#icon): ITablerLogin
-        | 登录
-    div(v-else-if='userStore.isLoggedIn', ref='scrollSentinel')
+  //- endpoint requires auth — show login prompt directly, no request
+  .login-prompt(v-if='!userStore.isLoggedIn')
+    p 推荐用户需要登录后查看
+    FnbButton(
+      size='sm',
+      variant='primary',
+      tag='RouterLink',
+      to='/login?back=/discovery/users'
+    )
+      template(#icon): ITablerLogin
+      | 登录
+
+  template(v-else)
+    .user-list(v-if='visibleUsers.length')
+      Card(v-for='u in visibleUsers', :key='u.userId')
+        FollowUserCard(:user='u')
+    .user-list(v-else-if='discoveryStore.loadingUserDiscovery')
+      Card(v-for='n in 4', :key='n')
+        FollowUserCard
+
+    .discover-footer(v-if='!discoveryStore.loadingUserDiscovery && visibleUsers.length')
+      .loading-more(v-if='discoveryStore.loadingMoreUserDiscovery')
+        FnbSkeleton(block, height='2rem', width='200px')
+      div(v-else-if='!atEnd', ref='scrollSentinel')
 </template>
 
 <script lang="ts" setup>
@@ -897,11 +905,42 @@ const discoveryStore = useDiscoveryStore()
 const userStore = useUserStore()
 const scrollSentinel = ref<HTMLElement | null>(null)
 
-useIntersectionObserver(scrollSentinel, ([{ isIntersecting }]) => {
-  if (isIntersecting && userStore.isLoggedIn) {
+const PAGE_SIZE = 10
+const visibleCount = ref(PAGE_SIZE)
+
+const visibleUsers = computed(() =>
+  discoveryStore.userDiscoveryList.slice(0, visibleCount.value)
+)
+
+// buffer fully revealed AND store says nothing more to fetch
+const atEnd = computed(
+  () =>
+    visibleCount.value >= discoveryStore.userDiscoveryList.length &&
+    discoveryStore.noMoreUserDiscovery
+)
+
+function loadMore() {
+  const buffered = discoveryStore.userDiscoveryList.length
+  if (visibleCount.value < buffered) {
+    // reveal more from the already-fetched buffer (no request)
+    visibleCount.value = Math.min(visibleCount.value + PAGE_SIZE, buffered)
+  } else if (!discoveryStore.noMoreUserDiscovery) {
+    // buffer exhausted — fetch the next batch of 100
     discoveryStore.appendUserDiscovery()
   }
+}
+
+useIntersectionObserver(scrollSentinel, ([{ isIntersecting }]) => {
+  if (isIntersecting && userStore.isLoggedIn) loadMore()
 })
+
+// reset incremental reveal when the list is replaced by 换一批
+watch(
+  () => discoveryStore.userDiscoveryList.length,
+  (len, oldLen) => {
+    if (len < oldLen) visibleCount.value = PAGE_SIZE
+  }
+)
 
 function maybeFetch() {
   if (userStore.isLoggedIn && !discoveryStore.userDiscoveryList.length) {
@@ -929,15 +968,16 @@ onMounted(maybeFetch)
     display: flex;
     justify-content: center;
   }
+}
 
-  .login-prompt {
-    padding: 2rem;
-    color: var(--fnb-text-muted);
+.login-prompt {
+  padding: 2rem;
+  text-align: center;
+  color: var(--fnb-text-muted);
 
-    p {
-      margin-bottom: 0.75rem;
-      font-weight: 700;
-    }
+  p {
+    margin-bottom: 0.75rem;
+    font-weight: 700;
   }
 }
 </style>
@@ -945,14 +985,16 @@ onMounted(maybeFetch)
 
 - [ ] **Step 2: 验证（核心功能，需登录态）**
 
-确保浏览器已登录（有 PHPSESSID），打开 `http://localhost:3000/discovery/users`。
+① 未登录：打开 `http://localhost:3000/discovery/users`，应**直接显示「推荐用户需要登录后查看」+ 登录按钮**，且 Network 面板**无** `/ajax/discovery/users` 请求。
+
+② 已登录（浏览器有 PHPSESSID）：
 
 Expected:
-- 渲染推荐用户卡片列表（头像 / 用户名 / 自述 / 4 张作品预览）
-- 关注/取关按钮可点击且状态切换
-- 滚到底自动「换一批」追加（按 userId 去重）
+- 首屏只渲染约 10 张用户卡片（头像 / 用户名 / 自述 / 4 张作品预览），不卡顿
+- 向下滚动从缓冲增量显示更多（前若干次不发新请求）
+- 缓冲（100 个）显示完后滚动触发一次新的 `getDiscoveryUsers`（Network 可见），按 `userId` 去重追加
+- 关注 / 取关按钮可点击且状态切换
 - 顶部无 R18 下拉
-- 未登录时显示「登录后查看推荐用户」提示
 - console 无报错
 
 - [ ] **Step 3: 提交**

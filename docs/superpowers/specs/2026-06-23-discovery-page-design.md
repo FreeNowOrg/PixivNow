@@ -19,6 +19,8 @@
 2. **接口忽略 `mode` 参数**：实测 `mode=safe/all/r18` 返回的 R18 占比仅随机波动，无过滤效果。用户推荐只跟随账号自身 R18 设置 → users 子页无法提供有效的 R18 开关。
 3. **无分页**：无 `offset` / `total`，每次返回随机一批。复用首页现有「seenIds 去重 + 追加」模式做无限滚动。
 4. artworks/novels 的 discovery 接口**支持** `mode`（现有 `getDiscovery` / `getNovelDiscovery` 已用 all/safe/r18）。
+5. **`limit` 硬上限 = 100**：实测 `limit=101` 起返回 `error: 不正确的请求`、`body` 为空数组；`limit<=100` 正常。
+6. **必须登录**：无 `PHPSESSID` 请求返回 `error: 不正确的请求`（推荐为个性化结果，合理）。未登录用户访问 users 子页直接提示登录，不发请求。
 
 ## 架构设计
 
@@ -70,10 +72,13 @@ app/pages/discovery/users.vue    推荐用户子页
 
 ### 4. users 子页（`discovery/users.vue`）
 
-- 渲染列表：复用 `FollowUserCard`（接收 `UserListItem`）+ `Card` 包裹 + `ShowMore`/无限滚动。
+- 渲染列表：复用 `FollowUserCard`（接收 `UserListItem`）+ `Card` 包裹。
 - 关注 / 取关：复用现有 `user-profile` store 的 `followUser` / `unfollowUser`（`FollowUserCard` 内部已实现）。
-- 无限滚动：滚到底自动 `appendUserDiscovery`，用 `userDiscoverySeenIds` 按 `userId` 去重；连续无新增时置 `noMoreUserDiscovery`。
-- 未登录态参照现有 discovery 的登录提示处理。
+- **大缓冲 + 增量渲染**（FollowUserCard DOM 较重，一次渲染 100 个会卡）：
+  - 网络层：`getDiscoveryUsers({ limit: 100 })` 一次拉满，去重后入 `userDiscoveryList` 缓冲。
+  - 渲染层：页面用 `visibleCount`（初始 ~10）`slice` 增量显示；sentinel 进入视口时，缓冲还有未显示的就 `visibleCount += 10`（纯客户端不发请求），缓冲耗尽且未到底才 `appendUserDiscovery()` 再拉 100 入缓冲；「换一批」重置缓冲 + `visibleCount`。
+  - 去重终止：与 artworks/novels 一致的「单批 0 新增即 `noMoreUserDiscovery`」。因每批拉 100、整批撞车概率极低，无需额外重试容错。
+- **未登录**：接口必须登录，未登录直接显示「请登录」提示，不发请求。
 
 ### 5. R18 开关
 
