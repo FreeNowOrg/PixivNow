@@ -1,11 +1,19 @@
 import escapeRegExp from 'lodash.escaperegexp'
-import { pixivAjax } from '~~/server/utils/pixiv'
+import { pixivFetch } from '~~/server/utils/pixiv'
 
 // Unified Pixiv API proxy middleware.
 // Intercepts /ajax/*, /rpc/*, and *.php requests and proxies them to Pixiv.
 // Mirrors the original Vercel rewrites:
 //   /:__PREFIX(ajax|rpc|.+\.php)/:__PATH* → /api/http
 const PROXY_PATTERNS = [/^\/ajax\//, /^\/rpc\//, /\.php$/]
+const PROXY_RESPONSE_HEADERS = [
+  'cache-control',
+  'content-disposition',
+  'content-type',
+  'etag',
+  'expires',
+  'last-modified',
+]
 
 function shouldProxy(pathname: string): boolean {
   if (pathname === '/novel/show.php') return false
@@ -22,23 +30,25 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, message: '403' })
   }
 
-  const query = getQuery(event)
+  const reqUrl = getRequestURL(event)
+  const {
+    data,
+    status,
+    headers: respHeaders,
+  } = await pixivFetch({
+    event,
+    method: event.method ?? 'GET',
+    url: reqUrl.pathname + reqUrl.search,
+    data: event.method !== 'GET' ? await readBody(event) : undefined,
+  })
 
-  try {
-    const { data } = await pixivAjax({
-      method: event.method ?? 'GET',
-      url: pathname,
-      params: query ?? {},
-      data: event.method !== 'GET' ? await readBody(event) : undefined,
-      headers: getHeaders(event) as Record<string, string>,
-    })
-    return data
-  } catch (e: any) {
-    throw createError({
-      statusCode: e?.response?.status || 500,
-      data: e?.response?.data || String(e),
-    })
+  for (const h of PROXY_RESPONSE_HEADERS) {
+    const val = respHeaders.get(h)
+    if (val) setResponseHeader(event, h, val)
   }
+
+  setResponseStatus(event, status)
+  return data
 })
 
 // Cached UA blacklist regex for efficient repeated checks

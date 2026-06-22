@@ -71,6 +71,18 @@ export function replacePximgInObject<T>(obj: T): T {
   return getDefaultReplacer().replacePximgInObject(obj)
 }
 
+// ── Proxy URL builders ──────────────────────────────────────────────
+
+export function pximgI(path: string): string {
+  const { baseUrlI } = getDefaultBaseUrls()
+  return baseUrlI + path
+}
+
+export function pximgS(path: string): string {
+  const { baseUrlS } = getDefaultBaseUrls()
+  return baseUrlS + path
+}
+
 // ── URL conversion utilities ─────────────────────────────────────────
 
 // Regex to strip /c/{size}/ prefix

@@ -226,18 +226,32 @@ export class PixivWebClient {
 
   async getDiscovery(params: {
     mode?: string
-    max?: number
+    limit?: number
   }): Promise<ArtworkInfo[]> {
-    const { data } = await this.http.get<
-      PixivResponse<{ illusts: ArtworkInfoOrAd[] }>
-    >('/ajax/illust/discovery', {
-      params: {
-        mode: params.mode ?? 'all',
-        max: String(params.max ?? 18),
-      },
-    })
-    const body = this.unwrap(data)
-    return body.illusts.filter((item): item is ArtworkInfo => 'id' in item)
+    const hasAuth = !!getToken()
+    if (hasAuth) {
+      const { data } = await this.http.get<
+        PixivResponse<{ thumbnails: { illust: ArtworkInfoOrAd[] } }>
+      >('/ajax/discovery/artworks', {
+        params: {
+          mode: params.mode ?? 'all',
+          limit: String(params.limit ?? 60),
+        },
+      })
+      const body = this.unwrap(data)
+      return body.thumbnails.illust.filter((item): item is ArtworkInfo => 'id' in item)
+    } else {
+      const { data } = await this.http.get<
+        PixivResponse<{ illusts: ArtworkInfoOrAd[] }>
+      >('/ajax/illust/discovery', {
+        params: {
+          mode: params.mode ?? 'safe',
+          max: String(Math.min(params.limit ?? 18, 18)),
+        },
+      })
+      const body = this.unwrap(data)
+      return body.illusts.filter((item): item is ArtworkInfo => 'id' in item)
+    }
   }
 
   async getRecommendInit(
@@ -254,7 +268,7 @@ export class PixivWebClient {
   async getRecommendMore(ids: string[]): Promise<RecommendResult> {
     const searchParams = new URLSearchParams()
     for (const id of ids) {
-      searchParams.append('illust_ids', id)
+      searchParams.append('illust_ids[]', id)
     }
     const { data } = await this.http.get<PixivResponse<RecommendResult>>(
       '/ajax/illust/recommend/illusts',

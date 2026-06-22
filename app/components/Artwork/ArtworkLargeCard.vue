@@ -61,30 +61,8 @@ h3 {
   @include fnb-shadow;
   @include fnb-press;
   background-color: var(--fnb-surface);
-  margin: 0.5rem auto;
-  --parent-width: calc(100vw - 2rem);
-  --counts: 1;
-  width: calc(
-    (var(--parent-width) - calc(var(--counts) - 1) * 2rem) / var(--counts)
-  );
-  @media (max-width: 380px) {
-    width: 100%;
-  }
-  @media (min-width: 380px) {
-    --counts: 2;
-  }
-  @media (min-width: 640px) {
-    --counts: 3;
-  }
-  @media (min-width: 750px) {
-    --counts: 4;
-  }
-  @media (min-width: 1200px) {
-    --counts: 5;
-  }
-  @media (min-width: 1600px) {
-    --counts: 6;
-  }
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .top {
@@ -147,26 +125,27 @@ h3 {
 
   .ranking {
     position: absolute;
-    top: -0.9rem;
-    left: -0.89rem;
-    font-size: 1.2rem;
-    color: #252525;
-    background-color: #fff;
-    border-radius: var(--fnb-radius-sm);
+    top: -0.6rem;
+    left: -0.6rem;
+    font-family: var(--fnb-font-display);
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--fnb-text);
+    background-color: var(--fnb-surface);
+    border: 2px solid var(--fnb-border);
+    box-shadow: var(--fnb-shadow-xs);
     width: 1.8rem;
     height: 1.8rem;
     text-align: center;
-    line-height: 1.6;
-    --ring-color: color-mix(in srgb, var(--fnb-brand) 40%, transparent);
-    box-shadow: 0 0 0 1px var(--ring-color) inset, 0 0 0 2px #fff;
+    line-height: 1.7;
     &.gold {
-      --ring-color: gold;
+      background-color: var(--fnb-highlight);
     }
     &.silver {
-      --ring-color: darkgray;
+      background-color: #d1d5db;
     }
     &.bronze {
-      --ring-color: #b87333;
+      background-color: #f0b27a;
     }
   }
 

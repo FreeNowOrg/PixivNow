@@ -104,9 +104,21 @@ code {
   }
 }
 
+// Scroll offset for sticky navbar (63px + 1rem)
+[id] {
+  scroll-margin-top: calc(63px + 1rem);
+}
+
 // Inline SVG icons
 svg.svg--inline {
   display: inline-block;
   vertical-align: -0.125em;
   overflow: visible;
+}
+
+// Normalize tabler-icons to follow text size
+.tabler-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
 }

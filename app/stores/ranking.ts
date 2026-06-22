@@ -13,6 +13,7 @@ export const useRankingStore = defineStore('ranking', () => {
     p?: string
     mode?: string
     date?: string
+    content?: string
   }): Promise<void> {
     loading.value = true
     try {
@@ -20,6 +21,7 @@ export const useRankingStore = defineStore('ranking', () => {
         p: params?.p ? Number(params.p) : undefined,
         mode: params?.mode,
         date: params?.date,
+        content: params?.content,
       })
       const rankingDate = data.date
       rankingData.value = {

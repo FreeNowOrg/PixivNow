@@ -2,6 +2,9 @@ import type { RouterConfig } from '@nuxt/schema'
 
 export default <RouterConfig>{
   scrollBehavior(to, from, savedPosition) {
+    if (to.path === from.path) {
+      return false
+    }
     if (savedPosition) {
       return savedPosition
     } else if (to.hash) {

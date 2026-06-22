@@ -1,29 +1,47 @@
 <template lang="pug">
 #home-view
-  .top-slider.align-center(
+  //- ── Hero Section ──
+  .hero-section(
     :style='{ "background-image": `url(${randomBgRegularUrl || ""})` }'
   )
-    section.search-area.flex-1
-      SearchBox.big.search
+    .hero-overlay
+    .hero-content
+      .site-logo
+        img(:src='SiteLogo')
+      .description Now, everyone can enjoy Pixiv
 
-    .site-logo
-      img(:src='LogoH')
-    .description Now, everyone can enjoy Pixiv
+      .search-area
+        SearchBox.big.search
+
+      .quick-links
+        FnbTag(clickable, @click='$router.push("/ranking")')
+          FnbIcon: ITablerChartBar
+          |  排行榜
+        FnbTag(clickable, @click='$router.push("/following/latest")')
+          FnbIcon: ITablerUsers
+          |  关注
+        FnbTag(clickable, @click='scrollToDiscovery')
+          FnbIcon: ITablerCompass
+          |  探索
+        FnbTag(:clickable='false', style='opacity: 0.4')
+          FnbIcon: ITablerBook
+          |  小说
 
     .bg-info
-      a.pointer(@click='homeStore.fetchRandomBg()' title='换一个~')
-        IFasRandom
+      a.pointer(@click='homeStore.fetchRandomBg()', title='换一个~')
+        FnbIcon: IFasRandom
       a.pointer(
-        @click='isShowBgInfo = true'
-        style='margin-left: 0.5em'
-        title='关于背景'
+        @click='isShowBgInfo = true',
+        style='margin-left: 0.5em',
+        title='关于背景',
         v-if='randomBg?.id'
       )
-        IFasInfoCircle
+        FnbIcon: IFasInfoCircle
 
-  .fnb-dialog-overlay(v-if='isShowBgInfo' @click.self='isShowBgInfo = false')
+  //- ── Background Info Dialog ──
+  .fnb-dialog-overlay(v-if='isShowBgInfo', @click.self='isShowBgInfo = false')
     .fnb-dialog-card
-      button.fnb-dialog-card__close(@click='isShowBgInfo = false' aria-label='关闭') ×
+      button.fnb-dialog-card__close(@click='isShowBgInfo = false', aria-label='关闭') ×
       .fnb-dialog-card__header {{ `背景图片：${randomBg?.alt}` }}
       .fnb-dialog-card__body
         .bg-info-modal
@@ -39,42 +57,101 @@
                 | 的作品 (ID: {{ randomBg?.id }})
             .tag-list(style='display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1rem')
               FnbTag(
-                :key='tag'
-                clickable
-                @click='$router.push(`/search/${encodeURIComponent(tag)}/1`)'
+                :key='tag',
+                clickable,
+                @click='$router.push(`/search/${encodeURIComponent(tag)}/1`)',
                 v-for='tag in randomBg?.tags'
               ) {{ tag }}
 
+  //- ── Body Content ──
   .body-inner
-    section.discover
-      h2 探索发现
-      .align-center
-        FnbButton(
-          :loading='homeStore.loadingDiscovery'
-          @click='homeStore.discoveryList.length ? homeStore.fetchDiscovery() : void 0'
-          size='sm'
+    //- User Status Card
+    UserStatusCard
+
+    //- Two-Column Content Area
+    .content-grid
+      .content-left
+        h3.section-title
+          FnbIcon: ITablerTrophy
+          |  今日排行
+        RankingCarousel(
+          v-if='homeStore.rankingList.length',
+          :artworks='homeStore.rankingList'
         )
-          template(#icon): IFasRandom
-          template(#default) {{ homeStore.loadingDiscovery ? '加载中' : '换一批' }}
+        .ranking-skeleton(v-else-if='homeStore.loadingRanking')
+          FnbSkeleton(block, height='360px')
+
+      .content-right
+        FollowingLatest(
+          :artworks='homeStore.followingList',
+          :loading='homeStore.loadingFollowing',
+          :logged-in='userStore.isLoggedIn'
+        )
+
+    //- Discovery Section
+    section.discover(ref='discoverRef')
+      .discover-header
+        h2
+          FnbIcon: ITablerCompass
+          |  探索发现
+        .discover-controls
+          DiscoveryTabs(
+            :model-value='discoveryTab',
+            @update:model-value='changeDiscoveryTab'
+          )
+          FnbSelect(
+            v-if='userStore.isLoggedIn',
+            :model-value='discoveryMode',
+            :options='discoveryModeOptions',
+            @update:model-value='changeDiscoveryMode'
+          )
+          FnbButton(
+            :loading='homeStore.loadingDiscovery',
+            @click='homeStore.fetchDiscovery()',
+            size='sm'
+          )
+            template(#icon): IFasRandom
+            | {{ homeStore.loadingDiscovery ? '加载中' : '换一批' }}
       ArtworkList(
         :list='homeStore.discoveryList',
         :loading='homeStore.loadingDiscovery'
       )
+
+      //- Infinite scroll sentinel / login prompt
+      .discover-footer(v-if='!homeStore.loadingDiscovery')
+        .loading-more(v-if='userStore.isLoggedIn && homeStore.loadingMoreDiscovery')
+          FnbSkeleton(block, height='2rem', width='200px')
+        .login-prompt(v-else-if='!userStore.isLoggedIn && homeStore.discoveryList.length')
+          p 登录后解锁无限浏览
+          FnbButton(
+            size='sm',
+            variant='primary',
+            tag='RouterLink',
+            to='/login?back=/'
+          )
+            template(#icon): ITablerLogin
+            | 登录
+        div(v-else-if='userStore.isLoggedIn', ref='scrollSentinel')
 </template>
 
 <script lang="ts" setup>
 import ArtworkList from '~/components/Artwork/ArtworkList.vue'
 import SearchBox from '~/components/SearchBox.vue'
-import IFasInfoCircle from '~icons/fa-solid/info-circle'
+import RankingCarousel from '~/components/RankingCarousel.vue'
+import UserStatusCard from '~/components/UserStatusCard.vue'
+import FollowingLatest from '~/components/FollowingLatest.vue'
+import DiscoveryTabs from '~/components/DiscoveryTabs.vue'
 import IFasRandom from '~icons/fa-solid/random'
+import IFasInfoCircle from '~icons/fa-solid/info-circle'
+import { IconChartBar as ITablerChartBar, IconUsers as ITablerUsers, IconCompass as ITablerCompass, IconBook as ITablerBook, IconTrophy as ITablerTrophy, IconLogin as ITablerLogin } from '@tabler/icons-vue'
 import { useHomeStore } from '~/stores/home'
+import { useUserStore } from '~/stores/session'
 import { toRegularUrl } from '~/utils/pximg'
-import LogoH from '~/assets/LogoH.png'
+import SiteLogo from '~/assets/PixivNow.svg'
 import { setTitle } from '~/utils/setTitle'
 
 definePageMeta({ name: 'home' })
 
-// Mark body with route class for navbar transparency
 useHead({
   bodyAttrs: { 'data-route': 'home' },
 })
@@ -82,6 +159,12 @@ useHead({
 const isShowBgInfo = ref(false)
 useBodyScrollLock(isShowBgInfo)
 const homeStore = useHomeStore()
+const userStore = useUserStore()
+const route = useRoute()
+const router = useRouter()
+const discoverRef = ref<HTMLElement | null>(null)
+const scrollSentinel = ref<HTMLElement | null>(null)
+
 const randomBg = computed(() => homeStore.randomBg)
 const randomBgRegularUrl = computed(() => {
   const bg = randomBg.value
@@ -89,10 +172,69 @@ const randomBgRegularUrl = computed(() => {
   return toRegularUrl(bg.url)
 })
 
-onMounted(async () => {
+const discoveryModeOptions = [
+  { label: '混池', value: 'all' },
+  { label: '全年龄', value: 'safe' },
+  { label: 'R18', value: 'r18' },
+]
+
+const savedDiscoveryTab = useLocalStorage('pixivnow:discovery-tab', 'all')
+const savedDiscoveryMode = useLocalStorage('pixivnow:discovery-mode', 'all')
+
+const discoveryTab = ref((route.query.tab as string) || savedDiscoveryTab.value)
+const discoveryMode = ref((route.query.mode as string) || savedDiscoveryMode.value)
+
+homeStore.discoveryMode = discoveryMode.value
+
+function syncDiscoveryQuery() {
+  const query = { ...route.query } as Record<string, string>
+  if (discoveryTab.value !== 'all') query.tab = discoveryTab.value
+  else delete query.tab
+  if (discoveryMode.value !== 'all') query.mode = discoveryMode.value
+  else delete query.mode
+  router.replace({ query })
+}
+
+function changeDiscoveryTab(tab: string) {
+  discoveryTab.value = tab
+  savedDiscoveryTab.value = tab
+  syncDiscoveryQuery()
+}
+
+function changeDiscoveryMode(mode: string) {
+  discoveryMode.value = mode
+  savedDiscoveryMode.value = mode
+  homeStore.discoveryMode = mode
+  syncDiscoveryQuery()
+  homeStore.fetchDiscovery()
+}
+
+function scrollToDiscovery() {
+  discoverRef.value?.scrollIntoView({ behavior: 'smooth' })
+}
+
+// Infinite scroll observer
+useIntersectionObserver(scrollSentinel, ([{ isIntersecting }]) => {
+  if (isIntersecting && userStore.isLoggedIn) {
+    homeStore.appendDiscovery()
+  }
+})
+
+// Fetch following when login state becomes available (async session init)
+watch(() => userStore.isLoggedIn, (loggedIn) => {
+  if (loggedIn && !homeStore.followingList.length) {
+    homeStore.fetchFollowing()
+  }
+}, { immediate: true })
+
+onMounted(() => {
   setTitle()
+  syncDiscoveryQuery()
   if (!homeStore.randomBg) {
     homeStore.fetchRandomBg()
+  }
+  if (!homeStore.rankingList.length) {
+    homeStore.fetchRanking()
   }
   if (!homeStore.discoveryList.length) {
     homeStore.fetchDiscovery()
@@ -102,10 +244,12 @@ onMounted(async () => {
 
 <style lang="scss">
 #home-view {
-  .top-slider {
-    min-height: 100vh;
+  // ── Hero ──
+  .hero-section {
+    min-height: 65vh;
     margin-top: -63px;
     padding: 30px 10%;
+    padding-top: 93px;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -114,62 +258,83 @@ onMounted(async () => {
     color: #fff;
     text-shadow: 0 0 2px #222;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 
-    &::before {
-      content: '';
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.2);
-      pointer-events: none;
-      z-index: 0;
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .site-logo {
+    img {
+      height: 10rem;
+      width: auto;
     }
+    margin-bottom: 0.25rem;
+  }
+
+  .description {
+    margin-bottom: 2rem;
+  }
+
+  .search-area {
+    margin-bottom: 0.75rem;
 
     > * {
-      position: relative;
-      z-index: 1;
+      width: 100%;
     }
+  }
 
-    .search-area {
-      display: flex;
+  .quick-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    .fnb-tag {
+      color: #fff;
+      background: rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px);
+      text-shadow: none;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
+      gap: 0.25rem;
 
-      > * {
-        width: 100%;
-      }
-    }
-
-    .site-logo {
-      text-align: center;
-      img {
-        height: 4rem;
-        width: auto;
-      }
-    }
-
-    .description {
-      font-size: 1.2rem;
-      text-align: center;
-    }
-
-    .bg-info {
-      position: absolute;
-      right: 1.5rem;
-      bottom: 1rem;
-      font-size: 1.25rem;
-      z-index: 1;
-
-      a {
-        --color: #fff;
+      &:hover {
+        background: var(--fnb-highlight);
+        color: var(--fnb-text);
+        border-color: var(--fnb-border);
       }
     }
   }
 
+  .bg-info {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1rem;
+    font-size: 1.25rem;
+    z-index: 1;
+
+    a {
+      color: #fff;
+    }
+  }
+
+  // ── Background Info Modal (reuse existing dialog styles) ──
   .bg-info-modal {
     .thumb {
       display: block;
@@ -187,8 +352,120 @@ onMounted(async () => {
       font-style: italic;
     }
   }
+
+  // ── Body content below hero ──
+  > .body-inner {
+    margin-top: 1.5rem;
+  }
+
+  // ── User Status Card ──
+  .user-status-card {
+    margin-bottom: 1.5rem;
+  }
+
+  // ── Two-Column Grid ──
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    align-items: start;
+  }
+
+  .content-left,
+  .content-right {
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .content-right {
+    .following-latest {
+      display: flex;
+      flex-direction: column;
+      max-height: calc(360px + 2rem + 1.1rem + 0.75rem);
+    }
+
+    .fnb-card {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .content-right .following-latest {
+      max-height: 320px;
+    }
+  }
+
+  .section-title {
+    font-family: var(--fnb-font-display);
+    font-weight: 900;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .ranking-skeleton {
+    @include fnb-border;
+    overflow: hidden;
+  }
+
+  // ── Discovery ──
+  .discover {
+    margin-top: 1rem;
+  }
+
+  .discover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    h2 {
+      font-family: var(--fnb-font-display);
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+    }
+  }
+
+  .discover-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .discover-footer {
+    margin-top: 2rem;
+    text-align: center;
+
+    .loading-more {
+      display: flex;
+      justify-content: center;
+    }
+
+    .login-prompt {
+      padding: 2rem;
+      color: var(--fnb-text-muted);
+
+      p {
+        margin-bottom: 0.75rem;
+        font-weight: 700;
+      }
+    }
+  }
 }
 
+// ── Dialog styles (used by other pages too) ──
 .fnb-dialog-overlay {
   position: fixed;
   inset: 0;
@@ -250,5 +527,19 @@ onMounted(async () => {
 .dialog-enter-from,
 .dialog-leave-to {
   opacity: 0;
+}
+
+// ── Responsive ──
+@media (max-width: 768px) {
+  #home-view {
+    .content-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-section {
+      padding: 30px 5%;
+      padding-top: 93px;
+    }
+  }
 }
 </style>
