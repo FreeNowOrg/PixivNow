@@ -423,6 +423,7 @@ All search endpoints share a common set of parameters and the `{keyword}` must b
 | `order`     | string | `date_d` | Sort: `date_d` (newest) / `date` (oldest). Other values require premium.    |
 | `mode`      | string | `all`    | Content filter: `all` / `safe` / `r18`                                      |
 | `ai_type`   | number | —        | Set to `1` to hide AI-generated works                                       |
+| `dgw`       | number | `0`      | Show policy-violating works: `0` (hide) / `1` (show)                        |
 
 **`s_mode` for artwork endpoints** (§5.1–5.3, default: `s_tag`):
 
