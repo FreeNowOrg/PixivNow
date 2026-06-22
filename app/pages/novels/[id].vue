@@ -139,7 +139,8 @@ const relatedNovels = computed<NovelInfo[]>(() => {
 })
 
 function scrollToReader() {
-  readerRef.value?.scrollIntoView({ behavior: 'smooth' })
+  const el = readerRef.value?.$el ?? readerRef.value
+  el?.scrollIntoView({ behavior: 'smooth' })
 }
 
 async function init(id: string): Promise<void> {
