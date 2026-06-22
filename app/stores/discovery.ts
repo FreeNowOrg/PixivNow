@@ -120,7 +120,7 @@ export const useDiscoveryStore = defineStore('discovery', () => {
     if (loadingMoreUserDiscovery.value || noMoreUserDiscovery.value) return
     try {
       loadingMoreUserDiscovery.value = true
-      const users = await pixivClient.getDiscoveryUsers({ limit: 20 })
+      const users = await pixivClient.getDiscoveryUsers({ limit: 100 })
       const fresh = users.filter((u) => !userDiscoverySeenIds.has(u.userId))
       if (!fresh.length) {
         noMoreUserDiscovery.value = true
