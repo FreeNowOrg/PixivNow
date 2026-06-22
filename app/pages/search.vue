@@ -7,8 +7,8 @@
         button.content-tab(
           v-for='opt in contentOptions',
           :key='opt.value',
-          :class='{ active: selectedContent === opt.value }',
-          @click='setQuery({ content: opt.value })'
+          :class='{ active: selectedType === opt.value }',
+          @click='setQuery({ type: opt.value })'
         ) {{ opt.label }}
       .refine-bar
         .refine-field
@@ -51,8 +51,14 @@
   section(v-if='error && !searchStore.loading')
     ErrorPage(:description='error' title='出大问题')
 
-  //- Result
-  section(v-if='!error')
+  //- Landing: no keyword yet
+  section.search-landing(v-else-if='!hasQuery')
+    .body-inner
+      FnbCard(style='padding: 12vh 0; text-align: center')
+        .fnb-empty 输入关键词开始搜索
+
+  //- Result (has keyword)
+  section(v-else)
 
     //- Loading skeleton
     .loading-area(v-if='searchStore.loading && !currentResults.length')
@@ -73,7 +79,7 @@
             :page='page',
             :item-count='currentTotal',
             :page-size='currentResults.length',
-            @update:page='page = $event'
+            @update:page='goPage'
           )
         ArtworkLargeList(v-if='!isNovel', :artwork-list='searchStore.artworkResults')
         NovelList(v-else, :list='searchStore.novelResults')
@@ -82,7 +88,7 @@
             :page='page',
             :item-count='currentTotal',
             :page-size='currentResults.length',
-            @update:page='page = $event'
+            @update:page='goPage'
           )
 </template>
 
@@ -148,27 +154,25 @@ const langOptions = [
 // ── State ──
 
 const error = ref('')
-const searchKeyword = ref('')
-const page = ref(1)
 const route = useRoute()
 const router = useRouter()
 const searchStore = useSearchStore()
 
-const selectedContent = computed(
-  () => (route.query.content as string) || 'artworks'
-)
-const selectedSMode = computed(() => {
-  if (route.query.s_mode) return route.query.s_mode as string
-  return 's_tag'
+const keyword = computed(() => (route.query.q as string) || '')
+const hasQuery = computed(() => !!keyword.value)
+const page = computed(() => {
+  const p = parseInt((route.query.p as string) || '1')
+  return p > 0 ? p : 1
 })
-const selectedOrder = computed(
-  () => (route.query.order as string) || 'date_d'
-)
+
+const selectedType = computed(() => (route.query.type as string) || 'artworks')
+const selectedSMode = computed(() => (route.query.s_mode as string) || 's_tag')
+const selectedOrder = computed(() => (route.query.order as string) || 'date_d')
 const selectedMode = computed(() => (route.query.mode as string) || 'all')
 const selectedAiType = computed(() => (route.query.ai_type as string) || '')
 const selectedLang = computed(() => (route.query.lang as string) || '')
 
-const isNovel = computed(() => selectedContent.value === 'novels')
+const isNovel = computed(() => selectedType.value === 'novels')
 
 const activeSModeOptions = computed(() =>
   isNovel.value ? novelSModeOptions : artworkSModeOptions
@@ -185,7 +189,7 @@ const currentTotal = computed(() =>
 // ── Query helpers ──
 
 const defaults: Record<string, string> = {
-  content: 'artworks',
+  type: 'artworks',
   s_mode: 's_tag',
   order: 'date_d',
   mode: 'all',
@@ -195,7 +199,7 @@ const defaults: Record<string, string> = {
 
 function setQuery(updates: Record<string, string>) {
   const q = { ...route.query } as Record<string, string>
-  const isContentSwitch = 'content' in updates
+  const isTypeSwitch = 'type' in updates
 
   for (const [key, value] of Object.entries(updates)) {
     if (value === defaults[key] || value === '') {
@@ -205,7 +209,7 @@ function setQuery(updates: Record<string, string>) {
     }
   }
 
-  if (isContentSwitch) {
+  if (isTypeSwitch) {
     delete q.s_mode
     delete q.lang
   }
@@ -214,20 +218,24 @@ function setQuery(updates: Record<string, string>) {
   router.push({ query: q })
 }
 
+function goPage(value: number) {
+  const target = value < 1 ? 1 : value
+  const q = { ...route.query } as Record<string, string>
+  if (target === 1) delete q.p
+  else q.p = String(target)
+  router.push({ query: q })
+}
+
 // ── Search execution ──
 
 async function makeSearch(): Promise<void> {
-  const keyword = route.params.keyword as string
-  const p = parseInt((route.params.p as string) || '1')
-  searchKeyword.value = keyword
-  page.value = p
   error.value = ''
-  if (!keyword) return
+  if (!keyword.value) return
 
   try {
     if (isNovel.value) {
-      await searchStore.searchNovels(keyword, {
-        p,
+      await searchStore.searchNovels(keyword.value, {
+        p: page.value,
         s_mode: selectedSMode.value,
         order: selectedOrder.value,
         mode: selectedMode.value,
@@ -236,10 +244,10 @@ async function makeSearch(): Promise<void> {
       })
     } else {
       await searchStore.searchArtworks(
-        keyword,
-        selectedContent.value as SearchContentType,
+        keyword.value,
+        selectedType.value as SearchContentType,
         {
-          p,
+          p: page.value,
           s_mode: selectedSMode.value,
           order: selectedOrder.value,
           mode: selectedMode.value,
@@ -258,30 +266,12 @@ async function makeSearch(): Promise<void> {
 
 // ── Watchers ──
 
-watch(page, (value) => {
-  page.value = value < 1 ? 1 : value
-  const q = { ...route.query } as Record<string, string>
-  delete q.p
-  const qs = new URLSearchParams(q).toString()
-  router.push(
-    `/search/${searchKeyword.value}/${page.value}${qs ? `?${qs}` : ''}`
-  )
-})
-
 watch(() => route.query, makeSearch, { deep: true })
 
-onBeforeRouteUpdate(async (to) => {
-  if (
-    to.params.keyword !== route.params.keyword ||
-    to.params.p !== route.params.p
-  ) {
-    await nextTick()
-    makeSearch()
-  }
-})
-
 effect(() =>
-  setTitle(`${route.params.keyword} (第${route.params.p}页)`, 'Search')
+  keyword.value
+    ? setTitle(`${keyword.value} (第${page.value}页)`, 'Search')
+    : setTitle('搜索')
 )
 
 onMounted(() => makeSearch())
