@@ -291,9 +291,57 @@ Legacy discovery endpoint. **Does not require authentication**, but has a lower 
 }
 ```
 
-> **Migration note:** The PixivNow client uses §4.1 when a user token is present and falls back to §4.1.1 for anonymous users. The `max` parameter is clamped to 18 on the legacy endpoint regardless of the requested value.
+> **Usage note:** Use §4.1 when a user session is available and fall back to §4.1.1 for anonymous access. The `max` parameter on the legacy endpoint is clamped to 18 regardless of the requested value.
 
-### 4.2 GET `/ajax/illust/{id}/recommend/init`
+### 4.2 GET `/ajax/discovery/novels` (New, Auth Required)
+
+Discover novels. **Requires authentication.** Supports R18 mode.
+
+| Param   | Type   | Default | Description            |
+| ------- | ------ | ------- | ---------------------- |
+| `mode`  | string | `safe`  | `safe` / `all` / `r18` |
+| `limit` | number | —       | Max number of results  |
+
+**Response** `body`:
+
+```jsonc
+{
+  "thumbnails": {
+    "novel": [
+      // Array of NovelInfo objects (see §12)
+    ]
+  },
+  "recommendedNovelIds": [ "12345", "67890", ... ],
+  "recommendNovelDetails": { /* keyed by novel ID */ }
+}
+```
+
+### 4.2.1 GET `/ajax/novel/discovery` (Legacy, No Auth)
+
+Legacy novel discovery endpoint. **Does not require authentication**, but does not support `r18` mode.
+
+| Param   | Type   | Default | Description       |
+| ------- | ------ | ------- | ----------------- |
+| `mode`  | string | `safe`  | `safe` / `all`    |
+| `limit` | number | —       | Number of results |
+
+**Response** `body`:
+
+```jsonc
+{
+  "novels": [
+    // Array of NovelInfo objects (see §12)
+    // Wrapped in "novels" instead of "thumbnails.novel"
+  ],
+  "details": {
+    /* keyed by novel ID, values are string */
+  },
+}
+```
+
+> **Usage note:** Same pattern as artwork discovery — §4.2 (new, auth) vs §4.2.1 (legacy, no auth). Use §4.2 when a user session is available and fall back to §4.2.1 for anonymous access.
+
+### 4.3 GET `/ajax/illust/{id}/recommend/init`
 
 Get initial recommendations for a specific artwork.
 
@@ -310,9 +358,9 @@ Get initial recommendations for a specific artwork.
 }
 ```
 
-### 4.3 GET `/ajax/illust/recommend/illusts`
+### 4.4 GET `/ajax/illust/recommend/illusts`
 
-Load more recommendations by ID. Use `nextIds` from §4.2 response.
+Load more recommendations by ID. Use `nextIds` from §4.3 response.
 
 | Param        | Type     | Description                               |
 | ------------ | -------- | ----------------------------------------- |
@@ -320,7 +368,45 @@ Load more recommendations by ID. Use `nextIds` from §4.2 response.
 
 Query string example: `?illust_ids=123&illust_ids=456&illust_ids=789`
 
-**Response** `body`: same shape as §4.2.
+**Response** `body`: same shape as §4.3.
+
+### 4.5 GET `/ajax/novel/{id}/recommend/init`
+
+Get initial recommendations for a specific novel.
+
+| Param   | Type   | Default | Description       |
+| ------- | ------ | ------- | ----------------- |
+| `limit` | number | —       | Number of results |
+
+**Response** `body`:
+
+```jsonc
+{
+  "novels": [ /* NovelInfo[] (see §12) */ ],
+  "nextIds": [ "12345", "67890", ... ],
+  "details": { /* keyed by novel ID */ }
+}
+```
+
+### 4.6 GET `/ajax/novel/recommend/novels`
+
+Load more novel recommendations by ID. Use `nextIds` from §4.5 response.
+
+| Param      | Type     | Description                             |
+| ---------- | -------- | --------------------------------------- |
+| `novelIds` | string[] | Novel IDs (repeated query key for each) |
+
+Query string example: `?novelIds[]=123&novelIds[]=456`
+
+**Response** `body`:
+
+```jsonc
+{
+  "novels": [
+    /* NovelInfo[] */
+  ],
+}
+```
 
 ---
 
@@ -348,6 +434,43 @@ Search artworks by keyword. The `{keyword}` must be URI-encoded.
 }
 ```
 
+### 5.2 GET `/ajax/search/novels/{keyword}`
+
+Search novels by keyword. The `{keyword}` must be URI-encoded.
+
+| Param  | Type   | Default | Description             |
+| ------ | ------ | ------- | ----------------------- |
+| `p`    | string | `1`     | Page number (1-indexed) |
+| `mode` | string | —       | Search mode             |
+
+**Response** `body`:
+
+```jsonc
+{
+  "novel": {
+    "data": [
+      /* NovelInfo[] (see §12) */
+    ],
+    "total": 22713,
+    "lastPage": 10,
+  },
+  "popular": {
+    "recent": [
+      /* NovelInfo[] */
+    ],
+    "permanent": [
+      /* NovelInfo[] */
+    ],
+  },
+  "relatedTags": [
+    /* string[] */
+  ],
+  "tagTranslation": {
+    /* tag → { lang: translation } */
+  },
+}
+```
+
 ---
 
 ## 6. Ranking
@@ -356,13 +479,35 @@ Search artworks by keyword. The `{keyword}` must be URI-encoded.
 
 Get artwork rankings. This is a legacy PHP endpoint.
 
-| Param     | Type   | Required | Description                                                                                                                                      |
-| --------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `format`  | string | Yes      | Must be `json`                                                                                                                                   |
-| `mode`    | string | No       | `daily` / `weekly` / `monthly` / `rookie` / `original` / `male` / `female` / `daily_r18` / `weekly_r18` / etc.                                   |
-| `content` | string | No       | `all` (combined) / `illust` (illustrations) / `ugoira` (animations) / `manga`. Novel ranking uses a separate endpoint and is not supported here. |
-| `p`       | number | No       | Page number                                                                                                                                      |
-| `date`    | string | No       | Date in `YYYYMMDD` format. Time zone: `Asia/Tokyo`. Must be before the current date.                                                             |
+| Param     | Type   | Required | Description                                                          |
+| --------- | ------ | -------- | -------------------------------------------------------------------- |
+| `format`  | string | Yes      | Must be `json`                                                       |
+| `mode`    | string | No       | Ranking mode (see table below). Default: `daily`                     |
+| `content` | string | No       | `all` / `illust` / `ugoira` / `manga`. Default: `all`                |
+| `p`       | number | No       | Page number                                                          |
+| `date`    | string | No       | Date in `YYYYMMDD` format. Time zone: `Asia/Tokyo`. Must be < today. |
+
+**Available mode × content combinations:**
+
+| Mode           | `all` | `illust` | `ugoira` | `manga` | Auth     |
+| -------------- | ----- | -------- | -------- | ------- | -------- |
+| `daily`        | Yes   | Yes      | Yes      | Yes     | No       |
+| `weekly`       | Yes   | Yes      | Yes      | Yes     | No       |
+| `monthly`      | Yes   | Yes      | —        | Yes     | No       |
+| `rookie`       | Yes   | Yes      | —        | Yes     | No       |
+| `original`     | Yes   | —        | —        | —       | No       |
+| `daily_ai`     | Yes   | —        | —        | —       | No       |
+| `male`         | Yes   | Yes      | —        | Yes     | No       |
+| `female`       | Yes   | Yes      | —        | Yes     | No       |
+| `daily_r18`    | Yes   | Yes      | Yes      | Yes     | Required |
+| `weekly_r18`   | Yes   | Yes      | Yes      | Yes     | Required |
+| `daily_r18_ai` | Yes   | —        | —        | —       | Required |
+| `male_r18`     | Yes   | Yes      | —        | Yes     | Required |
+| `female_r18`   | Yes   | Yes      | —        | Yes     | Required |
+
+> Novel ranking uses a separate AJAX endpoint (§6.2), not `/ranking.php`.
+>
+> **R18 & AI content visibility:** R18 and AI modes depend on the user's Pixiv account settings (two independent toggles, both off by default). If the corresponding setting is disabled, requests may return empty results or an error.
 
 **Response** (top-level, not wrapped in `body`):
 
@@ -387,6 +532,75 @@ Get artwork rankings. This is a legacy PHP endpoint.
 ```
 
 > Note: Unlike `/ajax/*` endpoints, `/ranking.php` returns data directly without a `body` wrapper.
+
+### 6.2 GET `/ajax/ranking/novel`
+
+Get novel rankings. Uses the standard `/ajax/*` envelope (§12).
+
+| Param  | Type   | Required | Description                    |
+| ------ | ------ | -------- | ------------------------------ |
+| `mode` | string | No       | Ranking mode (see table below) |
+| `p`    | number | No       | Page number                    |
+
+**Available modes:**
+
+| Mode            | Auth     |
+| --------------- | -------- |
+| `daily`         | No       |
+| `weekly`        | No       |
+| `monthly`       | No       |
+| `rookie`        | No       |
+| `male`          | No       |
+| `female`        | No       |
+| `daily_r18`     | Required |
+| `weekly_r18`    | Required |
+| `weekly_r18_ai` | Required |
+| `male_r18`      | Required |
+| `female_r18`    | Required |
+
+> R18 and AI modes depend on the user's Pixiv account settings (two independent toggles, both off by default). If disabled, requests may return empty results or an error.
+
+**Response** `body`:
+
+```jsonc
+{
+  "display_a": {
+    "rank_a": [
+      {
+        "id": 28389206,
+        "title": "...",
+        "rank": 1,
+        "user_id": 49661701,
+        "user_name": "...",
+        "profile_img": "...",
+        "url": "...", // novel cover image URL
+        "bookmark_count": 2461,
+        "character_count": 12345,
+        "word_count": 6789,
+        "reading_time": 300, // seconds
+        "genre": "...",
+        "is_original": false,
+        "language": "ja",
+        "series_id": "...",
+        "series_title": "...",
+        "tag_a": ["tag1", "tag2"],
+        "ai_type": 0,
+        "x_restrict": 0,
+        "restrict": 0,
+        "create_date": "...",
+        "comment": "...", // novel description/summary
+        "marker": null,
+      },
+    ],
+    "mode": "daily",
+    "muted_count": 0,
+    "page": 1,
+    "title": "小説 デイリーランキング",
+  },
+  "date": "2026年6月21日", // localized date string
+  "h_title": "[pixiv] 小说 今日排行榜",
+}
+```
 
 ---
 
@@ -658,49 +872,402 @@ mode=del&type=bookuser&id=12345
 
 ---
 
-## 12. Common Response Envelope
+## 12. Novel Endpoints
 
-All `/ajax/*` endpoints return responses in this envelope:
+### 12.1 GET `/ajax/novel/{id}`
+
+Get full novel details including content.
+
+**Response** `body`:
+
+```jsonc
+{
+  "id": "28389206",
+  "title": "...",
+  "description": "...",         // HTML
+  "content": "...",             // novel text content with Pixiv markup
+  "createDate": "...",          // ISO 8601
+  "updateDate": "...",
+  "userId": "...",
+  "userName": "...",
+  "textCount": 12345,
+  "wordCount": 6789,
+  "readingTime": 300,           // seconds
+  "genre": "...",
+  "tags": { "tags": [{ "tag": "...", "translation": { "en": "..." } }] },
+  "bookmarkCount": 100,
+  "likeCount": 50,
+  "viewCount": 1000,
+  "bookmarkData": null,         // null = not bookmarked
+  "isBookmarkable": true,
+  "xRestrict": 0,
+  "restrict": 0,
+  "aiType": 0,
+  "isOriginal": false,
+  "seriesId": "...",
+  "seriesTitle": "...",
+  "seriesNavData": {
+    "seriesId": 686487,
+    "title": "...",
+    "order": 5,
+    "prev": { "id": 12345, "title": "...", "order": 4 },
+    "next": { "id": 67890, "title": "...", "order": 6 }
+  },
+  "userNovels": { "12345": null, "67890": null, ... }  // IDs of author's other novels (values are null)
+}
+```
+
+> The `userNovels` field contains only IDs (values are `null`). Use §12.2 to fetch full info for these IDs.
+
+### 12.2 GET `/ajax/user/{userId}/novels`
+
+Get novel details by IDs for a specific user.
+
+| Param | Type     | Description                             |
+| ----- | -------- | --------------------------------------- |
+| `ids` | string[] | Novel IDs (repeated query key for each) |
+
+Query string example: `?ids[]=12345&ids[]=67890`
+
+**Response** `body`:
+
+```jsonc
+{
+  "28389206": {
+    /* NovelInfo */
+  },
+  "28413309": {
+    /* NovelInfo */
+  },
+  // keyed by novel ID
+}
+```
+
+### 12.3 GET `/ajax/novels/comments/roots`
+
+Get root-level comments on a novel.
+
+| Param      | Type   | Description       |
+| ---------- | ------ | ----------------- |
+| `novel_id` | string | Novel ID          |
+| `limit`    | number | Results per page  |
+| `offset`   | number | Pagination offset |
+
+**Response** `body`:
+
+```jsonc
+{
+  "hasNext": true,
+  "comments": [
+    {
+      "id": "...",
+      "comment": "...",
+      "commentDate": "...",
+      "userId": "...",
+      "userName": "...",
+      "img": "...",
+      "hasReplies": false,
+      "editable": false,
+      "isDeletedUser": false,
+      // ...
+    },
+  ],
+}
+```
+
+### 12.4 GET `/ajax/novel/series/{id}`
+
+Get novel series info (cover, description, etc.).
+
+**Response** `body`:
+
+```jsonc
+{
+  "id": "686487",
+  "title": "...",
+  "caption": "...",
+  "cover": {
+    "urls": {
+      /* image URLs */
+    },
+  },
+  "total": 10,
+  "userId": "...",
+  "userName": "...",
+  // ...
+}
+```
+
+### 12.5 GET `/ajax/novel/series_content/{id}`
+
+Get novels in a series.
+
+| Param        | Type   | Default | Description           |
+| ------------ | ------ | ------- | --------------------- |
+| `limit`      | number | —       | Number of results     |
+| `last_order` | number | `0`     | Offset for pagination |
+| `order_by`   | string | `asc`   | `asc` / `desc`        |
+
+**Response** `body`:
+
+```jsonc
+{
+  "page": {
+    "seriesContents": [
+      /* NovelSeriesContentItem[] */
+    ],
+  },
+  "thumbnails": {
+    "novel": [
+      /* NovelInfo[] */
+    ],
+  },
+}
+```
+
+### 12.6 GET `/ajax/novel/series/{id}/content_titles`
+
+Get all titles in a series (lightweight, for navigation).
+
+**Response** `body`: array of:
+
+```jsonc
+{
+  "id": "12345",
+  "title": "Chapter 1",
+  "order": 1,
+  "available": true,
+}
+```
+
+### 12.7 GET `/ajax/user/{userId}/novels/tags`
+
+Get all tags used across a user's novels.
+
+**Response** `body`: array of:
+
+```jsonc
+{
+  "tag": "翠星のガルガンティア",
+  "tag_translation": "Gargantia on the Verdurous Planet",
+  "tag_yomigana": "すいせいのがるがんてぃあ",
+  "cnt": 39,
+}
+```
+
+---
+
+## 13. Common Conventions
+
+### 13.1 Response Envelope
+
+All `/ajax/*` endpoints return responses in a standard envelope:
 
 ```jsonc
 {
   "error": false, // true on error
   "message": "", // error message if error=true
   "body": {
-    /* ... */
-  }, // actual response data
+    /* ... endpoint-specific data */
+  },
 }
 ```
 
-When `error` is `true`, `body` may be `null` or contain error details. Always check the `error` field before accessing `body`.
+When `error` is `true`, `body` may be `null`, an empty array `[]`, or contain error details. Always check the `error` field before accessing `body`.
 
-The `/ranking.php` endpoint is an exception — it returns data directly without this envelope.
+Legacy PHP endpoints (`/ranking.php`, `/bookmark_add.php`, `/rpc_group_setting.php`) return data directly without this envelope.
+
+### 13.2 Naming Conventions
+
+Most `/ajax/*` endpoints return **camelCase** field names (e.g. `userId`, `bookmarkCount`, `createDate`). Legacy PHP endpoints and some newer AJAX endpoints use **snake_case** (e.g. `user_id`, `bookmark_count`, `create_date`).
+
+Known snake_case endpoints:
+
+| Endpoint                                  | Section |
+| ----------------------------------------- | ------- |
+| `GET /ranking.php` (ArtworkRank)          | §6.1    |
+| `GET /ajax/ranking/novel` (NovelRankItem) | §6.2    |
+
+Clients should normalize field names to a consistent convention (typically camelCase) when consuming these endpoints. See §14.2 and §14.4 for the full field listings.
+
+---
+
+## 14. Common Data Types
+
+Reusable data shapes referenced throughout this document. Names like `ArtworkInfo` and `NovelInfo` are conventions used in this doc for brevity.
+
+### 14.1 ArtworkInfo
+
+Abbreviated artwork object returned by listing, search, and discovery endpoints.
+
+```jsonc
+{
+  "id": "12345678", // string (numeric)
+  "title": "...",
+  "description": "...", // HTML
+  "createDate": "...", // ISO 8601
+  "updateDate": "...",
+  "illustType": 0, // 0=illust, 1=manga, 2=ugoira
+  "restrict": 0,
+  "xRestrict": 0, // 0=safe, 1=R-18, 2=R-18G
+  "sl": 0,
+  "userId": "12345",
+  "userName": "...",
+  "alt": "...",
+  "width": 1920,
+  "height": 1080,
+  "pageCount": 1,
+  "isBookmarkable": true,
+  "bookmarkData": null, // null = not bookmarked; { id, private } = bookmarked
+  "titleCaptionTranslation": { "workTitle": null, "workCaption": null },
+  "isUnlisted": false,
+  "aiType": 0, // 0=not AI, 1=AI-assisted, 2=AI-generated
+  "url": "https://i.pximg.net/c/250x250_80_a2/...", // thumbnail URL
+  "tags": ["tag1", "tag2"], // flat string array (not the full tag objects)
+  "profileImageUrl": "...", // author avatar
+  "type": "illust", // "illust" or "novel"
+}
+```
+
+> Listing endpoints may also return ad objects (`{ "isAdContainer": true, ... }`) mixed in. Filter by checking for the `"id"` field.
+
+### 14.2 ArtworkRank
+
+Artwork ranking item from `/ranking.php`. Uses **snake_case** field names.
+
+```jsonc
+{
+  "illust_id": 12345678,         // number (not string)
+  "title": "...",
+  "url": "...",                  // thumbnail URL
+  "rank": 1,
+  "yes_rank": 2,                 // previous rank
+  "user_id": 12345,
+  "user_name": "...",
+  "profile_img": "...",
+  "tags": ["tag1", "tag2"],
+  "illust_type": "0",            // 0=illust, 1=manga, 2=ugoira
+  "illust_page_count": "1",
+  "width": 1920,
+  "height": 1080,
+  "rating_count": 100,
+  "view_count": 1000,
+  "illust_upload_timestamp": 1700000000,
+  "illust_content_type": { "sexual": 0, "lo": false, ... },
+  "illust_series": false         // false or { illustSeriesId, illustSeriesTitle, ... }
+}
+```
+
+### 14.3 NovelInfo
+
+Abbreviated novel object returned by listing, search, and discovery endpoints. Shares most fields with `ArtworkInfo` (§14.1) but omits artwork-specific fields (`illustType`, `alt`, `width`, `height`) and adds novel-specific ones.
+
+```jsonc
+{
+  // Inherited from ArtworkInfo (§14.1):
+  "id": "28389206",
+  "title": "...",
+  "description": "...",
+  "createDate": "...",
+  "updateDate": "...",
+  "restrict": 0,
+  "xRestrict": 0,
+  "userId": "12345",
+  "userName": "...",
+  "isBookmarkable": true,
+  "bookmarkData": null,
+  "isUnlisted": false,
+  "aiType": 0,
+  "url": "...", // cover image URL
+  "tags": ["tag1", "tag2"],
+  "profileImageUrl": "...",
+
+  // Novel-specific fields:
+  "type": "novel", // may be absent in some endpoints
+  "genre": "...",
+  "textCount": 4040, // character count
+  "wordCount": 2000, // word count (for non-CJK languages)
+  "readingTime": 484, // estimated reading time in seconds
+  "useWordCount": false, // true = display wordCount, false = display textCount
+  "isOriginal": false,
+  "bookmarkCount": 100,
+  "language": "ja",
+  "marker": null,
+  "seriesId": "686487", // may be absent
+  "seriesTitle": "...", // may be absent
+}
+```
+
+### 14.4 NovelRankItem
+
+Novel ranking item from `/ajax/ranking/novel`. Uses **snake_case** field names (different from `NovelInfo`).
+
+```jsonc
+{
+  "id": 28389206, // number (not string)
+  "title": "...",
+  "rank": 1,
+  "user_id": 49661701,
+  "user_name": "...",
+  "profile_img": "...",
+  "url": "...", // cover image URL
+  "bookmark_count": 2461,
+  "character_count": 12345,
+  "word_count": 6789,
+  "reading_time": 300, // seconds
+  "genre": "...",
+  "is_original": false,
+  "language": "ja",
+  "series_id": "...",
+  "series_title": "...",
+  "tag_a": ["tag1", "tag2"],
+  "ai_type": 0,
+  "x_restrict": 0,
+  "restrict": 0,
+  "create_date": "...",
+  "comment": "...", // novel description/summary
+  "marker": null,
+}
+```
 
 ---
 
 ## Appendix: Endpoint Summary
 
-| #     | Method | Endpoint                                | Auth                        | Description                |
-| ----- | ------ | --------------------------------------- | --------------------------- | -------------------------- |
-| 3.1   | GET    | `/ajax/illust/{id}?full=1`              | Optional (Required for r18) | Artwork detail             |
-| 3.2   | GET    | `/ajax/illust/{id}/pages`               | Optional (Required for r18) | Multi-page artwork         |
-| 3.3   | GET    | `/ajax/illust/{id}/ugoira_meta`         | Optional (Required for r18) | Ugoira animation metadata  |
-| 4.1   | GET    | `/ajax/discovery/artworks`              | Required                    | Discovery (new, limit 60)  |
-| 4.1.1 | GET    | `/ajax/illust/discovery`                | No                          | Discovery (legacy, max 18) |
-| 4.2   | GET    | `/ajax/illust/{id}/recommend/init`      | Optional                    | Initial recommendations    |
-| 4.3   | GET    | `/ajax/illust/recommend/illusts`        | Optional                    | More recommendations       |
-| 5.1   | GET    | `/ajax/search/artworks/{keyword}`       | Optional                    | Search artworks            |
-| 6.1   | GET    | `/ranking.php`                          | No                          | Artwork ranking            |
-| 7.1   | GET    | `/ajax/user/{userId}?full=1`            | Optional                    | User profile               |
-| 7.2   | GET    | `/ajax/user/{userId}/profile/top`       | Optional                    | User featured works        |
-| 7.3   | GET    | `/ajax/user/{userId}/profile/all`       | Optional                    | All user work IDs          |
-| 7.4   | GET    | `/ajax/user/{userId}/profile/illusts`   | Optional                    | User works by IDs          |
-| 8.1   | GET    | `/ajax/user/{userId}/following`         | Required                    | User following list        |
-| 8.2   | GET    | `/ajax/follow_latest/illust`            | Required                    | Feed from followed users   |
-| 9.1   | GET    | `/ajax/user/{userId}/illusts/bookmarks` | Optional                    | User bookmarks             |
-| 9.2   | POST   | `/ajax/illusts/bookmarks/add`           | Required                    | Add bookmark               |
-| 9.3   | POST   | `/ajax/illusts/bookmarks/delete`        | Required                    | Remove bookmark            |
-| 10.1  | GET    | `/ajax/illusts/comments/roots`          | Optional                    | Artwork comments           |
-| 10.2  | POST   | `/ajax/illusts/comments/post`           | Required                    | Post comment               |
-| 11.1  | POST   | `/bookmark_add.php`                     | Required                    | Follow user                |
-| 11.2  | POST   | `/rpc_group_setting.php`                | Required                    | Unfollow user              |
+| #     | Method | Endpoint                                 | Auth                | Description                  |
+| ----- | ------ | ---------------------------------------- | ------------------- | ---------------------------- |
+| 3.1   | GET    | `/ajax/illust/{id}?full=1`               | Optional (R18 req.) | Artwork detail               |
+| 3.2   | GET    | `/ajax/illust/{id}/pages`                | Optional (R18 req.) | Multi-page artwork           |
+| 3.3   | GET    | `/ajax/illust/{id}/ugoira_meta`          | Optional (R18 req.) | Ugoira animation metadata    |
+| 4.1   | GET    | `/ajax/discovery/artworks`               | Required            | Artwork discovery (new)      |
+| 4.1.1 | GET    | `/ajax/illust/discovery`                 | No                  | Artwork discovery (legacy)   |
+| 4.2   | GET    | `/ajax/discovery/novels`                 | Required            | Novel discovery (new)        |
+| 4.2.1 | GET    | `/ajax/novel/discovery`                  | No                  | Novel discovery (legacy)     |
+| 4.3   | GET    | `/ajax/illust/{id}/recommend/init`       | Optional            | Artwork recommendations      |
+| 4.4   | GET    | `/ajax/illust/recommend/illusts`         | Optional            | More artwork recommendations |
+| 4.5   | GET    | `/ajax/novel/{id}/recommend/init`        | Optional            | Novel recommendations        |
+| 4.6   | GET    | `/ajax/novel/recommend/novels`           | Optional            | More novel recommendations   |
+| 5.1   | GET    | `/ajax/search/artworks/{keyword}`        | Optional            | Search artworks              |
+| 5.2   | GET    | `/ajax/search/novels/{keyword}`          | Optional            | Search novels                |
+| 6.1   | GET    | `/ranking.php`                           | Partial (R18 req.)  | Artwork ranking              |
+| 6.2   | GET    | `/ajax/ranking/novel`                    | Partial (R18 req.)  | Novel ranking                |
+| 7.1   | GET    | `/ajax/user/{userId}?full=1`             | Optional            | User profile                 |
+| 7.2   | GET    | `/ajax/user/{userId}/profile/top`        | Optional            | User featured works          |
+| 7.3   | GET    | `/ajax/user/{userId}/profile/all`        | Optional            | All user work IDs            |
+| 7.4   | GET    | `/ajax/user/{userId}/profile/illusts`    | Optional            | User works by IDs            |
+| 8.1   | GET    | `/ajax/user/{userId}/following`          | Required            | User following list          |
+| 8.2   | GET    | `/ajax/follow_latest/illust`             | Required            | Feed from followed users     |
+| 9.1   | GET    | `/ajax/user/{userId}/illusts/bookmarks`  | Optional            | User bookmarks               |
+| 9.2   | POST   | `/ajax/illusts/bookmarks/add`            | Required            | Add bookmark                 |
+| 9.3   | POST   | `/ajax/illusts/bookmarks/delete`         | Required            | Remove bookmark              |
+| 10.1  | GET    | `/ajax/illusts/comments/roots`           | Optional            | Artwork comments             |
+| 10.2  | POST   | `/ajax/illusts/comments/post`            | Required            | Post comment                 |
+| 11.1  | POST   | `/bookmark_add.php`                      | Required            | Follow user                  |
+| 11.2  | POST   | `/rpc_group_setting.php`                 | Required            | Unfollow user                |
+| 12.1  | GET    | `/ajax/novel/{id}`                       | Optional            | Novel detail & content       |
+| 12.2  | GET    | `/ajax/user/{userId}/novels`             | Optional            | User novels by IDs           |
+| 12.3  | GET    | `/ajax/novels/comments/roots`            | Optional            | Novel comments               |
+| 12.4  | GET    | `/ajax/novel/series/{id}`                | Optional            | Novel series info            |
+| 12.5  | GET    | `/ajax/novel/series_content/{id}`        | Optional            | Novel series content list    |
+| 12.6  | GET    | `/ajax/novel/series/{id}/content_titles` | Optional            | Novel series titles          |
+| 12.7  | GET    | `/ajax/user/{userId}/novels/tags`        | Optional            | User novel tags              |
