@@ -146,3 +146,15 @@ Add comprehensive novel API section covering all known endpoints:
 - No novel-specific mode filters beyond what Pixiv API supports
 - No novel content in the "following" sidebar
 - Novel detail page enhancements (recommend, comments) are out of scope for this PR
+
+## Implementation Notes
+
+Findings recorded during development:
+
+1. **Pre-existing typecheck errors**: `npx nuxi typecheck` reports errors in `app/pages/users/[id]/index.vue` (auto-import names like `ref`, `computed`, `useRouter` not recognized). These are from PR #541, not from this branch. Should be fixed separately.
+
+2. **Novel ranking date format**: The `/ajax/ranking/novel` endpoint returns `date` as a localized string (e.g. "2026年6月21日"), unlike `/ranking.php` which returns `YYYYMMDD`. This means `novelRankingData.date` is stored as `string` and displayed directly, while `rankingData.date` is parsed into a `Date` object. This asymmetry is intentional.
+
+3. **RankedArtworkInfo includes viewCount**: The design spec originally defined `RankedArtworkInfo = ArtworkInfo & { rank: number }`, but `RankingCarousel` displays `view_count` from the raw API. The type was expanded to `ArtworkInfo & { rank: number; viewCount: number }` to carry this data through normalization.
+
+4. **Novel discovery limit param**: The `/ajax/novel/discovery` endpoint does not strictly respect the `limit` parameter — requesting `limit=3` may return ~59 items. The client passes it through but does not enforce truncation.
