@@ -67,6 +67,10 @@ export const useArtworkStore = defineStore('artwork', () => {
     return pixivClient.removeBookmark(bookmarkId)
   }
 
+  async function likeArtwork(illustId: string | number): Promise<any> {
+    return pixivClient.likeArtwork(illustId)
+  }
+
   function clearRecommendations() {
     recommendations.value = []
     recommendNextIds.value = []
@@ -86,6 +90,7 @@ export const useArtworkStore = defineStore('artwork', () => {
     fetchComments,
     addBookmark,
     removeBookmark,
+    likeArtwork,
     clearRecommendations,
   }
 })

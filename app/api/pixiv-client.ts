@@ -623,6 +623,15 @@ export class PixivWebClient {
     return data
   }
 
+  /** Like an artwork. Irreversible — Pixiv has no unlike endpoint. */
+  async likeArtwork(illustId: string | number): Promise<{ is_liked: boolean }> {
+    const { data } = await this.http.post<PixivResponse<{ is_liked: boolean }>>(
+      '/ajax/illusts/like',
+      { illust_id: '' + illustId }
+    )
+    return this.unwrap(data)
+  }
+
   // ── Comments ──────────────────────────────────────────────────────
 
   async getComments(

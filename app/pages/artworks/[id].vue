@@ -47,7 +47,13 @@
               ) (作者未填写简介)
 
               p.stats
-                span.stat-item(title='点赞')
+                //- 点赞
+                button.stat-item.like-btn(
+                  :aria-label='illust.likeData ? "已赞" : "点赞"'
+                  :class='{ liked: illust.likeData }',
+                  :title='!userStore.isLoggedIn ? "点赞" : illust.likeData ? "已赞（不可取消）" : "点赞"'
+                  @click='handleLike'
+                )
                   IFasThumbsUp.i-like(aria-hidden='true')
                   | {{ illust.likeCount }}
 
@@ -161,6 +167,7 @@ const pages = ref<ArtworkGallery[]>([])
 const user = ref<User>()
 const recommendLoading = ref(false)
 const bookmarkLoading = ref(false)
+const likeLoading = ref(false)
 const route = useRoute()
 const userStore = useUserStore()
 const artworkStore = useArtworkStore()
@@ -338,6 +345,27 @@ async function handleRemoveBookmark(): Promise<void> {
   }
 }
 
+async function handleLike(): Promise<void> {
+  if (!illust.value) return
+  if (!userStore.isLoggedIn) {
+    console.log('需要登录才可以点赞')
+    return
+  }
+  // Likes are irreversible; once liked, clicking again is a no-op.
+  if (likeLoading.value || illust.value.likeData) return
+  try {
+    likeLoading.value = true
+    const { is_liked } = await artworkStore.likeArtwork(illust.value.illustId)
+    // is_liked === false means it was not liked before → this call registered it.
+    illust.value.likeData = true
+    if (!is_liked) illust.value.likeCount++
+  } catch (err) {
+    console.error('like failed:', err)
+  } finally {
+    likeLoading.value = false
+  }
+}
+
 onBeforeRouteUpdate(async (to) => {
   if (to.name !== 'artworks') {
     return
@@ -427,13 +455,21 @@ h1 {
     color: var(--fnb-text-muted);
   }
 
-  .bookmark-btn {
+  .bookmark-btn,
+  .like-btn {
     border: none;
     background: transparent;
     font: inherit;
     font-weight: 800;
     cursor: pointer;
 
+    &:focus-visible {
+      outline: 2px solid var(--fnb-brand);
+      outline-offset: 2px;
+    }
+  }
+
+  .bookmark-btn {
     svg {
       color: var(--fnb-bookmark);
     }
@@ -441,12 +477,21 @@ h1 {
     &:hover:not(.bookmarked) {
       background-color: var(--fnb-highlight);
     }
-    &:focus-visible {
-      outline: 2px solid var(--fnb-brand);
-      outline-offset: 2px;
-    }
     &.bookmarked {
       background-color: var(--fnb-bookmark);
+      color: #fff;
+      svg {
+        color: #fff;
+      }
+    }
+  }
+
+  .like-btn {
+    &:hover:not(.liked) {
+      background-color: var(--fnb-highlight);
+    }
+    &.liked {
+      background-color: var(--fnb-brand);
       color: #fff;
       svg {
         color: #fff;
