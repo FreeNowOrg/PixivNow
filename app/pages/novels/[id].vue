@@ -57,9 +57,9 @@
                 IFasArrowRight
 
     .body-inner.content-grid
-      main.reader-area(id='reader', ref='readerRef')
+      main.reader-area
         Card(title='正文')
-          NovelReader(:blocks='contentBlocks')
+          NovelReader#reader(:blocks='contentBlocks', ref='readerRef')
 
       aside.side-area
         Card(title='作者')
