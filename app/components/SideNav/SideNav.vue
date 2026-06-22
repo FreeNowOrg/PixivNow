@@ -12,10 +12,18 @@ aside.global-side-nav(:class='{ hidden: !sideNavStore.isOpened }')
         ul
           SideNavListLink(link='/' text='首页')
             IFasHome.link-icon
-          SideNavListLink(link='/discovery' text='探索发现')
-            IFasImage.link-icon
           SideNavListLink(link='/ranking' text='排行榜')
             IFasCrown.link-icon
+
+      .group
+        .title 探索发现
+        ul
+          SideNavListLink(link='/discovery/artworks' text='插画·漫画')
+            IFasImage.link-icon
+          SideNavListLink(link='/discovery/novels' text='小说')
+            IFasBook.link-icon
+          SideNavListLink(link='/discovery/users' text='用户')
+            IFasUser.link-icon
 
       .group
         .title 用户
@@ -55,6 +63,7 @@ import IFasExternalLinkAlt from '~icons/fa-solid/external-link-alt'
 import IFasFingerprint from '~icons/fa-solid/fingerprint'
 import IFasHeart from '~icons/fa-solid/heart'
 import IFasHome from '~icons/fa-solid/home'
+import IFasBook from '~icons/fa-solid/book'
 import IFasImage from '~icons/fa-solid/image'
 import IFasUser from '~icons/fa-solid/user'
 import { useSideNavStore, useUserStore } from '~/stores/session'
