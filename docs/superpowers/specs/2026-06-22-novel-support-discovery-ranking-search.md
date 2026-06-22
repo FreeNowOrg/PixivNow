@@ -31,18 +31,22 @@ NovelRankItem {
 
 ## Design Decisions
 
-- **Data adaptation**: API client layer converts novel ranking's snake_case response to match `NovelInfo` interface, so components reuse `NovelList`/`NovelCard` uniformly.
+- **SDK-level normalization**: All ranking endpoints (both artwork and novel) normalize snake_case API responses to camelCase types (`ArtworkInfo` / `NovelInfo`) at the API client layer. Components receive a single consistent type and carry no conversion logic. This also fixes the existing `ArtworkLargeList.convertRankToInfo` hack (with `@ts-ignore`) by moving it into `pixiv-client.ts`.
 - **Display mode**: Tab switching — selecting "novel" replaces the entire content area with `NovelList`, mutually exclusive with artwork views.
 
 ## Module Changes
 
 ### 1. API Client (`app/api/pixiv-client.ts`)
 
-Add three methods:
+**Refactor existing:**
+
+- `getRanking()` — normalize return type from `ArtworkRank[]` to `RankedArtworkInfo[]` (where `RankedArtworkInfo = ArtworkInfo & { rank: number }`). Move the conversion logic currently in `ArtworkLargeList.vue#convertRankToInfo` into the client.
+
+**Add three methods:**
 
 - `getNovelDiscovery(params: { mode?, limit? }): Promise<NovelInfo[]>` — calls `/ajax/novel/discovery`, returns `body.novels`
 - `searchNovels(keyword, params: { p?, mode? }): Promise<{ data: NovelInfo[], total: number }>` — calls `/ajax/search/novels/{keyword}`, returns `body.novel`
-- `getNovelRanking(params: { mode?, p? }): Promise<{ date: string, contents: NovelInfo[] }>` — calls `/ajax/ranking/novel`, converts `display_a.rank_a` items from snake_case to NovelInfo shape
+- `getNovelRanking(params: { mode?, p? }): Promise<{ date: string, contents: RankedNovelInfo[] }>` — calls `/ajax/ranking/novel`, normalizes `display_a.rank_a` from snake_case to `RankedNovelInfo` (where `RankedNovelInfo = NovelInfo & { rank: number }`)
 
 ### 2. Home Store (`app/stores/home.ts`)
 
@@ -79,26 +83,38 @@ Add novel search state:
 
 ### 7. Ranking Store (`app/stores/ranking.ts`)
 
-Add novel ranking state:
+**Refactor existing:**
 
-- `novelRankingData: { date: Date, contents: NovelInfo[] } | null`
+- `rankingData.contents` type changes from `ArtworkRank[]` to `RankedArtworkInfo[]`
+
+**Add novel ranking state:**
+
+- `novelRankingData: { date: Date, contents: RankedNovelInfo[] } | null`
 - `fetchNovelRanking(params)` method
 
 ### 8. Ranking Page (`app/pages/ranking.vue`)
 
 - Enable "小说" in content filter (remove `disabled: true`)
 - When content=novel: call `rankingStore.fetchNovelRanking()`, render `NovelList` instead of `ArtworkLargeList`
-- Filter available modes to only those supported by novel ranking (hide r18, original)
+- Filter available modes to only those supported by novel ranking (hide original, add r18_ai variants)
 
-### 9. Types (`app/types/Novels.ts`)
+### 9. ArtworkLargeList (`app/components/Artwork/ArtworkLargeList.vue`)
 
-Add `NovelRankItem` raw type and conversion utility function `normalizeNovelRankItem(item: NovelRankItem): NovelInfo`.
+- Remove `convertRankToInfo` function and `[ArtworkInfo, number]` tuple pattern
+- Simplify: accept `RankedArtworkInfo[]` directly, read `item.rank` from the object itself
+
+### 10. Types
+
+- Add `RankedArtworkInfo = ArtworkInfo & { rank: number }` — normalized artwork ranking item
+- Add `RankedNovelInfo = NovelInfo & { rank: number }` — normalized novel ranking item
+- Add `NovelRankItem` — raw snake_case API type, internal to pixiv-client
+- `ArtworkRank` — remains as raw API type, internal to pixiv-client
 
 ## Component Reuse
 
 All three modules render novel results with the existing `NovelList` + `NovelCard` components. No new UI components needed.
 
-### 10. API Documentation (`docs/pixiv-web-api.md`)
+### 11. API Documentation (`docs/pixiv-web-api.md`)
 
 Add comprehensive novel API section covering all known endpoints:
 
