@@ -43,7 +43,9 @@ API routes:
 
 Session relies on `PHPSESSID` cookie forwarded to Pixiv. The `/api/user` endpoint extracts user data and CSRF token from Pixiv's HTML response.
 
-This project's server also handles `Authorization` header for token-based auth, forwarding it as `PHPSESSID` to Pixiv when present.
+PixivNow also handles `Authorization` header, forwarding it as `PHPSESSID` cookie to Pixiv when present:
+
+`Authorization: Bearer <token>` → `Cookie: PHPSESSID=<token>`
 
 ### Key Dependencies
 

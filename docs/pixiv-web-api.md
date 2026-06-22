@@ -266,7 +266,7 @@ Discover random artworks. **Requires authentication** (returns 401 without a val
       // Array of ArtworkInfo objects (same shape as §3.1 but abbreviated)
       // May include ad objects: { "isAdContainer": true, ... }
       // Filter by checking for the presence of "id" field
-    ]
+    ],
   },
 }
 ```
@@ -275,10 +275,10 @@ Discover random artworks. **Requires authentication** (returns 401 without a val
 
 Legacy discovery endpoint. **Does not require authentication**, but has a lower result limit and does not support `r18` mode without a session.
 
-| Param | Type   | Default | Description                                     |
-| ----- | ------ | ------- | ----------------------------------------------- |
+| Param  | Type   | Default | Description                                        |
+| ------ | ------ | ------- | -------------------------------------------------- |
 | `mode` | string | `safe`  | `safe` / `all` (`r18` requires auth, same as §4.1) |
-| `max`  | string | `18`    | Max number of results (hard limit: **18**)       |
+| `max`  | string | `18`    | Max number of results (hard limit: **18**)         |
 
 **Response** `body`:
 
@@ -362,7 +362,7 @@ Get artwork rankings. This is a legacy PHP endpoint.
 | `mode`    | string | No       | `daily` / `weekly` / `monthly` / `rookie` / `original` / `male` / `female` / `daily_r18` / `weekly_r18` / etc.                                   |
 | `content` | string | No       | `all` (combined) / `illust` (illustrations) / `ugoira` (animations) / `manga`. Novel ranking uses a separate endpoint and is not supported here. |
 | `p`       | number | No       | Page number                                                                                                                                      |
-| `date`    | string | No       | Date in `YYYYMMDD` format                                                                                                                        |
+| `date`    | string | No       | Date in `YYYYMMDD` format. Time zone: `Asia/Tokyo`. Must be before the current date.                                                             |
 
 **Response** (top-level, not wrapped in `body`):
 
@@ -680,27 +680,27 @@ The `/ranking.php` endpoint is an exception — it returns data directly without
 
 ## Appendix: Endpoint Summary
 
-| #    | Method | Endpoint                                | Auth                        | Description               |
-| ---- | ------ | --------------------------------------- | --------------------------- | ------------------------- |
-| 3.1  | GET    | `/ajax/illust/{id}?full=1`              | Optional (Required for r18) | Artwork detail            |
-| 3.2  | GET    | `/ajax/illust/{id}/pages`               | Optional (Required for r18) | Multi-page artwork        |
-| 3.3  | GET    | `/ajax/illust/{id}/ugoira_meta`         | Optional (Required for r18) | Ugoira animation metadata |
-| 4.1  | GET    | `/ajax/discovery/artworks`              | Required                    | Discovery (new, limit 60) |
-| 4.1.1| GET    | `/ajax/illust/discovery`                | No                          | Discovery (legacy, max 18)|
-| 4.2  | GET    | `/ajax/illust/{id}/recommend/init`      | Optional                    | Initial recommendations   |
-| 4.3  | GET    | `/ajax/illust/recommend/illusts`        | Optional                    | More recommendations      |
-| 5.1  | GET    | `/ajax/search/artworks/{keyword}`       | Optional                    | Search artworks           |
-| 6.1  | GET    | `/ranking.php`                          | No                          | Artwork ranking           |
-| 7.1  | GET    | `/ajax/user/{userId}?full=1`            | Optional                    | User profile              |
-| 7.2  | GET    | `/ajax/user/{userId}/profile/top`       | Optional                    | User featured works       |
-| 7.3  | GET    | `/ajax/user/{userId}/profile/all`       | Optional                    | All user work IDs         |
-| 7.4  | GET    | `/ajax/user/{userId}/profile/illusts`   | Optional                    | User works by IDs         |
-| 8.1  | GET    | `/ajax/user/{userId}/following`         | Required                    | User following list       |
-| 8.2  | GET    | `/ajax/follow_latest/illust`            | Required                    | Feed from followed users  |
-| 9.1  | GET    | `/ajax/user/{userId}/illusts/bookmarks` | Optional                    | User bookmarks            |
-| 9.2  | POST   | `/ajax/illusts/bookmarks/add`           | Required                    | Add bookmark              |
-| 9.3  | POST   | `/ajax/illusts/bookmarks/delete`        | Required                    | Remove bookmark           |
-| 10.1 | GET    | `/ajax/illusts/comments/roots`          | Optional                    | Artwork comments          |
-| 10.2 | POST   | `/ajax/illusts/comments/post`           | Required                    | Post comment              |
-| 11.1 | POST   | `/bookmark_add.php`                     | Required                    | Follow user               |
-| 11.2 | POST   | `/rpc_group_setting.php`                | Required                    | Unfollow user             |
+| #     | Method | Endpoint                                | Auth                        | Description                |
+| ----- | ------ | --------------------------------------- | --------------------------- | -------------------------- |
+| 3.1   | GET    | `/ajax/illust/{id}?full=1`              | Optional (Required for r18) | Artwork detail             |
+| 3.2   | GET    | `/ajax/illust/{id}/pages`               | Optional (Required for r18) | Multi-page artwork         |
+| 3.3   | GET    | `/ajax/illust/{id}/ugoira_meta`         | Optional (Required for r18) | Ugoira animation metadata  |
+| 4.1   | GET    | `/ajax/discovery/artworks`              | Required                    | Discovery (new, limit 60)  |
+| 4.1.1 | GET    | `/ajax/illust/discovery`                | No                          | Discovery (legacy, max 18) |
+| 4.2   | GET    | `/ajax/illust/{id}/recommend/init`      | Optional                    | Initial recommendations    |
+| 4.3   | GET    | `/ajax/illust/recommend/illusts`        | Optional                    | More recommendations       |
+| 5.1   | GET    | `/ajax/search/artworks/{keyword}`       | Optional                    | Search artworks            |
+| 6.1   | GET    | `/ranking.php`                          | No                          | Artwork ranking            |
+| 7.1   | GET    | `/ajax/user/{userId}?full=1`            | Optional                    | User profile               |
+| 7.2   | GET    | `/ajax/user/{userId}/profile/top`       | Optional                    | User featured works        |
+| 7.3   | GET    | `/ajax/user/{userId}/profile/all`       | Optional                    | All user work IDs          |
+| 7.4   | GET    | `/ajax/user/{userId}/profile/illusts`   | Optional                    | User works by IDs          |
+| 8.1   | GET    | `/ajax/user/{userId}/following`         | Required                    | User following list        |
+| 8.2   | GET    | `/ajax/follow_latest/illust`            | Required                    | Feed from followed users   |
+| 9.1   | GET    | `/ajax/user/{userId}/illusts/bookmarks` | Optional                    | User bookmarks             |
+| 9.2   | POST   | `/ajax/illusts/bookmarks/add`           | Required                    | Add bookmark               |
+| 9.3   | POST   | `/ajax/illusts/bookmarks/delete`        | Required                    | Remove bookmark            |
+| 10.1  | GET    | `/ajax/illusts/comments/roots`          | Optional                    | Artwork comments           |
+| 10.2  | POST   | `/ajax/illusts/comments/post`           | Required                    | Post comment               |
+| 11.1  | POST   | `/bookmark_add.php`                     | Required                    | Follow user                |
+| 11.2  | POST   | `/rpc_group_setting.php`                | Required                    | Unfollow user              |
