@@ -100,7 +100,6 @@ async function makeSearch({
     if (searchType.value === 'novel') {
       await searchStore.searchNovels(keyword, {
         p: parseInt(p || '1'),
-        mode: mode ?? 'text',
       })
     } else {
       await searchStore.search(keyword, {
