@@ -8,12 +8,15 @@ import type {
   ArtworkInfo,
   ArtworkInfoOrAd,
   ArtworkRank,
+  RankedArtworkInfo,
   Comments,
   Novel,
   NovelInfo,
   NovelContentTitle,
   NovelSeries,
   NovelSeriesContentResult,
+  NovelRankItem,
+  RankedNovelInfo,
   User,
   UserListItem,
   PixivUser,
@@ -215,6 +218,31 @@ export class PixivWebClient {
     return this.unwrap(data)
   }
 
+  async getNovelRecommendInit(
+    id: string,
+    limit: number = 18
+  ): Promise<{ novels: NovelInfo[]; nextIds: string[] }> {
+    const { data } = await this.http.get<
+      PixivResponse<{ novels: NovelInfo[]; nextIds: string[] }>
+    >(`/ajax/novel/${id}/recommend/init`, { params: { limit } })
+    const body = this.unwrap(data)
+    return { novels: body.novels ?? [], nextIds: body.nextIds ?? [] }
+  }
+
+  async getNovelRecommendMore(
+    ids: string[]
+  ): Promise<{ novels: NovelInfo[] }> {
+    const searchParams = new URLSearchParams()
+    for (const id of ids) {
+      searchParams.append('novelIds[]', id)
+    }
+    const { data } = await this.http.get<
+      PixivResponse<{ novels: NovelInfo[] }>
+    >('/ajax/novel/recommend/novels', { params: searchParams })
+    const body = this.unwrap(data)
+    return { novels: body.novels ?? [] }
+  }
+
   async getUgoiraMeta(id: string): Promise<UgoiraMeta> {
     const { data } = await this.http.get<PixivResponse<UgoiraMeta>>(
       `/ajax/illust/${id}/ugoira_meta`
@@ -254,6 +282,21 @@ export class PixivWebClient {
     }
   }
 
+  async getNovelDiscovery(params: {
+    mode?: string
+    limit?: number
+  }): Promise<NovelInfo[]> {
+    const { data } = await this.http.get<
+      PixivResponse<{ novels: NovelInfo[] }>
+    >('/ajax/novel/discovery', {
+      params: {
+        mode: params.mode ?? 'safe',
+        limit: params.limit,
+      },
+    })
+    return this.unwrap(data).novels ?? []
+  }
+
   async getRecommendInit(
     id: string,
     limit: number = 18
@@ -279,21 +322,113 @@ export class PixivWebClient {
 
   // ── Search ────────────────────────────────────────────────────────
 
+  private buildSearchParams(params?: {
+    p?: number
+    mode?: string
+    s_mode?: string
+    order?: string
+    ai_type?: string
+  }): Record<string, string | number> {
+    const result: Record<string, string | number> = {
+      p: params?.p ?? 1,
+      mode: params?.mode ?? 'all',
+      s_mode: params?.s_mode ?? 's_tag',
+      order: params?.order ?? 'date_d',
+    }
+    if (params?.ai_type) result.ai_type = params.ai_type
+    return result
+  }
+
   async searchArtworks(
     keyword: string,
-    params?: { p?: number; mode?: string }
+    params?: { p?: number; mode?: string; s_mode?: string; order?: string; ai_type?: string }
   ): Promise<{ data: ArtworkInfo[]; total: number }> {
     const { data } = await this.http.get<
       PixivResponse<{
         illustManga: { data: ArtworkInfo[]; total: number }
       }>
     >(`/ajax/search/artworks/${encodeURIComponent(keyword)}`, {
-      params: { p: params?.p ?? 1, mode: params?.mode ?? 'text' },
+      params: this.buildSearchParams(params),
     })
     const body = this.unwrap(data)
     return {
       data: body.illustManga?.data ?? [],
       total: body.illustManga?.total ?? 0,
+    }
+  }
+
+  async searchIllustrations(
+    keyword: string,
+    params?: {
+      p?: number
+      mode?: string
+      s_mode?: string
+      order?: string
+      ai_type?: string
+      type?: string
+    }
+  ): Promise<{ data: ArtworkInfo[]; total: number }> {
+    const { data } = await this.http.get<
+      PixivResponse<{
+        illust: { data: ArtworkInfo[]; total: number }
+      }>
+    >(`/ajax/search/illustrations/${encodeURIComponent(keyword)}`, {
+      params: {
+        ...this.buildSearchParams(params),
+        type: params?.type ?? 'illust_and_ugoira',
+      },
+    })
+    const body = this.unwrap(data)
+    return {
+      data: body.illust?.data ?? [],
+      total: body.illust?.total ?? 0,
+    }
+  }
+
+  async searchManga(
+    keyword: string,
+    params?: { p?: number; mode?: string; s_mode?: string; order?: string; ai_type?: string }
+  ): Promise<{ data: ArtworkInfo[]; total: number }> {
+    const { data } = await this.http.get<
+      PixivResponse<{
+        manga: { data: ArtworkInfo[]; total: number }
+      }>
+    >(`/ajax/search/manga/${encodeURIComponent(keyword)}`, {
+      params: this.buildSearchParams(params),
+    })
+    const body = this.unwrap(data)
+    return {
+      data: body.manga?.data ?? [],
+      total: body.manga?.total ?? 0,
+    }
+  }
+
+  async searchNovels(
+    keyword: string,
+    params?: {
+      p?: number
+      mode?: string
+      s_mode?: string
+      order?: string
+      ai_type?: string
+      work_lang?: string
+    }
+  ): Promise<{ data: NovelInfo[]; total: number }> {
+    const searchParams = {
+      ...this.buildSearchParams({ ...params, s_mode: params?.s_mode ?? 's_tag' }),
+      ...(params?.work_lang ? { work_lang: params.work_lang } : {}),
+    }
+    const { data } = await this.http.get<
+      PixivResponse<{
+        novel: { data: NovelInfo[]; total: number }
+      }>
+    >(`/ajax/search/novels/${encodeURIComponent(keyword)}`, {
+      params: searchParams,
+    })
+    const body = this.unwrap(data)
+    return {
+      data: body.novel?.data ?? [],
+      total: body.novel?.total ?? 0,
     }
   }
 
@@ -304,18 +439,110 @@ export class PixivWebClient {
     mode?: string
     date?: string
     content?: string
-  }): Promise<{ date: string; contents: ArtworkRank[] }> {
+  }): Promise<{ date: string; contents: RankedArtworkInfo[] }> {
     const searchParams = new URLSearchParams({ format: 'json' })
     if (params?.p) searchParams.set('p', String(params.p))
     if (params?.mode) searchParams.set('mode', params.mode)
     if (params?.date) searchParams.set('date', params.date)
     if (params?.content) searchParams.set('content', params.content)
-    // ranking.php returns data directly (no body envelope)
     const { data } = await this.http.get<{
       date: string
+      date_range_text: string
       contents: ArtworkRank[]
     }>('/ranking.php', { params: searchParams })
-    return this.transform(data)
+    const transformed = this.transform(data)
+    return {
+      date: transformed.date_range_text || transformed.date,
+      contents: transformed.contents.map(
+        (item): RankedArtworkInfo => ({
+          id: `${item.illust_id}`,
+          title: item.title,
+          description: '',
+          createDate: item.date,
+          updateDate: item.date,
+          illustType: +item.illust_type as 0 | 1 | 2,
+          restrict: 0,
+          xRestrict: item.illust_content_type.sexual,
+          sl: 0,
+          userId: `${item.user_id}`,
+          userName: item.user_name,
+          alt: item.title,
+          width: item.width,
+          height: item.height,
+          pageCount: +item.illust_page_count,
+          isBookmarkable: true,
+          bookmarkData: null,
+          titleCaptionTranslation: {
+            workTitle: null,
+            workCaption: null,
+          },
+          isUnlisted: false,
+          aiType: 0,
+          url: item.url,
+          tags: item.tags,
+          profileImageUrl: item.profile_img,
+          type: 'illust',
+          rank: item.rank,
+          viewCount: item.view_count,
+        })
+      ),
+    }
+  }
+
+  async getNovelRanking(params?: {
+    p?: number
+    mode?: string
+  }): Promise<{ date: string; contents: RankedNovelInfo[] }> {
+    const { data } = await this.http.get<
+      PixivResponse<{
+        display_a: { rank_a: NovelRankItem[] }
+        date: string | null
+        start: string | null
+        end: string | null
+      }>
+    >('/ajax/ranking/novel', {
+      params: { mode: params?.mode ?? 'daily', p: params?.p },
+    })
+    const body = this.unwrap(data)
+    const date =
+      body.date ?? (body.start && body.end ? `${body.start}～${body.end}` : '')
+    return {
+      date,
+      contents: (body.display_a?.rank_a ?? []).map(
+        (item): RankedNovelInfo => ({
+          id: `${item.id}`,
+          title: item.title,
+          description: item.comment ?? '',
+          createDate: item.create_date ?? '',
+          updateDate: item.create_date ?? '',
+          restrict: +item.restrict as 0,
+          xRestrict: +item.x_restrict as 0 | 1 | 2,
+          userId: `${item.user_id}`,
+          userName: item.user_name,
+          isBookmarkable: true,
+          bookmarkData: null,
+          titleCaptionTranslation: {
+            workTitle: null,
+            workCaption: null,
+          },
+          isUnlisted: false,
+          aiType: +item.ai_type,
+          url: item.url,
+          tags: item.tag_a ?? [],
+          profileImageUrl: item.profile_img,
+          type: 'novel',
+          genre: item.genre,
+          textCount: item.character_count,
+          wordCount: item.word_count,
+          readingTime: item.reading_time,
+          isOriginal: item.is_original,
+          bookmarkCount: item.bookmark_count,
+          language: item.language,
+          marker: item.marker,
+          rank: item.rank,
+        })
+      ),
+    }
   }
 
   // ── User ──────────────────────────────────────────────────────────
@@ -421,6 +648,15 @@ export class PixivWebClient {
     return data
   }
 
+  /** Like an artwork. Irreversible — Pixiv has no unlike endpoint. */
+  async likeArtwork(illustId: string | number): Promise<{ is_liked: boolean }> {
+    const { data } = await this.http.post<PixivResponse<{ is_liked: boolean }>>(
+      '/ajax/illusts/like',
+      { illust_id: '' + illustId }
+    )
+    return this.unwrap(data)
+  }
+
   // ── Comments ──────────────────────────────────────────────────────
 
   async getComments(
@@ -435,6 +671,40 @@ export class PixivWebClient {
         limit: String(params.limit),
         offset: String(params.offset),
       },
+    })
+    return this.unwrap(data)
+  }
+
+  async getNovelComments(
+    novelId: string,
+    params: { limit: number; offset: number }
+  ): Promise<{ hasNext: boolean; comments: Comments[] }> {
+    const { data } = await this.http.get<
+      PixivResponse<{ hasNext: boolean; comments: Comments[] }>
+    >('/ajax/novels/comments/roots', {
+      params: {
+        novel_id: novelId,
+        limit: String(params.limit),
+        offset: String(params.offset),
+      },
+    })
+    return this.unwrap(data)
+  }
+
+  /** Load replies for a root comment (replies are always one level deep). */
+  async getCommentReplies(
+    commentId: string,
+    page: number,
+    type: 'illust' | 'novel' = 'illust'
+  ): Promise<{ hasNext: boolean; comments: Comments[] }> {
+    const endpoint =
+      type === 'novel'
+        ? '/ajax/novels/comments/replies'
+        : '/ajax/illusts/comments/replies'
+    const { data } = await this.http.get<
+      PixivResponse<{ hasNext: boolean; comments: Comments[] }>
+    >(endpoint, {
+      params: { comment_id: commentId, page: String(page) },
     })
     return this.unwrap(data)
   }

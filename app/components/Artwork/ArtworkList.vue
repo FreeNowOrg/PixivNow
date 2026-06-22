@@ -46,6 +46,7 @@ const artworks = computed(() => {
     overflow-y: hidden;
     white-space: nowrap;
     display: block;
+    max-width: 100%;
     // Neubrutalism scrollbar styling
     scrollbar-width: thin;
     scrollbar-color: var(--fnb-text) var(--fnb-bg);

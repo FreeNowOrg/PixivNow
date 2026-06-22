@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { ArtworkInfo, ArtworkRank } from '~/types'
+import type { ArtworkInfo, NovelInfo, RankedArtworkInfo } from '~/types'
 
 export const useHomeStore = defineStore('home', () => {
   const pixivClient = usePixivClient()
@@ -7,7 +7,7 @@ export const useHomeStore = defineStore('home', () => {
   const discoveryList = ref<ArtworkInfo[]>([])
   const loadingDiscovery = ref(false)
 
-  const rankingList = ref<ArtworkRank[]>([])
+  const rankingList = ref<RankedArtworkInfo[]>([])
   const loadingRanking = ref(false)
 
   const followingList = ref<ArtworkInfo[]>([])
@@ -17,6 +17,12 @@ export const useHomeStore = defineStore('home', () => {
   const loadingMoreDiscovery = ref(false)
   const noMoreDiscovery = ref(false)
   const discoveryMode = ref('all')
+
+  const novelDiscoveryList = ref<NovelInfo[]>([])
+  const loadingNovelDiscovery = ref(false)
+  const loadingMoreNovelDiscovery = ref(false)
+  const noMoreNovelDiscovery = ref(false)
+  const novelDiscoverySeenIds = new Set<string>()
 
   async function fetchRandomBg(): Promise<void> {
     try {
@@ -90,6 +96,49 @@ export const useHomeStore = defineStore('home', () => {
     }
   }
 
+  async function fetchNovelDiscovery(): Promise<void> {
+    if (loadingNovelDiscovery.value) return
+    try {
+      loadingNovelDiscovery.value = true
+      const novels = await pixivClient.getNovelDiscovery({
+        mode: discoveryMode.value,
+        limit: 60,
+      })
+      novelDiscoverySeenIds.clear()
+      noMoreNovelDiscovery.value = false
+      novels.forEach((item) => novelDiscoverySeenIds.add(item.id))
+      novelDiscoveryList.value = novels
+    } catch (err) {
+      console.error('Failed to fetch novel discovery', err)
+    } finally {
+      loadingNovelDiscovery.value = false
+    }
+  }
+
+  async function appendNovelDiscovery(): Promise<void> {
+    if (loadingMoreNovelDiscovery.value || noMoreNovelDiscovery.value) return
+    try {
+      loadingMoreNovelDiscovery.value = true
+      const novels = await pixivClient.getNovelDiscovery({
+        mode: discoveryMode.value,
+        limit: 60,
+      })
+      const fresh = novels.filter(
+        (item) => !novelDiscoverySeenIds.has(item.id)
+      )
+      if (!fresh.length) {
+        noMoreNovelDiscovery.value = true
+        return
+      }
+      fresh.forEach((item) => novelDiscoverySeenIds.add(item.id))
+      novelDiscoveryList.value = [...novelDiscoveryList.value, ...fresh]
+    } catch (err) {
+      console.error('Failed to append novel discovery', err)
+    } finally {
+      loadingMoreNovelDiscovery.value = false
+    }
+  }
+
   return {
     randomBg,
     discoveryList,
@@ -106,5 +155,11 @@ export const useHomeStore = defineStore('home', () => {
     noMoreDiscovery,
     appendDiscovery,
     discoveryMode,
+    novelDiscoveryList,
+    loadingNovelDiscovery,
+    loadingMoreNovelDiscovery,
+    noMoreNovelDiscovery,
+    fetchNovelDiscovery,
+    appendNovelDiscovery,
   }
 })

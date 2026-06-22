@@ -78,12 +78,22 @@ async function handleUserFollow() {
 
 .right {
   flex: 1;
+  min-width: 0;
 
   h4 {
     margin: 0.2rem 0;
     flex: 1;
+    min-width: 0;
     font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
+}
+
+.description {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 :deep(.artworks-list .author) {

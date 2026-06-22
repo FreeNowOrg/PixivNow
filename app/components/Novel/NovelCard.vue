@@ -2,22 +2,23 @@
 .novel-card.placeholder(v-if='loading')
   .cover: FnbSkeleton(block height='134px' width='96px')
   .info
-    .title: FnbSkeleton(text height='1.4em' width='8em')
+    .title: FnbSkeleton(height='1.4em' text width='8em')
     .meta: FnbSkeleton(text width='6em')
 .novel-card(v-else-if='item')
   RouterLink.cover(:to='`/novels/${item.id}`')
     DeferLoad.img(
-      :alt='item.title'
-      :src='item.url || fallbackCover'
+      :alt='item.title',
+      :src='item.url || fallbackCover',
       :title='item.title'
       lazyload
     )
-    .restrict(v-if='item.xRestrict') R-18
+    .restrict(aria-label='R-18' role='img' title='R-18' v-if='+item.xRestrict')
+      IFasEye(aria-hidden='true')
   .info
     .title
-      RouterLink(:to='`/novels/${item.id}`') {{ item.title }}
+      RouterLink(:title='item.title', :to='`/novels/${item.id}`') {{ item.title }}
     .author(:title='item.userName')
-      RouterLink(:to='`/users/${item.userId}`') {{ item.userName }}
+      RouterLink(:title='item.userName', :to='`/users/${item.userId}`') {{ item.userName }}
     .meta
       span(v-if='item.textCount') {{ item.textCount }} 字
       span(v-if='item.readingTime') {{ Math.ceil(item.readingTime / 60) }} 分钟
@@ -25,6 +26,7 @@
 
 <script lang="ts" setup>
 import DeferLoad from '~/components/DeferLoad.vue'
+import IFasEye from '~icons/fa-solid/eye'
 import type { NovelInfo } from '~/types'
 
 defineProps<{
@@ -41,8 +43,8 @@ const fallbackCover =
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
   gap: 0.85rem;
-  width: 280px;
-  max-width: calc(100vw - 2rem);
+  width: 100%;
+  max-width: 280px;
 }
 
 .cover {
@@ -67,13 +69,15 @@ const fallbackCover =
   position: absolute;
   top: 0.4rem;
   left: 0.4rem;
-  padding: 0.1rem 0.35rem;
-  background: rgba(220, 0, 0, 0.86);
   color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  @include fnb-border-sm;
-  border-color: rgba(0, 0, 0, 0.5);
+  width: 1.4rem;
+  height: 1.4rem;
+  font-size: 0.7rem;
+  border-radius: var(--fnb-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 0, 0, 0.8);
 }
 
 .info {

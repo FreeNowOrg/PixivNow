@@ -23,7 +23,7 @@
         FnbTag(clickable, @click='scrollToDiscovery')
           FnbIcon: ITablerCompass
           |  探索
-        FnbTag(:clickable='false', style='opacity: 0.4')
+        FnbTag(clickable, @click='scrollToDiscovery(); changeDiscoveryTab("novel")')
           FnbIcon: ITablerBook
           |  小说
 
@@ -106,20 +106,26 @@
             @update:model-value='changeDiscoveryMode'
           )
           FnbButton(
-            :loading='homeStore.loadingDiscovery',
-            @click='homeStore.fetchDiscovery()',
+            :loading='isDiscoveryLoading',
+            @click='refreshDiscovery',
             size='sm'
           )
             template(#icon): IFasRandom
-            | {{ homeStore.loadingDiscovery ? '加载中' : '换一批' }}
+            | {{ isDiscoveryLoading ? '加载中' : '换一批' }}
       ArtworkList(
+        v-if='discoveryTab !== "novel"',
         :list='homeStore.discoveryList',
         :loading='homeStore.loadingDiscovery'
+      )
+      NovelList(
+        v-else,
+        :list='homeStore.novelDiscoveryList',
+        :loading='homeStore.loadingNovelDiscovery'
       )
 
       //- Infinite scroll sentinel / login prompt
       .discover-footer(v-if='!homeStore.loadingDiscovery')
-        .loading-more(v-if='userStore.isLoggedIn && homeStore.loadingMoreDiscovery')
+        .loading-more(v-if='userStore.isLoggedIn && (discoveryTab === "novel" ? homeStore.loadingMoreNovelDiscovery : homeStore.loadingMoreDiscovery)')
           FnbSkeleton(block, height='2rem', width='200px')
         .login-prompt(v-else-if='!userStore.isLoggedIn && homeStore.discoveryList.length')
           p 登录后解锁无限浏览
@@ -136,6 +142,7 @@
 
 <script lang="ts" setup>
 import ArtworkList from '~/components/Artwork/ArtworkList.vue'
+import NovelList from '~/components/Novel/NovelList.vue'
 import SearchBox from '~/components/SearchBox.vue'
 import RankingCarousel from '~/components/RankingCarousel.vue'
 import UserStatusCard from '~/components/UserStatusCard.vue'
@@ -199,6 +206,9 @@ function changeDiscoveryTab(tab: string) {
   discoveryTab.value = tab
   savedDiscoveryTab.value = tab
   syncDiscoveryQuery()
+  if (tab === 'novel' && !homeStore.novelDiscoveryList.length) {
+    homeStore.fetchNovelDiscovery()
+  }
 }
 
 function changeDiscoveryMode(mode: string) {
@@ -206,7 +216,21 @@ function changeDiscoveryMode(mode: string) {
   savedDiscoveryMode.value = mode
   homeStore.discoveryMode = mode
   syncDiscoveryQuery()
-  homeStore.fetchDiscovery()
+  refreshDiscovery()
+}
+
+const isDiscoveryLoading = computed(() =>
+  discoveryTab.value === 'novel'
+    ? homeStore.loadingNovelDiscovery
+    : homeStore.loadingDiscovery
+)
+
+function refreshDiscovery() {
+  if (discoveryTab.value === 'novel') {
+    homeStore.fetchNovelDiscovery()
+  } else {
+    homeStore.fetchDiscovery()
+  }
 }
 
 function scrollToDiscovery() {
@@ -216,7 +240,11 @@ function scrollToDiscovery() {
 // Infinite scroll observer
 useIntersectionObserver(scrollSentinel, ([{ isIntersecting }]) => {
   if (isIntersecting && userStore.isLoggedIn) {
-    homeStore.appendDiscovery()
+    if (discoveryTab.value === 'novel') {
+      homeStore.appendNovelDiscovery()
+    } else {
+      homeStore.appendDiscovery()
+    }
   }
 })
 

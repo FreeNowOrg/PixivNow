@@ -2,6 +2,50 @@
 #search-view
   .body-inner
     SearchBox.big
+    .search-filters
+      .content-tabs
+        button.content-tab(
+          v-for='opt in contentOptions',
+          :key='opt.value',
+          :class='{ active: selectedContent === opt.value }',
+          @click='setQuery({ content: opt.value })'
+        ) {{ opt.label }}
+      .refine-bar
+        .refine-field
+          span.refine-label 匹配
+          FnbSelect(
+            :model-value='selectedSMode',
+            :options='activeSModeOptions',
+            @update:model-value='v => setQuery({ s_mode: v })'
+          )
+        .refine-field
+          span.refine-label 排序
+          FnbSelect(
+            :model-value='selectedOrder',
+            :options='orderOptions',
+            @update:model-value='v => setQuery({ order: v })'
+          )
+        .refine-field
+          span.refine-label 分级
+          FnbSelect(
+            :model-value='selectedMode',
+            :options='modeOptions',
+            @update:model-value='v => setQuery({ mode: v })'
+          )
+        .refine-field
+          span.refine-label AI
+          FnbSelect(
+            :model-value='selectedAiType',
+            :options='aiTypeOptions',
+            @update:model-value='v => setQuery({ ai_type: v })'
+          )
+        .refine-field(v-if='isNovel')
+          span.refine-label 语言
+          FnbSelect(
+            :model-value='selectedLang',
+            :options='langOptions',
+            @update:model-value='v => setQuery({ lang: v })'
+          )
 
   //- Error
   section(v-if='error && !searchStore.loading')
@@ -10,29 +54,34 @@
   //- Result
   section(v-if='!error')
 
-    //- Loading
-    .loading-area(v-if='searchStore.loading && !searchStore.results.length')
-      ArtworkList(:list='[]', :loading='16')
+    //- Loading skeleton
+    .loading-area(v-if='searchStore.loading && !currentResults.length')
+      ArtworkList(v-if='!isNovel', :list='[]', :loading='16')
+      .body-inner(v-else)
+        NovelList(:list='[]', :loading='12')
 
-    .no-more(v-if='!searchStore.loading && !searchStore.results.length')
+    //- Empty
+    .no-more(v-if='!searchStore.loading && !currentResults.length')
       FnbCard(style='padding: 15vh 0; text-align: center')
         .fnb-empty 没有了，一滴都没有了……
 
-    FnbSpin.result-area(:show='searchStore.loading' v-if='searchStore.results.length')
+    //- Results
+    FnbSpin.result-area(:show='searchStore.loading', v-if='currentResults.length')
       .body-inner
         .pagenator
           FnbPagination(
-            :page='page'
-            :item-count='searchStore.total'
-            :page-size='searchStore.results.length'
+            :page='page',
+            :item-count='currentTotal',
+            :page-size='currentResults.length',
             @update:page='page = $event'
           )
-        ArtworkLargeList(:artwork-list='searchStore.results')
+        ArtworkLargeList(v-if='!isNovel', :artwork-list='searchStore.artworkResults')
+        NovelList(v-else, :list='searchStore.novelResults')
         .pagenator
           FnbPagination(
-            :page='page'
-            :item-count='searchStore.total'
-            :page-size='searchStore.results.length'
+            :page='page',
+            :item-count='currentTotal',
+            :page-size='currentResults.length',
             @update:page='page = $event'
           )
 </template>
@@ -41,11 +90,62 @@
 definePageMeta({ name: 'search' })
 import ArtworkLargeList from '~/components/Artwork/ArtworkLargeList.vue'
 import ArtworkList from '~/components/Artwork/ArtworkList.vue'
+import NovelList from '~/components/Novel/NovelList.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
 import SearchBox from '~/components/SearchBox.vue'
-import { useSearchStore } from '~/stores/search'
+import { useSearchStore, type SearchContentType } from '~/stores/search'
 import { effect } from 'vue'
 import { setTitle } from '~/utils/setTitle'
+
+// ── Filter options ──
+
+const contentOptions = [
+  { label: '综合', value: 'artworks' },
+  { label: '插画', value: 'illustrations' },
+  { label: '动图', value: 'ugoira' },
+  { label: '漫画', value: 'manga' },
+  { label: '小说', value: 'novels' },
+]
+
+const artworkSModeOptions = [
+  { label: '标签（部分一致）', value: 's_tag' },
+  { label: '标签（完全一致）', value: 's_tag_full' },
+  { label: '标题、说明文字', value: 's_tc' },
+  { label: '标签、标题、说明', value: 's_tag_tc' },
+]
+
+const novelSModeOptions = [
+  { label: '标签、标题、说明', value: 's_tag' },
+  { label: '标签（部分一致）', value: 's_tag_only' },
+  { label: '标签（完全一致）', value: 's_tag_full' },
+  { label: '正文', value: 's_tc' },
+]
+
+const orderOptions = [
+  { label: '新到旧', value: 'date_d' },
+  { label: '旧到新', value: 'date' },
+]
+
+const modeOptions = [
+  { label: '混池', value: 'all' },
+  { label: '全年龄', value: 'safe' },
+  { label: 'R18', value: 'r18' },
+]
+
+const aiTypeOptions = [
+  { label: '含AI作品', value: '' },
+  { label: '隐藏AI作品', value: '1' },
+]
+
+const langOptions = [
+  { label: '全部语言', value: '' },
+  { label: '中文', value: 'zh-cn' },
+  { label: '日本語', value: 'ja' },
+  { label: 'English', value: 'en' },
+  { label: '한국어', value: 'ko' },
+]
+
+// ── State ──
 
 const error = ref('')
 const searchKeyword = ref('')
@@ -54,24 +154,99 @@ const route = useRoute()
 const router = useRouter()
 const searchStore = useSearchStore()
 
-async function makeSearch({
-  keyword,
-  p,
-  mode,
-}: {
-  keyword: string
-  p?: `${number}`
-  mode?: string
-}): Promise<void> {
+const selectedContent = computed(
+  () => (route.query.content as string) || 'artworks'
+)
+const selectedSMode = computed(() => {
+  if (route.query.s_mode) return route.query.s_mode as string
+  return 's_tag'
+})
+const selectedOrder = computed(
+  () => (route.query.order as string) || 'date_d'
+)
+const selectedMode = computed(() => (route.query.mode as string) || 'all')
+const selectedAiType = computed(() => (route.query.ai_type as string) || '')
+const selectedLang = computed(() => (route.query.lang as string) || '')
+
+const isNovel = computed(() => selectedContent.value === 'novels')
+
+const activeSModeOptions = computed(() =>
+  isNovel.value ? novelSModeOptions : artworkSModeOptions
+)
+
+const currentResults = computed(() =>
+  isNovel.value ? searchStore.novelResults : searchStore.artworkResults
+)
+
+const currentTotal = computed(() =>
+  isNovel.value ? searchStore.novelTotal : searchStore.artworkTotal
+)
+
+// ── Query helpers ──
+
+const defaults: Record<string, string> = {
+  content: 'artworks',
+  s_mode: 's_tag',
+  order: 'date_d',
+  mode: 'all',
+  ai_type: '',
+  lang: '',
+}
+
+function setQuery(updates: Record<string, string>) {
+  const q = { ...route.query } as Record<string, string>
+  const isContentSwitch = 'content' in updates
+
+  for (const [key, value] of Object.entries(updates)) {
+    if (value === defaults[key] || value === '') {
+      delete q[key]
+    } else {
+      q[key] = value
+    }
+  }
+
+  if (isContentSwitch) {
+    delete q.s_mode
+    delete q.lang
+  }
+
+  delete q.p
+  router.push({ query: q })
+}
+
+// ── Search execution ──
+
+async function makeSearch(): Promise<void> {
+  const keyword = route.params.keyword as string
+  const p = parseInt((route.params.p as string) || '1')
   searchKeyword.value = keyword
-  page.value = parseInt(p || '1')
+  page.value = p
   error.value = ''
-  if (!searchKeyword.value) return
+  if (!keyword) return
+
   try {
-    await searchStore.search(keyword, {
-      p: parseInt(p || '1'),
-      mode: mode ?? 'text',
-    })
+    if (isNovel.value) {
+      await searchStore.searchNovels(keyword, {
+        p,
+        s_mode: selectedSMode.value,
+        order: selectedOrder.value,
+        mode: selectedMode.value,
+        ai_type: selectedAiType.value || undefined,
+        work_lang: selectedLang.value || undefined,
+      })
+    } else {
+      await searchStore.searchArtworks(
+        keyword,
+        selectedContent.value as SearchContentType,
+        {
+          p,
+          s_mode: selectedSMode.value,
+          order: selectedOrder.value,
+          mode: selectedMode.value,
+          ai_type: selectedAiType.value || undefined,
+        }
+      )
+    }
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
@@ -81,38 +256,98 @@ async function makeSearch({
   }
 }
 
+// ── Watchers ──
+
 watch(page, (value) => {
   page.value = value < 1 ? 1 : value
+  const q = { ...route.query } as Record<string, string>
+  delete q.p
+  const qs = new URLSearchParams(q).toString()
   router.push(
-    `/search/${searchKeyword.value}/${page.value}${
-      route.query.mode ? `?mode=${route.query.mode}` : ''
-    }`
+    `/search/${searchKeyword.value}/${page.value}${qs ? `?${qs}` : ''}`
   )
 })
 
+watch(() => route.query, makeSearch, { deep: true })
+
 onBeforeRouteUpdate(async (to) => {
-  const params = to.params as {
-    keyword: string
-    p?: `${number}`
-    mode?: string
+  if (
+    to.params.keyword !== route.params.keyword ||
+    to.params.p !== route.params.p
+  ) {
+    await nextTick()
+    makeSearch()
   }
-  makeSearch(params)
 })
 
 effect(() =>
   setTitle(`${route.params.keyword} (第${route.params.p}页)`, 'Search')
 )
-onMounted(async () => {
-  const params = route.params as {
-    keyword: string
-    p?: `${number}`
-    mode?: string
-  }
-  await makeSearch(params)
-})
+
+onMounted(() => makeSearch())
 </script>
 
 <style lang="scss" scoped>
+.search-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+// ── Primary axis: content type ──
+.content-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.content-tab {
+  @include fnb-border-sm;
+  @include fnb-shadow-xs;
+  padding: 0.4rem 0.95rem;
+  font-family: var(--fnb-font-display);
+  font-size: 0.9rem;
+  font-weight: 800;
+  background: var(--fnb-surface);
+  color: var(--fnb-text);
+  cursor: pointer;
+  transition: all 150ms;
+
+  &.active {
+    background: var(--fnb-brand);
+    color: #fff;
+    box-shadow: none;
+    transform: translate(2px, 2px);
+  }
+
+  &:hover:not(.active) {
+    background: var(--fnb-highlight);
+  }
+}
+
+// ── Secondary axis: refinement ──
+.refine-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1.15rem;
+}
+
+.refine-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.refine-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--fnb-text-muted);
+  white-space: nowrap;
+}
+
 .pagenator {
   display: flex;
   justify-content: center;

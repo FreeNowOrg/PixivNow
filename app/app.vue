@@ -14,6 +14,7 @@
 
   SideNav
   SiteFooter
+  BackToTop
   NProgress
   FnbDialog
   FnbToast

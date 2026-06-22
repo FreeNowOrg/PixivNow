@@ -66,6 +66,11 @@ export interface ArtworkInfo extends ArtworkCommon {
   type: 'illust' | 'novel'
 }
 
+export type RankedArtworkInfo = ArtworkInfo & {
+  rank: number
+  viewCount: number
+}
+
 export type ArtworkInfoOrAd =
   | ArtworkInfo
   | {
@@ -143,6 +148,7 @@ export interface Artwork extends ArtworkCommon {
   bookmarkCount: number
   likeCount: number
   commentCount: number
+  commentOff?: 0 | 1
   responseCount: number
   viewCount: number
   isHowto: boolean

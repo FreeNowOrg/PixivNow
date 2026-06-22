@@ -1,11 +1,18 @@
 <template lang="pug">
-.comments-area(ref='commentsArea')
+.comments-area(v-if='disabled')
+  p.comments-closed 作者关闭了评论区
+.comments-area(v-else, ref='commentsArea')
   //- CommentSubmit(:id="id" @push-comment="pushComment")
   em.stats
     | 共{{ count || comments.length || 0 }}条评论
   p(v-if='!comments.length && !loading') 还没有人发表评论呢~
   ul.comments-list(v-if='comments.length')
-    comment(:comment='item' v-for='item in comments')
+    comment(
+      :author-id='authorId',
+      :comment='item',
+      :type='type',
+      v-for='item in comments'
+    )
     .show-more.align-center
       FnbButton(
         :loading='loading'
@@ -25,8 +32,10 @@ import Comment from './Comment.vue'
 import type { Comments } from '~/types'
 import IFasPlus from '~icons/fa-solid/plus'
 import { useArtworkStore } from '~/stores/artwork'
+import { useNovelStore } from '~/stores/novel'
 
 const artworkStore = useArtworkStore()
+const novelStore = useNovelStore()
 const loading = ref(false)
 const comments = ref<Comments[]>([])
 const hasNext = ref(false)
@@ -34,10 +43,13 @@ const hasNext = ref(false)
 const props = defineProps<{
   id: string
   count: number
+  type?: 'illust' | 'novel'
+  disabled?: boolean
+  authorId?: string
 }>()
 
 async function init(id: string | number): Promise<void> {
-  if (loading.value) return
+  if (loading.value || props.disabled) return
   if (!props.count) {
     hasNext.value = false
     comments.value = []
@@ -47,7 +59,11 @@ async function init(id: string | number): Promise<void> {
 
   try {
     loading.value = true
-    const data = await artworkStore.fetchComments(`${id}`, {
+    const fetchComments =
+      props.type === 'novel'
+        ? novelStore.fetchComments
+        : artworkStore.fetchComments
+    const data = await fetchComments(`${id}`, {
       limit: comments.value.length ? 30 : 3,
       offset: comments.value.length,
     })
@@ -83,5 +99,9 @@ const ob = useIntersectionObserver(
 .comments-list {
   list-style: none;
   padding-left: 0;
+}
+
+.comments-closed {
+  color: var(--fnb-text-muted);
 }
 </style>

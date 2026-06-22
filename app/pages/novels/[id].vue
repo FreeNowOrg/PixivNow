@@ -18,25 +18,18 @@
         .summary
           h1(:class='{ danger: novel.xRestrict }') {{ novel.title }}
           .meta
-            span(v-if='novel.xRestrict') R-18
-            span(v-if='novel.isOriginal') 原创
-            span(v-if='characterLabel') {{ characterLabel }}
-            span(v-if='novel.readingTime') {{ Math.ceil(novel.readingTime / 60) }} 分钟
-          p.description.pre(v-if='descriptionText') {{ descriptionText }}
-          p.description.no-desc(v-else) 作者未填写简介
-          .stats
-            span.stat-item(title='点赞')
-              IFasThumbsUp(aria-hidden='true')
-              | {{ novel.likeCount }}
-            span.stat-item(title='收藏')
-              IFasHeart(aria-hidden='true')
-              | {{ novel.bookmarkCount ?? 0 }}
-            span.stat-item(title='浏览')
-              IFasEye(aria-hidden='true')
-              | {{ novel.viewCount }}
-          .tags
-            ArtTag(:key='tag.tag' :tag='tag.tag' v-for='tag in novel.tags.tags')
+            span.meta-chip.danger(v-if='novel.xRestrict') R-18
+            span.meta-chip.original(v-if='novel.isOriginal') 原创
+            span.meta-chip(v-if='characterLabel')
+              IFasAlignLeft(aria-hidden='true')
+              | {{ characterLabel }}
+            span.meta-chip(v-if='novel.readingTime')
+              IFasClock(aria-hidden='true')
+              | {{ Math.ceil(novel.readingTime / 60) }} 分钟
           .actions
+            FnbButton(size='sm', variant='primary', @click='scrollToReader')
+              template(#icon): IFasBookOpen
+              | 立即阅读
             FnbButton(
               :href='novel.extraData?.meta?.canonical || `https://www.pixiv.net/novel/show.php?id=${novel.id}`'
               rel='noopener noreferrer'
@@ -47,11 +40,38 @@
               | 前往 Pixiv 查看
               template(#icon)
                 IFasArrowRight
+          p.description.pre(v-if='descriptionText') {{ descriptionText }}
+          p.description.no-desc(v-else) 作者未填写简介
+          .stats
+            span.stat-item(title='点赞')
+              IFasThumbsUp.i-like(aria-hidden='true')
+              | {{ novel.likeCount }}
+            span.stat-item(title='收藏')
+              IFasHeart.i-bookmark(aria-hidden='true')
+              | {{ novel.bookmarkCount ?? 0 }}
+            span.stat-item(title='浏览')
+              IFasEye.i-view(aria-hidden='true')
+              | {{ novel.viewCount }}
+          .tags
+            ArtTag(
+              :key='tag.tag',
+              :tag='tag.tag',
+              :search-query='{ content: "novels", s_mode: "s_tag_only" }',
+              v-for='tag in novel.tags.tags'
+            )
 
     .body-inner.content-grid
       main.reader-area
         Card(title='正文')
-          NovelReader(:blocks='contentBlocks')
+          NovelReader#reader(:blocks='contentBlocks', ref='readerRef')
+        Card.comments(title='评论')
+          CommentArea(
+            :author-id='novel.userId',
+            :count='novel.commentCount',
+            :disabled='novel.commentOff === 1',
+            :id='novel.id',
+            type='novel'
+          )
 
       aside.side-area
         Card(title='作者')
@@ -71,6 +91,20 @@
         Card(title='作者的其他小说' v-if='relatedNovels.length')
           NovelList(:list='relatedNovels')
 
+    //- 相关推荐
+    .recommend-works.body-inner(ref='recommendRef')
+      h2 相关推荐
+      NovelList(
+        :list='novelStore.recommendations',
+        :loading='!novelStore.recommendations.length'
+      )
+      ShowMore(
+        :loading='recommendLoading',
+        :method='handleMoreRecommend',
+        :text='recommendLoading ? "加载中" : "加载更多"'
+        v-if='novelStore.recommendations.length && novelStore.recommendNextIds.length'
+      )
+
   //- Error
   section.error(v-if='error')
     ErrorPage(:description='error' title='出大问题')
@@ -84,13 +118,18 @@ definePageMeta({
 import ArtTag from '~/components/ArtTag.vue'
 import AuthorCard from '~/components/AuthorCard.vue'
 import Card from '~/components/Card.vue'
+import CommentArea from '~/components/Comment/CommentArea.vue'
 import ErrorPage from '~/components/ErrorPage.vue'
 import NovelList from '~/components/Novel/NovelList.vue'
 import NovelReader from '~/components/Novel/NovelReader.vue'
+import ShowMore from '~/components/ShowMore.vue'
 import IFasArrowRight from '~icons/fa-solid/arrow-right'
+import IFasBookOpen from '~icons/fa-solid/book-open'
 import IFasEye from '~icons/fa-solid/eye'
 import IFasHeart from '~icons/fa-solid/heart'
 import IFasThumbsUp from '~icons/fa-solid/thumbs-up'
+import IFasAlignLeft from '~icons/fa-solid/align-left'
+import IFasClock from '~icons/fa-solid/clock'
 import { effect } from 'vue'
 import { useNovelStore } from '~/stores/novel'
 import { useUserProfileStore } from '~/stores/user-profile'
@@ -101,6 +140,9 @@ import { setTitle } from '~/utils/setTitle'
 const route = useRoute()
 const novelStore = useNovelStore()
 const userProfileStore = useUserProfileStore()
+const readerRef = ref<HTMLElement>()
+const recommendRef = ref<HTMLElement | null>(null)
+const recommendLoading = ref(false)
 const loading = ref(true)
 const error = ref('')
 const novel = ref<Novel>()
@@ -128,16 +170,69 @@ const relatedNovels = computed<NovelInfo[]>(() => {
     .slice(0, 6)
 })
 
+function scrollToReader() {
+  const el = readerRef.value?.$el ?? readerRef.value
+  el?.scrollIntoView({ behavior: 'smooth' })
+}
+
+// Lazy-load recommendations when the section scrolls into view
+function observeRecommend(novelId: string) {
+  const unWatch = watch(
+    loading,
+    async (val) => {
+      if (val) return
+      await nextTick()
+      unWatch()
+      const ob = useIntersectionObserver(
+        recommendRef,
+        ([{ isIntersecting }]) => {
+          if (isIntersecting) {
+            handleRecommendInit(novelId)
+            ob.stop()
+          }
+        }
+      )
+    },
+    { immediate: true }
+  )
+}
+
+async function handleRecommendInit(id: string): Promise<void> {
+  if (recommendLoading.value || novelStore.recommendations.length) return
+  try {
+    recommendLoading.value = true
+    await novelStore.fetchRecommendInit(id)
+  } catch (err) {
+    console.error('novel recommend fetch error', err)
+  } finally {
+    recommendLoading.value = false
+  }
+}
+
+async function handleMoreRecommend(): Promise<void> {
+  if (recommendLoading.value || !novelStore.recommendNextIds.length) return
+  try {
+    recommendLoading.value = true
+    await novelStore.fetchRecommendMore()
+  } catch (err) {
+    console.error('novel recommend more error', err)
+  } finally {
+    recommendLoading.value = false
+  }
+}
+
 async function init(id: string): Promise<void> {
   loading.value = true
   error.value = ''
   novel.value = undefined
   user.value = undefined
+  novelStore.clearRecommendations()
 
   try {
     const novelData = await novelStore.fetchNovel(id)
     novel.value = novelData
     user.value = await userProfileStore.fetchUser(novelData.userId)
+    observeRecommend(id)
   } catch (err) {
     console.warn('novel fetch error', `#${id}`, err)
     error.value = err instanceof Error ? err.message : '未知错误'
@@ -163,6 +258,10 @@ section {
   padding-top: 1rem;
 }
 
+.summary {
+  min-width: 0;
+}
+
 .novel-hero {
   display: grid;
   grid-template-columns: minmax(160px, 240px) minmax(0, 1fr);
@@ -182,7 +281,8 @@ section {
 
 h1 {
   --bg-color: var(--fnb-brand);
-  box-shadow: 0 2px 0 var(--bg-color);
+  display: inline-block;
+  box-shadow: 0 4px 0 var(--bg-color);
   margin: 0 0 1rem;
 
   &.danger {
@@ -190,27 +290,89 @@ h1 {
   }
 }
 
-.meta,
-.stats,
 .tags,
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin: 0.75rem 0;
+  margin: 0.85rem 0;
 }
 
-.meta span,
+// ── Meta chips ──
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.85rem 0;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: var(--fnb-surface);
+  color: var(--fnb-text);
+  @include fnb-border-sm;
+
+  svg {
+    font-size: 0.85em;
+    opacity: 0.65;
+  }
+
+  &.danger {
+    background: var(--fnb-danger);
+    color: #fff;
+    border-color: var(--fnb-border);
+  }
+
+  &.original {
+    background: var(--fnb-highlight);
+  }
+}
+
+// ── Stats strip ──
+.stats {
+  display: inline-flex;
+  margin: 1rem 0;
+  background: var(--fnb-surface);
+  @include fnb-border-sm;
+  @include fnb-shadow-xs;
+}
+
 .stat-item {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  color: var(--fnb-text-muted);
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  font-weight: 800;
+  font-size: 0.92rem;
+
+  & + .stat-item {
+    border-left: 2px solid var(--fnb-border);
+  }
+
+  .i-like {
+    color: var(--fnb-brand);
+  }
+  .i-bookmark {
+    color: var(--fnb-bookmark);
+  }
+  .i-view {
+    color: var(--fnb-accent);
+  }
 }
 
 .description {
-  max-width: 72ch;
+  max-height: 6em;
+  overflow-y: auto;
   overflow-wrap: anywhere;
+}
+
+.read-now {
+  margin-top: 0.25rem;
 }
 
 .no-desc {
@@ -224,6 +386,10 @@ h1 {
   align-items: start;
   margin-top: 1rem;
 
+  > * {
+    min-width: 0;
+  }
+
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
   }
@@ -231,6 +397,7 @@ h1 {
 
 .side-area {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
 }
 

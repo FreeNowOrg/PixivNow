@@ -26,7 +26,12 @@
             span(v-if='series.publishedReadingTime') {{ Math.ceil(series.publishedReadingTime / 60) }} 分钟
           p.description.pre(v-if='captionText') {{ captionText }}
           .tags
-            ArtTag(:key='tag' :tag='tag' v-for='tag in series.tags')
+            ArtTag(
+              :key='tag',
+              :tag='tag',
+              :search-query='{ content: "novels", s_mode: "s_tag_only" }',
+              v-for='tag in series.tags'
+            )
           .actions
             FnbButton(
               :href='series.extraData?.meta?.canonical || `https://www.pixiv.net/novel/series/${series.id}`'
@@ -160,7 +165,8 @@ section {
 
 h1 {
   --bg-color: var(--fnb-brand);
-  box-shadow: 0 2px 0 var(--bg-color);
+  display: inline-block;
+  box-shadow: 0 4px 0 var(--bg-color);
   margin: 0 0 1rem;
 
   &.danger {

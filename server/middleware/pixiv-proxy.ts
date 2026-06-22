@@ -39,7 +39,11 @@ export default defineEventHandler(async (event) => {
     event,
     method: event.method ?? 'GET',
     url: reqUrl.pathname + reqUrl.search,
-    data: event.method !== 'GET' ? await readBody(event) : undefined,
+    // Forward the raw body verbatim so the original Content-Type (JSON or
+    // form-urlencoded) is preserved. readBody() would parse form-urlencoded
+    // into an object that pixivFetch then re-encodes as JSON, breaking
+    // endpoints like /ajax/illusts/bookmarks/delete (expects form-urlencoded).
+    data: event.method !== 'GET' ? await readRawBody(event) : undefined,
   })
 
   for (const h of PROXY_RESPONSE_HEADERS) {

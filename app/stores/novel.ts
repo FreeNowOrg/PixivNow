@@ -14,6 +14,9 @@ export const useNovelStore = defineStore('novel', () => {
   const seriesContentCache = ref(new Map<string, NovelInfo[]>())
   const seriesTitleCache = ref(new Map<string, NovelContentTitle[]>())
 
+  const recommendations = ref<NovelInfo[]>([])
+  const recommendNextIds = ref<string[]>([])
+
   function normalizeSeriesContent(item: NovelSeriesContentItem): NovelInfo {
     const date = item.updateDate || item.createDate || ''
     return {
@@ -96,16 +99,50 @@ export const useNovelStore = defineStore('novel', () => {
     return titles
   }
 
+  async function fetchComments(
+    id: string,
+    params: { limit: number; offset: number }
+  ) {
+    return pixivClient.getNovelComments(id, params)
+  }
+
+  async function fetchRecommendInit(
+    id: string
+  ): Promise<{ novels: NovelInfo[]; nextIds: string[] }> {
+    const result = await pixivClient.getNovelRecommendInit(id, 18)
+    recommendations.value = result.novels
+    recommendNextIds.value = result.nextIds
+    return result
+  }
+
+  async function fetchRecommendMore(): Promise<void> {
+    if (!recommendNextIds.value.length) return
+    const ids = recommendNextIds.value.splice(0, 18)
+    const result = await pixivClient.getNovelRecommendMore(ids)
+    recommendations.value = recommendations.value.concat(result.novels)
+  }
+
+  function clearRecommendations() {
+    recommendations.value = []
+    recommendNextIds.value = []
+  }
+
   return {
     novelCache,
     seriesCache,
     seriesContentCache,
     seriesTitleCache,
+    recommendations,
+    recommendNextIds,
     getCachedNovel,
     getCachedSeries,
     fetchNovel,
     fetchNovelSeries,
     fetchNovelSeriesContent,
     fetchNovelSeriesContentTitles,
+    fetchComments,
+    fetchRecommendInit,
+    fetchRecommendMore,
+    clearRecommendations,
   }
 })

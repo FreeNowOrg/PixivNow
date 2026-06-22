@@ -1,31 +1,100 @@
 import { defineStore } from 'pinia'
-import type { ArtworkInfo } from '~/types'
+import type { ArtworkInfo, NovelInfo } from '~/types'
+
+export type SearchContentType =
+  | 'artworks'
+  | 'illustrations'
+  | 'ugoira'
+  | 'manga'
+  | 'novels'
 
 export const useSearchStore = defineStore('search', () => {
   const pixivClient = usePixivClient()
-  const results = ref<ArtworkInfo[]>([])
-  const total = ref(0)
+  const artworkResults = ref<ArtworkInfo[]>([])
+  const artworkTotal = ref(0)
+  const novelResults = ref<NovelInfo[]>([])
+  const novelTotal = ref(0)
   const loading = ref(false)
 
-  async function search(
+  async function searchArtworks(
     keyword: string,
-    params?: { p?: number; mode?: string }
+    contentType: SearchContentType,
+    params?: {
+      p?: number
+      mode?: string
+      s_mode?: string
+      order?: string
+      ai_type?: string
+      type?: string
+    }
   ): Promise<void> {
     if (!keyword) return
     loading.value = true
     try {
-      const data = await pixivClient.searchArtworks(keyword, params)
-      results.value = data.data
-      total.value = data.total
+      let data: { data: ArtworkInfo[]; total: number }
+      switch (contentType) {
+        case 'illustrations':
+          data = await pixivClient.searchIllustrations(keyword, {
+            ...params,
+            type: 'illust',
+          })
+          break
+        case 'ugoira':
+          data = await pixivClient.searchIllustrations(keyword, {
+            ...params,
+            type: 'ugoira',
+          })
+          break
+        case 'manga':
+          data = await pixivClient.searchManga(keyword, params)
+          break
+        default:
+          data = await pixivClient.searchArtworks(keyword, params)
+      }
+      artworkResults.value = data.data
+      artworkTotal.value = data.total
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function searchNovels(
+    keyword: string,
+    params?: {
+      p?: number
+      mode?: string
+      s_mode?: string
+      order?: string
+      ai_type?: string
+      work_lang?: string
+    }
+  ): Promise<void> {
+    if (!keyword) return
+    loading.value = true
+    try {
+      const data = await pixivClient.searchNovels(keyword, params)
+      novelResults.value = data.data
+      novelTotal.value = data.total
     } finally {
       loading.value = false
     }
   }
 
   function reset() {
-    results.value = []
-    total.value = 0
+    artworkResults.value = []
+    artworkTotal.value = 0
+    novelResults.value = []
+    novelTotal.value = 0
   }
 
-  return { results, total, loading, search, reset }
+  return {
+    artworkResults,
+    artworkTotal,
+    novelResults,
+    novelTotal,
+    loading,
+    searchArtworks,
+    searchNovels,
+    reset,
+  }
 })

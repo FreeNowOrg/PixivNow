@@ -6,9 +6,9 @@
   .slides
     RouterLink.slide(
       v-for='(artwork, i) in artworks',
-      :key='artwork.illust_id',
+      :key='artwork.id',
       :class='{ active: i === current }',
-      :to='"/artworks/" + artwork.illust_id'
+      :to='"/artworks/" + artwork.id'
     )
       DeferLoad.slide-bg(:src='getImageUrl(artwork)')
       .slide-overlay
@@ -16,10 +16,10 @@
         .rank \#{{ artwork.rank }}
         .slide-title {{ artwork.title }}
         .slide-meta
-          span.author @{{ artwork.user_name }}
+          span.author @{{ artwork.userName }}
           span.views
             ITablerEye
-            | {{ formatCount(artwork.view_count) }}
+            | {{ formatCount(artwork.viewCount) }}
   .controls
     button.arrow.prev(@click='prev', aria-label='上一张')
       ITablerChevronLeft
@@ -41,14 +41,14 @@
 import DeferLoad from '~/components/DeferLoad.vue'
 import { toRegularUrl } from '~/utils/pximg'
 import { IconEye as ITablerEye, IconChevronLeft as ITablerChevronLeft, IconChevronRight as ITablerChevronRight } from '@tabler/icons-vue'
-import type { ArtworkRank } from '~/types'
+import type { RankedArtworkInfo } from '~/types'
 
-const props = defineProps<{ artworks: ArtworkRank[] }>()
+const props = defineProps<{ artworks: RankedArtworkInfo[] }>()
 
 const current = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
 
-function getImageUrl(artwork: ArtworkRank): string {
+function getImageUrl(artwork: RankedArtworkInfo): string {
   return toRegularUrl(artwork.url)
 }
 

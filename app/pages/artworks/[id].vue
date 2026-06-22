@@ -47,8 +47,14 @@
               ) (作者未填写简介)
 
               p.stats
-                span.stat-item(title='点赞')
-                  IFasThumbsUp(aria-hidden='true')
+                //- 点赞
+                button.stat-item.like-btn(
+                  :aria-label='illust.likeData ? "已赞" : "点赞"'
+                  :class='{ liked: illust.likeData }',
+                  :title='!userStore.isLoggedIn ? "点赞" : illust.likeData ? "已赞（不可取消）" : "点赞"'
+                  @click='handleLike'
+                )
+                  IFasThumbsUp.i-like(aria-hidden='true')
                   | {{ illust.likeCount }}
 
                 //- 收藏
@@ -62,10 +68,10 @@
                   | {{ illust.bookmarkCount }}
 
                 span.stat-item(title='浏览')
-                  IFasEye(aria-hidden='true')
+                  IFasEye.i-view(aria-hidden='true')
                   | {{ illust.viewCount }}
                 span.stat-item(title='页数')
-                  IFasImages(aria-hidden='true')
+                  IFasImages.i-pages(aria-hidden='true')
                   | {{ pages.length }}张
 
               p.create-date {{ new Date(illust.createDate).toLocaleString() }}
@@ -106,7 +112,9 @@
 
         Card.comments(title='评论')
           CommentArea(
+            :author-id='illust.userId',
             :count='illust.commentCount',
+            :disabled='illust.commentOff === 1',
             :id='illust.id || illust.illustId'
           )
 
@@ -161,6 +169,7 @@ const pages = ref<ArtworkGallery[]>([])
 const user = ref<User>()
 const recommendLoading = ref(false)
 const bookmarkLoading = ref(false)
+const likeLoading = ref(false)
 const route = useRoute()
 const userStore = useUserStore()
 const artworkStore = useArtworkStore()
@@ -338,6 +347,27 @@ async function handleRemoveBookmark(): Promise<void> {
   }
 }
 
+async function handleLike(): Promise<void> {
+  if (!illust.value) return
+  if (!userStore.isLoggedIn) {
+    console.log('需要登录才可以点赞')
+    return
+  }
+  // Likes are irreversible; once liked, clicking again is a no-op.
+  if (likeLoading.value || illust.value.likeData) return
+  try {
+    likeLoading.value = true
+    const { is_liked } = await artworkStore.likeArtwork(illust.value.illustId)
+    // is_liked === false means it was not liked before → this call registered it.
+    illust.value.likeData = true
+    if (!is_liked) illust.value.likeCount++
+  } catch (err) {
+    console.error('like failed:', err)
+  } finally {
+    likeLoading.value = false
+  }
+}
+
 onBeforeRouteUpdate(async (to) => {
   if (to.name !== 'artworks') {
     return
@@ -394,41 +424,79 @@ h1 {
 }
 
 .stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  align-items: center;
+  display: inline-flex;
+  align-items: stretch;
+  margin: 0.5rem 0;
+  background: var(--fnb-surface);
+  @include fnb-border-sm;
+  @include fnb-shadow-xs;
 
   .stat-item {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border-radius: var(--fnb-radius-sm);
-    color: #aaa;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    color: var(--fnb-text);
+    font-weight: 800;
     font-size: 0.9rem;
     line-height: 1;
     transition: background-color 0.15s, color 0.15s;
+
+    & + .stat-item {
+      border-left: 2px solid var(--fnb-border);
+    }
   }
 
-  .bookmark-btn {
+  .i-like {
+    color: var(--fnb-brand);
+  }
+  .i-view {
+    color: var(--fnb-accent);
+  }
+  .i-pages {
+    color: var(--fnb-text-muted);
+  }
+
+  .bookmark-btn,
+  .like-btn {
     border: none;
-    background: none;
+    background: transparent;
     font: inherit;
+    font-weight: 800;
     cursor: pointer;
-    &:hover {
-      background-color: rgba(255, 100, 100, 0.12);
-      color: #e04060;
-    }
+
     &:focus-visible {
       outline: 2px solid var(--fnb-brand);
       outline-offset: 2px;
     }
+  }
+
+  .bookmark-btn {
+    svg {
+      color: var(--fnb-bookmark);
+    }
+
+    &:hover:not(.bookmarked) {
+      background-color: var(--fnb-highlight);
+    }
     &.bookmarked {
-      color: var(--fnb-danger);
-      font-weight: 700;
-      &:hover {
-        background-color: rgba(255, 100, 100, 0.08);
+      background-color: var(--fnb-bookmark);
+      color: #fff;
+      svg {
+        color: #fff;
+      }
+    }
+  }
+
+  .like-btn {
+    &:hover:not(.liked) {
+      background-color: var(--fnb-highlight);
+    }
+    &.liked {
+      background-color: var(--fnb-brand);
+      color: #fff;
+      svg {
+        color: #fff;
       }
     }
   }

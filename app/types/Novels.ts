@@ -29,6 +29,36 @@ export interface NovelInfo
   bookmarkCount?: number | null
 }
 
+export type RankedNovelInfo = NovelInfo & {
+  rank: number
+}
+
+export interface NovelRankItem {
+  id: number
+  title: string
+  rank: number
+  user_id: number
+  user_name: string
+  profile_img: string
+  url: string
+  bookmark_count: number
+  character_count: number
+  word_count: number
+  reading_time: number
+  genre: string
+  is_original: boolean
+  language: string
+  series_id: string
+  series_title: string
+  tag_a: string[]
+  ai_type: number
+  x_restrict: number
+  restrict: number
+  create_date: string
+  comment: string
+  marker: unknown
+}
+
 export interface NovelTextEmbeddedImage {
   urls?: Record<string, string>
   width?: number
@@ -52,6 +82,7 @@ export interface Novel {
   likeCount: number
   viewCount: number
   commentCount: number
+  commentOff?: 0 | 1
   markerCount?: number
   pageCount: number
   characterCount?: number
