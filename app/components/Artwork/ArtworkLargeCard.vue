@@ -2,10 +2,10 @@
 .artwork-large-card
   .top
     RouterLink.plain(:to='"/artworks/" + illust.id')
-      .thumb
+      .thumb(:style='thumbStyle')
         DeferLoad.image(
           :alt='illust.title',
-          :src='illust.url.replace("p0_master", "p0_square")'
+          :src='illust.url'
         )
       .restrict.x-restrict(aria-label='R-18' role='img' title='R-18' v-if='illust.xRestrict === 2')
         IFasEye(aria-hidden='true')
@@ -43,9 +43,18 @@ import IFasImages from '~icons/fa-solid/images'
 import IFasRobot from '~icons/fa-solid/robot'
 import IPlayCircle from '~icons/fa-solid/play-circle'
 
-defineProps<{
+const props = defineProps<{
   illust: ArtworkInfo & { rank?: number; viewCount?: number }
 }>()
+
+// Preserve the artwork's natural aspect ratio (the list is a waterfall,
+// so there is no need to crop to a square). Reserve the height up-front
+// from the known dimensions to avoid layout shift before the image loads.
+const thumbStyle = computed(() => {
+  const w = +props.illust.width
+  const h = +props.illust.height
+  return { aspectRatio: w && h ? `${w} / ${h}` : '1 / 1' }
+})
 </script>
 
 <style lang="scss">
@@ -74,8 +83,6 @@ h3 {
     overflow: hidden;
     position: relative;
     width: 100%;
-    height: 0;
-    padding-top: 100%;
     animation: imgProgress 0.6s ease infinite alternate;
     .image {
       position: absolute;
@@ -83,6 +90,7 @@ h3 {
       left: 0;
       width: 100%;
       height: 100%;
+      object-fit: cover;
     }
   }
 
