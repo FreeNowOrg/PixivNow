@@ -114,20 +114,20 @@
             | {{ isDiscoveryLoading ? '加载中' : '换一批' }}
       ArtworkList(
         v-if='discoveryTab !== "novel"',
-        :list='homeStore.discoveryList',
-        :loading='homeStore.loadingDiscovery'
+        :list='discoveryStore.discoveryList',
+        :loading='discoveryStore.loadingDiscovery'
       )
       NovelList(
         v-else,
-        :list='homeStore.novelDiscoveryList',
-        :loading='homeStore.loadingNovelDiscovery'
+        :list='discoveryStore.novelDiscoveryList',
+        :loading='discoveryStore.loadingNovelDiscovery'
       )
 
       //- Infinite scroll sentinel / login prompt
-      .discover-footer(v-if='!homeStore.loadingDiscovery')
-        .loading-more(v-if='userStore.isLoggedIn && (discoveryTab === "novel" ? homeStore.loadingMoreNovelDiscovery : homeStore.loadingMoreDiscovery)')
+      .discover-footer(v-if='!discoveryStore.loadingDiscovery')
+        .loading-more(v-if='userStore.isLoggedIn && (discoveryTab === "novel" ? discoveryStore.loadingMoreNovelDiscovery : discoveryStore.loadingMoreDiscovery)')
           FnbSkeleton(block, height='2rem', width='200px')
-        .login-prompt(v-else-if='!userStore.isLoggedIn && homeStore.discoveryList.length')
+        .login-prompt(v-else-if='!userStore.isLoggedIn && discoveryStore.discoveryList.length')
           p 登录后解锁无限浏览
           FnbButton(
             size='sm',
@@ -152,6 +152,7 @@ import IFasRandom from '~icons/fa-solid/random'
 import IFasInfoCircle from '~icons/fa-solid/info-circle'
 import { IconChartBar as ITablerChartBar, IconUsers as ITablerUsers, IconCompass as ITablerCompass, IconBook as ITablerBook, IconTrophy as ITablerTrophy, IconLogin as ITablerLogin } from '@tabler/icons-vue'
 import { useHomeStore } from '~/stores/home'
+import { useDiscoveryStore } from '~/stores/discovery'
 import { useUserStore } from '~/stores/session'
 import { toRegularUrl } from '~/utils/pximg'
 import SiteLogo from '~/assets/PixivNow.svg'
@@ -166,6 +167,7 @@ useHead({
 const isShowBgInfo = ref(false)
 useBodyScrollLock(isShowBgInfo)
 const homeStore = useHomeStore()
+const discoveryStore = useDiscoveryStore()
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
@@ -191,7 +193,7 @@ const savedDiscoveryMode = useLocalStorage('pixivnow:discovery-mode', 'all')
 const discoveryTab = ref((route.query.tab as string) || savedDiscoveryTab.value)
 const discoveryMode = ref((route.query.mode as string) || savedDiscoveryMode.value)
 
-homeStore.discoveryMode = discoveryMode.value
+discoveryStore.discoveryMode = discoveryMode.value
 
 function syncDiscoveryQuery() {
   const query = { ...route.query } as Record<string, string>
@@ -206,30 +208,30 @@ function changeDiscoveryTab(tab: string) {
   discoveryTab.value = tab
   savedDiscoveryTab.value = tab
   syncDiscoveryQuery()
-  if (tab === 'novel' && !homeStore.novelDiscoveryList.length) {
-    homeStore.fetchNovelDiscovery()
+  if (tab === 'novel' && !discoveryStore.novelDiscoveryList.length) {
+    discoveryStore.fetchNovelDiscovery()
   }
 }
 
 function changeDiscoveryMode(mode: string) {
   discoveryMode.value = mode
   savedDiscoveryMode.value = mode
-  homeStore.discoveryMode = mode
+  discoveryStore.discoveryMode = mode
   syncDiscoveryQuery()
   refreshDiscovery()
 }
 
 const isDiscoveryLoading = computed(() =>
   discoveryTab.value === 'novel'
-    ? homeStore.loadingNovelDiscovery
-    : homeStore.loadingDiscovery
+    ? discoveryStore.loadingNovelDiscovery
+    : discoveryStore.loadingDiscovery
 )
 
 function refreshDiscovery() {
   if (discoveryTab.value === 'novel') {
-    homeStore.fetchNovelDiscovery()
+    discoveryStore.fetchNovelDiscovery()
   } else {
-    homeStore.fetchDiscovery()
+    discoveryStore.fetchDiscovery()
   }
 }
 
@@ -241,9 +243,9 @@ function scrollToDiscovery() {
 useIntersectionObserver(scrollSentinel, ([{ isIntersecting }]) => {
   if (isIntersecting && userStore.isLoggedIn) {
     if (discoveryTab.value === 'novel') {
-      homeStore.appendNovelDiscovery()
+      discoveryStore.appendNovelDiscovery()
     } else {
-      homeStore.appendDiscovery()
+      discoveryStore.appendDiscovery()
     }
   }
 })
@@ -264,8 +266,8 @@ onMounted(() => {
   if (!homeStore.rankingList.length) {
     homeStore.fetchRanking()
   }
-  if (!homeStore.discoveryList.length) {
-    homeStore.fetchDiscovery()
+  if (!discoveryStore.discoveryList.length) {
+    discoveryStore.fetchDiscovery()
   }
 })
 </script>

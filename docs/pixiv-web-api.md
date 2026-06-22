@@ -408,6 +408,54 @@ Query string example: `?novelIds[]=123&novelIds[]=456`
 }
 ```
 
+### 4.7 GET `/ajax/discovery/users`
+
+Get recommended users (personalized; requires authentication). Ignores the
+`mode` param — R18 visibility follows the account's own setting. No
+pagination; each call returns a fresh random batch.
+
+| Param   | Type   | Description                      |
+| ------- | ------ | -------------------------------- |
+| `limit` | number | Number of users (typically `20`) |
+| `lang`  | string | UI language, e.g. `zh`           |
+
+**Response** `body` (relational — join the three arrays):
+
+```jsonc
+{
+  "recommendedUsers": [
+    {
+      "userId": "117674738",
+      "recentIllustIds": ["145684188", "145364001"],
+      "recentNovelIds": []
+    }
+  ],
+  "users": [
+    {
+      "userId": "117674738",
+      "name": "...",
+      "image": "https://i.pximg.net/...",    // avatar (50px)
+      "imageBig": "https://i.pximg.net/...", // avatar (170px)
+      "comment": "...",
+      "isFollowed": false,
+      "followedBack": false,
+      "isMypixiv": false,
+      "isBlocking": false,
+      "premium": true,
+      "commission": { "acceptRequest": true }
+    }
+  ],
+  "thumbnails": {
+    "illust": [ /* ArtworkInfo[] — referenced by recentIllustIds */ ],
+    "novel":  [ /* NovelInfo[]  — referenced by recentNovelIds  */ ]
+  }
+}
+```
+
+Join `recommendedUsers[]` (order + which works) → `users[]` (by `userId`,
+user detail) → `thumbnails.illust` / `thumbnails.novel` (by id) to build a
+denormalized user-with-works list.
+
 ---
 
 ## 5. Search
@@ -1323,6 +1371,7 @@ Novel ranking item from `/ajax/ranking/novel`. Uses **snake_case** field names (
 | 4.4   | GET    | `/ajax/illust/recommend/illusts`         | Optional            | More artwork recommendations |
 | 4.5   | GET    | `/ajax/novel/{id}/recommend/init`        | Optional            | Novel recommendations        |
 | 4.6   | GET    | `/ajax/novel/recommend/novels`           | Optional            | More novel recommendations   |
+| 4.7   | GET    | `/ajax/discovery/users`                  | Required            | Recommended users            |
 | 5.1   | GET    | `/ajax/search/artworks/{keyword}`        | Optional            | Search artworks (combined)   |
 | 5.2   | GET    | `/ajax/search/illustrations/{keyword}`   | Optional            | Search illustrations         |
 | 5.3   | GET    | `/ajax/search/manga/{keyword}`           | Optional            | Search manga                 |

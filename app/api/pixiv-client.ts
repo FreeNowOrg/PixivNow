@@ -2,6 +2,7 @@ import axios, { type AxiosInstance } from 'axios'
 import nprogress from 'nprogress'
 import { getToken, getCsrfToken } from '~/composables/userData'
 import { createPximgReplacer } from '~/utils/pximg'
+import { buildDiscoveryUsers, type DiscoveryUsersBody } from './discovery-users'
 import type {
   Artwork,
   ArtworkGallery,
@@ -318,6 +319,21 @@ export class PixivWebClient {
       { params: searchParams }
     )
     return this.unwrap(data)
+  }
+
+  async getDiscoveryUsers(params: {
+    limit?: number
+  }): Promise<UserListItem[]> {
+    const { data } = await this.http.get<PixivResponse<DiscoveryUsersBody>>(
+      '/ajax/discovery/users',
+      {
+        params: {
+          limit: String(params.limit ?? 20),
+          lang: 'zh',
+        },
+      }
+    )
+    return buildDiscoveryUsers(this.unwrap(data))
   }
 
   // ── Search ────────────────────────────────────────────────────────
