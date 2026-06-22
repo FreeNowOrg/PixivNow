@@ -131,9 +131,10 @@ async function submit(): Promise<void> {
 }
 
 function remove(): void {
-  logout()
-  userStore.logout()
-  goBack()
+  if (logout()) {
+    userStore.logout()
+    goBack()
+  }
 }
 
 watch(sessionIdInput, () => (error.value = ''))

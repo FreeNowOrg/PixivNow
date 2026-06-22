@@ -121,8 +121,9 @@ function openSideNav() {
 }
 
 function logoutUser() {
-  logout()
-  userStore.logout()
+  if (logout()) {
+    userStore.logout()
+  }
 }
 
 watch(hidden, (value) => {

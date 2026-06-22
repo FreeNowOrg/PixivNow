@@ -47,12 +47,14 @@ export function login(token: string): Promise<PixivUser> {
   return initUser()
 }
 
-export function logout(): void {
+export function logout(): boolean {
   const token = getToken()
   if (token && confirm(`您要移除您的令牌吗？\n${token}`)) {
     localStorage.removeItem(TOKEN_KEY)
     sessionStorage.removeItem(CSRF_KEY)
+    return true
   }
+  return false
 }
 
 export function validateSessionId(token: string): boolean {
