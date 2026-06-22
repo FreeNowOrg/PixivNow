@@ -35,7 +35,12 @@
               IFasEye(aria-hidden='true')
               | {{ novel.viewCount }}
           .tags
-            ArtTag(:key='tag.tag' :tag='tag.tag' v-for='tag in novel.tags.tags')
+            ArtTag(
+              :key='tag.tag',
+              :tag='tag.tag',
+              :search-query='{ content: "novels", s_mode: "s_tag_only" }',
+              v-for='tag in novel.tags.tags'
+            )
           .actions
             FnbButton(
               :href='novel.extraData?.meta?.canonical || `https://www.pixiv.net/novel/show.php?id=${novel.id}`'
