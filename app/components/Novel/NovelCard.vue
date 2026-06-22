@@ -2,23 +2,23 @@
 .novel-card.placeholder(v-if='loading')
   .cover: FnbSkeleton(block height='134px' width='96px')
   .info
-    .title: FnbSkeleton(text height='1.4em' width='8em')
+    .title: FnbSkeleton(height='1.4em' text width='8em')
     .meta: FnbSkeleton(text width='6em')
 .novel-card(v-else-if='item')
   RouterLink.cover(:to='`/novels/${item.id}`')
     DeferLoad.img(
-      :alt='item.title'
-      :src='item.url || fallbackCover'
+      :alt='item.title',
+      :src='item.url || fallbackCover',
       :title='item.title'
       lazyload
     )
-    .restrict(v-if='+item.xRestrict', aria-label='R-18', role='img', title='R-18')
+    .restrict(aria-label='R-18' role='img' title='R-18' v-if='+item.xRestrict')
       IFasEye(aria-hidden='true')
   .info
     .title
-      RouterLink(:to='`/novels/${item.id}`') {{ item.title }}
+      RouterLink(:title='item.title', :to='`/novels/${item.id}`') {{ item.title }}
     .author(:title='item.userName')
-      RouterLink(:to='`/users/${item.userId}`') {{ item.userName }}
+      RouterLink(:title='item.userName', :to='`/users/${item.userId}`') {{ item.userName }}
     .meta
       span(v-if='item.textCount') {{ item.textCount }} 字
       span(v-if='item.readingTime') {{ Math.ceil(item.readingTime / 60) }} 分钟
