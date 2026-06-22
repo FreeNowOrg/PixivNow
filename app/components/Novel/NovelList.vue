@@ -22,15 +22,17 @@ const skeletonNumber = computed(() =>
 )
 </script>
 
-<style scoped lang="sass">
-.novel-list
-  list-style: none
-  padding-left: 0
-  margin-top: 1rem
-  display: grid
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))
-  gap: 1.25rem
+<style scoped lang="scss">
+.novel-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
 
-  li
-    min-width: 0
+  li {
+    min-width: 0;
+  }
+}
 </style>

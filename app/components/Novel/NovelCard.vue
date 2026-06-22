@@ -1,9 +1,9 @@
 <template lang="pug">
 .novel-card.placeholder(v-if='loading')
-  .cover: NSkeleton(block height='180px' width='128px')
+  .cover: FnbSkeleton(block height='134px' width='96px')
   .info
-    .title: NSkeleton(height='1.4em' text width='8em')
-    .meta: NSkeleton(text width='6em')
+    .title: FnbSkeleton(text height='1.4em' width='8em')
+    .meta: FnbSkeleton(text width='6em')
 .novel-card(v-else-if='item')
   RouterLink.cover(:to='`/novels/${item.id}`')
     DeferLoad.img(
@@ -24,7 +24,6 @@
 </template>
 
 <script lang="ts" setup>
-import { NSkeleton } from 'naive-ui'
 import DeferLoad from '~/components/DeferLoad.vue'
 import type { NovelInfo } from '~/types'
 
@@ -34,65 +33,77 @@ defineProps<{
 }>()
 
 const fallbackCover =
-  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336"%3E%3Crect width="240" height="336" rx="16" fill="%23eeeeee"/%3E%3Cpath d="M64 72h112v12H64zm0 38h112v10H64zm0 30h88v10H64zm0 30h104v10H64z" fill="%23bbbbbb"/%3E%3C/svg%3E'
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336"%3E%3Crect width="240" height="336" fill="%23eeeeee"/%3E%3Cpath d="M64 72h112v12H64zm0 38h112v10H64zm0 30h88v10H64zm0 30h104v10H64z" fill="%23bbbbbb"/%3E%3C/svg%3E'
 </script>
 
-<style scoped lang="sass">
-.novel-card
-  display: grid
-  grid-template-columns: 96px minmax(0, 1fr)
-  gap: 0.85rem
-  width: 280px
-  max-width: calc(100vw - 2rem)
+<style scoped lang="scss">
+.novel-card {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 0.85rem;
+  width: 280px;
+  max-width: calc(100vw - 2rem);
+}
 
-.cover
-  position: relative
-  display: block
-  overflow: hidden
-  border-radius: 8px
-  aspect-ratio: 5 / 7
-  background: #eee
+.cover {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  @include fnb-border;
+  @include fnb-shadow-xs;
+  aspect-ratio: 5 / 7;
+  background: #eee;
+  animation: imgProgress 0.6s ease infinite alternate;
 
   :deep(img),
-  .img
-    width: 100%
-    height: 100%
-    object-fit: cover
+  .img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
 
-.restrict
-  position: absolute
-  top: 0.4rem
-  left: 0.4rem
-  padding: 0.1rem 0.35rem
-  border-radius: 4px
-  background: rgba(220, 0, 0, 0.86)
-  color: #fff
-  font-size: 0.75rem
-  font-weight: 700
+.restrict {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.4rem;
+  padding: 0.1rem 0.35rem;
+  background: rgba(220, 0, 0, 0.86);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  @include fnb-border-sm;
+  border-color: rgba(0, 0, 0, 0.5);
+}
 
-.info
-  min-width: 0
-  display: flex
-  flex-direction: column
-  justify-content: center
-  gap: 0.35rem
+.info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+}
 
 .title,
-.author
-  overflow: hidden
-  text-overflow: ellipsis
-  white-space: nowrap
+.author {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-.title
-  font-weight: 700
+.title {
+  font-weight: 700;
+}
 
 .author,
-.meta
-  color: #888
-  font-size: 0.85rem
+.meta {
+  color: var(--fnb-text-muted);
+  font-size: 0.85rem;
+}
 
-.meta
-  display: flex
-  flex-wrap: wrap
-  gap: 0.45rem
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
 </style>
