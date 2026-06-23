@@ -40,16 +40,16 @@ export const useUserProfileStore = defineStore('user-profile', () => {
     })
   }
 
+  // The optimistic UI toggle is owned by the calling component
+  // (it flips isFollowed/following on the user object after the await).
+  // Don't mutate the cached user here too, or the two writes cancel out
+  // for users that are the same object as the component's reference.
   async function followUser(userId: string): Promise<void> {
     await pixivClient.followUser(userId)
-    const cached = userCache.value.get(userId)
-    if (cached) cached.isFollowed = true
   }
 
   async function unfollowUser(userId: string): Promise<void> {
     await pixivClient.unfollowUser(userId)
-    const cached = userCache.value.get(userId)
-    if (cached) cached.isFollowed = false
   }
 
   return {

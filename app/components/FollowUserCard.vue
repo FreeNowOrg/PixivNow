@@ -42,6 +42,7 @@ import { useUserProfileStore } from '~/stores/user-profile'
 
 const userStore = useUserStore()
 const userProfileStore = useUserProfileStore()
+const toast = useToast()
 
 const props = defineProps<{
   user?: UserListItem
@@ -58,6 +59,10 @@ async function handleUserFollow() {
       await userProfileStore.followUser(props.user.userId)
     }
     props.user.following = !props.user.following
+  } catch {
+    toast.error(
+      props.user.following ? '取消关注失败，请重试' : '关注失败，请重试'
+    )
   } finally {
     loadingUserFollow.value = false
   }

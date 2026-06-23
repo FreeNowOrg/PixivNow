@@ -200,6 +200,7 @@ const loadingUser = ref(true)
 const user = ref<User>()
 const userStore = useUserStore()
 const userProfileStore = useUserProfileStore()
+const toast = useToast()
 const isSelfUserPage = computed(() => user.value?.userId === userStore.userId)
 
 const publicBookmarks = ref<ArtworkInfo[]>([])
@@ -311,6 +312,8 @@ async function handleUserFollow() {
       await userProfileStore.followUser(target.userId)
     }
     target.isFollowed = !target.isFollowed
+  } catch {
+    toast.error(target.isFollowed ? '取消关注失败，请重试' : '关注失败，请重试')
   } finally {
     loadingUserFollow.value = false
   }
