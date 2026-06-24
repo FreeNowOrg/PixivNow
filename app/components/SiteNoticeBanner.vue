@@ -15,9 +15,13 @@ Transition(name='fade')
 <script setup lang="ts">
 import {} from 'vue'
 
+const config = useRuntimeConfig()
+const noticeDisabled = config.public.disableSiteNotice === 'true'
+
 const alreadyShown = ref(false)
 const forceShow = computed(() => route.name === 'about-us')
 const isShow = computed(() => {
+  if (noticeDisabled) return false
   if (route.path === '/notifications/2024-04-26') {
     return false
   }
