@@ -58,7 +58,6 @@ export default defineNuxtConfig({
   i18n: {
     locales: [{ code: 'zh-Hans', file: 'zh-Hans.json' }],
     defaultLocale: 'zh-Hans',
-    lazy: true,
     langDir: '../app/locales',
     strategy: 'no_prefix',
   },
@@ -69,6 +68,7 @@ export default defineNuxtConfig({
       pximgBaseUrlI: process.env.VITE_PXIMG_BASEURL_I || '/-/',
       pximgBaseUrlS: process.env.VITE_PXIMG_BASEURL_S || '/~/',
       googleAnalyticsId: process.env.VITE_GOOGLE_ANALYTICS_ID || '',
+      disableSiteNotice: process.env.DISABLE_SITE_NOTICE || 'false',
       siteEnv:
         process.env.NODE_ENV === 'production' ? 'production' : 'development',
     },

@@ -66,6 +66,7 @@ PixivNow also handles `Authorization` header, forwarding it as `PHPSESSID` cooki
 - `NUXT_PUBLIC_PXIMG_BASEURL_S` — s.pximg.net proxy base (default: `/~/`)
 - `NUXT_PUBLIC_GOOGLE_ANALYTICS_ID` — GA tracking ID
 - `NUXT_UA_BLACKLIST` — JSON array of blocked user-agent patterns
+- `DISABLE_SITE_NOTICE` — Set to `'true'` to hide site notice banner (default: `'false'`)
 
 ## Reference
 
