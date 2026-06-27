@@ -86,6 +86,9 @@ header.global-navbar(:class='{ "not-at-top": notAtTop, hidden, "side-nav-opened"
                 ) 我的关注
               li(v-if='$route.path !== "/login"')
                 RouterLink.plain(:to='"/login?back=" + $route.path') {{ userStore.isLoggedIn ? '查看令牌' : '用户登入' }}
+              li.theme-row
+                span.theme-row__label 主题
+                ThemeToggle
               li(v-if='userStore.isLoggedIn')
                 a.plain(@click='logoutUser') 用户登出
 </template>
@@ -156,7 +159,7 @@ useEventListener(window, 'scroll', () => {
 .global-navbar {
   background-color: var(--fnb-brand);
   padding: 0.4rem 1rem;
-  color: #fff;
+  color: var(--fnb-on-brand);
   display: flex;
   align-items: center;
   position: sticky;
@@ -183,7 +186,7 @@ useEventListener(window, 'scroll', () => {
     font: inherit;
     font-size: 1.2rem;
     text-align: center;
-    color: #fff;
+    color: var(--fnb-on-brand);
     cursor: pointer;
     width: 2.4rem;
     height: 2.4rem;
@@ -198,7 +201,7 @@ useEventListener(window, 'scroll', () => {
     }
 
     &:focus-visible {
-      outline: 2px solid #fff;
+      outline: 2px solid var(--fnb-on-brand);
       outline-offset: 2px;
     }
   }
@@ -284,12 +287,12 @@ useEventListener(window, 'scroll', () => {
         align-items: center;
 
         &:focus-visible {
-          outline: 2px solid #fff;
+          outline: 2px solid var(--fnb-on-brand);
           outline-offset: 2px;
         }
 
         .avatar {
-          box-shadow: 0 0 0 2px #fff;
+          box-shadow: 0 0 0 2px var(--fnb-on-brand);
           transition: box-shadow 0.24s ease;
         }
 
@@ -355,7 +358,7 @@ useEventListener(window, 'scroll', () => {
         left: -12px;
         height: 56px;
         width: calc(100% + 24px);
-        background-color: rgba(73, 147, 255, 0.1);
+        background-color: color-mix(in srgb, var(--fnb-brand) 10%, transparent);
         z-index: 0;
       }
 
@@ -383,6 +386,17 @@ useEventListener(window, 'scroll', () => {
     }
   }
 
+  .theme-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .theme-row__label {
+    font-weight: 700;
+  }
+
   .search-icon {
     display: none;
 
@@ -391,11 +405,11 @@ useEventListener(window, 'scroll', () => {
       background: none;
       padding: 0;
       font: inherit;
-      color: #fff;
+      color: var(--fnb-on-brand);
       cursor: pointer;
 
       &:focus-visible {
-        outline: 2px solid #fff;
+        outline: 2px solid var(--fnb-on-brand);
         outline-offset: 2px;
       }
     }
