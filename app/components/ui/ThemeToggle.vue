@@ -10,7 +10,7 @@
     :aria-pressed='mode === opt.value'
     @click='setTheme(opt.value)'
   )
-    component(:is='opt.icon' :size='18' stroke-width='2.5')
+    component(:is='opt.icon' :size='18' :stroke-width='2.5')
 </template>
 
 <script lang="ts" setup>
@@ -44,6 +44,7 @@ const options: { value: ThemeMode; label: string; icon: unknown }[] = [
   padding: 0;
   background: transparent;
   border: 2px solid transparent;
+  border-radius: 0;
   color: var(--fnb-text-muted);
   cursor: pointer;
   transition: color 150ms, background 150ms;
