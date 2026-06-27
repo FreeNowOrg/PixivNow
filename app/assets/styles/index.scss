@@ -18,8 +18,8 @@ body {
 body {
   background-color: var(--fnb-bg);
   background-image:
-    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    linear-gradient(var(--fnb-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--fnb-grid-line) 1px, transparent 1px);
   background-size: 72px 72px;
 }
 
