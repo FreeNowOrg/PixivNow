@@ -5,22 +5,25 @@
     span.toolbar__label 当前主题
     ThemeToggle
 
-  p.hint 切换上方主题查看亮 / 暗效果。下方为各候选「边框 + 硬阴影」方案的并排对比；卡面与文字跟随当前主题，仅边框与阴影按候选值固定。
+  p.hint 暗色边框 / 阴影方案并排对比。每个面板自带背景、卡片、边框、阴影，互不影响，可慢慢看。点「应用到整页」会把该方案套到下方真实组件上。
 
-  .swatch-grid
-    .swatch(v-for='c in candidates' :key='c.label')
-      .swatch-card(:style='cardStyle(c)')
-        .swatch-card__title 作品卡片标题
-        .swatch-card__meta @artist · 12.3K 浏览
-        button.swatch-card__btn(:style='btnStyle(c)') 收藏
-      .swatch-label
-        strong {{ c.label }}
-        span.swatch-label__hex border {{ c.border }} · shadow {{ c.shadow }}
-      button.swatch-apply(@click='applyLive(c)') 应用到整页预览
+  .scheme-grid
+    .scheme(v-for='s in schemes' :key='s.label' :style='{ background: s.bg }')
+      .scheme__card(:style='cardStyle(s)')
+        .scheme__card-title 作品卡片标题
+        .scheme__card-meta @artist · 12.3K 浏览
+        button.scheme__btn(:style='btnStyle(s)') 收藏
+      .scheme__label
+        strong {{ s.label }}
+        span.scheme__hex bg {{ s.bg }}
+        span.scheme__hex surface {{ s.surface }}
+        span.scheme__hex border {{ s.border }}
+        span.scheme__hex shadow {{ s.shadow }}
+      button.scheme__apply(@click='applyLive(s)') 应用到整页
 
   .live-note(v-if='applied')
-    | 已把「{{ applied.label }}」实时应用到本页的 #[code --fnb-border] / #[code --fnb-shadow*]。
-    button.swatch-apply(@click='resetLive') 还原
+    | 已把「{{ applied.label }}」实时应用到本页。
+    button.scheme__apply(@click='resetLive') 还原
 
   h2.plain.preview-title 组件预览
   p.hint 以下组件跟随当前主题渲染；点上方某档「应用到整页预览」后，这里也会按该边框 / 阴影方案实时变化。
@@ -100,40 +103,41 @@
 definePageMeta({ name: 'debug-theme' })
 import { setTitle } from '~/utils/setTitle'
 
-interface ShadowCandidate {
+interface Scheme {
   label: string
+  bg: string
+  surface: string
   border: string
   shadow: string
 }
 
-// Dark-mode hard-shadow candidates. Edit freely — this page is a playground.
-const candidates: ShadowCandidate[] = [
-  { label: '中性灰', border: '#52555f', shadow: '#52555f' },
-  { label: 'B0 蓝（较亮）', border: '#3a3d47', shadow: '#3a72c9' },
-  { label: 'B1 蓝', border: '#3a3d47', shadow: '#2f5ea8' },
-  { label: 'B1.5 蓝', border: '#3a3d47', shadow: '#294f87' },
-  { label: 'B2 蓝（较暗）', border: '#3a3d47', shadow: '#26456f' },
-  { label: 'B3 蓝（最暗）', border: '#3a3d47', shadow: '#1f3a5c' },
+// Dark-mode border/shadow scheme candidates. Edit freely — this is a playground.
+const schemes: Scheme[] = [
+  { label: 'A 中性白边', bg: '#2d2c31', surface: '#1f1e28', border: '#f3f3f6', shadow: '#f3f3f6' },
+  { label: 'B 品牌蓝调白边', bg: '#161b26', surface: '#1d2433', border: '#f3f3f6', shadow: '#f3f3f6' },
+  { label: 'C 灰双色', bg: '#14151b', surface: '#1e222b', border: '#70747f', shadow: '#3a3d47' },
+  { label: 'D 蓝硬阴影', bg: '#14151b', surface: '#1e222b', border: '#3a3d47', shadow: '#2f5ea8' },
 ]
 
-function cardStyle(c: ShadowCandidate) {
+function cardStyle(s: Scheme) {
   return {
-    background: 'var(--fnb-surface)',
-    border: `3px solid ${c.border}`,
-    boxShadow: `6px 6px 0 0 ${c.shadow}`,
+    background: s.surface,
+    border: `3px solid ${s.border}`,
+    boxShadow: `6px 6px 0 0 ${s.shadow}`,
+    color: '#eef0f3',
   }
 }
 
-function btnStyle(c: ShadowCandidate) {
+function btnStyle(s: Scheme) {
   return {
-    background: 'var(--fnb-brand)',
-    color: 'var(--fnb-on-brand)',
-    border: `2px solid ${c.border}`,
-    boxShadow: `3px 3px 0 0 ${c.shadow}`,
+    background: '#4993ff',
+    color: '#fff',
+    border: `2px solid ${s.border}`,
+    boxShadow: `3px 3px 0 0 ${s.shadow}`,
   }
 }
 
-const applied = ref<ShadowCandidate | null>(null)
+const applied = ref<Scheme | null>(null)
 const shadowVars = [
   ['--fnb-shadow', '6px 6px 0 0'],
   ['--fnb-shadow-sm', '4px 4px 0 0'],
@@ -141,19 +145,21 @@ const shadowVars = [
   ['--fnb-shadow-xs', '3px 3px 0 0'],
 ] as const
 
-function applyLive(c: ShadowCandidate) {
+function applyLive(s: Scheme) {
   const el = document.documentElement
-  el.style.setProperty('--fnb-border', c.border)
+  el.style.setProperty('--fnb-bg', s.bg)
+  el.style.setProperty('--fnb-surface', s.surface)
+  el.style.setProperty('--fnb-border', s.border)
   shadowVars.forEach(([name, offset]) =>
-    el.style.setProperty(name, `${offset} ${c.shadow}`)
+    el.style.setProperty(name, `${offset} ${s.shadow}`)
   )
-  applied.value = c
+  applied.value = s
 }
 
 function resetLive() {
   const el = document.documentElement
-  ;['--fnb-border', ...shadowVars.map(([n]) => n)].forEach((n) =>
-    el.style.removeProperty(n)
+  ;['--fnb-bg', '--fnb-surface', '--fnb-border', ...shadowVars.map(([n]) => n)].forEach(
+    (n) => el.style.removeProperty(n)
   )
   applied.value = null
 }
@@ -199,64 +205,69 @@ onMounted(() => setTitle('Debug · Theme'))
   max-width: 60ch;
 }
 
-.swatch-grid {
+.scheme-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 2.5rem 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
   margin-top: 2rem;
 }
 
-.swatch-card {
+.scheme {
+  padding: 2rem 2rem 1.5rem;
+  border: 2px solid var(--fnb-divider);
+}
+
+.scheme__card {
   padding: 1.1rem;
 
-  &__title {
+  &-title {
     font-weight: 700;
     margin-bottom: 0.4rem;
   }
 
-  &__meta {
-    color: var(--fnb-text-muted);
+  &-meta {
+    color: #9aa1ac;
     font-size: 0.8rem;
     margin-bottom: 0.9rem;
   }
-
-  &__btn {
-    font-family: inherit;
-    font-weight: 700;
-    font-size: 0.85rem;
-    padding: 0.3rem 0.9rem;
-    cursor: pointer;
-    border-radius: 0;
-  }
 }
 
-.swatch-label {
+.scheme__btn {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.9rem;
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.scheme__label {
   display: flex;
   flex-direction: column;
-  margin-top: 0.9rem;
+  margin-top: 1.4rem;
+  color: #eef0f3;
 
-  &__hex {
-    color: var(--fnb-text-muted);
-    font-size: 0.75rem;
-    font-family: var(--fnb-font-mono);
+  strong {
+    margin-bottom: 0.3rem;
   }
 }
 
-.swatch-apply {
-  margin-top: 0.5rem;
+.scheme__hex {
+  color: #9aa1ac;
+  font-size: 0.72rem;
+  font-family: var(--fnb-font-mono);
+}
+
+.scheme__apply {
+  margin-top: 0.8rem;
   align-self: flex-start;
   font-family: inherit;
   font-size: 0.75rem;
-  padding: 0.2rem 0.6rem;
+  padding: 0.25rem 0.7rem;
   background: transparent;
-  color: var(--fnb-text-muted);
-  border: 2px solid var(--fnb-divider);
+  color: #eef0f3;
+  border: 2px solid #f3f3f6;
   cursor: pointer;
-
-  &:hover {
-    color: var(--fnb-text);
-    border-color: var(--fnb-border);
-  }
 }
 
 .live-note {
