@@ -15,6 +15,16 @@ body {
   box-sizing: border-box;
 }
 
+// Form controls don't inherit text color by default, so their text falls back
+// to UA black — invisible on dark surfaces (e.g. pagination page numbers).
+// Components that need a specific color set it explicitly and override this.
+button,
+input,
+select,
+textarea {
+  color: inherit;
+}
+
 body {
   background-color: var(--fnb-bg);
   // Base typography and text color. The legacy `#app` selector predated the
