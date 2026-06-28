@@ -17,6 +17,10 @@ body {
 
 body {
   background-color: var(--fnb-bg);
+  // Themed base text color. The legacy `#app` selector below predates the
+  // Nuxt migration (real root is `#app-full-container`) and no longer matches,
+  // so plain text fell back to UA black — invisible in dark mode.
+  color: var(--fnb-text);
   background-image:
     linear-gradient(var(--fnb-grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--fnb-grid-line) 1px, transparent 1px);
