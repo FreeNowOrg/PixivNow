@@ -147,12 +147,15 @@ h3 {
     line-height: 1.7;
     &.gold {
       background-color: var(--fnb-highlight);
+      color: var(--fnb-on-light);
     }
     &.silver {
       background-color: #d1d5db;
+      color: var(--fnb-on-light);
     }
     &.bronze {
       background-color: #f0b27a;
+      color: var(--fnb-on-light);
     }
   }
 

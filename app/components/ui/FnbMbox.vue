@@ -37,10 +37,12 @@ withDefaults(
 
   &--success {
     background: var(--fnb-success);
+    color: var(--fnb-on-light);
   }
 
   &--warning {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
   }
 
   &--error {

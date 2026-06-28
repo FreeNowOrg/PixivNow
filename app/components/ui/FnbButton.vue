@@ -43,7 +43,7 @@ withDefaults(
 
   &--success {
     background: var(--fnb-success);
-    color: var(--fnb-text);
+    color: var(--fnb-on-light);
   }
 
   &--danger {

@@ -46,10 +46,12 @@ withDefaults(
 
   &--highlight {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
   }
 
   &--success {
     background: var(--fnb-success);
+    color: var(--fnb-on-light);
   }
 }
 </style>

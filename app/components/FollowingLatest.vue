@@ -77,6 +77,7 @@ defineProps<{
 
   &:hover {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
     margin: 0 -1rem;
     padding-left: 1rem;
     padding-right: 1rem;

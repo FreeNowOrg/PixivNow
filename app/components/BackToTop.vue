@@ -47,6 +47,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 
   &:hover {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
     transform: translate(3px, 3px);
     box-shadow: none;
   }

@@ -478,6 +478,7 @@ h1 {
 
     &:hover:not(.bookmarked) {
       background-color: var(--fnb-highlight);
+      color: var(--fnb-on-light);
     }
     &.bookmarked {
       background-color: var(--fnb-bookmark);
@@ -491,6 +492,7 @@ h1 {
   .like-btn {
     &:hover:not(.liked) {
       background-color: var(--fnb-highlight);
+      color: var(--fnb-on-light);
     }
     &.liked {
       background-color: var(--fnb-brand);

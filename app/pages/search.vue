@@ -305,6 +305,7 @@ onMounted(() => makeSearch())
 
   &:hover:not(.active) {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
   }
 }
 

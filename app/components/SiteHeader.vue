@@ -197,7 +197,7 @@ useEventListener(window, 'scroll', () => {
 
     &:hover, &.is-active {
       background-color: var(--fnb-highlight);
-      color: var(--fnb-text);
+      color: var(--fnb-on-light);
     }
 
     &:focus-visible {
@@ -250,6 +250,7 @@ useEventListener(window, 'scroll', () => {
       &:hover {
         transform: none;
         background: var(--fnb-highlight);
+        color: var(--fnb-on-light);
       }
     }
 
@@ -338,6 +339,7 @@ useEventListener(window, 'scroll', () => {
 
             &:hover {
               background-color: var(--fnb-highlight);
+              color: var(--fnb-on-light);
             }
           }
         }

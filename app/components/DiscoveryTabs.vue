@@ -54,6 +54,7 @@ const tabs = [
 
   &:hover:not(.active):not(.disabled) {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
   }
 
   .coming-soon {

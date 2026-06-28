@@ -330,6 +330,7 @@ h1 {
 
   &.original {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
   }
 }
 
