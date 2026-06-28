@@ -75,13 +75,13 @@ a {
 // Code
 pre {
   overflow: auto;
-  background: #efefef;
+  background: var(--fnb-skeleton);
   padding: 4px;
   border-radius: var(--fnb-radius-sm);
 }
 
 code {
-  background-color: #efefef;
+  background-color: var(--fnb-skeleton);
   display: inline;
   padding: 0.1rem 0.2rem;
   color: var(--fnb-danger);
