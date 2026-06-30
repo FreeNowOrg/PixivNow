@@ -15,22 +15,31 @@ body {
   box-sizing: border-box;
 }
 
-body {
-  background-color: var(--fnb-bg);
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-  background-size: 72px 72px;
+// Form controls don't inherit text color by default, so their text falls back
+// to UA black — invisible on dark surfaces (e.g. pagination page numbers).
+// Components that need a specific color set it explicitly and override this.
+button,
+input,
+select,
+textarea {
+  color: inherit;
 }
 
-#app {
+body {
+  background-color: var(--fnb-bg);
+  // Base typography and text color. The legacy `#app` selector predated the
+  // Nuxt migration (real root is `#app-full-container`) and no longer matched,
+  // so these fell back to UA defaults — black text (invisible in dark mode)
+  // and the system font instead of the loaded Noto Sans SC. Layout
+  // (flex/min-height) lives on #app-full-container in app.vue.
+  color: var(--fnb-text);
   font-family: var(--fnb-font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: var(--fnb-text);
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  background-image:
+    linear-gradient(var(--fnb-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--fnb-grid-line) 1px, transparent 1px);
+  background-size: 72px 72px;
 }
 
 // Env specific

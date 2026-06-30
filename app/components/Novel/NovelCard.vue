@@ -54,7 +54,7 @@ const fallbackCover =
   @include fnb-border;
   @include fnb-shadow-xs;
   aspect-ratio: 5 / 7;
-  background: #eee;
+  background: var(--fnb-skeleton);
   animation: imgProgress 0.6s ease infinite alternate;
 
   :deep(img),
@@ -69,7 +69,7 @@ const fallbackCover =
   position: absolute;
   top: 0.4rem;
   left: 0.4rem;
-  color: #fff;
+  color: var(--fnb-on-brand);
   width: 1.4rem;
   height: 1.4rem;
   font-size: 0.7rem;
@@ -77,7 +77,7 @@ const fallbackCover =
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 0, 0, 0.8);
+  background-color: var(--pixiv-r18-badge);
 }
 
 .info {

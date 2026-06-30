@@ -110,7 +110,7 @@ h3 {
 
   .restrict {
     position: absolute;
-    color: #fff;
+    color: var(--fnb-on-brand);
     width: 1.4rem;
     height: 1.4rem;
     font-size: 0.7rem;
@@ -122,12 +122,12 @@ h3 {
   .x-restrict {
     top: 0.4rem;
     left: 0.4rem;
-    background-color: rgb(255, 0, 0, 0.8);
+    background-color: var(--pixiv-r18-badge);
   }
   .ai-restrict {
     bottom: 0.4rem;
     left: 0.4rem;
-    background-color: rgba(204, 102, 0, 0.8);
+    background-color: var(--pixiv-ai-badge);
   }
 
   .ranking {
@@ -147,12 +147,15 @@ h3 {
     line-height: 1.7;
     &.gold {
       background-color: var(--fnb-highlight);
+      color: var(--fnb-on-light);
     }
     &.silver {
-      background-color: #d1d5db;
+      background-color: var(--fnb-silver);
+      color: var(--fnb-on-light);
     }
     &.bronze {
-      background-color: #f0b27a;
+      background-color: var(--fnb-bronze);
+      color: var(--fnb-on-light);
     }
   }
 

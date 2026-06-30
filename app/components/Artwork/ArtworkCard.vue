@@ -210,7 +210,7 @@ async function handleBookmark() {
 
   .router-link-active {
     cursor: default;
-    box-shadow: 0 0 0 2px #aaa;
+    box-shadow: 0 0 0 2px var(--fnb-divider);
 
     & + .cover {
       background-color: rgba(100, 100, 100, 0.6) !important;
@@ -241,7 +241,7 @@ async function handleBookmark() {
   }
 
   .restrict {
-    color: #fff;
+    color: var(--fnb-on-brand);
     font-size: 0.8rem;
     width: 1.5rem;
     height: 1.5rem;
@@ -253,12 +253,12 @@ async function handleBookmark() {
   .x-restrict {
     top: .4rem;
     left: .4rem;
-    background-color: rgb(255, 0, 0, 0.8);
+    background-color: var(--pixiv-r18-badge);
   }
   .ai-restrict {
     bottom: .4rem;
     left: .4rem;
-    background-color: rgba(204, 102, 0, 0.8);
+    background-color: var(--pixiv-ai-badge);
   }
 
   .bookmark {

@@ -76,6 +76,7 @@ a {
 
   &:hover {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
     padding: 0 0.2em;
   }
 
@@ -97,6 +98,7 @@ h4 {
   padding: 0.2em 0.4em;
   font-size: 1.1rem;
   background: var(--fnb-highlight);
+  color: var(--fnb-on-light);
   display: inline-block;
 }
 

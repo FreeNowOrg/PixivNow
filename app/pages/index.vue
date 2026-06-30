@@ -346,7 +346,7 @@ onMounted(() => {
 
       &:hover {
         background: var(--fnb-highlight);
-        color: var(--fnb-text);
+        color: var(--fnb-on-light);
         border-color: var(--fnb-border);
       }
     }

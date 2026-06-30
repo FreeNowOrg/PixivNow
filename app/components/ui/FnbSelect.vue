@@ -162,11 +162,12 @@ onClickOutside(selectRef, () => {
   &:hover,
   &.focused {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
   }
 
   &.selected {
     background: var(--fnb-brand);
-    color: #fff;
+    color: var(--fnb-on-brand);
     font-weight: 700;
   }
 }

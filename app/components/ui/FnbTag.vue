@@ -38,6 +38,7 @@ const colorStyle = computed(() => {
 
   &--active {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
     font-weight: 700;
   }
 

@@ -49,7 +49,7 @@ defineProps<{
   }
 
   &--active {
-    color: #fff;
+    color: var(--fnb-on-brand);
     font-weight: 900;
     background: var(--fnb-brand);
     border-color: var(--fnb-border);

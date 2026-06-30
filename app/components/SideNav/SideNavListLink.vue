@@ -31,6 +31,7 @@ li {
 
     &:hover {
       background-color: var(--fnb-highlight);
+      color: var(--fnb-on-light);
     }
 
     &.not-allowed {

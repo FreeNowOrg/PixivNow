@@ -39,7 +39,7 @@ const sizeStyle = computed(() => ({
 <style scoped lang="scss">
 .fnb-skeleton {
   display: inline-block;
-  background: #e0e0e0;
+  background: var(--fnb-skeleton);
   animation: imgProgress 0.8s ease infinite alternate;
   border-radius: var(--fnb-radius-sm);
 

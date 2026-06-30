@@ -11,7 +11,7 @@
     .flex(style='justify-content: center')
       NStatistic(
         label='死亡倒计时'
-        style='border: 1px solid #efefef; padding: 0.5rem; border-radius: 0.25rem'
+        style='border: 1px solid var(--fnb-divider); padding: 0.5rem; border-radius: 0.25rem'
       )
         NCountdown(:duration='duration')
 

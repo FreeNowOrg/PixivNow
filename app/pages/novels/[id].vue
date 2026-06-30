@@ -324,12 +324,13 @@ h1 {
 
   &.danger {
     background: var(--fnb-danger);
-    color: #fff;
+    color: var(--fnb-on-brand);
     border-color: var(--fnb-border);
   }
 
   &.original {
     background: var(--fnb-highlight);
+    color: var(--fnb-on-light);
   }
 }
 

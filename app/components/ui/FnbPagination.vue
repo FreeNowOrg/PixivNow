@@ -105,7 +105,7 @@ function goTo(p: number) {
 
   &--active {
     background: var(--fnb-brand);
-    color: #fff;
+    color: var(--fnb-on-brand);
   }
 
   &:disabled {

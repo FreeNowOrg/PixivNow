@@ -38,17 +38,17 @@ withDefaults(
 
   &--primary {
     background: var(--fnb-brand);
-    color: #fff;
+    color: var(--fnb-on-brand);
   }
 
   &--success {
     background: var(--fnb-success);
-    color: var(--fnb-text);
+    color: var(--fnb-on-light);
   }
 
   &--danger {
     background: var(--fnb-danger);
-    color: #fff;
+    color: var(--fnb-on-brand);
   }
 
   &--sm {

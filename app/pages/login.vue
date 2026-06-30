@@ -181,7 +181,7 @@ kbd {
   padding: 0.1em 0.4em;
   font-size: 0.85em;
   font-family: inherit;
-  background: var(--fnb-bg-alt, #f0f0f0);
+  background: var(--fnb-bg-alt);
   border: 1px solid var(--fnb-border);
   border-radius: 3px;
   box-shadow: 0 1px 0 var(--fnb-border);
