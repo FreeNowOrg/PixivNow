@@ -20,10 +20,20 @@ Aligned with PicaComicNow's Neubrutalism design language to form a unified FreeN
 | `--fnb-highlight` | `#FFE066` | Highlight, marker effect, hover background |
 | `--fnb-danger` | `#FF5555` | Error, danger actions |
 | `--fnb-bookmark` | `#FF69B4` | Bookmark marker |
-| `--fnb-border` | `#000` | Borders, shadows, primary text |
+| `--fnb-border` | `#000` | Borders, primary text |
+| `--fnb-shadow-color` | `var(--fnb-border)` | Hard-shadow color (decoupled from border — see Theming) |
 | `--fnb-surface` | `#fff` | Card, input background |
+| `--fnb-bg-alt` | `#f0f0f0` | Alternate/raised surface |
 | `--fnb-text` | `#1a1a1a` | Body text |
 | `--fnb-text-muted` | `#666` | Secondary text |
+| `--fnb-on-brand` | `#fff` | Foreground on dark/colored fills (brand, danger, badges) — light in both themes |
+| `--fnb-on-light` | `#1a1a1a` | Foreground on light fills (highlight, success) — dark in both themes |
+| `--fnb-skeleton` | `#e8e8e8` | Skeleton / placeholder / code fill |
+| `--fnb-divider` | `#dedede` | Dividers, hairlines, focus rings |
+| `--fnb-grid-line` | `rgba(0,0,0,.03)` | Body background grid lines |
+| `--fnb-silver` / `--fnb-bronze` | `#d1d5db` / `#f0b27a` | Rank medals |
+
+Project-domain semantic colors live under a separate `--pixiv-*` prefix (R18 / AI / original-work badges) — see [Theming](#theming-light--dark-mode). Values above are the **light** theme; dark overrides are in the Theming section.
 
 ### Border Radius
 
@@ -70,6 +80,49 @@ Hover/active: element shifts down-right, shadow collapses to 0 — simulates a t
 ```
 hover/active: translate(1.5px, 1.5px); box-shadow: 0 0 0 0 #000;
 ```
+
+---
+
+## Theming: Light / Dark Mode
+
+Theming is driven entirely by CSS custom properties. `useColorMode` (`@vueuse/core`, auto-imported) writes a `light` / `dark` class on `<html>`; `:root` holds the light values and `html.dark { … }` overrides the subset that changes. The `useTheme()` composable (`app/composables/useTheme.ts`) wraps this into a tri-state (`'auto' | 'light' | 'dark'`) — note `useColorMode`'s `emitAuto` is deprecated in v14, read `colorMode.store` instead. `ThemeToggle.vue` is the segmented switcher. Since the app is a client-only SPA, there is no SSR flash.
+
+### Token architecture
+
+- **`--fnb-*`** — design-system / component-library tokens (generic UI semantics). Portable across sister projects.
+- **`--pixiv-*`** — project-domain semantic colors (R18 / AI / original-work). A sister project swaps these for its own domain set.
+
+### Dark overrides (the values this project ships)
+
+```scss
+html.dark {
+  --fnb-bg: #14151b;          // page
+  --fnb-surface: #1e222b;     // cards (slightly lighter than bg)
+  --fnb-bg-alt: #1d2029;
+  --fnb-border: #4c5160;      // subtle, NOT near-white
+  --fnb-shadow-color: #2f5ea8;// brand-blue hard shadow (see principle 1)
+  --fnb-text: #eef0f3;
+  --fnb-text-muted: #9aa1ac;
+  --fnb-skeleton: #2a2e38;
+  --fnb-divider: #343a45;
+  --fnb-grid-line: rgba(255,255,255,.04);
+  // brand/accent/success/highlight/danger/bookmark stay vivid (principle 2)
+  // pixiv text tones brighten for dark legibility:
+  --pixiv-original: #ff4fa3; --pixiv-r18-text: #ff6b6b; --pixiv-ai-text: #e0a44b;
+}
+```
+
+`--fnb-on-brand` / `--fnb-on-light` / `--fnb-silver` / `--fnb-bronze` and the `--pixiv-*` badge fills are **theme-invariant** (same value in both modes), so they need no dark override.
+
+### Design principles (learned the hard way — follow these for a sister project)
+
+1. **Don't invert the hard shadow/border to near-white.** A white border + white shadow on a near-black page reads like a photographic negative. Two approaches that work instead:
+   - *(this project)* keep a **subtle border** + decouple the shadow into `--fnb-shadow-color` and tint it with the **brand color** (deepened, e.g. `#2f5ea8`) so the signature hard offset stays visible without glare.
+   - *(authentic neubrutalism, e.g. neubrutalism.com)* **white** border + shadow, but only with a **mid-dark page** (`~#2d2c31`) and **cards darker than the page** — never near-black bg with cards lighter than bg.
+2. **Keep semantic colors vibrant in dark mode — do NOT desaturate them.** Muting success/highlight/danger to dull tones drifts toward generic "dark-UI" and kills the neubrutalist punch. Fix *contrast*, not saturation.
+3. **Foreground tokens carry the contrast, not the fill.** Light fills (highlight yellow, success green) pair with `--fnb-on-light` (fixed dark); dark/colored fills (brand, danger, badges) pair with `--fnb-on-brand` (fixed light). Because these are fixed per fill, a fill stays readable in both themes without per-theme overrides. Every place that paints a `--fnb-highlight` / `--fnb-success` background must set its foreground to `--fnb-on-light` (including `:hover` background swaps).
+4. **Media literals stay literal.** Colors layered *over artwork images* — black scrims (`rgba(0,0,0,.x)`), white-on-image text, text-shadows, carousel backdrops, modal/preview scrims — are theme-invariant media treatments. Leave them as literals; do not tokenize.
+5. **Base text color + font belong on `body`.** Form controls (`button`, `input`, `select`, `textarea`) don't inherit `color` — add a global `color: inherit` reset, or unstyled controls fall back to UA black and vanish in dark mode.
 
 ---
 
