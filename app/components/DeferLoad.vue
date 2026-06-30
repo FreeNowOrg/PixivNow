@@ -55,5 +55,5 @@ onBeforeUnmount(() => {
 .isLoading
   animation: imgProgress 0.6s ease infinite alternate
 .isError
-  background-color: #e8e8e8
+  background-color: var(--fnb-skeleton)
 </style>

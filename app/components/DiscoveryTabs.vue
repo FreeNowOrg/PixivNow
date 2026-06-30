@@ -42,7 +42,7 @@ const tabs = [
 
   &.active {
     background: var(--fnb-brand);
-    color: #fff;
+    color: var(--fnb-on-brand);
     box-shadow: none;
     transform: translate(3px, 3px);
   }

@@ -274,7 +274,7 @@ onBeforeUnmount(() => {
 }
 
 .badge {
-  color: #999;
+  color: var(--fnb-text-muted);
   font-size: 0.6rem;
   background: rgba(150, 150, 150, 0.25);
   padding: 0.1rem 0.25rem;

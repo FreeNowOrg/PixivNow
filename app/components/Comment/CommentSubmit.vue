@@ -78,5 +78,5 @@ textarea
   width: 100%
 
 .not-logged-in
-  color: #888
+  color: var(--fnb-text-muted)
 </style>

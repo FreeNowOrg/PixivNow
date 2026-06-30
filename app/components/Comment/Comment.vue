@@ -145,7 +145,7 @@ function replaceStamps(str: string): string {
       font-size: .68rem
       font-weight: 700
       line-height: 1.4
-      color: #fff
+      color: var(--fnb-on-brand)
       background: var(--fnb-brand)
       border-radius: var(--fnb-radius-sm)
 
@@ -175,7 +175,7 @@ function replaceStamps(str: string): string {
 
     .comment-date
       font-size: .75em
-      color: #aaa
+      color: var(--fnb-text-muted)
 
     .comment-replies
       margin-top: .6rem
