@@ -41,7 +41,7 @@ withDefaults(
 
   &--brand {
     background: var(--fnb-brand);
-    color: #fff;
+    color: var(--fnb-on-brand);
   }
 
   &--highlight {

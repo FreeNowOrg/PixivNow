@@ -167,7 +167,7 @@ onClickOutside(selectRef, () => {
 
   &.selected {
     background: var(--fnb-brand);
-    color: #fff;
+    color: var(--fnb-on-brand);
     font-weight: 700;
   }
 }

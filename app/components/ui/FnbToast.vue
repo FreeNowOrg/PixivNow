@@ -52,7 +52,7 @@ const { toasts } = useToastState()
 
   &--error {
     background: var(--fnb-danger);
-    color: #fff;
+    color: var(--fnb-on-brand);
   }
 }
 
