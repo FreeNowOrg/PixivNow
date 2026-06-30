@@ -4,9 +4,6 @@
   p.hint 内部调试与预览页面集合，不在导航中公开入口。
   ul.debug-list
     li
-      RouterLink.debug-list__link(to='/_debug/theme') 主题 · 暗色边框 / 阴影
-      span.debug-list__desc 对比暗色下「边框 + 硬阴影」方案
-    li
       RouterLink.debug-list__link(to='/_debug/components') 组件展示
       span.debug-list__desc 常用 Fnb 组件总览（跟随当前主题）
 </template>
