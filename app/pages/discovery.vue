@@ -133,7 +133,7 @@ onMounted(() => setTitle('探索发现'))
   }
 
   &.active {
-    color: #fff;
+    color: var(--fnb-on-brand);
     background: var(--fnb-brand);
     border-color: var(--fnb-border);
   }

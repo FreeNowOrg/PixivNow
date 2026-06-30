@@ -268,7 +268,7 @@ onMounted(() => {
 
   &.active {
     background: var(--fnb-brand);
-    color: #fff;
+    color: var(--fnb-on-brand);
     box-shadow: none;
     transform: translate(2px, 2px);
   }

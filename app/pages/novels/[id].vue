@@ -324,7 +324,7 @@ h1 {
 
   &.danger {
     background: var(--fnb-danger);
-    color: #fff;
+    color: var(--fnb-on-brand);
     border-color: var(--fnb-border);
   }
 

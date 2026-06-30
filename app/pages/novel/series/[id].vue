@@ -235,7 +235,7 @@ h1 {
 
   li {
     padding: 0.75rem 0;
-    border-bottom: 3px solid rgba(0, 0, 0, 0.08);
+    border-bottom: 3px solid var(--fnb-divider);
   }
 
   li:last-child {

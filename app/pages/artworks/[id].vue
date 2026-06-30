@@ -42,7 +42,7 @@
             .artwork-info
               p.description.pre(v-html='illust.description')
               p.description.no-desc(
-                :style='{ color: "#aaa" }'
+                :style='{ color: "var(--fnb-text-muted)" }'
                 v-if='!illust.description'
               ) (作者未填写简介)
 
@@ -191,7 +191,7 @@ const UgoiraViewer = defineAsyncComponent({
         maxWidth: '100%',
         maxHeight: '60vh',
         borderRadius: '4px',
-        backgroundColor: '#e8e8e8',
+        backgroundColor: 'var(--fnb-skeleton)',
       },
     }),
 })
@@ -414,13 +414,13 @@ h1 {
 }
 
 .original-tag {
-  color: #e02080;
+  color: var(--pixiv-original);
 }
 .x-restrict {
-  color: #c00;
+  color: var(--pixiv-r18-text);
 }
 .ai-restrict {
-  color: #c70;
+  color: var(--pixiv-ai-text);
 }
 
 .stats {
@@ -482,9 +482,9 @@ h1 {
     }
     &.bookmarked {
       background-color: var(--fnb-bookmark);
-      color: #fff;
+      color: var(--fnb-on-brand);
       svg {
-        color: #fff;
+        color: var(--fnb-on-brand);
       }
     }
   }
@@ -496,16 +496,16 @@ h1 {
     }
     &.liked {
       background-color: var(--fnb-brand);
-      color: #fff;
+      color: var(--fnb-on-brand);
       svg {
-        color: #fff;
+        color: var(--fnb-on-brand);
       }
     }
   }
 }
 
 .create-date {
-  color: #aaa;
+  color: var(--fnb-text-muted);
   font-size: 0.85rem;
 }
 

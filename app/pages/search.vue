@@ -298,7 +298,7 @@ onMounted(() => makeSearch())
 
   &.active {
     background: var(--fnb-brand);
-    color: #fff;
+    color: var(--fnb-on-brand);
     box-shadow: none;
     transform: translate(2px, 2px);
   }
@@ -346,7 +346,7 @@ onMounted(() => makeSearch())
 .search-box {
   margin: 1rem auto;
   margin-top: 2rem;
-  box-shadow: 0 0 8px #ddd;
+  box-shadow: 0 0 8px var(--fnb-divider);
 }
 
 .fnb-empty {
