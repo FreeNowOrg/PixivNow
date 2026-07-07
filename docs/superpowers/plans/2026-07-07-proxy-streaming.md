@@ -470,17 +470,35 @@ Expected:
 - JSON:`error= False id= <该作品id>`。
 - 响应头:`content-type: application/json`,**无 `content-encoding`**(白名单不含,已解压)。
 
-- [ ] **Step 4: 验证 POST(form-urlencoded body 转发)**
+- [ ] **Step 4: 验证 POST(form-urlencoded body 转发)——关注/取关 uid=10**
 
-用一个只读或安全的 form-urlencoded 端点验证 body 被原样转发(选一个不会产生破坏性副作用的;若无把握,跳过写操作,仅确认非 GET 请求 body 能送达——可用会因缺参数返回明确错误的端点观察 pixiv 的报错 JSON):
+用户已授权:关注 uid=10(pixiv 站长)再取关,验证 form-urlencoded body 被原样转发。端点取自 `app/api/pixiv-client.ts:747-766`。需先取 CSRF token(`/api/user` 的 `token` 字段)。
 
 ```bash
+set -a; . ./.env; set +a
+UA='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
 AUTH="Authorization: Bearer ${DEBUG_PIXIV_PHPSESSID}"
-curl -s -X POST "http://localhost:3100/rpc/index.php" \
-  -H "$AUTH" -H 'content-type: application/x-www-form-urlencoded' \
-  --data 'mode=' -w "\nstatus=%{http_code}\n"
+CSRF=$(curl -s "http://localhost:3100/api/user" -H "$AUTH" \
+  | python3 -c "import sys,json;print(json.load(sys.stdin).get('token',''))")
+echo "csrf len: ${#CSRF}"   # 应 > 0
+echo "--- follow uid=10 ---"
+curl -s -X POST "http://localhost:3100/bookmark_add.php" \
+  -H "$AUTH" -H "x-csrf-token: $CSRF" -H "User-Agent: $UA" \
+  -H 'content-type: application/x-www-form-urlencoded' \
+  --data 'mode=add&type=user&user_id=10&tag=&restrict=0&format=json' \
+  -w "\nstatus=%{http_code}\n"
+echo "--- unfollow uid=10 (清理) ---"
+curl -s -X POST "http://localhost:3100/rpc_group_setting.php" \
+  -H "$AUTH" -H "x-csrf-token: $CSRF" -H "User-Agent: $UA" \
+  -H 'content-type: application/x-www-form-urlencoded' \
+  --data 'mode=del&type=bookuser&id=10' \
+  -w "\nstatus=%{http_code}\n"
 ```
-Expected: 返回 pixiv 的响应(非 502;body 被送达上游,能看到 pixiv 对缺参的 JSON/文本报错)。若返回 502 说明 body/头转发有问题,需排查。
+Expected:
+- `csrf len` > 0。
+- follow:**非 502**,返回 pixiv 成功 JSON(如 `{"error":false,...}` 或含 follow 结果)→ 证明 POST body 已正确送达并被 pixiv 解析。
+- unfollow:同样成功,恢复原状(清理)。
+- 若任一返回 `502`,说明 body/头转发有问题,需排查后再继续。
 
 - [ ] **Step 5: 验证 UA 黑名单仍拦截**
 
