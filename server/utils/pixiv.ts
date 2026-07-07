@@ -41,7 +41,7 @@ export class CookieUtils {
 
 // --- Proxy-aware fetch ---
 
-async function proxyAwareFetch(
+export async function proxyAwareFetch(
   url: string,
   init?: RequestInit
 ): Promise<Response> {
@@ -170,21 +170,6 @@ export async function pixivFetch(
   }
 
   return { data, status: response.status, headers: response.headers }
-}
-
-// --- Pximg proxy fetch ---
-
-export async function pximgFetch(
-  url: string,
-  headers: Record<string, string>
-): Promise<Response> {
-  return proxyAwareFetch(url, {
-    headers: {
-      ...headers,
-      referer: 'https://www.pixiv.net/',
-      'user-agent': PROXY_USER_AGENT,
-    },
-  })
 }
 
 // --- URL replacement utilities ---
