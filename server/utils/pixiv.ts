@@ -79,6 +79,7 @@ export function buildPixivHeaders(event: H3Event): Record<string, string> {
     if (typeof v === 'string') headers[k] = v
   }
 
+  // Extract auth info
   const token = (headers['authorization'] || '').replace(/^Bearer\s+/i, '')
   const cookies = CookieUtils.toJSON(headers['cookie'] || '')
   const csrfToken = headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
@@ -86,6 +87,7 @@ export function buildPixivHeaders(event: H3Event): Record<string, string> {
     cookies.PHPSESSID = token
   }
 
+  // Override headers for Pixiv
   Object.assign(headers, {
     origin: 'https://www.pixiv.net',
     referer: 'https://www.pixiv.net/',
@@ -98,6 +100,7 @@ export function buildPixivHeaders(event: H3Event): Record<string, string> {
     headers['x-csrf-token'] = csrfToken
   }
   delete headers['authorization']
+  // host is auto-set by fetch from URL; forbidden header in edge runtimes
   delete headers['host']
   return headers
 }
