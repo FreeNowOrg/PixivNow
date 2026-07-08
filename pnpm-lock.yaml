@@ -80,7 +80,7 @@ importers:
         version: 0.2.3
       '@vue/language-plugin-pug':
         specifier: ^3.3.5
-        version: 3.3.6
+        version: 3.3.7
       '@vueuse/core':
         specifier: ^14.3.0
         version: 14.3.0(vue@3.5.39(typescript@6.0.3))
@@ -2598,8 +2598,8 @@ packages:
   '@vue/devtools-shared@8.1.3':
     resolution: {integrity: sha512-CM3uIPL+v+lrJUk33+pxspYo0MhuMWlCvf7zC9fybifvCPyM2jUbYRPwoYEJgYbwRqPikm5HozbUhp60MF2QuA==}
 
-  '@vue/language-plugin-pug@3.3.6':
-    resolution: {integrity: sha512-7eTlf1i9d/glQBmBK3Ii2dUFxajGG/n8FGroA6y+HXEfNFn0E+DN8KfzOIZVMZoCJKWepduj9Whcfaw9DyKnsg==}
+  '@vue/language-plugin-pug@3.3.7':
+    resolution: {integrity: sha512-iJz3ImczokTATeYj8ixuUFE2ZdZCMLj1WJU5Zt+tV3saT/nG5sqLYPYsu54bYtcert2v2mhXBvsMipKCsSLFmQ==}
 
   '@vue/reactivity@3.5.39':
     resolution: {integrity: sha512-TpsuBJ9gGlZa5d23XcM2y8EXanz9dZeVDQBXRwzy46ItgvM+rWpzs+UVM0wcRLxGvcav0HE5jz2gNL53xlRAog==}
@@ -7966,7 +7966,7 @@ snapshots:
 
   '@vue/devtools-shared@8.1.3': {}
 
-  '@vue/language-plugin-pug@3.3.6':
+  '@vue/language-plugin-pug@3.3.7':
     dependencies:
       '@volar/source-map': 2.4.28
       muggle-string: 0.4.1
