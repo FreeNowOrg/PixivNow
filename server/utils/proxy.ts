@@ -15,6 +15,22 @@ export interface ProxyPassOptions {
 const DEV_LOG_CAP = 8 * 1024
 const DEV_PREVIEW_CHARS = 200
 
+// Only text-like bodies are worth previewing; binary would just be console noise.
+const TEXT_TYPE_RE =
+  /^(text\/|application\/(json|xml|javascript|x-www-form-urlencoded)|application\/[\w.-]+\+(json|xml))/i
+
+function isTextType(contentType: string): boolean {
+  return TEXT_TYPE_RE.test(contentType)
+}
+
+function fmtSize(contentLength: string | null): string {
+  const n = Number(contentLength)
+  if (!contentLength || !Number.isFinite(n)) return 'unknown size'
+  if (n < 1024) return `${n} B`
+  if (n < 1024 * 1024) return `${(n / 1024).toFixed(2)} KB`
+  return `${(n / 1024 / 1024).toFixed(2)} MB`
+}
+
 export async function proxyPass(
   event: H3Event,
   opts: ProxyPassOptions
@@ -46,10 +62,23 @@ export async function proxyPass(
   }
 
   let body = upstream.body
-  if (DEV && body) {
-    const [toClient, toLog] = body.tee()
-    body = toClient
-    void previewStream(toLog, opts.devLabel ?? 'proxy', upstream.status)
+  if (DEV) {
+    const label = opts.devLabel ?? 'proxy'
+    const contentType = upstream.headers.get('content-type') ?? ''
+    if (body && isTextType(contentType)) {
+      // Text (JSON/HTML/...): tee one branch to log a short preview.
+      const [toClient, toLog] = body.tee()
+      body = toClient
+      void previewStream(toLog, label, upstream.status)
+    } else {
+      // Binary or empty body: summarize instead of dumping bytes to the console.
+      const size = fmtSize(upstream.headers.get('content-length'))
+      const kind = contentType || 'Blob'
+      console.info(
+        colors.green(`[${label} ${upstream.status}]`),
+        `[${kind} ${size}]`
+      )
+    }
   }
 
   return new Response(body, { status: upstream.status, headers })
