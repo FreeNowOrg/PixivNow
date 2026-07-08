@@ -76,6 +76,7 @@ export async function proxyPass(
       const kind = contentType || 'Blob'
       console.info(
         colors.green(`[${label} ${upstream.status}]`),
+        upstream.url,
         `[${kind} ${size}]`
       )
     }
