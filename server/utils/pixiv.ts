@@ -41,7 +41,7 @@ export class CookieUtils {
 
 // --- Proxy-aware fetch ---
 
-async function proxyAwareFetch(
+export async function proxyAwareFetch(
   url: string,
   init?: RequestInit
 ): Promise<Response> {
@@ -72,6 +72,39 @@ interface PixivFetchOptions {
   data?: any
 }
 
+export function buildPixivHeaders(event: H3Event): Record<string, string> {
+  const headers: Record<string, string> = {}
+  const incomingHeaders = getHeaders(event)
+  for (const [k, v] of Object.entries(incomingHeaders)) {
+    if (typeof v === 'string') headers[k] = v
+  }
+
+  // Extract auth info
+  const token = (headers['authorization'] || '').replace(/^Bearer\s+/i, '')
+  const cookies = CookieUtils.toJSON(headers['cookie'] || '')
+  const csrfToken = headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
+  if (token) {
+    cookies.PHPSESSID = token
+  }
+
+  // Override headers for Pixiv
+  Object.assign(headers, {
+    origin: 'https://www.pixiv.net',
+    referer: 'https://www.pixiv.net/',
+    'user-agent': PROXY_USER_AGENT,
+    cookie: CookieUtils.toString(cookies),
+  })
+  headers['accept-language'] ??=
+    'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
+  if (csrfToken) {
+    headers['x-csrf-token'] = csrfToken
+  }
+  delete headers['authorization']
+  // host is auto-set by fetch from URL; forbidden header in edge runtimes
+  delete headers['host']
+  return headers
+}
+
 export async function pixivFetch(
   opts: PixivFetchOptions
 ): Promise<{ data: any; status: number; headers: Headers }> {
@@ -93,38 +126,7 @@ export async function pixivFetch(
     }
   }
 
-  // Start with all incoming headers, then override specific fields
-  // (mirrors old axios interceptor behavior: preserve accept, sec-fetch-*, etc.)
-  const headers: Record<string, string> = {}
-  const incomingHeaders = getHeaders(event)
-  for (const [k, v] of Object.entries(incomingHeaders)) {
-    if (typeof v === 'string') headers[k] = v
-  }
-
-  // Extract auth info
-  const token = (headers['authorization'] || '').replace(/^Bearer\s+/i, '')
-  const cookies = CookieUtils.toJSON(headers['cookie'] || '')
-  const csrfToken = headers['x-csrf-token'] ?? cookies.CSRFTOKEN ?? ''
-
-  if (token) {
-    cookies.PHPSESSID = token
-  }
-
-  // Override headers for Pixiv
-  Object.assign(headers, {
-    origin: 'https://www.pixiv.net',
-    referer: 'https://www.pixiv.net/',
-    'user-agent': PROXY_USER_AGENT,
-    cookie: CookieUtils.toString(cookies),
-  })
-  headers['accept-language'] ??=
-    'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
-  if (csrfToken) {
-    headers['x-csrf-token'] = csrfToken
-  }
-  delete headers['authorization']
-  // host is auto-set by fetch from URL; forbidden header in edge runtimes
-  delete headers['host']
+  const headers = buildPixivHeaders(event)
 
   // Prepare body
   let body: string | undefined
@@ -140,7 +142,11 @@ export async function pixivFetch(
       colors.green(`[${method}] <`),
       colors.cyan(url.pathname + url.search)
     )
-    console.info({ params: opts.params, data: opts.data, cookies })
+    console.info({
+      params: opts.params,
+      data: opts.data,
+      cookies: CookieUtils.toJSON(headers.cookie || ''),
+    })
   }
 
   const response = await proxyAwareFetch(url.toString(), {
@@ -170,21 +176,6 @@ export async function pixivFetch(
   }
 
   return { data, status: response.status, headers: response.headers }
-}
-
-// --- Pximg proxy fetch ---
-
-export async function pximgFetch(
-  url: string,
-  headers: Record<string, string>
-): Promise<Response> {
-  return proxyAwareFetch(url, {
-    headers: {
-      ...headers,
-      referer: 'https://www.pixiv.net/',
-      'user-agent': PROXY_USER_AGENT,
-    },
-  })
 }
 
 // --- URL replacement utilities ---

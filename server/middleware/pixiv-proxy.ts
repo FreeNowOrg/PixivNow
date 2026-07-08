@@ -1,5 +1,6 @@
 import escapeRegExp from 'lodash.escaperegexp'
-import { pixivFetch } from '~~/server/utils/pixiv'
+import { buildPixivHeaders } from '~~/server/utils/pixiv'
+import { proxyPass } from '~~/server/utils/proxy'
 
 // Unified Pixiv API proxy middleware.
 // Intercepts /ajax/*, /rpc/*, and *.php requests and proxies them to Pixiv.
@@ -31,28 +32,21 @@ export default defineEventHandler(async (event) => {
   }
 
   const reqUrl = getRequestURL(event)
-  const {
-    data,
-    status,
-    headers: respHeaders,
-  } = await pixivFetch({
-    event,
-    method: event.method ?? 'GET',
-    url: reqUrl.pathname + reqUrl.search,
-    // Forward the raw body verbatim so the original Content-Type (JSON or
-    // form-urlencoded) is preserved. readBody() would parse form-urlencoded
-    // into an object that pixivFetch then re-encodes as JSON, breaking
-    // endpoints like /ajax/illusts/bookmarks/delete (expects form-urlencoded).
-    data: event.method !== 'GET' ? await readRawBody(event) : undefined,
+  const headers = buildPixivHeaders(event)
+  const body = event.method !== 'GET' ? await readRawBody(event) : undefined
+
+  return proxyPass(event, {
+    url: new URL(
+      reqUrl.pathname + reqUrl.search,
+      'https://www.pixiv.net/'
+    ).toString(),
+    method: event.method,
+    headers,
+    body,
+    responseHeaders: PROXY_RESPONSE_HEADERS,
+    signal: AbortSignal.timeout(9000),
+    devLabel: 'ajax',
   })
-
-  for (const h of PROXY_RESPONSE_HEADERS) {
-    const val = respHeaders.get(h)
-    if (val) setResponseHeader(event, h, val)
-  }
-
-  setResponseStatus(event, status)
-  return data
 })
 
 // Cached UA blacklist regex for efficient repeated checks

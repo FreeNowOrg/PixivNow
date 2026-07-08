@@ -1,9 +1,6 @@
-import { pximgFetch } from '~~/server/utils/pixiv'
+import { PROXY_USER_AGENT } from '~~/server/utils/pixiv'
+import { proxyPass } from '~~/server/utils/proxy'
 
-// Unified pximg image proxy middleware.
-// Intercepts /-/* and /~/* requests and proxies them to pximg.
-// Mirrors the original Vercel rewrite:
-//   /:__PREFIX(~|-)/:__PATH(.+) → /api/image
 const PREFIX_MAP: Record<string, string> = {
   '-': 'https://i.pximg.net/',
   '~': 'https://s.pximg.net/',
@@ -32,12 +29,8 @@ const PROXY_RESPONSE_HEADERS = [
 
 export default defineEventHandler(async (event) => {
   const pathname = getRequestURL(event).pathname
-
-  // Match /-/... or /~/...
   const match = pathname.match(/^\/([-~])\/(.+)/)
-  if (!match) {
-    return // Not an image proxy request, pass through
-  }
+  if (!match) return
 
   const [, prefix, path] = match
   const baseUrl = PREFIX_MAP[prefix!]
@@ -46,30 +39,18 @@ export default defineEventHandler(async (event) => {
   const url = `${baseUrl}${path}`
 
   const reqHeaders = getHeaders(event)
-
   const headers: Record<string, string> = {}
   for (const h of PROXY_REQUEST_HEADERS) {
-    if (typeof reqHeaders[h] === 'string') {
-      headers[h] = reqHeaders[h]
-    }
+    if (typeof reqHeaders[h] === 'string') headers[h] = reqHeaders[h] as string
   }
+  headers['referer'] = 'https://www.pixiv.net/'
+  headers['user-agent'] = PROXY_USER_AGENT
 
-  try {
-    const response = await pximgFetch(url, headers)
-
-    for (const h of PROXY_RESPONSE_HEADERS) {
-      const val = response.headers.get(h)
-      if (val) {
-        setResponseHeader(event, h, val)
-      }
-    }
-    setResponseStatus(event, response.status)
-    return response
-  } catch (err: any) {
-    console.error('Image proxy error:', url, err?.message)
-    throw createError({
-      statusCode: err?.response?.status || 500,
-      data: err?.response?.data || String(err),
-    })
-  }
+  return proxyPass(event, {
+    url,
+    method: event.method,
+    headers,
+    responseHeaders: PROXY_RESPONSE_HEADERS,
+    devLabel: 'pximg',
+  })
 })
