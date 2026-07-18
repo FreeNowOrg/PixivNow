@@ -62,5 +62,5 @@
     "undici": "^8.5.0",
     "unplugin-icons": "^23.0.1"
   },
-  "packageManager": "pnpm@11.10.0"
+  "packageManager": "pnpm@11.14.0"
 }
