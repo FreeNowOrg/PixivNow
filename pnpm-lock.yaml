@@ -65,7 +65,7 @@ importers:
         version: 3.5.0(prettier@3.9.8)
       '@tabler/icons-vue':
         specifier: ^3.44.0
-        version: 3.46.0(vue@3.5.43(typescript@6.0.3))
+        version: 3.47.0(vue@3.5.43(typescript@6.0.3))
       '@types/gif.js':
         specifier: ^0.2.5
         version: 0.2.5
@@ -1837,13 +1837,13 @@ packages:
   '@speed-highlight/core@1.2.23':
     resolution: {integrity: sha512-iRoq6i6JDJP6Mt2A5JaPvzw0pgYHH6k92ij+yXiTrB7T2y9N789aWE3EHWj/5ztlJBokcCBja3iYLVdu5wgnkg==}
 
-  '@tabler/icons-vue@3.46.0':
-    resolution: {integrity: sha512-RkYlrGx8NY5ePXk0fTJJaDYQpjbi0ys33Cvswnvn83X04IVOCEaEqS2S3GANcp1dgEu9Fs7c6kd2sdJbwOZQtw==}
+  '@tabler/icons-vue@3.47.0':
+    resolution: {integrity: sha512-5RsKv35DGq2Pi+rfN20e9eRvf1iiipC3c9jSBtP9M8NcL8u7QXWv5WzSjwEMVldQc2GDtYEeLf//KFEb4Lt/cA==}
     peerDependencies:
       vue: '>=3.0.1'
 
-  '@tabler/icons@3.46.0':
-    resolution: {integrity: sha512-f2RYFl3fzPwj5WO82x6en0dmkjefxEfOm16D1ByM6cj/McNiwOkL4VaPUoP9VVIrXAD9WnTSVFr70px703b//A==}
+  '@tabler/icons@3.47.0':
+    resolution: {integrity: sha512-aCbSemVrGvSA3w0sJi8mka6QrnQCN8wCD1jKNXXIR/h6Q4ffov/yFPyzjTULDM8ETtK4DABUZhWdYlygqy3npA==}
 
   '@tybys/wasm-util@0.10.3':
     resolution: {integrity: sha512-F3fo1MYrRJYL3zER0OUOmkutjr1Vp23m7OsSgp7nq4SP6OqX6C/56XFIPAl5bt3zaBRjmW7SGz3u/6LwFpYcOg==}
@@ -7151,12 +7151,12 @@ snapshots:
 
   '@speed-highlight/core@1.2.23': {}
 
-  '@tabler/icons-vue@3.46.0(vue@3.5.43(typescript@6.0.3))':
+  '@tabler/icons-vue@3.47.0(vue@3.5.43(typescript@6.0.3))':
     dependencies:
-      '@tabler/icons': 3.46.0
+      '@tabler/icons': 3.47.0
       vue: 3.5.43(typescript@6.0.3)
 
-  '@tabler/icons@3.46.0': {}
+  '@tabler/icons@3.47.0': {}
 
   '@tybys/wasm-util@0.10.3':
     dependencies:
