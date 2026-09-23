@@ -62,7 +62,7 @@ importers:
         version: 0.11.3(magicast@0.5.4)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.43(typescript@6.0.3)))
       '@prettier/plugin-pug':
         specifier: ^3.4.2
-        version: 3.5.0(prettier@3.9.8)
+        version: 3.5.0(prettier@3.9.9)
       '@tabler/icons-vue':
         specifier: ^3.44.0
         version: 3.48.0(vue@3.5.43(typescript@6.0.3))
@@ -107,7 +107,7 @@ importers:
         version: 1.1.1
       prettier:
         specifier: ^3.8.4
-        version: 3.9.8
+        version: 3.9.9
       pug:
         specifier: ^3.0.4
         version: 3.0.4
@@ -4230,8 +4230,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier@3.9.8:
-    resolution: {integrity: sha512-WRFq3Wn3WId7LLROfMLdH7xaFr2jR62wU8nLO6rQUOLOxNZUviyJQs1M0iIhLexSFy+L+w0ch66wtoO2jRjG0A==}
+  prettier@3.9.9:
+    resolution: {integrity: sha512-Z/CJHIkdujO/OtN7nXUii0Rf3VT5SRuhjBA82Xvu2XhBUgX3nhP67T0LHceBdQLex7OOFGTox+Q5Yg8Jk2Qivg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -6944,9 +6944,9 @@ snapshots:
 
   '@poppinss/exception@1.2.3': {}
 
-  '@prettier/plugin-pug@3.5.0(prettier@3.9.8)':
+  '@prettier/plugin-pug@3.5.0(prettier@3.9.9)':
     dependencies:
-      prettier: 3.9.8
+      prettier: 3.9.9
       pug-lexer: 5.0.1
 
   '@rolldown/binding-android-arm64@1.2.3':
@@ -9993,7 +9993,7 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier@3.9.8: {}
+  prettier@3.9.9: {}
 
   pretty-bytes@7.1.1: {}
 
