@@ -94,8 +94,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(conventional-commits-filter@5.0.0)
       cookie:
-        specifier: ^1.1.1
-        version: 1.1.1
+        specifier: ^2.0.0
+        version: 2.0.1
       lodash.escaperegexp:
         specifier: ^4.1.2
         version: 4.1.2
@@ -2556,9 +2556,9 @@ packages:
   cookie-es@3.1.1:
     resolution: {integrity: sha512-UaXxwISYJPTr9hwQxMFYZ7kNhSXboMXP+Z3TRX6f1/NyaGPfuNUZOWP1pUEb75B2HjfklIYLVRfWiFZJyC6Npg==}
 
-  cookie@1.1.1:
-    resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
-    engines: {node: '>=18'}
+  cookie@2.0.1:
+    resolution: {integrity: sha512-yuToqVvRrj6pfDXREyQAAv8SkAEk/8GS3jQRTiUMm66TVtBYmqQeoEjL2Lmq8Rpo6271vH76InTChTitEAm65w==}
+    engines: {node: '>=22'}
 
   copy-anything@4.0.5:
     resolution: {integrity: sha512-7Vv6asjS4gMOuILabD3l739tsaxFQmC+a7pLZm02zyvs8p977bL3zEgq3yDk5rn9B0PbYgIv++jmHcuUab4RhA==}
@@ -4444,6 +4444,12 @@ packages:
     cpu: [arm]
     os: [android]
 
+  sass-embedded-android-riscv64@1.105.1:
+    resolution: {integrity: sha512-lWity0qhyQyPgkHUfZz+4IeD0r6mcAqG9KzOwVSjUrcSR9xAfWFKYAtHTA05R28ymyXf2Sf2+XfNV7YkxLgkUQ==}
+    engines: {node: '>=14.0.0'}
+    cpu: [riscv64]
+    os: [android]
+
   sass-embedded-android-x64@1.105.1:
     resolution: {integrity: sha512-FRGZuIZ9eS3qutYPFqz8u12Ti9ccyWKWb7F7rKRI1BkIEmLZV1rC862dUGnTV2d9Tk9qbSAXL71t8alUR+fzIA==}
     engines: {node: '>=14.0.0'}
@@ -4469,6 +4475,13 @@ packages:
     os: [linux]
     libc: glibc
 
+  sass-embedded-linux-arm@1.105.1:
+    resolution: {integrity: sha512-Ng9GWIF6heTrwc9r/FFY9oUSoaylV2zcS296Qo2re3tJfLMWR37O2JUMyzPT+vtkRs8k3JOE6jTFVlXYnz4EAA==}
+    engines: {node: '>=14.0.0'}
+    cpu: [arm]
+    os: [linux]
+    libc: glibc
+
   sass-embedded-linux-musl-arm64@1.105.1:
     resolution: {integrity: sha512-KizYVR3d70U67iLgKdF+HCKBdQYUxYiv0YWCS3zl6GwNGIbGXlkOtnjxus41CKTA4oOK0KsSus9P5zwhOBjiYA==}
     engines: {node: '>=14.0.0'}
@@ -4480,6 +4493,13 @@ packages:
     resolution: {integrity: sha512-7u932XawHxGZvuYV4pOqcCvQi05yMONDmNDxVNh8Q7KmpytQP7mnyxBOYWStiw/p665AVL6BYGe7WY/vzCcWGw==}
     engines: {node: '>=14.0.0'}
     cpu: [arm]
+    os: [linux]
+    libc: musl
+
+  sass-embedded-linux-musl-riscv64@1.105.1:
+    resolution: {integrity: sha512-gs84BgRBVNMX5fHRU3wxc3HuJjl0dUmZFpcVIaDDEVhnp5oXFLQp+gEu0xBBAurTzCHVpPU6GlGK6B1gRKmbhg==}
+    engines: {node: '>=14.0.0'}
+    cpu: [riscv64]
     os: [linux]
     libc: musl
 
@@ -7979,7 +7999,7 @@ snapshots:
 
   cookie-es@3.1.1: {}
 
-  cookie@1.1.1: {}
+  cookie@2.0.1: {}
 
   copy-anything@4.0.5:
     dependencies:
@@ -10180,6 +10200,9 @@ snapshots:
   sass-embedded-android-arm@1.105.1:
     optional: true
 
+  sass-embedded-android-riscv64@1.105.1:
+    optional: true
+
   sass-embedded-android-x64@1.105.1:
     optional: true
 
@@ -10192,10 +10215,16 @@ snapshots:
   sass-embedded-linux-arm64@1.105.1:
     optional: true
 
+  sass-embedded-linux-arm@1.105.1:
+    optional: true
+
   sass-embedded-linux-musl-arm64@1.105.1:
     optional: true
 
   sass-embedded-linux-musl-arm@1.105.1:
+    optional: true
+
+  sass-embedded-linux-musl-riscv64@1.105.1:
     optional: true
 
   sass-embedded-linux-musl-x64@1.105.1:
@@ -10231,12 +10260,15 @@ snapshots:
       sass-embedded-all-unknown: 1.105.1
       sass-embedded-android-arm: 1.105.1
       sass-embedded-android-arm64: 1.105.1
+      sass-embedded-android-riscv64: 1.105.1
       sass-embedded-android-x64: 1.105.1
       sass-embedded-darwin-arm64: 1.105.1
       sass-embedded-darwin-x64: 1.105.1
+      sass-embedded-linux-arm: 1.105.1
       sass-embedded-linux-arm64: 1.105.1
       sass-embedded-linux-musl-arm: 1.105.1
       sass-embedded-linux-musl-arm64: 1.105.1
+      sass-embedded-linux-musl-riscv64: 1.105.1
       sass-embedded-linux-musl-x64: 1.105.1
       sass-embedded-linux-riscv64: 1.105.1
       sass-embedded-linux-x64: 1.105.1
