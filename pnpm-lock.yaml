@@ -62,7 +62,7 @@ importers:
         version: 0.11.3(magicast@0.5.4)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.43(typescript@6.0.3)))
       '@prettier/plugin-pug':
         specifier: ^3.4.2
-        version: 3.5.1(prettier@3.9.9)
+        version: 3.6.0(prettier@3.9.9)
       '@tabler/icons-vue':
         specifier: ^3.44.0
         version: 3.48.0(vue@3.5.43(typescript@6.0.3))
@@ -1499,8 +1499,8 @@ packages:
   '@poppinss/exception@1.2.3':
     resolution: {integrity: sha512-dCED+QRChTVatE9ibtoaxc+WkdzOSjYTKi/+uacHWIsfodVfpsueo3+DKpgU5Px8qXjgmXkSvhXvSCz3fnP9lw==}
 
-  '@prettier/plugin-pug@3.5.1':
-    resolution: {integrity: sha512-z37CRLBYRTQvRW28Wxsu+C/kMgrHdXnANk7QLF707wjYpq/DOZZ07C8CYEoZYEOlXMA/nSnI8K0NSWAvW1bP4g==}
+  '@prettier/plugin-pug@3.6.0':
+    resolution: {integrity: sha512-kAzQ5XJ31cRnME+0TkZorwqwtzFAAZROFm6CCrsRBCcAltQ0Z/81XJN1NYkQZA5F8fFt1b9S/lyHSfxI7KHHIA==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       prettier: ^3.0.0
@@ -6897,7 +6897,7 @@ snapshots:
 
   '@poppinss/exception@1.2.3': {}
 
-  '@prettier/plugin-pug@3.5.1(prettier@3.9.9)':
+  '@prettier/plugin-pug@3.6.0(prettier@3.9.9)':
     dependencies:
       prettier: 3.9.9
       pug-lexer: 5.0.1
