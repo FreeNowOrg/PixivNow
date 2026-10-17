@@ -25,7 +25,7 @@ importers:
         version: 0.2.0
       modern-mp4:
         specifier: ^0.2.0
-        version: 0.2.0(mp4box@0.5.3)
+        version: 0.2.3(mp4box@0.5.3)
       nprogress:
         specifier: ^0.2.0
         version: 0.2.0
@@ -1026,6 +1026,11 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  '@mediabunny/aac-encoder@1.61.5':
+    resolution: {integrity: sha512-PC1ZQJMX8FQlw7XjdyacVmTRCZ8DA6x8VyJXakmOQuWsddawfK+KBRhpSYD5ezqe1NdqfdmeLUwDsarjzsTSUA==}
+    peerDependencies:
+      mediabunny: ^1.0.0
+
   '@miyaneee/rollup-plugin-json5@1.2.0':
     resolution: {integrity: sha512-JjTIaXZp9WzhUHpElrqPnl1AzBi/rvRs065F71+aTmlqvTMVkdbjZ8vfFl4nRlgJy+TPBw69ZK4pwFdmOAt4aA==}
     peerDependencies:
@@ -2017,6 +2022,12 @@ packages:
 
   '@tybys/wasm-util@0.10.3':
     resolution: {integrity: sha512-F3fo1MYrRJYL3zER0OUOmkutjr1Vp23m7OsSgp7nq4SP6OqX6C/56XFIPAl5bt3zaBRjmW7SGz3u/6LwFpYcOg==}
+
+  '@types/dom-mediacapture-transform@0.1.12':
+    resolution: {integrity: sha512-d7/QsLRwF864A5mgIM/YrfiglHoYn7zgCcAoJgW404r+2DwnNr7EBbLnCWpmOMgH8y0te73L1AV6H1bmauaWFw==}
+
+  '@types/dom-webcodecs@0.1.13':
+    resolution: {integrity: sha512-O5hkiFIcjjszPIYyUSyvScyvrBoV3NOEEZx/pMlsu44TKzWNkLVBBxnxJz42in5n3QIolYOcBYFCPZZ0h8SkwQ==}
 
   '@types/esrecurse@4.3.1':
     resolution: {integrity: sha512-xJBAbDifo5hpffDBuHl0Y8ywswbiAp/Wi7Y/GtAgSlZyIABppyurxVueOPE8LUQOxdlgi6Zqce7uoEpqNTeiUw==}
@@ -3840,6 +3851,9 @@ packages:
   mdn-data@2.27.1:
     resolution: {integrity: sha512-9Yubnt3e8A0OKwxYSXyhLymGW4sCufcLG6VdiDdUGVkPhpqLxlvP5vl1983gQjJl3tqbrM731mjaZaP68AgosQ==}
 
+  mediabunny@1.61.5:
+    resolution: {integrity: sha512-IYrDTozxGVRTWQ1YdIcF+P7S7qHvvkiQYsX3WUbAHkxgAcCfEn7a/RbM9i/WiJHJ1MSYZqSxZkna1UUn4FGGBQ==}
+
   meow@13.2.0:
     resolution: {integrity: sha512-pxQJQzB6djGPXh08dacEloMFopsOqGVRKFPYvPOt9XDZ1HasbgDZA74CJGreSU4G3Ak7EFJGoiH2auq+yXISgA==}
     engines: {node: '>=18'}
@@ -3918,8 +3932,8 @@ packages:
   mocked-exports@0.1.1:
     resolution: {integrity: sha512-aF7yRQr/Q0O2/4pIXm6PZ5G+jAd7QS4Yu8m+WEeEHGnbo+7mE36CbLSDQiXYV8bVL3NfmdeqPJct0tUlnjVSnA==}
 
-  modern-mp4@0.2.0:
-    resolution: {integrity: sha512-Z2X7+B1Kru8MTI2E6mpcSqm1E7FMxYg61DXoTkwq/KnMMfeyFcMCY4UVjvklFtdw4/NnvKA93bxw7XsqtMB1Tw==}
+  modern-mp4@0.2.3:
+    resolution: {integrity: sha512-g3Zd80Xbt5sS/NkR3rF98HYh3NFZ8+oJJgBzMENwQ5IsGQo+kU7mnZogHfG2vxQxgoy6+4hb01LCMbKkTBiH7w==}
     peerDependencies:
       mp4box: '*'
 
@@ -5208,10 +5222,6 @@ packages:
   undici@7.28.0:
     resolution: {integrity: sha512-cRZYrTDwWznlnRiPjggAGxZXanty6M8RV1ff8Wm4LWXBp7/IG8v5DnOm74DtUBp9OONpK75YlPnIjQqX0dBDtA==}
     engines: {node: '>=20.18.1'}
-
-  undici@8.12.1:
-    resolution: {integrity: sha512-usz3OVQBeh1LxNn0DzU0voLXMgn5CU/WUdpBsY6Ti5afNao+vTkmn4H/NxoXolc10cOqe2+YIG0Hspq2rsl64w==}
-    engines: {node: '>=22.19.0'}
 
   undici@8.12.2:
     resolution: {integrity: sha512-XtuDWVdqTLr3NAxm2ly9/hU6kUsJOgGh1RASzMBbsw6aWCOaQzHdW+QQDfdERjfJ2V5vL5pRPa4RetO9UfivDg==}
@@ -6586,6 +6596,10 @@ snapshots:
       - encoding
       - supports-color
 
+  '@mediabunny/aac-encoder@1.61.5(mediabunny@1.61.5)':
+    dependencies:
+      mediabunny: 1.61.5
+
   '@miyaneee/rollup-plugin-json5@1.2.0(rollup@4.62.4)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.62.4)
@@ -7677,6 +7691,12 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
+
+  '@types/dom-mediacapture-transform@0.1.12':
+    dependencies:
+      '@types/dom-webcodecs': 0.1.13
+
+  '@types/dom-webcodecs@0.1.13': {}
 
   '@types/esrecurse@4.3.1': {}
 
@@ -9714,6 +9734,11 @@ snapshots:
 
   mdn-data@2.27.1: {}
 
+  mediabunny@1.61.5:
+    dependencies:
+      '@types/dom-mediacapture-transform': 0.1.12
+      '@types/dom-webcodecs': 0.1.13
+
   meow@13.2.0: {}
 
   merge-stream@2.0.0: {}
@@ -9776,8 +9801,10 @@ snapshots:
 
   mocked-exports@0.1.1: {}
 
-  modern-mp4@0.2.0(mp4box@0.5.3):
+  modern-mp4@0.2.3(mp4box@0.5.3):
     dependencies:
+      '@mediabunny/aac-encoder': 1.61.5(mediabunny@1.61.5)
+      mediabunny: 1.61.5
       mp4box: 0.5.3
 
   mp4box@0.5.3: {}
@@ -10030,7 +10057,7 @@ snapshots:
       ultrahtml: 1.7.0
       uncrypto: 0.1.3
       unctx: 3.0.1(magic-string@1.4.3)(oxc-parser@0.141.0)(rolldown@1.2.13)(unplugin@3.4.0(esbuild@0.28.1)(rolldown@1.2.13)(rollup@4.62.4)(vite@8.3.3(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.105.1)(terser@5.49.2)(tsx@4.21.0)(yaml@2.9.0)))
-      undici: 8.12.1
+      undici: 8.12.2
       unhead: 3.4.2(esbuild@0.28.1)(rolldown@1.2.13)(rollup@4.62.4)(vite@8.3.3(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.105.1)(terser@5.49.2)(tsx@4.21.0)(yaml@2.9.0))
       unimport: 7.0.2(acorn@8.18.0)(esbuild@0.28.1)(oxc-parser@0.141.0)(rolldown@1.2.13)(rollup@4.62.4)(vite@8.3.3(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.105.1)(terser@5.49.2)(tsx@4.21.0)(yaml@2.9.0))
       unplugin: 3.4.0(esbuild@0.28.1)(rolldown@1.2.13)(rollup@4.62.4)(vite@8.3.3(@types/node@24.19.2)(esbuild@0.28.1)(jiti@2.7.0)(sass-embedded@1.105.1)(sass@1.105.1)(terser@5.49.2)(tsx@4.21.0)(yaml@2.9.0))
@@ -11332,8 +11359,6 @@ snapshots:
     optional: true
 
   undici@7.28.0: {}
-
-  undici@8.12.1: {}
 
   undici@8.12.2: {}
 
