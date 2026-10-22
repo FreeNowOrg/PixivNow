@@ -41,10 +41,10 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@use "${resolve(import.meta.dirname, './app/assets/styles/_fnb.scss')}" as *;`,
+          additionalData: `@use "${resolve(import.meta.dirname, './app/assets/styles/_fnb.scss').replaceAll('\\', '/')}" as *;`,
         },
         sass: {
-          additionalData: `\n@use "${resolve(import.meta.dirname, './app/assets/styles/_fnb.scss')}" as *\n`,
+          additionalData: `\n@use "${resolve(import.meta.dirname, './app/assets/styles/_fnb.scss').replaceAll('\\', '/')}" as *\n`,
         },
       },
     },
