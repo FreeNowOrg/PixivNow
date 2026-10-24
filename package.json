@@ -50,7 +50,7 @@
     "@vueuse/nuxt": "^14.3.0",
     "cheerio": "^1.2.0",
     "conventional-changelog-cli": "^5.0.0",
-    "cookie": "^1.1.1",
+    "cookie": "^2.0.0",
     "lodash.escaperegexp": "^4.1.2",
     "nuxt": "^4.4.8",
     "picocolors": "^1.1.1",
