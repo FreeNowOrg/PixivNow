@@ -43,7 +43,7 @@
     "@tabler/icons-vue": "^3.44.0",
     "@types/gif.js": "^0.2.5",
     "@types/lodash.escaperegexp": "^4.1.9",
-    "@types/node": "^24.13.2",
+    "@types/node": "^26.0.0",
     "@types/nprogress": "^0.2.3",
     "@vue/language-plugin-pug": "^3.3.5",
     "@vueuse/core": "^14.3.0",
